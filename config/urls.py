@@ -55,6 +55,13 @@ urlpatterns = [
     path("vorschau", views.preview),
     path("vorschau/ende/", views.preview_end, name="vorschau_ende"),
     path("vorschau/design/", views.preview_design, name="vorschau_design"),
+    # Designpakete (Ralf 2026-11-02): CSS eingespielter Designs, Export der Standarddesigns
+    re_path(r"^design/(?P<key>[a-z][a-z0-9-]{1,30})\.css$", views.design_css, name="design_css"),
+    re_path(
+        r"^design-paket/(?P<key>[a-z][a-z0-9-]{1,30})\.zip$",
+        views.design_export,
+        name="design_export",
+    ),
     re_path(r"^medien/(?P<kind>[am])/(?P<path>.+)$", views.media, name="medien"),
     path("robots.txt", views.robots, name="robots"),
     path("gesund", views.health, name="gesund"),

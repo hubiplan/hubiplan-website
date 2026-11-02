@@ -7,7 +7,7 @@
 {% if site and not site.info.allow_indexing %}<meta name="robots" content="noindex">{% endif %}
 <link rel="stylesheet" href="{% static 'seite/seite.css' %}">
 {% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}}</style>{% endwith %}
-{% if site.design != "classic" %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
+{% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% elif site.design != "classic" %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}
 </head>
 <body class="design-{% if site %}{{ site.design }}{% else %}classic{% endif %}">
@@ -21,26 +21,11 @@
 {% elif request.GET.vorschau == "beendet" %}
 <div class="vorschau-hinweis" role="status">{% translate "Vorschau beendet. Sie sehen die Webseite jetzt wie alle Besucher." %}</div>
 {% endif %}
-{% menue as punkte %}{% include "seite/kopf.html" %}
+{% menue as punkte %}{% if site %}{% include site.kopf_vorlage %}{% else %}{% include "seite/kopf.html" %}{% endif %}
 <main id="inhalt" class="breite{% block main_klasse %}{% endblock %}">
 {% block inhalt %}{% endblock %}
 </main>
-<footer class="fuss">
-  <div class="breite fuss-innen">
-    {% if site %}
-    {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% if site.info.member_of.website %}<a href="{{ site.info.member_of.website }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}</p>{% endif %}
-    {# Social Media steht im Kopf; im Fuß nur, wenn es kein Menü gibt #}
-    {% if not punkte %}{% include "seite/sozial.html" with kanaele=site.info.social titel=_("Social Media") %}{% endif %}
-    {% endif %}
-    <ul class="recht">
-      <li><a href="{% url 'impressum' %}">{% translate "Impressum" %}</a></li>
-      <li><a href="{% url 'datenschutz' %}">{% translate "Datenschutz" %}</a></li>
-      <li><a href="{% url 'barrierefreiheit' %}">{% translate "Barrierefreiheit" %}</a></li>
-      <li><a href="{% quellcode %}" rel="noopener noreferrer">{% translate "Quellcode" %}</a></li>
-    </ul>
-    <p class="klein">© {% jahr %} · <svg class="hubiplan-zeichen" viewBox="2 3.5 60 60" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 20V15a8 8 0 0 1 8-8h9c2.5 0 4.2 1 5.6 2.6L30 14h22a8 8 0 0 1 8 8Z" fill="#f2b33d"/><rect x="4" y="18" width="56" height="42" rx="10" fill="#0e7c66"/><path d="M22 28V52M42 28V52" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M22 44L42 35" stroke="#f2b33d" stroke-width="7" stroke-linecap="round"/></svg> {% translate "Daten aus" %} <a href="https://github.com/hubiplan" target="_blank" rel="noopener noreferrer">HUBIplan<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>
-  </div>
-</footer>
+{% if site %}{% include site.fuss_vorlage %}{% else %}{% include "seite/fuss.html" %}{% endif %}
 {% seite_texte %}<script src="{% static 'seite/menue.js' %}" defer></script>
 <script src="{% static 'seite/termin.js' %}" defer></script>
 {% block skripte %}{% endblock %}

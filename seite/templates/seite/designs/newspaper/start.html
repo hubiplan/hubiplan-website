@@ -1,0 +1,6 @@
+{% extends "seite/start.html" %}
+{% block bausteine %}
+{# Zeitung: links Bilder, Begrüßung und Beiträge, rechts Termine, Majestäten, Untereinheiten #}
+<div class="spalte-haupt">{% for vorlage in sections_main %}{% include vorlage %}{% endfor %}</div>
+<div class="spalte-seite">{% for vorlage in sections_side %}{% include vorlage %}{% endfor %}</div>
+{% endblock %}
