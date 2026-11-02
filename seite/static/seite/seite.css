@@ -411,6 +411,9 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
      Fünftel der Karte, damit der Text daneben lesbar bleibt; mehrere Bilder zu zweit nebeneinander */
   .zeitleiste-karte.bild-rechts { grid-template-columns: minmax(0, 1fr) min(15rem, 40%); }
   .zeitleiste-karte.bild-links { grid-template-columns: min(15rem, 40%) minmax(0, 1fr); }
+  /* Mehrere Bilder (zu zweit nebeneinander): breitere Spalte, damit jedes Bild nicht kleiner wird als nötig */
+  .zeitleiste-karte.bild-rechts.mehrere-bilder { grid-template-columns: minmax(0, 1fr) min(24rem, 50%); }
+  .zeitleiste-karte.bild-links.mehrere-bilder { grid-template-columns: min(24rem, 50%) minmax(0, 1fr); }
   .bild-rechts .zeitleiste-bilder, .bild-links .zeitleiste-bilder { width: 100%; }
   .bild-rechts .zeitleiste-bild, .bild-links .zeitleiste-bild { width: 100%; }
   .bild-rechts .zeitleiste-bilder.mehrere .zeitleiste-bild, .bild-links .zeitleiste-bilder.mehrere .zeitleiste-bild { width: calc(50% - .2rem); }

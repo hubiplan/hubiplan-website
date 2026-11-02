@@ -23,7 +23,7 @@
       {% for e in a.ereignisse %}
       <li class="zeitleiste-eintrag{% if e.until %} ist-zeitraum{% endif %}"{% if e.anker %} id="{{ e.anker }}"{% endif %}>
         <p class="zeitleiste-jahr">{% if e.until %}<span class="unsichtbar">{% translate "Zeitraum" %} </span>{% endif %}{{ e.zeitraum }}</p>
-        <div class="zeitleiste-karte{% if e.bilder %} bild-{{ e.bildlage }}{% endif %}">
+        <div class="zeitleiste-karte{% if e.bilder %} bild-{{ e.bildlage }}{% if e.bilder|length > 1 %} mehrere-bilder{% endif %}{% endif %}">
           <h3>{{ e.title }}</h3>
           {% if e.text %}<p>{{ e.text|linebreaksbr }}</p>{% endif %}
           {% if e.bilder %}
