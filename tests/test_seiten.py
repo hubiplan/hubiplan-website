@@ -353,6 +353,11 @@ def test_chronik_neueste_oben(client, hubiplan):
     # Kapitel behalten ihre Nummer; Sprungmarken rückwärts
     assert '<section class="zeitleiste-abschnitt" id="kapitel-3"' in html
     assert html.index('<a href="#kapitel-3">') < html.index('<a href="#kapitel-2">')
+    # Kapitel ohne eigenes Ende zeigen den Zeitraum bis zum letzten Ereignis, mit eigenem Ende
+    # bleibt es dabei
+    assert '<span class="zeitleiste-zeitraum">2020–2025</span> Bis heute</h2>' in html
+    assert '<span class="zeitleiste-zeitraum">1900–1938</span> Gründerjahre</h2>' in html
+    assert '<a href="#kapitel-3">Bis heute <span class="klein">2020–2025</span>' in html
 
 
 def test_zeitleiste_rueckwaerts():
@@ -365,6 +370,8 @@ def test_zeitleiste_rueckwaerts():
     ]
     vor = gliedern(eintraege)
     assert vor["abschnitte"][0]["ende"] == 2026
+    # Alt nach neu bleibt das Kapitel beim Startjahr
+    assert vor["abschnitte"][0]["kapitel"]["zeitraum"] == "2020"
     rueck = gliedern(eintraege, neueste_oben=True)
     assert [e["title"] for e in rueck["abschnitte"][0]["ereignisse"]] == ["B", "A"]
     # Jahrzehnte rückwärts, Anker am neuesten Ereignis des Jahrzehnts
