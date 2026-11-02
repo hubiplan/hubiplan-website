@@ -12,6 +12,8 @@ Feste Regeln von Ralf (gelten wie im Hauptprojekt `hubiplan`):
   Echte Daten kommen nur im Echtbetrieb über HUBIplan. Repo und Testserver: nur erfundene Daten.
 - Die Webseite liest nur die öffentliche Schnittstelle von HUBIplan, nie die Datenbank.
   Datenschutzregeln gehören nach `hubiplan`, nicht hierher.
+- **Jeder PR füllt „Für die Änderungshinweise“** der PR-Vorlage aus (Deutsch und Englisch).
+  Releases nur auf Ralfs Wort, mit `~/hubiplan/scripts/release.sh` (siehe `hubiplan/docs/releases.md`).
 - CI (GitHub Actions) nur von Hand (workflow_dispatch); keine automatischen Auslöser.
 - Sprache in Oberfläche, Doku und Commits: Deutsch.
 - **Neue Rahmentexte gleich auch auf Englisch** (`{% translate %}`/`gettext`, Katalog
