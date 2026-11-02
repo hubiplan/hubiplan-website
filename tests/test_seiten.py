@@ -1045,5 +1045,6 @@ def test_quellcode_der_laufenden_fassung(tmp_path, monkeypatch):
 def test_chronik_bilder_neben_dem_text_groesser():
     """Ralf 2026-11-02: Bilder links oder rechts vom Text größer, aber höchstens 40 % der Karte."""
     css = (Path(__file__).parent.parent / "seite/static/seite/seite.css").read_text()
-    assert ".zeitleiste-karte.bild-rechts { grid-template-columns: minmax(0, 1fr) min(15rem, 40%); }" in css
-    assert ".zeitleiste-karte.bild-links { grid-template-columns: min(15rem, 40%) minmax(0, 1fr); }" in css
+    spalte = "min(15rem, 40%)"
+    assert f".bild-rechts {{ grid-template-columns: minmax(0, 1fr) {spalte}; }}" in css
+    assert f".bild-links {{ grid-template-columns: {spalte} minmax(0, 1fr); }}" in css
