@@ -18,6 +18,12 @@ from django.utils.translation import gettext_lazy as _
 from . import api
 
 PREVIEW_COOKIE = "vorschau"
+# Testserver mit fester Zuordnung (SITE_HOST_OVERRIDE): In der Vorschau eine andere
+# Webseite derselben Instanz zeigen (Hostname aus dem Vorschau-Link)
+SITE_COOKIE = "vorschau-seite"
+HOSTNAME = re.compile(
+    r"^(?=.{1,253}$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$"
+)
 # Anderes Design nur in der Vorschau ansehen, ohne es zu übernehmen
 DESIGN_COOKIE = "vorschau-design"
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -234,8 +240,20 @@ def global_maintenance() -> bool:
     return settings.MAINTENANCE or Path(settings.MAINTENANCE_FILE).exists()
 
 
+def chosen_host(value: str | None) -> str | None:
+    """Gewählte Webseite der Vorschau, nur bei fester Zuordnung und gültigem Hostnamen."""
+    value = (value or "").strip().lower()
+    if settings.SITE_HOST_OVERRIDE and HOSTNAME.match(value):
+        return value
+    return None
+
+
 def host_of(request) -> str:
     if settings.SITE_HOST_OVERRIDE:
+        if request.COOKIES.get(PREVIEW_COOKIE):
+            chosen = chosen_host(request.COOKIES.get(SITE_COOKIE))
+            if chosen:
+                return chosen
         return settings.SITE_HOST_OVERRIDE
     return request.get_host().split(":")[0].lower()
 

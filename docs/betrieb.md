@@ -37,7 +37,10 @@ Die Webseite läuft auf `test.example.org` in `/opt/hubiplan-website` als Contai
 
 - `BASE_PATH=/webseite`: Adressen der Seite beginnen mit `/webseite/`.
 - `SITE_HOST_OVERRIDE=www.hubertus-grimlinghausen.test`: Alle Aufrufe gehören zur
-  Demo-Webseite aus `seed_testdata` (statt Zuordnung über den Hostnamen).
+  Demo-Webseite aus `seed_testdata` (statt Zuordnung über den Hostnamen). Ein
+  Vorschau-Link mit `?seite=<hostname>` (HUBIplan hängt ihn auf dem Testserver an) zeigt
+  für die Dauer dieser Vorschau eine andere Webseite derselben Instanz, z. B. die des
+  zusätzlichen Demovereins (`seed_demoverein`, `www.sv-musterstadt.test`).
 - Die Seite ruft HUBIplan intern unter `http://backend:8000` auf und setzt dabei den
   Hostnamen `test.example.org`. Logos und Bilder (`/media/…`) holt sie intern bei Caddy
   (`HUBIPLAN_MEDIA_URL=http://web:8081`, Port nur im Docker-Netz; über die eigene
