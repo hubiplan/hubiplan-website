@@ -6,15 +6,7 @@
 <h1 class="nur-vorlesen">{{ site.info.name }}</h1>
 {% endif %}
 {# Bausteine in der Reihenfolge aus HUBIplan (Webseite › Menü und Bereiche › Startseite) #}
-{% if site.design == "newspaper" %}
-{# Zeitung: links Bilder, Begrüßung und Beiträge, rechts Termine, Majestäten, Untereinheiten #}
-<div class="spalte-haupt">{% for vorlage in sections_main %}{% include vorlage %}{% endfor %}</div>
-<div class="spalte-seite">{% for vorlage in sections_side %}{% include vorlage %}{% endfor %}</div>
-{% elif site.design == "stage" %}
-{# Bühne: Bilder in voller Breite mit dem Namen darauf, danach Bänder #}
-{% for vorlage in sections %}{% if forloop.first %}<div class="buehne">{% if vorlage == "seite/start/carousel.html" %}{% include vorlage %}{% endif %}<p class="buehne-name" aria-hidden="true">{{ site.info.name }}</p></div>{% if vorlage != "seite/start/carousel.html" %}{% include vorlage %}{% endif %}{% else %}{% include vorlage %}{% endif %}{% empty %}<div class="buehne"><p class="buehne-name" aria-hidden="true">{{ site.info.name }}</p></div>{% endfor %}
-{% else %}
-{% for vorlage in sections %}{% include vorlage %}{% endfor %}
-{% endif %}
+{# Anordnung je Design: seite/designs/<design>/start.html ersetzt den Block „bausteine“ #}
+{% block bausteine %}{% for vorlage in sections %}{% include vorlage %}{% endfor %}{% endblock %}
 {% endblock %}
 {% block skripte %}{% if carousel %}<script src="{% static 'seite/karussell.js' %}" defer></script>{% endif %}{% endblock %}

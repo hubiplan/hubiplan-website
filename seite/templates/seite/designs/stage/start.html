@@ -1,0 +1,5 @@
+{% extends "seite/start.html" %}
+{% block bausteine %}
+{# Bühne: Bilder in voller Breite mit dem Namen darauf, danach Bänder #}
+{% for vorlage in sections %}{% if forloop.first %}<div class="buehne">{% if vorlage == "seite/start/carousel.html" %}{% include vorlage %}{% endif %}<p class="buehne-name" aria-hidden="true">{{ site.info.name }}</p></div>{% if vorlage != "seite/start/carousel.html" %}{% include vorlage %}{% endif %}{% else %}{% include vorlage %}{% endif %}{% empty %}<div class="buehne"><p class="buehne-name" aria-hidden="true">{{ site.info.name }}</p></div>{% endfor %}
+{% endblock %}

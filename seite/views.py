@@ -25,7 +25,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
-from . import api, archiv
+from . import api, archiv, designpaket
 from .site import (
     DESIGN_COOKIE,
     DESIGNS,
@@ -43,7 +43,13 @@ log = logging.getLogger(__name__)
 
 
 def _page(request, template: str, site: Site | None, context: dict, status: int = 200):
-    response = render(request, template, {"site": site, **context}, status=status)
+    # Vorlage des Designs (Paket aus HUBIplan oder seite/designs/<design>/…), sonst Standard
+    chosen = site.vorlage(template) if site is not None and not site.maintenance else template
+    if hasattr(chosen, "render"):
+        content = chosen.render({"site": site, **context}, request)
+        response = HttpResponse(content, status=status)
+    else:
+        response = render(request, chosen, {"site": site, **context}, status=status)
     if site is not None and (site.is_preview or site.maintenance):
         response["Cache-Control"] = "private, no-store"
         response["X-Robots-Tag"] = "noindex"
@@ -822,7 +828,8 @@ def preview(request):
 
 def _set_design_cookie(response, design: str) -> None:
     path = settings.BASE_PATH + "/" if settings.BASE_PATH else "/"
-    if design in DESIGNS:
+    # Standarddesign oder Paket (ob es freigegeben ist, prüft die Seite beim Zeichnen)
+    if design in DESIGNS or designpaket.KEY.match(design or ""):
         response.set_cookie(
             DESIGN_COOKIE,
             design,
@@ -923,3 +930,39 @@ def robots(request):
             allow = False
     lines = ["User-agent: *", "Allow: /" if allow else "Disallow: /"]
     return HttpResponse("\n".join(lines) + "\n", content_type="text/plain")
+
+
+# --- Designpakete (Ralf 2026-11-02) ---
+
+
+@site_view(maintenance_ok=True)
+def design_css(request, site: Site, key: str):
+    """CSS eines eingespielten Designpakets (geprüft, nur für freigegebene Webseiten)."""
+    package = site.package_for(key)
+    if package is None:
+        raise api.NotFound()
+    response = HttpResponse(package["css"], content_type="text/css; charset=utf-8")
+    response["X-Content-Type-Options"] = "nosniff"
+    if site.is_preview or request.GET.get("v") != package["hash"]:
+        response["Cache-Control"] = "private, no-store"
+    else:
+        response["Cache-Control"] = "public, max-age=86400"
+    return response
+
+
+@site_view(maintenance_ok=True)
+def design_export(request, site: Site, key: str):
+    """Standarddesign als Paket (ZIP) zum Einspielen als eigenes Design in HUBIplan.
+
+    Inhalt ist ohnehin öffentlich (CSS und Vorlagen der Webseite); Name, Hinweis und
+    Farbrollen kommen aus HUBIplan."""
+    catalog = (site.info.get("design_catalog") or {}).get(key)
+    if key not in DESIGNS or not isinstance(catalog, dict):
+        raise api.NotFound()
+    today = timezone.localdate().isoformat()
+    data = designpaket.export_builtin(key, str(DESIGNS[key]), catalog, today)
+    response = HttpResponse(data, content_type="application/zip")
+    response["Content-Disposition"] = f'attachment; filename="design-{key}-{today}.zip"'
+    response["Cache-Control"] = "private, no-store"
+    response["X-Robots-Tag"] = "noindex"
+    return response

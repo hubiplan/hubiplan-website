@@ -15,7 +15,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from . import api
+from . import api, designpaket
 
 PREVIEW_COOKIE = "vorschau"
 # Testserver mit fester Zuordnung (SITE_HOST_OVERRIDE): In der Vorschau eine andere
@@ -142,16 +142,75 @@ class Site:
         return theme
 
     @property
+    def packages(self) -> dict:
+        """Für diese Webseite freigegebene Designpakete aus HUBIplan: {schlüssel: {label, hash}}."""
+        given = self.info.get("design_packages")
+        if not isinstance(given, dict):
+            return {}
+        return {
+            k: v
+            for k, v in given.items()
+            if isinstance(k, str)
+            and designpaket.KEY.match(k)
+            and k not in DESIGNS
+            and isinstance(v, dict)
+        }
+
+    def _known(self, key) -> bool:
+        return key in DESIGNS or key in self.packages
+
+    @property
     def design(self) -> str:
-        """Gewähltes Design; in der Vorschau ggf. ein anderes zum Ansehen."""
-        if self.is_preview and self.design_preview in DESIGNS:
-            return self.design_preview
-        key = self.info.get("design")
-        return key if key in DESIGNS else DEFAULT_DESIGN
+        """Gewähltes Design; in der Vorschau ggf. ein anderes zum Ansehen. Lässt sich ein
+        Paket nicht laden oder ist es ungültig, gilt Klassisch."""
+        if "_design" not in self.cache:
+            key = self.info.get("design")
+            if self.is_preview and self._known(self.design_preview):
+                key = self.design_preview
+            if key in self.packages and self.package_for(key) is None:
+                key = DEFAULT_DESIGN
+            self.cache["_design"] = key if self._known(key) else DEFAULT_DESIGN
+        return self.cache["_design"]
+
+    def package_for(self, key: str) -> dict | None:
+        if key not in self.packages:
+            return None
+        ck = ("_package", key)
+        if ck not in self.cache:
+            try:
+                data = self.get(f"design/{key}/")
+            except (api.NotFound, api.Unavailable, api.Maintenance):
+                data = None
+            self.cache[ck] = designpaket.compile_package(data) if data else None
+        return self.cache[ck]
+
+    @property
+    def package(self) -> dict | None:
+        """Gezeichnetes Designpaket (oder None bei einem Standarddesign)."""
+        return self.package_for(self.design)
+
+    def vorlage(self, name: str):
+        """Vorlage für das Design: aus dem Paket, sonst seite/designs/<design>/…, sonst Standard."""
+        package = self.package
+        if package and name in package["templates"]:
+            return package["templates"][name]
+        if name.startswith("seite/"):
+            return [name.replace("seite/", f"seite/designs/{self.design}/", 1), name]
+        return name
+
+    @property
+    def kopf_vorlage(self):
+        return self.vorlage("seite/kopf.html")
+
+    @property
+    def fuss_vorlage(self):
+        return self.vorlage("seite/fuss.html")
 
     @property
     def design_label(self) -> str:
-        return DESIGNS[self.design]
+        if self.design in DESIGNS:
+            return DESIGNS[self.design]
+        return str(self.packages.get(self.design, {}).get("label") or self.design)[:60]
 
     @property
     def design_is_preview(self) -> bool:
@@ -171,6 +230,9 @@ class Site:
             "date": (t["primary"], t["on_primary"]),
         }
         given = (self.info.get("designs") or {}).get(self.design) or {}
+        if not given and self.design not in DESIGNS:
+            # Paket ohne eigene Farben aus HUBIplan: wie Klassisch
+            given = (self.info.get("designs") or {}).get(DEFAULT_DESIGN) or {}
         result = {}
         for role in COLOR_ROLES:
             item = given.get(role) if isinstance(given, dict) else None
@@ -265,7 +327,8 @@ def load(request) -> Site:
     if preview and not re.fullmatch(r"[A-Za-z0-9:_\-.]{10,400}", preview):
         preview = None
     design = request.COOKIES.get(DESIGN_COOKIE) if preview else None
-    design = design if design in DESIGNS else None
+    # Standarddesign oder Paket; ob es das Paket gibt, prüft Site.design
+    design = design if design and designpaket.KEY.match(design) else None
     try:
         info = api.get(key, "", preview=preview)
     except api.Maintenance as exc:

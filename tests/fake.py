@@ -378,6 +378,8 @@ class FakeHubiplan:
     hosts: dict = field(default_factory=lambda: {"testserver": KEY, "www.musterdorf.test": KEY})
     # Stand je Wettbewerb (Wettbewerbsergebnisse live)
     versions: dict = field(default_factory=dict)
+    # Eingespielte Designpakete (Schlüssel → Antwort von design/<schlüssel>/)
+    packages: dict = field(default_factory=dict)
 
     def __call__(self, method, path, *, data=None, preview=None, base=None):
         self.calls.append((method, path, preview))
@@ -404,6 +406,9 @@ class FakeHubiplan:
                 return self.json({"detail": "ungültig"}, 403)
             return self.json({}, 405)
         hidden = self.maintenance and not ok_preview
+        if rest.startswith("design/") and rest.endswith("/"):
+            package = self.packages.get(rest[len("design/") : -1])
+            return self.json(package) if package else self.json({"detail": "nicht gefunden"}, 404)
         if rest == "":
             if hidden:
                 return self.json(
