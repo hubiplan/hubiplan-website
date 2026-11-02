@@ -1,8 +1,47 @@
-{% extends "seite/basis.html" %}{% load seite i18n %}
+{% extends "seite/basis.html" %}{% load static seite i18n %}
 {% block titel %}{% translate "Chronik" as chronik %}{% baustein site "history" page.title|default:chronik %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Chronik" as chronik %}{% baustein site "history" page.title|default:chronik %}</h1>
 {% lokal site page.image.url as bild %}
 {% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ page.image.alt }}">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
-<div class="text">{{ page.text|md:site }}</div>
+{% if page.text %}<div class="text">{{ page.text|md:site }}</div>{% endif %}
+{% if zeitleiste.abschnitte %}
+{% if zeitleiste.sprungmarken %}
+<nav class="zeitleiste-sprung" aria-label="{% translate 'Abschnitte der Chronik' %}">
+  <ul>{% for m in zeitleiste.sprungmarken %}<li><a href="#{{ m.id }}">{{ m.label }}{% if m.zeitraum %} <span class="klein">{{ m.zeitraum }}</span>{% endif %}</a></li>{% endfor %}</ul>
+</nav>
+{% endif %}
+<div class="zeitleiste">
+{% for a in zeitleiste.abschnitte %}
+  <section class="zeitleiste-abschnitt"{% if a.kapitel %} id="{{ a.id }}" aria-labelledby="{{ a.id }}-titel"{% endif %}>
+    {% if a.kapitel %}
+    <h2 class="zeitleiste-kapitel" id="{{ a.id }}-titel"><span class="zeitleiste-zeitraum">{{ a.kapitel.zeitraum }}</span> {{ a.kapitel.title }}</h2>
+    {% if a.kapitel.text %}<p class="zeitleiste-kapiteltext">{{ a.kapitel.text|linebreaksbr }}</p>{% endif %}
+    {% endif %}
+    {% if a.ereignisse %}
+    <ol class="zeitleiste-liste">
+      {% for e in a.ereignisse %}
+      <li class="zeitleiste-eintrag{% if e.until %} ist-zeitraum{% endif %}"{% if e.anker %} id="{{ e.anker }}"{% endif %}>
+        <p class="zeitleiste-jahr">{% if e.until %}<span class="unsichtbar">{% translate "Zeitraum" %} </span>{% endif %}{{ e.zeitraum }}</p>
+        <div class="zeitleiste-karte">
+          <h3>{{ e.title }}</h3>
+          {% if e.text %}<p>{{ e.text|linebreaksbr }}</p>{% endif %}
+          {% if e.image %}{% lokal site e.image.small_url as klein %}{% lokal site e.image.url as gross %}
+          <a class="zeitleiste-bild" href="{{ gross }}" data-unterschrift="{{ e.image.caption }}"><img src="{{ klein }}" alt="{{ e.image.alt }}" loading="lazy"{% if e.image.width and e.image.height %} width="{{ e.image.width }}" height="{{ e.image.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+  </section>
+{% endfor %}
+</div>
+<dialog class="bild-fenster" id="bild-fenster" aria-label="{% translate 'Bild' %}">
+  <img src="" alt="">
+  <p class="klein bild-unterschrift"></p>
+  <form method="dialog"><button type="submit" class="knopf">{% translate "Schließen" %}</button></form>
+</dialog>
+{% endif %}
 {% endblock %}
+{% block skripte %}{% if zeitleiste.abschnitte %}<script src="{% static 'seite/zeitleiste.js' %}" defer></script>{% endif %}{% endblock %}

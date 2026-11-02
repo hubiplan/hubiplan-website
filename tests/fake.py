@@ -491,6 +491,8 @@ class FakeHubiplan:
                 "title": "Chronik",
                 "text": "Seit 1900.",
                 "image": None,
+                # Zeitleiste (Tests setzen sie über info["zeitleiste"])
+                "timeline": self.info.get("zeitleiste", []),
             },
             "pages/anfahrt/": {
                 "slug": "anfahrt",
