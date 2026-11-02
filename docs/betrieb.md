@@ -29,6 +29,10 @@ zeigt die Seite nur die Wartungsseite, Impressum und Datenschutz, außer in der 
 Ein allgemeiner Wartungsschalter: `MAINTENANCE=true` oder die Datei `/tmp/wartung` im
 Container.
 
+Zwischenspeicher: Antworten von HUBIplan hält die Seite `CACHE_SECONDS` lang vor (Standard
+120). In der Vorschau gilt `PREVIEW_CACHE_SECONDS` (Standard 5, je Vorschau getrennt,
+`0` = aus), damit nicht jedes Bild die Grunddaten der Seite neu abruft.
+
 ## Testserver
 
 Die Webseite läuft auf `test.example.org` in `/opt/hubiplan-website` als Container
