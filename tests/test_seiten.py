@@ -309,7 +309,9 @@ def test_chronik_kapitel(client, hubiplan):
         _ereignis(1949, "Neuanfang"),
     ]
     html = text(client.get("/chronik/"))
-    assert html.index("Vorgeschichte") < html.index("Gründerjahre") < html.index("Gründung")
+    # Reihenfolge in der Zeitleiste selbst (Sprungmarken stehen davor)
+    leiste = html[html.index('<div class="zeitleiste">') :]
+    assert leiste.index("Vorgeschichte") < leiste.index("Gründerjahre") < leiste.index("Gründung")
     assert '<section class="zeitleiste-abschnitt" id="kapitel-2"' in html
     assert '<span class="zeitleiste-zeitraum">1900–1938</span> Gründerjahre</h2>' in html
     # Sprungmarken zu den Kapiteln
