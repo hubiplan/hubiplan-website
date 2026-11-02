@@ -5,6 +5,10 @@ Jahres. Ein Kapitel (``kind`` = ``chapter``) ist eine Zwischenüberschrift; daru
 alle Ereignisse bis zum nächsten Kapitel. Ereignisse vor dem ersten Kapitel stehen ohne
 Überschrift oben. Sprungmarken: zu den Kapiteln, ohne Kapitel ab 15 Ereignissen zu den
 Jahrzehnten.
+
+Wahlweise (``timeline_newest_first`` in HUBIplan) stehen die neuesten Einträge oben: Kapitel,
+Ereignisse darin und Sprungmarken laufen dann rückwärts, das Kapitel bleibt über seinen
+Ereignissen und behält seine Nummer.
 """
 
 from __future__ import annotations
@@ -20,8 +24,12 @@ def zeitraum(eintrag: dict) -> str:
     return f"{jahr}–{bis}" if bis and bis != jahr else str(jahr)
 
 
-def gliedern(eintraege: list | None) -> dict:
-    """{"abschnitte": [{"kapitel", "id", "ereignisse"}], "sprungmarken": [{"id", "label"}]}"""
+def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
+    """{"abschnitte": [{"kapitel", "id", "ereignisse", "ende"}], "sprungmarken": [{"id", "label"}]}
+
+    ``ende`` ist das letzte Jahr eines Abschnitts (Kapitel oder Ereignis), etwa für eine
+    spätere Anzeige „2020–2025“ bei Kapiteln ohne eigenes Ende.
+    """
     abschnitte: list[dict] = []
     for e in eintraege or []:
         if not isinstance(e, dict) or not e.get("year") or not e.get("title"):
@@ -36,6 +44,14 @@ def gliedern(eintraege: list | None) -> dict:
             abschnitte.append({"kapitel": None, "id": "", "ereignisse": []})
         abschnitte[-1]["ereignisse"].append(e)
 
+    for a in abschnitte:
+        jahre = [x.get("until") or x["year"] for x in [a["kapitel"], *a["ereignisse"]] if x]
+        a["ende"] = max(jahre)
+    if neueste_oben:
+        abschnitte.reverse()
+        for a in abschnitte:
+            a["ereignisse"].reverse()
+
     marken = [
         {"id": a["id"], "label": a["kapitel"]["title"], "zeitraum": a["kapitel"]["zeitraum"]}
         for a in abschnitte
@@ -43,6 +59,7 @@ def gliedern(eintraege: list | None) -> dict:
     ]
     ereignisse = [e for a in abschnitte for e in a["ereignisse"]]
     if not marken and len(ereignisse) >= SPRUNG_AB:
+        # Anker am ersten Ereignis des Jahrzehnts in Leserichtung (rückwärts: dem neuesten)
         gesehen = set()
         for e in ereignisse:
             jahrzehnt = e["year"] // 10 * 10
