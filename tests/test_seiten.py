@@ -1040,3 +1040,11 @@ def test_quellcode_der_laufenden_fassung(tmp_path, monkeypatch):
         assert tags.quellcode() == "https://github.com/hubiplan/hubiplan-website"
     finally:
         tags._fassung.cache_clear()
+
+
+def test_chronik_bilder_neben_dem_text_groesser():
+    """Ralf 2026-11-02: Bilder links oder rechts vom Text größer, aber höchstens 40 % der Karte."""
+    css = (Path(__file__).parent.parent / "seite/static/seite/seite.css").read_text()
+    spalte = "min(15rem, 40%)"
+    assert f".bild-rechts {{ grid-template-columns: minmax(0, 1fr) {spalte}; }}" in css
+    assert f".bild-links {{ grid-template-columns: {spalte} minmax(0, 1fr); }}" in css
