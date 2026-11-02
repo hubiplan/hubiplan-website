@@ -37,11 +37,8 @@ def test_jedes_design_zeigt_alle_seiten(client, hubiplan, design):
         # Kopf mit Menü, Sprunglink und Fuß in jedem Design
         assert 'href="#inhalt"' in html and 'aria-label="Hauptmenü"' in html
         assert "Impressum</a>" in html
-        if design == "classic":
-            assert "design-classic.css" not in html
-        else:
-            assert f"seite/design-{design}.css" in html
-    assert design == "classic" or finders.find(f"seite/design-{design}.css")
+        assert f"seite/design-{design}.css" in html
+    assert finders.find(f"seite/design-{design}.css")
 
 
 def test_farben_je_rolle(client, hubiplan):

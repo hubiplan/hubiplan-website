@@ -7,7 +7,7 @@
 {% if site and not site.info.allow_indexing %}<meta name="robots" content="noindex">{% endif %}
 <link rel="stylesheet" href="{% static 'seite/seite.css' %}">
 {% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}}</style>{% endwith %}
-{% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% elif site.design != "classic" %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
+{% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}
 </head>
 <body class="design-{% if site %}{{ site.design }}{% else %}classic{% endif %}">
