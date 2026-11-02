@@ -84,3 +84,52 @@ def test_vorschau_cookie_unsauber(client, hubiplan):
     client.cookies["vorschau"] = "<b>"
     assert client.get("/").status_code == 503
     assert all(c[2] is None for c in hubiplan.calls)
+
+
+def _resolved(hubiplan) -> list[str]:
+    return [p.split("host=")[1] for _, p, _ in hubiplan.calls if "resolve/" in p]
+
+
+def test_vorschau_waehlt_webseite_bei_fester_zuordnung(client, hubiplan, settings):
+    """Testserver: eine Adresse für alle Webseiten; der Vorschau-Link nennt die Webseite."""
+    settings.SITE_HOST_OVERRIDE = "www.musterdorf.test"
+    hubiplan.hosts["www.zweiter-verein.test"] = hubiplan.hosts["www.musterdorf.test"]
+    hubiplan.maintenance = True
+    r = client.get("/vorschau/?schluessel=gut&seite=www.zweiter-verein.test")
+    assert r.status_code == 302
+    assert r.cookies["vorschau-seite"].value == "www.zweiter-verein.test"
+    assert r.cookies["vorschau-seite"]["httponly"]
+    assert _resolved(hubiplan)[-1] == "www.zweiter-verein.test"
+    assert client.get("/vorstand/").status_code == 200
+    assert _resolved(hubiplan)[-1] == "www.zweiter-verein.test"
+    # Beenden: wieder die fest eingestellte Webseite
+    r = client.get("/vorschau/ende/")
+    assert r.cookies["vorschau-seite"].value == ""
+    client.cookies.pop("vorschau")
+    client.cookies.pop("vorschau-seite")
+    client.get("/vorstand/")
+    assert _resolved(hubiplan)[-1] == "www.musterdorf.test"
+
+
+def test_vorschau_seite_nur_bei_fester_zuordnung(client, hubiplan, settings):
+    hubiplan.maintenance = True
+    # Ohne feste Zuordnung entscheidet der Hostname, ?seite= zählt nicht
+    r = client.get("/vorschau/?schluessel=gut&seite=www.musterdorf.test")
+    assert r.status_code == 302
+    assert r.cookies["vorschau-seite"].value == ""
+    assert _resolved(hubiplan)[-1] == "testserver"
+    # Gewählte Webseite gilt nur zusammen mit einer Vorschau
+    settings.SITE_HOST_OVERRIDE = "www.musterdorf.test"
+    client.cookies.pop("vorschau")
+    client.cookies["vorschau-seite"] = "www.zweiter-verein.test"
+    client.get("/")
+    assert _resolved(hubiplan)[-1] == "www.musterdorf.test"
+
+
+def test_vorschau_seite_ungueltig(client, hubiplan, settings):
+    settings.SITE_HOST_OVERRIDE = "www.musterdorf.test"
+    hubiplan.maintenance = True
+    r = client.get("/vorschau/?schluessel=gut&seite=<b>evil")
+    assert r.status_code == 302
+    assert r.cookies["vorschau-seite"].value == ""
+    assert _resolved(hubiplan)[-1] == "www.musterdorf.test"

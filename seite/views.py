@@ -26,7 +26,17 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
 from . import api, archiv
-from .site import DESIGN_COOKIE, DESIGNS, PREVIEW_COOKIE, Site, global_maintenance, host_of, load
+from .site import (
+    DESIGN_COOKIE,
+    DESIGNS,
+    PREVIEW_COOKIE,
+    SITE_COOKIE,
+    Site,
+    chosen_host,
+    global_maintenance,
+    host_of,
+    load,
+)
 from .zeitleiste import gliedern
 
 log = logging.getLogger(__name__)
@@ -755,8 +765,10 @@ def preview(request):
     token = request.GET.get("schluessel", "")
     if not token or len(token) > 500:
         return error_page(request, 400, _("Vorschau"), _("Der Vorschau-Link ist unvollständig."))
+    # Testserver mit fester Zuordnung: der Vorschau-Link nennt die Webseite (?seite=…)
+    chosen = chosen_host(request.GET.get("seite"))
     try:
-        key = api.resolve(_host(request))
+        key = api.resolve(chosen or settings.SITE_HOST_OVERRIDE or _host(request))
         res = api.post(key, "preview/", {"token": token})
     except api.NotFound:
         return error_page(request, 404, _("Seite nicht gefunden"), "")
@@ -791,6 +803,19 @@ def preview(request):
         samesite="Lax",
         path=settings.BASE_PATH + "/" if settings.BASE_PATH else "/",
     )
+    path = settings.BASE_PATH + "/" if settings.BASE_PATH else "/"
+    if chosen:
+        response.set_cookie(
+            SITE_COOKIE,
+            chosen,
+            max_age=max_age,
+            secure=settings.PREVIEW_COOKIE_SECURE,
+            httponly=True,
+            samesite="Lax",
+            path=path,
+        )
+    else:
+        response.delete_cookie(SITE_COOKIE, path=path, samesite="Lax")
     response["Cache-Control"] = "private, no-store"
     return response
 
@@ -828,6 +853,7 @@ def preview_end(request):
     _set_design_cookie(response, "")
     main = settings.BASE_PATH + "/" if settings.BASE_PATH else "/"
     response.delete_cookie(PREVIEW_COOKIE, path=main, samesite="Lax")
+    response.delete_cookie(SITE_COOKIE, path=main, samesite="Lax")
     if main != "/":
         # Ein früher unter „/“ gesetztes Cookie ebenfalls löschen (zweiter Set-Cookie-Kopf;
         # response.cookies kennt je Name nur einen Eintrag)
