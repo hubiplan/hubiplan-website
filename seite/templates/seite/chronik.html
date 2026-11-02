@@ -26,8 +26,12 @@
         <div class="zeitleiste-karte">
           <h3>{{ e.title }}</h3>
           {% if e.text %}<p>{{ e.text|linebreaksbr }}</p>{% endif %}
-          {% if e.image %}{% lokal site e.image.small_url as klein %}{% lokal site e.image.url as gross %}
-          <a class="zeitleiste-bild" href="{{ gross }}" data-unterschrift="{{ e.image.caption }}"><img src="{{ klein }}" alt="{{ e.image.alt }}" loading="lazy"{% if e.image.width and e.image.height %} width="{{ e.image.width }}" height="{{ e.image.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>
+          {% if e.bilder %}
+          <div class="zeitleiste-bilder{% if e.bilder|length > 1 %} mehrere{% endif %}">
+            {% for b in e.bilder %}{% lokal site b.small_url as klein %}{% lokal site b.url as gross %}
+            <a class="zeitleiste-bild" href="{{ gross }}" data-unterschrift="{{ b.caption }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>
+            {% endfor %}
+          </div>
           {% endif %}
         </div>
       </li>
@@ -40,7 +44,14 @@
 <dialog class="bild-fenster" id="bild-fenster" aria-label="{% translate 'Bild' %}">
   <img src="" alt="">
   <p class="klein bild-unterschrift"></p>
-  <form method="dialog"><button type="submit" class="knopf">{% translate "Schließen" %}</button></form>
+  <form method="dialog">
+    <span class="bild-blaettern" hidden>
+      <button type="button" class="knopf bild-zurueck">{% translate "Vorheriges Bild" %}</button>
+      <span class="klein bild-zaehler" data-vorlage="{% translate 'Bild {n} von {m}' %}" aria-live="polite"></span>
+      <button type="button" class="knopf bild-weiter">{% translate "Nächstes Bild" %}</button>
+    </span>
+    <button type="submit" class="knopf">{% translate "Schließen" %}</button>
+  </form>
 </dialog>
 {% endif %}
 {% endblock %}

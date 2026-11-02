@@ -14,7 +14,7 @@
 | `/ergebnisse/<kennung>/` | Rangliste eines Wettbewerbs; solange er läuft, fragt der Browser alle 15 s den Stand ab (`…/stand/`) und lädt nur bei einer Änderung die Rangliste neu (`…/tabelle/`) |
 | `/ergebnisse/reihe/<kennung>/` | Archiv einer Wettbewerbsreihe: Titelträger und Sieger je Jahr |
 | `/ehrungen/` | Ehrungen, wenn in HUBIplan „Würden und Ehrungen unter einem Menüpunkt“ an ist (dann nicht beim Vorstand) |
-| `/chronik/` | Text „geschichte“ aus HUBIplan, darunter die Zeitleiste: Ereignisse mit Jahr oder Zeitraum, Kapitel als Zwischenüberschriften, Sprungmarken (Kapitel, sonst ab 15 Einträgen Jahrzehnte), Bild vergrößert im Fenster (`zeitleiste.js`); mit `timeline_newest_first` neueste Einträge oben |
+| `/chronik/` | Text „geschichte“ aus HUBIplan, darunter die Zeitleiste: Ereignisse mit Jahr oder Zeitraum, Kapitel als Zwischenüberschriften, Sprungmarken (Kapitel, sonst ab 15 Einträgen Jahrzehnte), Bild vergrößert im Fenster (`zeitleiste.js`); mit `timeline_newest_first` neueste Einträge oben; bis zu sechs Bilder je Ereignis (`images`), im Fenster zum Blättern |
 | `/aemter/` | frühere und heutige Inhaber der Ämter |
 | `/geschichte/` | alte Adresse, leitet zu `/chronik/` bzw. `/aemter/` weiter |
 | `/seite/<name>/` | weitere Textseiten aus HUBIplan |

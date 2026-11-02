@@ -722,3 +722,6 @@ msgstr "Picture"
 #, python-format
 msgid "%(jahr)ser"
 msgstr "%(jahr)ss"
+
+msgid "Bild {n} von {m}"
+msgstr "Image {n} of {m}"

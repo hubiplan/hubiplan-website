@@ -24,6 +24,14 @@ def zeitraum(eintrag: dict) -> str:
     return f"{jahr}–{bis}" if bis and bis != jahr else str(jahr)
 
 
+def bilder(eintrag: dict) -> list[dict]:
+    """Bis zu sechs Bilder eines Ereignisses; ältere HUBIplan-Stände liefern nur ``image``."""
+    liste = eintrag.get("images")
+    if not isinstance(liste, list):
+        liste = [eintrag.get("image")]
+    return [b for b in liste if isinstance(b, dict) and b.get("url")]
+
+
 def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
     """{"abschnitte": [{"kapitel", "id", "ereignisse", "ende"}], "sprungmarken": [{"id", "label"}]}
 
@@ -34,7 +42,7 @@ def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
     for e in eintraege or []:
         if not isinstance(e, dict) or not e.get("year") or not e.get("title"):
             continue
-        e = {**e, "zeitraum": zeitraum(e), "anker": ""}
+        e = {**e, "zeitraum": zeitraum(e), "anker": "", "bilder": bilder(e)}
         if e.get("kind") == "chapter":
             abschnitte.append(
                 {"kapitel": e, "id": f"kapitel-{len(abschnitte) + 1}", "ereignisse": []}
