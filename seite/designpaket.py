@@ -146,6 +146,17 @@ _compiled: OrderedDict = OrderedDict()
 _MAX_COMPILED = 32
 
 
+def cached_package(key: str, digest) -> dict | None:
+    """Schon übersetztes Paket mit genau diesem Stand (Hash), sonst None. Spart den Abruf
+    bei HUBIplan: Der Inhalt ändert sich nur mit dem Hash."""
+    if not isinstance(digest, str) or not digest:
+        return None
+    package = _compiled.get((key, digest))
+    if package is not None:
+        _compiled.move_to_end((key, digest))
+    return package
+
+
 def compile_package(data) -> dict | None:
     """Paket aus HUBIplan prüfen und übersetzen: {key, hash, label, css, templates}.
 
