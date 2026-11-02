@@ -886,6 +886,26 @@ ALLOWED_API_FILES = re.compile(
 ALLOWED_MEDIA = re.compile(r"^[A-Za-z0-9_\-/.]{1,300}\.(png|jpe?g|webp)$")
 
 
+# Adressen, die sich bei jeder Änderung ändern: Logos mit Zeitstempel im Namen
+# (logos/…/<id>-<JJJJMMTThhmmss>.png), Webseitenbilder mit Fassung (images/<key>-v3/)
+LOGO_STAMPED = re.compile(r"^logos/.+-\d{14}\.(png|jpe?g|webp)$")
+IMAGE_VERSIONED = re.compile(r"^images/[A-Za-z0-9_\-]+-v\d+/$")
+
+
+def _media_cache(site: Site, kind: str, path: str) -> str:
+    """Wie lange der Browser ein Bild behalten darf. Vorschau und Wartung: nur der eigene
+    Browser, 10 Minuten (sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu)."""
+    if site.is_preview or site.maintenance:
+        return "private, max-age=600"
+    if kind == "m" and LOGO_STAMPED.match(path):
+        return "public, max-age=31536000, immutable"
+    if kind == "a" and IMAGE_VERSIONED.match(path):
+        # Ein Tag: Ein aus der Webseite genommenes Bild verschwindet so bald auch aus
+        # fremden Zwischenspeichern
+        return "public, max-age=86400"
+    return "public, max-age=600"
+
+
 @require_GET
 @site_view(maintenance_ok=True)
 def media(request, site: Site, kind: str, path: str):
@@ -904,11 +924,7 @@ def media(request, site: Site, kind: str, path: str):
     if ctype not in ("image/png", "image/jpeg", "image/webp"):
         raise api.NotFound()
     response = HttpResponse(res.body, content_type=ctype)
-    # Vorschau und Wartung: nur im eigenen Browser zwischenspeichern, nicht in fremden
-    # Zwischenspeichern; sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu
-    response["Cache-Control"] = (
-        "private, max-age=600" if site.is_preview or site.maintenance else "public, max-age=600"
-    )
+    response["Cache-Control"] = _media_cache(site, kind, path)
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
 

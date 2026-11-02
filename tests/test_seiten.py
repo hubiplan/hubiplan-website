@@ -1051,3 +1051,39 @@ def test_chronik_bilder_neben_dem_text_groesser():
     assert f".bild-links {{ grid-template-columns: {spalte} minmax(0, 1fr); }}" in css
     mehrere = "min(24rem, 50%)"
     assert f".mehrere-bilder {{ grid-template-columns: minmax(0, 1fr) {mehrere}; }}" in css
+
+
+def test_bilderkarussell_kleine_fassung(client, hubiplan):
+    """Große Bilder bieten dem Browser die kleine Fassung (800 px) an, etwa fürs Handy."""
+    base = f"https://hubiplan.example/api/public/site/v1/{KEY}/images/festbild1-v2/"
+    bild = {
+        "key": "festbild1",
+        "url": base,
+        "small_url": base + "?size=small",
+        "width": 2000,
+        "height": 1000,
+        "caption": "",
+        "alt": "Festzug",
+    }
+    hubiplan.info["greeting"] = {
+        "title": "Willkommen",
+        "text": "Hallo",
+        "image": None,
+        "gallery": [bild, bild],
+    }
+    html = text(client.get("/"))
+    assert (
+        'srcset="/medien/a/images/festbild1-v2/?size=small 800w, '
+        '/medien/a/images/festbild1-v2/ 2000w"'
+    ) in html
+
+
+def test_bilder_browser_zwischenspeicher(client, hubiplan):
+    """Adressen, die sich bei jeder Änderung ändern, darf der Browser lange behalten."""
+    r = client.get("/medien/m/logos/abteilungen/8-20261031200030.png")
+    assert r["Cache-Control"] == "public, max-age=31536000, immutable"
+    assert client.get("/medien/m/logos/wappen.png")["Cache-Control"] == "public, max-age=600"
+    r = client.get("/medien/a/images/festbild1-v2/")
+    assert r["Cache-Control"] == "public, max-age=86400"
+    r = client.get("/medien/a/images/festbild1/")
+    assert r["Cache-Control"] == "public, max-age=600"
