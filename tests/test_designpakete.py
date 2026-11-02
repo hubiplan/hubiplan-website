@@ -76,6 +76,26 @@ def test_paket_css(client, mit_paket):
     assert client.get("/design/gibtsnicht.css").status_code == 404
 
 
+def test_paket_nur_einmal_geholt(client, mit_paket):
+    """Gleicher Stand (Hash) = gleicher Inhalt: Das Paket wird nicht bei jedem Aufruf neu
+    bei HUBIplan geholt, auch nicht in der Vorschau. Neuer Stand → neu holen."""
+
+    def abrufe():
+        return sum(1 for c in mit_paket.calls if c[1].endswith("/design/hubertus/"))
+
+    client.get("/")
+    assert abrufe() == 1
+    cache.clear()  # auch ohne Zwischenspeicher der Antworten (z. B. Vorschau)
+    client.get("/vorstand/")
+    client.get("/design/hubertus.css?v=abc123def4567890")
+    assert abrufe() == 1
+    cache.clear()
+    mit_paket.info["design_packages"]["hubertus"]["hash"] = "neu0000000000000"
+    mit_paket.packages["hubertus"] = paket(hash="neu0000000000000")
+    assert "/design/hubertus.css?v=neu0000000000000" in text(client.get("/"))
+    assert abrufe() == 2
+
+
 @pytest.mark.parametrize(
     "over",
     [

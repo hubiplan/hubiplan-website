@@ -959,8 +959,12 @@ def design_css(request, site: Site, key: str):
         raise api.NotFound()
     response = HttpResponse(package["css"], content_type="text/css; charset=utf-8")
     response["X-Content-Type-Options"] = "nosniff"
-    if site.is_preview or request.GET.get("v") != package["hash"]:
+    # Mit passender Kennung ändert sich der Inhalt nie (neuer Stand = neuer Hash); in
+    # Vorschau und Wartung nur im eigenen Browser
+    if request.GET.get("v") != package["hash"]:
         response["Cache-Control"] = "private, no-store"
+    elif site.is_preview or site.maintenance:
+        response["Cache-Control"] = "private, max-age=86400"
     else:
         response["Cache-Control"] = "public, max-age=86400"
     return response

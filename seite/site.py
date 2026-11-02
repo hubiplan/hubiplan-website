@@ -177,6 +177,10 @@ class Site:
             return None
         ck = ("_package", key)
         if ck not in self.cache:
+            known = designpaket.cached_package(key, self.packages[key].get("hash"))
+            if known is not None:
+                self.cache[ck] = known
+                return known
             try:
                 data = self.get(f"design/{key}/")
             except (api.NotFound, api.Unavailable, api.Maintenance):
