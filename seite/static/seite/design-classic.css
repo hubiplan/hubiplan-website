@@ -1,20 +1,21 @@
-/* Design „Klassisch“: schmaler farbiger Kopf mit Wappen, darunter eine helle Menüleiste über die
-   ganze Breite; Karten auf hellem Grund wie in seite.css (Ralf 2026-11-02, Variante A). Das
-   frühere Klassisch ist seite.css ohne Abweichungen (als Paket „Hubertus“ gesichert). */
-body { overflow-x: clip; }
-.kopf-innen { min-height: 3.6rem; }
-.marke img { width: 44px; height: 44px; }
+/* Design „Klassisch“: heller Kopf mit farbiger Linie oben, Menü als Knöpfe in der Vereinsfarbe
+   (gewählter Punkt farbig hinterlegt), Karten mit Schatten, Fuß mit Zierlinie (Ralf
+   2026-11-02, Fassung D). Das frühere Klassisch ist seite.css ohne Abweichungen (Paket „Hubertus“). */
+.kopf { background: var(--flaeche); color: var(--text); border-top: 5px solid var(--farbe-kopf); box-shadow: 0 1px 0 var(--linie), 0 6px 18px rgb(0 0 0 / .05); }
+.kopf :focus-visible { outline-color: var(--link); }
+.marke { color: var(--link); font-size: 1.2rem; }
+.kopf .menue summary { color: var(--link); }
+.kopf-sozial a { color: var(--link); }
 @media (min-width: 64rem) {
-  .kopf-innen { flex-wrap: wrap; row-gap: 0; }
-  .menue-breit {
-    order: 3; flex: 1 0 100%; border-top: 0; padding: 0 max(16px, calc(50vw - 31rem));
-    margin: 0 calc(50% - 50vw); background: var(--flaeche); border-bottom: 1px solid var(--linie);
-  }
-  .menue-breit ul { justify-content: flex-start; margin-left: -.8rem; }
-  .menue-breit a, .menue-breit .untermenue summary { color: var(--text); border-radius: 0; padding: .7rem .8rem; }
+  .menue-breit { border-top: 1px solid var(--linie); }
+  .menue-breit ul { margin-left: -.9rem; }
+  .menue-breit a, .menue-breit .untermenue summary { color: var(--link); font-weight: 600; border-radius: 999px; padding: .45rem .9rem; }
   .menue-breit a:hover, .menue-breit .untermenue summary:hover { background: var(--grund); }
-  .menue-breit a[aria-current="page"], .menue-breit .untermenue summary.aktiv {
-    box-shadow: inset 0 -3px 0 var(--farbe-menue); color: var(--link);
-  }
+  .menue-breit a[aria-current="page"], .menue-breit .untermenue summary.aktiv { background: var(--farbe-kopf); color: var(--auf-kopf); box-shadow: none; }
   .menue-breit .untermenue summary:focus-visible { outline-color: var(--link); }
+  .menue-breit .untermenue ul a { color: var(--text); font-weight: 400; border-radius: 6px; }
 }
+main > section > h2 { color: var(--link); }
+.karte, .termin { border: 0; box-shadow: 0 1px 2px rgb(0 0 0 / .07), 0 6px 18px rgb(0 0 0 / .06); }
+/* Fuß in der Farbe der Rolle „Fuß“ (Vorgabe für Klassisch: Hauptfarbe), mit Zierlinie */
+.fuss { border-top: 4px solid var(--farbe-zier); }
