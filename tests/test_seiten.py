@@ -249,6 +249,87 @@ def test_chronik(client, hubiplan):
     assert client.get("/geschichte/")["Location"] == "/chronik/"
 
 
+def _ereignis(jahr, titel, bis=None, **mehr):
+    return {
+        "kind": "event",
+        "year": jahr,
+        "until": bis,
+        "title": titel,
+        "text": "",
+        "image": None,
+        **mehr,
+    }
+
+
+def test_chronik_zeitleiste(client, hubiplan):
+    """Ralf 02.11.: Chronik als Zeitleiste, Zeitraum statt Jahr, Bild zum Vergrößern."""
+    bild = {
+        "key": "fahne1",
+        "url": f"{fake.BASE}images/fahne1/",
+        "small_url": f"{fake.BASE}images/fahne1/?size=small",
+        "width": 60,
+        "height": 40,
+        "caption": "Die neue Fahne",
+        "alt": "Fahne mit Wappen",
+    }
+    hubiplan.info["zeitleiste"] = [
+        _ereignis(1900, "Gründung", text="Zwölf Schützen."),
+        _ereignis(1939, "Ruhezeit", bis=1948),
+        _ereignis(1995, "Neue Fahne", image=bild),
+    ]
+    html = text(client.get("/chronik/"))
+    assert "Seit 1900." in html
+    assert '<ol class="zeitleiste-liste">' in html
+    assert "<h3>Gründung</h3>" in html and "Zwölf Schützen." in html
+    # Zeitraum ist als solcher gekennzeichnet
+    assert '<li class="zeitleiste-eintrag ist-zeitraum">' in html
+    assert "Zeitraum </span>1939–1948" in html
+    # Bild klein in der Karte, groß über einen Link (mit JavaScript im Fenster)
+    assert 'href="/medien/a/images/fahne1/"' in html
+    assert 'src="/medien/a/images/fahne1/?size=small"' in html
+    assert 'data-unterschrift="Die neue Fahne"' in html
+    assert 'alt="Fahne mit Wappen"' in html
+    assert 'id="bild-fenster"' in html and "zeitleiste.js" in html
+    # Ohne Kapitel und mit wenigen Einträgen keine Sprungmarken
+    assert "zeitleiste-sprung" not in html
+
+
+def test_chronik_ohne_zeitleiste(client, hubiplan):
+    html = text(client.get("/chronik/"))
+    assert "zeitleiste" not in html
+
+
+def test_chronik_kapitel(client, hubiplan):
+    """Kapitel als Zwischenüberschriften; Ereignisse davor ohne Überschrift oben."""
+    hubiplan.info["zeitleiste"] = [
+        _ereignis(1899, "Vorgeschichte"),
+        {**_ereignis(1900, "Gründerjahre", bis=1938), "kind": "chapter"},
+        _ereignis(1900, "Gründung"),
+        {**_ereignis(1939, "Krieg und Neubeginn", bis=1949), "kind": "chapter"},
+        _ereignis(1949, "Neuanfang"),
+    ]
+    html = text(client.get("/chronik/"))
+    assert html.index("Vorgeschichte") < html.index("Gründerjahre") < html.index("Gründung")
+    assert '<section class="zeitleiste-abschnitt" id="kapitel-2"' in html
+    assert '<span class="zeitleiste-zeitraum">1900–1938</span> Gründerjahre</h2>' in html
+    # Sprungmarken zu den Kapiteln
+    assert '<a href="#kapitel-2">Gründerjahre' in html
+    assert '<a href="#kapitel-3">Krieg und Neubeginn' in html
+
+
+def test_zeitleiste_jahrzehnte():
+    from seite.zeitleiste import gliedern
+
+    eintraege = [_ereignis(1920 + i * 3, f"E{i}") for i in range(15)]
+    z = gliedern(eintraege)
+    assert [m["label"] for m in z["sprungmarken"]][:3] == ["1920er", "1930er", "1940er"]
+    assert z["abschnitte"][0]["ereignisse"][0]["anker"] == "jahrzehnt-1920"
+    # Unter 15 Einträgen keine Sprungmarken
+    assert gliedern(eintraege[:14])["sprungmarken"] == []
+    # Ohne Jahr oder Überschrift fällt ein Eintrag weg
+    assert gliedern([_ereignis(None, "x"), _ereignis(1950, "")])["abschnitte"] == []
+
+
 def test_aemter(client, hubiplan):
     html = text(client.get("/aemter/"))
     assert "<h1>Ämter</h1>" in html

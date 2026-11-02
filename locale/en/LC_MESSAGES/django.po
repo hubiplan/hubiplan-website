@@ -709,3 +709,16 @@ msgid ""
 msgstr ""
 "The preview link is invalid or has expired. Please open a new one in "
 "HUBIplan."
+
+msgid "Abschnitte der Chronik"
+msgstr "Sections of the chronicle"
+
+msgid "(Bild vergrößern)"
+msgstr "(enlarge picture)"
+
+msgid "Bild"
+msgstr "Picture"
+
+#, python-format
+msgid "%(jahr)ser"
+msgstr "%(jahr)ss"

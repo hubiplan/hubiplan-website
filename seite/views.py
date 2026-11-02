@@ -27,6 +27,7 @@ from django.views.decorators.http import require_GET
 
 from . import api, archiv
 from .site import DESIGN_COOKIE, DESIGNS, PREVIEW_COOKIE, Site, global_maintenance, host_of, load
+from .zeitleiste import gliedern
 
 log = logging.getLogger(__name__)
 
@@ -548,10 +549,16 @@ def history(request, site: Site):
 @require_GET
 @site_view()
 def chronicle(request, site: Site):
-    """Chronik: Text „geschichte“ aus Webseite › Inhalte."""
+    """Chronik: Text „geschichte“ aus Webseite › Inhalte, darunter die Zeitleiste."""
     if not site.block("history"):
         raise api.NotFound()
-    return _page(request, "seite/chronik.html", site, {"page": site.get("pages/geschichte/")})
+    page = site.get("pages/geschichte/")
+    return _page(
+        request,
+        "seite/chronik.html",
+        site,
+        {"page": page, "zeitleiste": gliedern((page or {}).get("timeline"))},
+    )
 
 
 @require_GET

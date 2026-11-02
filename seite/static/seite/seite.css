@@ -362,3 +362,48 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .zustand.live { background: #b3261e; border-color: #b3261e; color: #ffffff; }
 .zustand-zeile { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
 .titel { padding-left: 1.2rem; }
+
+/* Zeitleiste der Chronik (Ralf 02.11.: keine Textwand). Eine Linie links mit Jahresmarken,
+   je Ereignis eine Karte; ein Zeitraum hat statt des Punkts einen Balken. Kapitel sind
+   Zwischenüberschriften auf der Linie. Handy: Jahr über der Karte. */
+.unsichtbar { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.zeitleiste-sprung ul { list-style: none; padding: 0; margin: 1.2rem 0 1.5rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.zeitleiste-sprung a { display: inline-block; padding: .3rem .75rem; border: 1px solid var(--linie); border-radius: 99px; background: var(--flaeche); color: var(--link); font-weight: 600; text-decoration: none; }
+.zeitleiste-sprung a:hover { border-color: var(--primaer); }
+.zeitleiste { --zl-linie: 3px; --zl-einzug: 1.6rem; position: relative; margin: 1.5rem 0 2rem; padding-left: var(--zl-einzug); }
+.zeitleiste::before { content: ""; position: absolute; left: .45rem; top: .3rem; bottom: .3rem; width: var(--zl-linie); background: var(--linie); border-radius: 2px; }
+.zeitleiste-abschnitt { scroll-margin-top: 1rem; }
+.zeitleiste-abschnitt + .zeitleiste-abschnitt { margin-top: 1.8rem; }
+.zeitleiste-kapitel { position: relative; font-size: 1.25rem; margin: 0 0 .8rem; }
+.zeitleiste-kapitel::before { content: ""; position: absolute; left: calc(-1 * var(--zl-einzug) + .05rem); top: .25em; width: .9rem; height: .9rem; border-radius: 3px; background: var(--farbe-zier); }
+.zeitleiste-zeitraum { display: block; font-size: .85rem; font-weight: 600; color: var(--text-leise); letter-spacing: .02em; }
+.zeitleiste-kapiteltext { margin: -.3rem 0 1rem; color: var(--text-leise); }
+.zeitleiste-liste { list-style: none; padding: 0; margin: 0; display: grid; gap: .9rem; }
+.zeitleiste-eintrag { position: relative; scroll-margin-top: 1rem; }
+/* Marke auf der Linie: Punkt für ein Jahr, Balken über die ganze Karte für einen Zeitraum */
+.zeitleiste-eintrag::before { content: ""; position: absolute; left: calc(-1 * var(--zl-einzug) + .2rem); top: .35rem; width: .7rem; height: .7rem; border-radius: 50%; background: var(--primaer); box-shadow: 0 0 0 3px var(--grund); }
+.zeitleiste-eintrag.ist-zeitraum::before { border-radius: 99px; bottom: .35rem; height: auto; background: var(--primaer); opacity: .75; }
+.zeitleiste-jahr { margin: 0 0 .25rem; font-weight: 700; color: var(--primaer); font-variant-numeric: tabular-nums; }
+.zeitleiste-karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .75rem 1rem; display: grid; gap: .4rem; }
+.zeitleiste-karte h3 { margin: 0; font-size: 1.05rem; }
+.zeitleiste-karte p { margin: 0; }
+.zeitleiste-bild { justify-self: start; display: block; line-height: 0; border-radius: 6px; overflow: hidden; }
+.zeitleiste-bild img { width: 9rem; height: 6rem; object-fit: cover; }
+.zeitleiste-bild:hover img { filter: brightness(1.05); }
+@media (min-width: 40rem) {
+  .zeitleiste { --zl-einzug: 8.5rem; }
+  .zeitleiste::before { left: 7.3rem; }
+  .zeitleiste-eintrag::before { left: -1.4rem; }
+  .zeitleiste-kapitel::before { left: -1.55rem; }
+  .zeitleiste-jahr { position: absolute; left: calc(-1 * var(--zl-einzug)); width: 6.4rem; text-align: right; top: .1rem; }
+  .zeitleiste-karte { grid-template-columns: 1fr auto; }
+  .zeitleiste-karte > :not(.zeitleiste-bild) { grid-column: 1; }
+  .zeitleiste-bild { grid-column: 2; grid-row: 1 / span 3; align-self: start; }
+  .zeitleiste-zeitraum { display: inline; position: absolute; left: calc(-1 * var(--zl-einzug)); width: 6.4rem; text-align: right; top: .3em; }
+}
+.bild-fenster { max-width: min(60rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); border: 1px solid var(--linie); border-radius: var(--rund); padding: .8rem; background: var(--flaeche); color: inherit; }
+.bild-fenster::backdrop { background: rgb(0 0 0 / .6); }
+.bild-fenster img { display: block; max-width: 100%; max-height: calc(100vh - 9rem); height: auto; margin: 0 auto; }
+.bild-fenster p { margin: .5rem 0 0; }
+.bild-fenster form { margin-top: .6rem; text-align: right; }
+@media print { .zeitleiste-sprung, .bild-fenster { display: none; } }
