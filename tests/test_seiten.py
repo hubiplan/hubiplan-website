@@ -317,6 +317,7 @@ def test_chronik_mehrere_bilder(client, hubiplan):
     ]
     html = text(client.get("/chronik/"))
     assert '<div class="zeitleiste-bilder mehrere">' in html
+    assert "mehrere-bilder" in html
     stellen = [html.index(f'href="/medien/a/images/plakat{n}/"') for n in (2020, 2021, 2022)]
     assert stellen == sorted(stellen)
     assert html.count('href="/medien/a/images/plakat2020/"') == 1
@@ -1048,3 +1049,5 @@ def test_chronik_bilder_neben_dem_text_groesser():
     spalte = "min(15rem, 40%)"
     assert f".bild-rechts {{ grid-template-columns: minmax(0, 1fr) {spalte}; }}" in css
     assert f".bild-links {{ grid-template-columns: {spalte} minmax(0, 1fr); }}" in css
+    mehrere = "min(24rem, 50%)"
+    assert f".mehrere-bilder {{ grid-template-columns: minmax(0, 1fr) {mehrere}; }}" in css
