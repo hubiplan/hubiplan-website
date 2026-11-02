@@ -6,9 +6,9 @@
     <button type="button" class="knopf-rund" data-weiter aria-label="{% translate "Nächstes Bild" %}">›</button>
   </div>
   <ul class="karussell-band" tabindex="0">
-  {% for b in bilder %}{% lokal site b.url as bild %}
+  {% for b in bilder %}{% lokal site b.url as bild %}{% lokal site b.small_url as klein %}
     <li class="karussell-bild" aria-roledescription="Bild" aria-label="{{ forloop.counter }} von {{ bilder|length }}">
-      <figure class="titelbild"><img src="{{ bild }}" alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}{% if not forloop.first %} loading="lazy"{% endif %}>{% if b.caption %}<figcaption>{{ b.caption }}</figcaption>{% endif %}</figure>
+      <figure class="titelbild"><img src="{{ bild }}"{% if klein and b.width > 800 %} srcset="{{ klein }} 800w, {{ bild }} {{ b.width }}w" sizes="100vw"{% endif %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}{% if not forloop.first %} loading="lazy"{% endif %}>{% if b.caption %}<figcaption>{{ b.caption }}</figcaption>{% endif %}</figure>
     </li>
   {% endfor %}
   </ul>
