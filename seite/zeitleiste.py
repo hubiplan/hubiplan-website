@@ -27,8 +27,8 @@ def zeitraum(eintrag: dict) -> str:
 def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
     """{"abschnitte": [{"kapitel", "id", "ereignisse", "ende"}], "sprungmarken": [{"id", "label"}]}
 
-    ``ende`` ist das letzte Jahr eines Abschnitts (Kapitel oder Ereignis), etwa für eine
-    spätere Anzeige „2020–2025“ bei Kapiteln ohne eigenes Ende.
+    ``ende`` ist das letzte Jahr eines Abschnitts (Kapitel oder Ereignis). Bei neuesten
+    Einträgen oben zeigt ein Kapitel ohne eigenes Ende damit „2020–2025“.
     """
     abschnitte: list[dict] = []
     for e in eintraege or []:
@@ -47,6 +47,11 @@ def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
     for a in abschnitte:
         jahre = [x.get("until") or x["year"] for x in [a["kapitel"], *a["ereignisse"]] if x]
         a["ende"] = max(jahre)
+        # Neueste oben: Kapitel ohne eigenes Ende zeigen ihren Zeitraum bis zum letzten
+        # Ereignis, sonst steht über „1948“ nur „1939“ (Ralf 02.11.)
+        k = a["kapitel"]
+        if neueste_oben and k and not k.get("until") and a["ende"] > k["year"]:
+            k["zeitraum"] = zeitraum({"year": k["year"], "until": a["ende"]})
     if neueste_oben:
         abschnitte.reverse()
         for a in abschnitte:
