@@ -557,7 +557,12 @@ def chronicle(request, site: Site):
         request,
         "seite/chronik.html",
         site,
-        {"page": page, "zeitleiste": gliedern((page or {}).get("timeline"))},
+        {
+            "page": page,
+            "zeitleiste": gliedern(
+                (page or {}).get("timeline"), (page or {}).get("timeline_newest_first", False)
+            ),
+        },
     )
 
 

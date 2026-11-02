@@ -332,6 +332,48 @@ def test_zeitleiste_jahrzehnte():
     assert gliedern([_ereignis(None, "x"), _ereignis(1950, "")])["abschnitte"] == []
 
 
+def test_chronik_neueste_oben(client, hubiplan):
+    """Wahlweise neueste Einträge oben: Kapitel, Ereignisse und Sprungmarken rückwärts."""
+    hubiplan.info["zeitleiste_neueste_oben"] = True
+    hubiplan.info["zeitleiste"] = [
+        _ereignis(1899, "Vorgeschichte"),
+        {**_ereignis(1900, "Gründerjahre", bis=1938), "kind": "chapter"},
+        _ereignis(1900, "Gründung"),
+        _ereignis(1925, "Erste Fahne"),
+        {**_ereignis(2020, "Bis heute"), "kind": "chapter"},
+        _ereignis(2021, "Jubiläum"),
+        _ereignis(2025, "Neues Zelt"),
+    ]
+    html = text(client.get("/chronik/"))
+    leiste = html[html.index('<div class="zeitleiste">') :]
+    reihe = ["Bis heute", "Neues Zelt", "Jubiläum", "Gründerjahre", "Erste Fahne", "Gründung"]
+    reihe.append("Vorgeschichte")
+    stellen = [leiste.index(t) for t in reihe]
+    assert stellen == sorted(stellen)
+    # Kapitel behalten ihre Nummer; Sprungmarken rückwärts
+    assert '<section class="zeitleiste-abschnitt" id="kapitel-3"' in html
+    assert html.index('<a href="#kapitel-3">') < html.index('<a href="#kapitel-2">')
+
+
+def test_zeitleiste_rueckwaerts():
+    from seite.zeitleiste import gliedern
+
+    eintraege = [
+        {**_ereignis(2020, "Bis heute"), "kind": "chapter"},
+        _ereignis(2021, "A"),
+        _ereignis(2025, "B", bis=2026),
+    ]
+    vor = gliedern(eintraege)
+    assert vor["abschnitte"][0]["ende"] == 2026
+    rueck = gliedern(eintraege, neueste_oben=True)
+    assert [e["title"] for e in rueck["abschnitte"][0]["ereignisse"]] == ["B", "A"]
+    # Jahrzehnte rückwärts, Anker am neuesten Ereignis des Jahrzehnts
+    z = gliedern([_ereignis(1920 + i * 3, f"E{i}") for i in range(15)], neueste_oben=True)
+    assert [m["label"] for m in z["sprungmarken"]][:2] == ["1960er", "1950er"]
+    assert z["abschnitte"][0]["ereignisse"][0]["anker"] == "jahrzehnt-1960"
+    assert z["abschnitte"][0]["ereignisse"][0]["year"] == 1962
+
+
 def test_aemter(client, hubiplan):
     html = text(client.get("/aemter/"))
     assert "<h1>Ämter</h1>" in html

@@ -493,6 +493,7 @@ class FakeHubiplan:
                 "image": None,
                 # Zeitleiste (Tests setzen sie über info["zeitleiste"])
                 "timeline": self.info.get("zeitleiste", []),
+                "timeline_newest_first": self.info.get("zeitleiste_neueste_oben", False),
             },
             "pages/anfahrt/": {
                 "slug": "anfahrt",
