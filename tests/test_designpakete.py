@@ -130,10 +130,12 @@ def test_export_der_standarddesigns(client, hubiplan, key):
         assert "vorlagen/start.html" in files
 
 
-def test_export_klassisch_ohne_abweichungen(client, hubiplan):
+def test_export_klassisch_mit_menueleiste(client, hubiplan):
+    """Das neue Klassisch bringt nur CSS mit (helle Menüleiste), keine eigenen Vorlagen."""
     hubiplan.info["design_catalog"] = KATALOG
     files = _entpacken(client.get("/design-paket/classic.zip").content)
     assert set(files) == {"design.json", "design.css"}
+    assert ".menue-breit" in files["design.css"]
 
 
 def test_export_nur_standarddesigns(client, hubiplan):

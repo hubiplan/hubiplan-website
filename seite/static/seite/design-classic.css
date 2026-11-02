@@ -1,0 +1,20 @@
+/* Design „Klassisch“: schmaler farbiger Kopf mit Wappen, darunter eine helle Menüleiste über die
+   ganze Breite; Karten auf hellem Grund wie in seite.css (Ralf 2026-11-02, Variante A). Das
+   frühere Klassisch ist seite.css ohne Abweichungen (als Paket „Hubertus“ gesichert). */
+body { overflow-x: clip; }
+.kopf-innen { min-height: 3.6rem; }
+.marke img { width: 44px; height: 44px; }
+@media (min-width: 64rem) {
+  .kopf-innen { flex-wrap: wrap; row-gap: 0; }
+  .menue-breit {
+    order: 3; flex: 1 0 100%; border-top: 0; padding: 0 max(16px, calc(50vw - 31rem));
+    margin: 0 calc(50% - 50vw); background: var(--flaeche); border-bottom: 1px solid var(--linie);
+  }
+  .menue-breit ul { justify-content: flex-start; margin-left: -.8rem; }
+  .menue-breit a, .menue-breit .untermenue summary { color: var(--text); border-radius: 0; padding: .7rem .8rem; }
+  .menue-breit a:hover, .menue-breit .untermenue summary:hover { background: var(--grund); }
+  .menue-breit a[aria-current="page"], .menue-breit .untermenue summary.aktiv {
+    box-shadow: inset 0 -3px 0 var(--farbe-menue); color: var(--link);
+  }
+  .menue-breit .untermenue summary:focus-visible { outline-color: var(--link); }
+}
