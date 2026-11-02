@@ -387,8 +387,10 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .zeitleiste-karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .75rem 1rem; display: grid; gap: .4rem; }
 .zeitleiste-karte h3 { margin: 0; font-size: 1.05rem; }
 .zeitleiste-karte p { margin: 0; }
-.zeitleiste-bild { justify-self: start; display: block; line-height: 0; border-radius: 6px; overflow: hidden; }
+.zeitleiste-bilder { justify-self: start; display: flex; flex-wrap: wrap; gap: .4rem; }
+.zeitleiste-bild { display: block; line-height: 0; border-radius: 6px; overflow: hidden; }
 .zeitleiste-bild img { width: 9rem; height: 6rem; object-fit: cover; }
+.zeitleiste-bilder.mehrere .zeitleiste-bild img { width: 6rem; height: 4.5rem; }
 .zeitleiste-bild:hover img { filter: brightness(1.05); }
 @media (min-width: 40rem) {
   .zeitleiste { --zl-einzug: 8.5rem; }
@@ -397,13 +399,15 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   .zeitleiste-kapitel::before { left: -1.55rem; }
   .zeitleiste-jahr { position: absolute; left: calc(-1 * var(--zl-einzug)); width: 6.4rem; text-align: right; top: .1rem; }
   .zeitleiste-karte { grid-template-columns: 1fr auto; }
-  .zeitleiste-karte > :not(.zeitleiste-bild) { grid-column: 1; }
-  .zeitleiste-bild { grid-column: 2; grid-row: 1 / span 3; align-self: start; }
+  .zeitleiste-karte > :not(.zeitleiste-bilder) { grid-column: 1; }
+  .zeitleiste-bilder { grid-column: 2; grid-row: 1 / span 3; align-self: start; max-width: 19rem; justify-content: flex-end; }
   .zeitleiste-zeitraum { display: inline; position: absolute; left: calc(-1 * var(--zl-einzug)); width: 6.4rem; text-align: right; top: .3em; }
 }
 .bild-fenster { max-width: min(60rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); border: 1px solid var(--linie); border-radius: var(--rund); padding: .8rem; background: var(--flaeche); color: inherit; }
 .bild-fenster::backdrop { background: rgb(0 0 0 / .6); }
 .bild-fenster img { display: block; max-width: 100%; max-height: calc(100vh - 9rem); height: auto; margin: 0 auto; }
 .bild-fenster p { margin: .5rem 0 0; }
-.bild-fenster form { margin-top: .6rem; text-align: right; }
+.bild-fenster form { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; align-items: center; }
+.bild-blaettern { display: inline-flex; gap: .5rem; align-items: center; margin-right: auto; }
+.bild-blaettern[hidden] { display: none; }
 @media print { .zeitleiste-sprung, .bild-fenster { display: none; } }

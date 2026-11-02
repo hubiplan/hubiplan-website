@@ -722,3 +722,12 @@ msgstr "Picture"
 #, python-format
 msgid "%(jahr)ser"
 msgstr "%(jahr)ss"
+
+msgid "Voriges Bild"
+msgstr "Previous picture"
+
+msgid "Nächstes Bild"
+msgstr "Next picture"
+
+msgid "Bild {n} von {m}"
+msgstr "Picture {n} of {m}"

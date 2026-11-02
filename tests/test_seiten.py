@@ -294,6 +294,37 @@ def test_chronik_zeitleiste(client, hubiplan):
     assert "zeitleiste-sprung" not in html
 
 
+def test_chronik_mehrere_bilder(client, hubiplan):
+    """Ralf 02.11.: mehrere Bilder je Ereignis, klein nebeneinander, groß zum Blättern."""
+
+    def plakat(n):
+        return {
+            "key": f"plakat{n}",
+            "url": f"{fake.BASE}images/plakat{n}/",
+            "small_url": f"{fake.BASE}images/plakat{n}/?size=small",
+            "width": 40,
+            "height": 60,
+            "caption": "",
+            "alt": f"Plakat {n}",
+        }
+
+    plakate = [plakat(n) for n in (2020, 2021, 2022)]
+    hubiplan.info["zeitleiste"] = [
+        _ereignis(2020, "Verschobenes Jubiläum", bis=2022, images=plakate, image=plakate[0]),
+        # Älterer HUBIplan-Stand: nur ein Bild als „image“
+        _ereignis(1995, "Neue Fahne", image=plakat(1995)),
+    ]
+    html = text(client.get("/chronik/"))
+    assert '<div class="zeitleiste-bilder mehrere">' in html
+    stellen = [html.index(f'href="/medien/a/images/plakat{n}/"') for n in (2020, 2021, 2022)]
+    assert stellen == sorted(stellen)
+    assert html.count('href="/medien/a/images/plakat2020/"') == 1
+    assert 'href="/medien/a/images/plakat1995/"' in html
+    assert '<div class="zeitleiste-bilder">' in html
+    # Blättern im Fenster
+    assert "Nächstes Bild" in html and 'data-vorlage="Bild {n} von {m}"' in html
+
+
 def test_chronik_ohne_zeitleiste(client, hubiplan):
     html = text(client.get("/chronik/"))
     assert "zeitleiste" not in html
