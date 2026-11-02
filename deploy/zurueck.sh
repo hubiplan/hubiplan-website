@@ -19,8 +19,8 @@ fi
 IMG=$($COMPOSE config --images | head -n 1)
 BASIS="${IMG%%:*}"
 
-echo "Jetzt: $(cat .fassung 2>/dev/null || echo unbekannt)"
-echo "Zurück zu: $(cat "$ZIEL.vorher/.fassung" 2>/dev/null || echo unbekannt)"
+echo "Jetzt: $(cat .version 2>/dev/null || true) $(cat .fassung 2>/dev/null || echo unbekannt)"
+echo "Zurück zu: $(cat "$ZIEL.vorher/.version" 2>/dev/null || true) $(cat "$ZIEL.vorher/.fassung" 2>/dev/null || echo unbekannt)"
 if docker image inspect "$BASIS:vorher" > /dev/null 2>&1; then
     docker tag "$IMG" "$BASIS:tausch"
     docker tag "$BASIS:vorher" "$IMG"
@@ -34,4 +34,6 @@ mv "$ZIEL.tausch" "$ZIEL.vorher"
 cd "$ZIEL"
 $COMPOSE up -d --remove-orphans --force-recreate
 $COMPOSE ps
-echo "Läuft jetzt: $(cat .fassung 2>/dev/null || echo unbekannt)"
+echo "Läuft jetzt: $(cat .version 2>/dev/null || true) $(cat .fassung 2>/dev/null || echo unbekannt)"
+# Rollout-Protokoll (deploy/deploy.sh): Rückweg vermerken
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $(cut -c1-7 .fassung 2>/dev/null || echo ?) $(cat .version 2>/dev/null || echo ?) zurueck" >> "$ZIEL.protokoll" || true

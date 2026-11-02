@@ -62,6 +62,14 @@ Aufruf geht wieder vor): `cd /opt/hubiplan-website && sh deploy/zurueck.sh`
 Ansehen: In HUBIplan unter Webseite › Einstellungen „Vorschau öffnen“. Die Demo-Webseite
 steht im Wartungsmodus; ohne Vorschau zeigt `/webseite/` nur die Wartungsseite.
 
+## Releases und Rollout-Protokoll
+
+Die Webseite hat eigene Releases (`JJJJ.MM.N`, Tag `v2026.11.0`) mit
+[CHANGELOG.md](../CHANGELOG.md) und [CHANGELOG.en.md](../CHANGELOG.en.md). Angelegt werden sie
+mit `~/hubiplan/scripts/release.sh entwurf|taggen` im Klon dieses Repos, Ablauf wie in
+`docs/releases.md` von hubiplan. `deploy/deploy.sh` nimmt auch Tags, legt die Version als
+`.version` ab und schreibt je Lauf eine Zeile nach `/opt/hubiplan-website.protokoll`.
+
 ## Echtbetrieb (Dogado)
 
 Auf Ralfs Dogado-Server (HestiaCP) läuft die Webseite unter der Hauptdomain des Vereins.

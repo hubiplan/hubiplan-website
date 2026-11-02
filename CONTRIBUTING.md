@@ -22,6 +22,7 @@ willkommen. Contributions in English are welcome as well.
    scripts/test.sh HEAD     # vollständiger Test im Wegwerf-Container (Linux/WSL mit Docker)
    ```
 3. Pull Request gegen `main` öffnen und kurz beschreiben, was sich ändert und warum.
+   Den Abschnitt „Für die Änderungshinweise“ der Vorlage auf Deutsch und Englisch ausfüllen.
 
 Hinweise zum Stil:
 
