@@ -1,5 +1,6 @@
 """Seiten der Webseite mit erfundenen Daten aus einer nachgebildeten Schnittstelle."""
 
+import re
 from pathlib import Path
 
 import pytest
@@ -323,6 +324,34 @@ def test_chronik_mehrere_bilder(client, hubiplan):
     assert '<div class="zeitleiste-bilder">' in html
     # Blättern im Fenster
     assert "Nächstes Bild" in html and 'data-vorlage="Bild {n} von {m}"' in html
+
+
+def test_chronik_bildposition(client, hubiplan):
+    """Ralf 02.11.: Bildposition je Ereignis, Standard abwechselnd (beginnend rechts)."""
+
+    def mit_bild(jahr, lage=None):
+        bild = {"url": f"{fake.BASE}images/b{jahr}/", "small_url": f"{fake.BASE}images/b{jahr}/"}
+        mehr = {"image_position": lage} if lage else {}
+        return _ereignis(jahr, f"E{jahr}", images=[bild], **mehr)
+
+    hubiplan.info["zeitleiste"] = [
+        mit_bild(1920),
+        _ereignis(1925, "Ohne Bild"),
+        mit_bild(1930),
+        mit_bild(1940, "below"),
+        mit_bild(1950),
+        mit_bild(1960, "left"),
+    ]
+    html = text(client.get("/chronik/"))
+    lagen = re.findall(r'<div class="zeitleiste-karte( bild-\w+)?">', html)
+    assert lagen == [
+        " bild-rechts",
+        "",
+        " bild-links",
+        " bild-unten",
+        " bild-rechts",
+        " bild-links",
+    ]
 
 
 def test_chronik_ohne_zeitleiste(client, hubiplan):

@@ -24,6 +24,9 @@ def zeitraum(eintrag: dict) -> str:
     return f"{jahr}–{bis}" if bis and bis != jahr else str(jahr)
 
 
+LAGEN = {"left": "links", "right": "rechts", "below": "unten"}
+
+
 def bilder(eintrag: dict) -> list[dict]:
     """Bis zu sechs Bilder eines Ereignisses; ältere HUBIplan-Stände liefern nur ``image``."""
     liste = eintrag.get("images")
@@ -64,6 +67,16 @@ def gliedern(eintraege: list | None, neueste_oben: bool = False) -> dict:
         abschnitte.reverse()
         for a in abschnitte:
             a["ereignisse"].reverse()
+
+    # Bildposition (Ralf 02.11.): automatisch wechselt in Leserichtung, beginnend rechts
+    wechsel = 0
+    for a in abschnitte:
+        for e in a["ereignisse"]:
+            lage = LAGEN.get(e.get("image_position"))
+            if e["bilder"] and not lage:
+                lage = "rechts" if wechsel % 2 == 0 else "links"
+                wechsel += 1
+            e["bildlage"] = lage or ""
 
     marken = [
         {"id": a["id"], "label": a["kapitel"]["title"], "zeitraum": a["kapitel"]["zeitraum"]}
