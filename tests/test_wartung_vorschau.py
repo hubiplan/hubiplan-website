@@ -1,6 +1,8 @@
 """Wartungsmodus und Vorschau."""
 
-from .fake import PNG
+from seite import api
+
+from .fake import KEY, PNG
 
 
 def text(response) -> str:
@@ -39,7 +41,7 @@ def test_allgemeine_wartung(client, hubiplan, settings):
     assert not hubiplan.calls
 
 
-def test_vorschau(client, hubiplan):
+def test_vorschau(client, hubiplan, settings):
     hubiplan.maintenance = True
     r = client.get("/vorschau/?schluessel=gut")
     assert r.status_code == 302
@@ -61,8 +63,16 @@ def test_vorschau(client, hubiplan):
     assert r.content == PNG
     # Bilder darf der eigene Browser behalten (Wappen flackert sonst bei jedem Seitenwechsel)
     assert r["Cache-Control"] == "private, max-age=600"
-    # Vorschau-Antworten werden nicht zwischengespeichert
+    # Vorschau-Antworten nur wenige Sekunden zwischengespeichert: Ein weiteres Bild
+    # holt nicht noch einmal die Grunddaten, nur die Datei
     n = len(hubiplan.calls)
+    client.get("/medien/a/images/festbild2/")
+    assert [c[1] for c in hubiplan.calls[n:]] == [f"{api.PREFIX}{KEY}/images/festbild2/"]
+    n = len(hubiplan.calls)
+    client.get("/vorstand/")
+    assert len(hubiplan.calls) == n
+    # Nach Ablauf (hier: abgeschaltet) wieder frisch
+    settings.PREVIEW_CACHE_SECONDS = 0
     client.get("/vorstand/")
     assert len(hubiplan.calls) > n
     # Beenden

@@ -1,7 +1,8 @@
 """Zugriff auf die öffentliche Schnittstelle von HUBIplan (/api/public/site/v1/…).
 
 Nur lesen (außer Vorschau-Tausch). Antworten werden kurz zwischengespeichert,
-Antworten in der Vorschau nie.
+in der Vorschau nur wenige Sekunden und je Vorschau getrennt (sonst kostet jedes Bild
+einen vollen Abruf der Grunddaten in HUBIplan).
 """
 
 from __future__ import annotations
@@ -113,8 +114,11 @@ def get(
 
     ``seconds``: eigene, kürzere Zwischenspeicherung (z. B. Stand laufender Wettbewerbe)."""
     full = f"{PREFIX}{key}/{path}"
-    use_cache = cached and not preview
-    ck = _key("get", full)
+    use_cache = cached and (not preview or settings.PREVIEW_CACHE_SECONDS > 0)
+    ck = _key("get", full, preview or "")
+    ttl = seconds or settings.CACHE_SECONDS
+    if preview:
+        ttl = min(ttl, settings.PREVIEW_CACHE_SECONDS)
     if use_cache:
         hit = cache.get(ck)
         if hit is not None:
@@ -128,7 +132,7 @@ def get(
     except ValueError as exc:
         raise Unavailable(f"{path}: keine JSON-Antwort") from exc
     if use_cache and res.status in (200, 404, 503):
-        cache.set(ck, (res.status, data), seconds or settings.CACHE_SECONDS)
+        cache.set(ck, (res.status, data), ttl)
     return _result(res.status, data)
 
 
