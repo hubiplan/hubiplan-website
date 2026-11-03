@@ -34,7 +34,8 @@ def paket(**over):
         "hash": "abc123def4567890",
         "label": "Hubertus",
         "css": ".paket-kopf { padding: 2rem; }",
-        "templates": {"seite/kopf.html": KOPF, "seite/start.html": START},
+        "templates": {},
+        "layout": "stage",
     }
     data.update(over)
     return data
@@ -57,14 +58,14 @@ def mit_paket(hubiplan):
 def test_paket_wird_gezeichnet(client, mit_paket):
     html = text(client.get("/"))
     assert 'class="design-hubertus"' in html
-    assert "paket-kopf" in html and "paket-start" in html
+    assert "buehne-name" in html
     assert "/design/hubertus.css?v=abc123def4567890" in html
     # Fuß bleibt der Standard, Unterseiten ebenso
     assert "Impressum</a>" in html
     for path in ("/vorstand/", "/termine/", "/kontakt/", "/impressum/"):
         r = client.get(path)
         assert r.status_code == 200, path
-        assert "paket-kopf" in text(r)
+        assert 'class="design-hubertus"' in text(r)
 
 
 def test_paket_css(client, mit_paket):
@@ -101,6 +102,9 @@ def test_paket_nur_einmal_geholt(client, mit_paket):
     [
         {"css": "body { background: url(https://boese.example/x) }"},
         {"css": "@import 'x';"},
+        {"layout": ["stage"]},
+        {"layout": {"stage": True}},
+        {"layout": "../../outside"},
         {"templates": {"seite/kopf.html": "<script>alert(1)</script>"}},
         {"templates": {"seite/kopf.html": "{{ site.info.name|safe }}"}},
         {"templates": {"seite/kopf.html": "{% load log %}"}},
@@ -146,8 +150,7 @@ def test_export_der_standarddesigns(client, hubiplan, key):
     for name, body in files.items():
         if name.startswith("vorlagen/"):
             assert name in designpaket.TEMPLATES and designpaket.template_ok(body), name
-    if key in ("newspaper", "stage"):
-        assert "vorlagen/start.html" in files
+    assert set(files) == {"design.json", "design.css"}
 
 
 def test_export_klassisch_mit_menueleiste(client, hubiplan):
@@ -166,13 +169,21 @@ def test_export_nur_standarddesigns(client, hubiplan):
     assert client.get("/design-paket/classic.zip").status_code == 404
 
 
-def test_exportierter_fuss_besteht_pruefung():
-    """Kopf und Fuß der Webseite taugen als Vorlage eines Pakets (Paket ersetzt sie)."""
-    from django.template.loader import get_template
-
-    for name in ("seite/fuss.html", "seite/kopf.html"):
-        with open(get_template(name).origin.name, encoding="utf-8") as fh:
-            assert designpaket.template_ok(fh.read()), name
+@pytest.mark.parametrize(
+    "template",
+    [
+        KOPF,
+        START,
+        "{% firstof '<script>alert(1)</script>' %}",
+        "<scr{% if site.info.name %}ipt{% endif %}>x</script>",
+        "{% if site.info.hidden %}<img src=x onerror=alert(1)>{% endif %}",
+    ],
+)
+def test_fremde_vorlagen_immer_abgelehnt(client, mit_paket, template):
+    mit_paket.packages["hubertus"] = paket(templates={"seite/kopf.html": template})
+    response = client.get("/")
+    assert response.status_code == 200
+    assert 'class="design-classic"' in text(response)
 
 
 def test_vorschau_eines_pakets(client, mit_paket):
@@ -183,3 +194,14 @@ def test_vorschau_eines_pakets(client, mit_paket):
     html = text(client.get("/"))
     assert 'class="design-hubertus"' in html
     assert "Hubertus" in html
+
+
+@pytest.mark.parametrize("layout", list(DESIGNS))
+def test_standard_export_bleibt_als_datenpaket_zeichenbar(client, hubiplan, layout):
+    files = _entpacken(designpaket.export_builtin(layout, "Test", KATALOG[layout], "2026-11-03"))
+    manifest = json.loads(files["design.json"])
+    compiled = designpaket.compile_package(
+        paket(hash=f"test-{layout}", css=files["design.css"], layout=manifest["quelle"])
+    )
+    assert compiled is not None and compiled["layout"] == layout
+    assert not compiled["templates"]

@@ -67,13 +67,20 @@ starten() {
     gesund
 }
 
+# Only this project’s former rollback image is eligible for later cleanup.
+case "${IMG##*/}" in
+    *:*) ROLLBACK_IMG="${IMG%:*}:vorher" ;;
+    *) ROLLBACK_IMG="$IMG:vorher" ;;
+esac
+ALT_ROLLBACK=$(docker image inspect -f '{{.Id}}' "$ROLLBACK_IMG" 2> /dev/null || true)
+
 # 1. Bauen; die laufende Fassung bleibt als „:vorher“ erhalten
 if docker image inspect "$IMG" > /dev/null 2>&1; then
-    docker tag "$IMG" "${IMG%%:*}:vorher"
+    docker tag "$IMG" "$ROLLBACK_IMG"
 fi
 if ! $COMPOSE build; then
     echo "FEHLER: Bauen fehlgeschlagen. Die laufende Webseite bleibt unverändert." >&2
-    docker tag "${IMG%%:*}:vorher" "$IMG" 2> /dev/null || true
+    docker tag "$ROLLBACK_IMG" "$IMG" 2> /dev/null || true
     exit 1
 fi
 
@@ -97,7 +104,7 @@ if ! starten; then
         mv "$ZIEL.vorher" "$ZIEL"
         cp -p "$ZIEL.fehler/.env" "$ZIEL/.env"
         cd "$ZIEL"
-        docker tag "${IMG%%:*}:vorher" "$IMG" 2> /dev/null || true
+        docker tag "$ROLLBACK_IMG" "$IMG" 2> /dev/null || true
         if starten; then
             echo "Vorige Fassung läuft wieder. Die fehlerhafte liegt in $ZIEL.fehler." >&2
         else
@@ -107,6 +114,16 @@ if ! starten; then
     exit 1
 fi
 
-# Unbenannte alte Images erst nach dem Erfolg löschen; „:vorher“ bleibt
-docker image prune -f > /dev/null
+# Never prune the shared Docker daemon. Remove only the captured former rollback
+# image without force: active containers and remaining tags protect it.
+AKTUELL=$(docker image inspect -f '{{.Id}}' "$IMG")
+RUECKWEG=$(docker image inspect -f '{{.Id}}' "$ROLLBACK_IMG" 2> /dev/null || true)
+if [ -n "$ALT_ROLLBACK" ] && [ "$ALT_ROLLBACK" != "$AKTUELL" ] && [ "$ALT_ROLLBACK" != "$RUECKWEG" ]; then
+    MARKEN=$(docker image inspect -f '{{json .RepoTags}}' "$ALT_ROLLBACK" 2> /dev/null || echo unknown)
+    DIGESTS=$(docker image inspect -f '{{json .RepoDigests}}' "$ALT_ROLLBACK" 2> /dev/null || echo unknown)
+    case "$MARKEN/$DIGESTS" in
+        '[]/[]'|'null/null'|'[]/null'|'null/[]')
+            docker image rm "$ALT_ROLLBACK" > /dev/null 2>&1 || true ;;
+    esac
+fi
 rm -rf "$ZIEL.fehler"

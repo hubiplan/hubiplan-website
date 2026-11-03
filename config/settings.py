@@ -30,9 +30,8 @@ HUBIPLAN_HOST = os.environ.get("HUBIPLAN_HOST", urlparse(HUBIPLAN_PUBLIC_URL).ho
 API_TIMEOUT = float(os.environ.get("API_TIMEOUT", "10"))
 # Antworten der Schnittstelle so lange zwischenspeichern
 CACHE_SECONDS = int(os.environ.get("CACHE_SECONDS", "120"))
-# In der Vorschau nur kurz (je Vorschau getrennt), damit Änderungen gleich sichtbar sind;
-# 0 = gar nicht
-PREVIEW_CACHE_SECONDS = int(os.environ.get("PREVIEW_CACHE_SECONDS", "5"))
+# Vorschau wird bei jedem Aufruf autorisiert und niemals zwischen Anfragen gecacht.
+# Die frühere Umgebungsvariable PREVIEW_CACHE_SECONDS hat keine Wirkung mehr.
 
 # Feste Einheit statt Hostname (Testserver: alle Aufrufe unter /webseite/ gehören zu
 # dieser Domain aus HUBIplan)

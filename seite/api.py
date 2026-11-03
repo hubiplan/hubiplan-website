@@ -116,11 +116,10 @@ def get(
 
     ``seconds``: eigene, kürzere Zwischenspeicherung (z. B. Stand laufender Wettbewerbe)."""
     full = f"{PREFIX}{key}/{path}"
-    use_cache = cached and (not preview or settings.PREVIEW_CACHE_SECONDS > 0)
+    # Preview permissions and revocation are checked on every request.
+    use_cache = cached and not preview
     ck = _key("get", full, preview or "")
     ttl = seconds or settings.CACHE_SECONDS
-    if preview:
-        ttl = min(ttl, settings.PREVIEW_CACHE_SECONDS)
     if not use_cache:
         return _result(*_fetch(full, path, preview))
     hit = cache.get(ck)
