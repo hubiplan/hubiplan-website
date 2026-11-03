@@ -102,12 +102,34 @@ Browser ──HTTPS──> nginx (HestiaCP, Let's Encrypt, Vorlage webseite-8111
 4. **Domain umstellen** mit `deploy/hestia/umstellen.sh`: `HUSER` muss explizit den
    Hestia-Benutzer angeben, beispielsweise `HUSER=hosting-user DOMAIN=example.org`.
    Erst nur prüfen, dann `AKTION=umstellen` setzen. Das Skript sichert die bisherige Seite
-   (Dateien und WordPress-Datenbank) nach `/root/sicherung-webseite/<Datum>/`, merkt sich die alte
+   (Dateien und WordPress-Datenbank) nach
+   `/root/sicherung-webseite/<Benutzer>/<Domain>/<Zeit.Zufall>/`, merkt sich die alte
    nginx-Vorlage und löscht nichts. `AKTION=zurueck` stellt die alte Vorlage wieder her.
 
    Auch bestehende Aufrufe müssen `HUSER` ausdrücklich setzen. Ohne die Angabe bricht
    das Skript vor jeder Serveraktion ab. Die bisherige Vorlage kann weiterhin mit
    `HUSER=hosting-user DOMAIN=example.org AKTION=zurueck` wiederhergestellt werden.
+
+   Bei WordPress muss `wp-config.php` lesbar und höchstens 256 KiB groß sein. Die
+   Automatik akzeptiert genau eine vollständige literale `define('DB_NAME', '…');`-
+   Zeile, einen ASCII-Namen mit höchstens 63 Zeichen (erster Buchstabe/Ziffer,
+   danach auch `_` und `-`) sowie die erfolgreiche Zuordnung zu `HUSER` durch
+   `v-list-database HUSER DB_NAME json`. Dessen Ausgabe wird vollständig verworfen;
+   weder Verbindungsdaten noch Konfigurationsinhalte werden protokolliert. Der
+   Dump erhält zusätzlich `--` vor dem Datenbankargument. Unklare/dynamische oder
+   mehrfach vorkommende Angaben, nicht lesbare Dateien und nicht bestätigte
+   Eigentümerschaft führen vor Sicherung und nginx-Umstellung zum Abbruch.
+
+   **Manueller Weg:** Externe Datenbanken, abweichende Datenbankhosts und ungewöhnliche
+   WordPress-Konfigurationen müssen vorab getrennt durch die Administration geprüft
+   werden. Datenbankziel und Zugangsberechtigung aus vertrauenswürdiger
+   Betriebsdokumentation ermitteln, mit auf diese Datenbank begrenzten Rechten sichern
+   und die Wiederherstellbarkeit prüfen. Auch Dateien und bisherige nginx-Vorlage je
+   Benutzer/Domain separat sichern; erst danach die Domain bewusst in Hestia umstellen.
+   Die Konfiguration nicht löschen/umbenennen und Prüfungen nicht umgehen, um die
+   Automatik zu erzwingen. Das Skript hat keinen Schalter zum Überspringen der Prüfung.
+   Die Namens-/Eigentümerprüfung beweist keine PHP-Laufzeitkonfiguration und keine
+   externe Datenbanktopologie. [English procedure](wordpress-umstellung.en.md).
 
 Antwortet der Container nicht (z. B. beim Ausrollen), zeigt nginx statt „502 Bad Gateway“
 die Seite „Die Webseite wird gerade aktualisiert“, die sich alle 5 Sekunden neu lädt.
