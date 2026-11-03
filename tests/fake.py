@@ -466,8 +466,15 @@ class FakeHubiplan:
                     },
                 }
             )
+        files = (
+            rest.startswith("images/")
+            or rest.startswith("photos/")
+            or rest.startswith("honors/photos/")
+            or rest.startswith("statute/preview/")
+        )
         if hidden:
-            return self.json({"detail": "Wartung"}, 503)
+            # Wie HUBIplan: Dateien einer verborgenen Webseite gibt es nicht
+            return self.json({"detail": "nicht gefunden"}, 404 if files else 503)
         if (
             rest.startswith("images/")
             or rest.startswith("photos/")

@@ -36,6 +36,7 @@ from .site import (
     global_maintenance,
     host_of,
     load,
+    preview_session,
 )
 from .zeitleiste import gliedern
 
@@ -892,10 +893,10 @@ LOGO_STAMPED = re.compile(r"^logos/.+-\d{14}\.(png|jpe?g|webp)$")
 IMAGE_VERSIONED = re.compile(r"^images/[A-Za-z0-9_\-]+-v\d+/$")
 
 
-def _media_cache(site: Site, kind: str, path: str) -> str:
+def _media_cache(private: bool, kind: str, path: str) -> str:
     """Wie lange der Browser ein Bild behalten darf. Vorschau und Wartung: nur der eigene
     Browser, 10 Minuten (sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu)."""
-    if site.is_preview or site.maintenance:
+    if private:
         return "private, max-age=600"
     if kind == "m" and LOGO_STAMPED.match(path):
         return "public, max-age=31536000, immutable"
@@ -907,24 +908,36 @@ def _media_cache(site: Site, kind: str, path: str) -> str:
 
 
 @require_GET
-@site_view(maintenance_ok=True)
-def media(request, site: Site, kind: str, path: str):
-    if kind == "a":
-        if not ALLOWED_API_FILES.match(path):
-            raise api.NotFound()
-        if site.maintenance and not site.is_preview:
-            raise api.NotFound()
-        size = "?size=small" if request.GET.get("size") == "small" else ""
-        res = api.fetch_file(f"{api.PREFIX}{site.key}/{path}{size}", preview=site.preview)
-    else:
-        if ".." in path or not ALLOWED_MEDIA.match(path):
-            raise api.NotFound()
-        res = api.fetch_file(f"/media/{path}")
+def media(request, kind: str, path: str):
+    """Bild aus HUBIplan über diese Seite. Ohne die Grunddaten der Seite: Ob ein Bild
+    gezeigt werden darf (Wartung, Vorschau), prüft HUBIplan beim Bild selbst. Sonst
+    wartete jedes Bild auf die Grunddaten (auf Dogado bis 1,7 s, 03.11.2026)."""
+    if global_maintenance():
+        return HttpResponse(status=503)
+    preview = preview_session(request)
+    try:
+        key = api.resolve(host_of(request))
+        if kind == "a":
+            if not ALLOWED_API_FILES.match(path):
+                raise api.NotFound()
+            size = "?size=small" if request.GET.get("size") == "small" else ""
+            res = api.fetch_file(f"{api.PREFIX}{key}/{path}{size}", preview=preview)
+        else:
+            if ".." in path or not ALLOWED_MEDIA.match(path):
+                raise api.NotFound()
+            res = api.fetch_file(f"/media/{path}")
+    except api.NotFound:
+        return HttpResponse(status=404)
+    except api.Unavailable:
+        return HttpResponse(status=503)
     ctype = res.content_type.split(";")[0].strip()
     if ctype not in ("image/png", "image/jpeg", "image/webp"):
-        raise api.NotFound()
+        return HttpResponse(status=404)
     response = HttpResponse(res.body, content_type=ctype)
-    response["Cache-Control"] = _media_cache(site, kind, path)
+    # Mit Vorschau oder in der Wartung nur im eigenen Browser; der Zustand steht im
+    # Zwischenspeicher der Grunddaten, wenn eine Seite davor geladen wurde
+    private = bool(preview) or api.cached_maintenance(key)
+    response["Cache-Control"] = _media_cache(private, kind, path)
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
 
