@@ -1,7 +1,7 @@
 #!/bin/sh
 # Zurück zur vorigen Fassung der Webseite (Ordner ZIEL.vorher und Image „:vorher“).
 # Läuft auf dem Server im Ordner der Webseite:
-#   ssh administrator@dogado "cd /opt/hubiplan-website && sudo sh deploy/zurueck.sh"
+#   ssh benutzer@server.example.org "cd /opt/hubiplan-website && sudo sh deploy/zurueck.sh"
 # Ein zweiter Aufruf geht wieder vor (die Fassungen tauschen jeweils die Plätze).
 set -eu
 

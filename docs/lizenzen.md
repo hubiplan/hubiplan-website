@@ -1,9 +1,8 @@
 # Lizenzen
 
 Die Vereinswebseite steht unter der **AGPL-3.0-or-later** ([LICENSE](../LICENSE)), wie HUBIplan.
-Dieses Dokument beschreibt fremde Bestandteile und ihre Lizenzen. Grundlage ist das
-Lizenzaudit vom 31.10.2026 (Bericht im Projektordner unter `audit/lizenzaudit-2026-10-31.md`);
-es ist keine anwaltliche Prüfung. Die ausführliche Beschreibung für das Gesamtsystem steht in
+Dieses Dokument beschreibt fremde Bestandteile und ihre Lizenzen; es ist keine
+anwaltliche Prüfung. Die ausführliche Beschreibung für das Gesamtsystem steht in
 `hubiplan/docs/lizenzen.md`.
 
 ## Was der Browser bekommt
@@ -18,8 +17,8 @@ Nennung nötig). Die Zeichen sind Marken der jeweiligen Unternehmen; die Webseit
 nur als Link auf den eigenen Kanal des Vereins.
 
 Beiträge aus Instagram und Facebook speichert HUBIplan mit Text und Bildern und gibt sie an
-die Webseite weiter. Die Verbindung zu Meta gibt keine Rechte an fremden Bildern oder Musik
-(Lizenzaudit 31.10., L10); Videos zeigt die Webseite nur als Vorschaubild mit Link.
+die Webseite weiter. Die Verbindung zu Meta gibt keine Rechte an fremden Bildern oder Musik;
+Videos zeigt die Webseite nur als Vorschaubild mit Link.
 
 ## Server
 
@@ -38,7 +37,7 @@ bleiben GPL-3.0; GPL-3.0 und AGPL-3.0 dürfen kombiniert werden (jeweils § 13).
 
 ## Offen
 
-- **Quellcode-Angebot (AGPL § 13):** zurückgestellt wie in HUBIplan (Ralf 2026-10-29). Nötig,
+- **Quellcode-Angebot (AGPL § 13):** zurückgestellt wie in HUBIplan. Nötig,
   sobald ein anderer als der Rechteinhaber die Webseite betreibt oder Images weitergegeben
   werden.
 - **Images weitergeben:** vorher Stückliste und Lizenztexte aller Pakete im Image beilegen.

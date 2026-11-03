@@ -3,8 +3,7 @@
 Ein Paket (ZIP) enthält ``design.json`` (Steckbrief), ``design.css`` und höchstens die
 Vorlagen Kopf, Fuß und Startseite. Standarddesigns exportiert diese Webseite unter
 ``/design-paket/<schlüssel>.zip``; eingespielte Pakete liegen in HUBIplan, das sie für
-freigegebene Webseiten über ``design/<schlüssel>/`` ausliefert (Konzept
-konzepte/designs-import-export.md, Ralf 2026-11-02).
+freigegebene Webseiten über ``design/<schlüssel>/`` ausliefert.
 
 HUBIplan prüft Pakete beim Einspielen; diese Webseite prüft beim Abholen noch einmal mit
 denselben Regeln (wie ``hubiplan/backend/website/design_packages.py``). Was die Prüfung
