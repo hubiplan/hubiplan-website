@@ -32,6 +32,24 @@ feld() { v-list-web-domain "$HUSER" "$DOMAIN" json | sed -n "s/.*\"$1\": *\"\([^
 ALT=$(feld PROXY)
 WEBROOT=/home/$HUSER/web/$DOMAIN/public_html
 
+# wp-config.php gehört zur bisherigen Website: niemals als PHP/Shell ausführen.
+# Nur eine einzelne, vollständige literale DB_NAME-Zeile ist automatisch eindeutig.
+wordpress_datenbank() {
+    local config=$1 inhalt anzahl name LC_ALL=C
+    [ -f "$config" ] && [ -r "$config" ] || return 1
+    # Sentinel erhält abschließende Zeilenumbrüche für die genaue Bytegrenze.
+    inhalt=$(head -c 262145 -- "$config" && printf '.') || return 1
+    inhalt=${inhalt%.}
+    [ "${#inhalt}" -le 262144 ] || return 1
+    anzahl=$(printf '%s\n' "$inhalt" | grep -c DB_NAME || true)
+    [ "$anzahl" = 1 ] || return 1
+    name=$(printf '%s\n' "$inhalt" |
+        sed -e '/\/\*.*\*\//d' -e '/\/\*/,/\*\//d' |
+        sed -nE "s/^[[:space:]]*define[[:space:]]*\([[:space:]]*(['\"])DB_NAME\1[[:space:]]*,[[:space:]]*(['\"])([^'\"]*)\2[[:space:]]*\)[[:space:]]*;[[:space:]]*((\/\/|#).*)?$/\3/p")
+    [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$ ]] || return 1
+    printf '%s\n' "$name"
+}
+
 echo "--- Stand"
 echo "nginx-Vorlage: $ALT · Aliase: $(feld ALIAS) · SSL: $(feld SSL)"
 if [ -f "$WEBROOT/wp-config.php" ]; then echo "WordPress in $WEBROOT"; else echo "Kein WordPress in $WEBROOT"; fi
@@ -46,6 +64,18 @@ umstellen)
     [ "$ALT" = "$VORLAGE" ] && { echo "Ist schon umgestellt."; exit 0; }
     [ -n "$ALT" ] || { echo "Abbruch: bisherige nginx-Vorlage unbekannt."; exit 1; }
     curl -fsS -o /dev/null "http://127.0.0.1:$PORT/gesund" || { echo "Abbruch: erst die Webseite ausrollen."; exit 1; }
+    DB=''
+    if [ -e "$WEBROOT/wp-config.php" ] || [ -L "$WEBROOT/wp-config.php" ]; then
+        DB=$(wordpress_datenbank "$WEBROOT/wp-config.php") || {
+            echo "Abbruch: DB_NAME ist nicht eindeutig als sicherer literaler Hestia-Datenbankname lesbar. Manuelle Sicherung und Umstellung erforderlich."
+            exit 1
+        }
+        # Nur Exitstatus: die Hestia-Ausgabe kann vertrauliche Verbindungsdaten enthalten.
+        v-list-database "$HUSER" "$DB" json > /dev/null 2>&1 || {
+            echo "Abbruch: Datenbank ist diesem Hestia-Benutzer nicht bestätigt zugeordnet. Manuelle Sicherung und Umstellung erforderlich."
+            exit 1
+        }
+    fi
     umask 077
     mkdir -p "$SICHERUNG"
     ZIEL=$(mktemp -d "$SICHERUNG/$(date +%Y-%m-%d_%H%M%S.%N).XXXXXX")
@@ -53,12 +83,9 @@ umstellen)
     echo "--- 1) Sicherung nach $ZIEL"
     echo "$ALT" > "$ZIEL/nginx-vorlage"
     tar -czf "$ZIEL/public_html.tar.gz" -C "$(dirname "$WEBROOT")" public_html
-    if [ -f "$WEBROOT/wp-config.php" ]; then
-        DB=$(sed -n "s/.*define( *['\"]DB_NAME['\"] *, *['\"]\([^'\"]*\)['\"].*/\1/p" "$WEBROOT/wp-config.php" | head -1)
-        if [ -n "$DB" ]; then
-            mysqldump --single-transaction --routines "$DB" | gzip > "$ZIEL/datenbank-$DB.sql.gz"
-            echo "Datenbank $DB gesichert"
-        fi
+    if [ -n "$DB" ]; then
+        mysqldump --single-transaction --routines -- "$DB" | gzip > "$ZIEL/datenbank-$DB.sql.gz"
+        echo "Datenbank $DB gesichert"
     fi
     ls -lh "$ZIEL"
     echo "--- 2) nginx-Vorlage $VORLAGE"
