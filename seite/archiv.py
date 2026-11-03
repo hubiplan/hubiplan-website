@@ -8,11 +8,13 @@ Ohne gespeicherte Fassung bleibt es bei der Wartungs- bzw. Fehlerseite.
 
 from __future__ import annotations
 
+import contextlib
 import datetime
 import hashlib
 import json
 import logging
 import os
+import uuid
 from pathlib import Path
 
 from django.conf import settings
@@ -34,13 +36,16 @@ def save(host: str, key: str, info: dict, imprint: dict) -> None:
         "info": info,
         "imprint": imprint,
     }
+    # Eigener Name je Schreibvorgang: Prozesse und Threads überschreiben sich nicht (GA-F02)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp")
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = path.with_suffix(".tmp")
         tmp.write_text(json.dumps(data), encoding="utf-8")
         os.replace(tmp, path)
     except OSError as exc:
         log.warning("Rechtstexte nicht gesichert: %s", exc)
+        with contextlib.suppress(OSError):
+            tmp.unlink(missing_ok=True)
 
 
 def load(host: str) -> dict | None:
