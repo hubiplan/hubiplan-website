@@ -937,7 +937,9 @@ def media(request, kind: str, path: str):
     # Mit Vorschau oder in der Wartung nur im eigenen Browser; der Zustand steht im
     # Zwischenspeicher der Grunddaten, wenn eine Seite davor geladen wurde
     private = bool(preview) or api.cached_maintenance(key)
-    response["Cache-Control"] = _media_cache(private, kind, path)
+    response["Cache-Control"] = (
+        "private, no-store" if preview else _media_cache(private, kind, path)
+    )
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
 
@@ -976,7 +978,9 @@ def design_css(request, site: Site, key: str):
     # Vorschau und Wartung nur im eigenen Browser
     if request.GET.get("v") != package["hash"]:
         response["Cache-Control"] = "private, no-store"
-    elif site.is_preview or site.maintenance:
+    elif site.is_preview:
+        response["Cache-Control"] = "private, no-store"
+    elif site.maintenance:
         response["Cache-Control"] = "private, max-age=86400"
     else:
         response["Cache-Control"] = "public, max-age=86400"

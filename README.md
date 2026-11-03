@@ -179,3 +179,39 @@ Wer eine veränderte Fassung der Webseite öffentlich betreibt, muss ihren Quell
 derselben Lizenz zugänglich machen; die Fußzeile jeder Seite verlinkt dazu den Quellcode der
 laufenden Fassung. Lizenzen der Abhängigkeiten und der HestiaCP-Vorlagen (GPL-3.0):
 [docs/lizenzen.md](docs/lizenzen.md).
+
+
+### Sicherheitsgrenzen von Designpaketen und Vorschau
+
+Designpakete enthalten ausschließlich `design.json` und `design.css`. `quelle` bzw.
+`skizze_wie` wählt eines der mitgelieferten Standardlayouts; freies HTML/Django-DTL
+wird nie ausgeführt. Standarddesigns lassen sich weiterhin exportieren und mit eigenem
+Kürzel importieren. Pakete mit alten freien Vorlagen bleiben in HUBIplan gespeichert,
+werden aber bis zum Ersetzen durch ein reines CSS-/Layoutpaket nicht veröffentlicht:
+die Seite zeigt Klassisch. HUBIplan und Webseite gemeinsam aktualisieren.
+Vorschauantworten werden bei jedem Abruf neu autorisiert, ohne frischen oder veralteten
+Antwortcache. Vorschau-Dateien senden `private, no-store`; bereits vorher gespeicherte
+Browserkopien werden durch einen Widerruf nicht rückwirkend gelöscht.
+`PREVIEW_CACHE_SECONDS` hat keine Wirkung mehr. Öffentliche Seiten behalten ihren Cache.
+
+Design packages contain only `design.json` and `design.css`. `quelle`/`skizze_wie`
+selects a maintained built-in layout; imported HTML/Django templates are never executed.
+Built-in export/import remains available. Legacy template packages remain stored but
+are quarantined and display Classic until replaced by a CSS/layout-only package.
+Update both HUBIplan and the website. Preview reads always revalidate authorization,
+without fresh or stale response caching; preview files use `private, no-store`.
+Revocation cannot erase browser copies retained before this update.
+
+### Gemeinsamer Docker-/Hestia-Server
+
+Die Domainumstellung sichert nach `/root/sicherung-webseite/<Benutzer>/<Domain>/<Zeit.Zufall>/`.
+Der Rückweg prüft die gespeicherte Benutzer-/Domainzuordnung. Alte unzugeordnete Sicherungen
+werden nicht automatisch ausgewählt; ihre Herkunft muss vor manueller Verwendung geprüft
+werden. Der Rückweg schaltet die nginx-Vorlage zurück, Dateien/DB bleiben unverändert.
+Das Deployment löscht nur die vorher erfasste frühere eigene Rückweg-Image-ID ohne `--force`.
+Es verwendet kein daemonweites `docker image prune`; aktive und markierte Images bleiben.
+
+Migration backups are bound to hosting user and domain. Unbound legacy backups require
+manual origin verification. Rollback changes the nginx template; files/database stay in place.
+Deployment cleanup removes only the previously captured own former rollback image ID,
+without force or daemon-wide pruning.

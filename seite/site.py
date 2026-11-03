@@ -196,10 +196,9 @@ class Site:
     def vorlage(self, name: str):
         """Vorlage für das Design: aus dem Paket, sonst seite/designs/<design>/…, sonst Standard."""
         package = self.package
-        if package and name in package["templates"]:
-            return package["templates"][name]
+        layout = package["layout"] if package else self.design
         if name.startswith("seite/"):
-            return [name.replace("seite/", f"seite/designs/{self.design}/", 1), name]
+            return [name.replace("seite/", f"seite/designs/{layout}/", 1), name]
         return name
 
     @property

@@ -1,5 +1,7 @@
 """Wartungsmodus und Vorschau."""
 
+import pytest
+
 from seite import api
 
 from .fake import KEY, PNG
@@ -61,18 +63,9 @@ def test_vorschau(client, hubiplan, settings):
     # Bilder in der Vorschau
     r = client.get("/medien/a/images/festbild1/")
     assert r.content == PNG
-    # Bilder darf der eigene Browser behalten (Wappen flackert sonst bei jedem Seitenwechsel)
-    assert r["Cache-Control"] == "private, max-age=600"
-    # Vorschau-Antworten nur wenige Sekunden zwischengespeichert: Ein weiteres Bild
-    # holt nicht noch einmal die Grunddaten, nur die Datei
+    assert r["Cache-Control"] == "private, no-store"
+    # Every preview read revalidates authorization, even within the old fresh TTL.
     n = len(hubiplan.calls)
-    client.get("/medien/a/images/festbild2/")
-    assert [c[1] for c in hubiplan.calls[n:]] == [f"{api.PREFIX}{KEY}/images/festbild2/"]
-    n = len(hubiplan.calls)
-    client.get("/vorstand/")
-    assert len(hubiplan.calls) == n
-    # Nach Ablauf (hier: abgeschaltet) wieder frisch
-    settings.PREVIEW_CACHE_SECONDS = 0
     client.get("/vorstand/")
     assert len(hubiplan.calls) > n
     # Beenden
@@ -143,3 +136,47 @@ def test_vorschau_seite_ungueltig(client, hubiplan, settings):
     assert r.status_code == 302
     assert r.cookies["vorschau-seite"].value == ""
     assert _resolved(hubiplan)[-1] == "www.musterdorf.test"
+
+
+def test_widerruf_vorschau_ohne_cache_grace(client, hubiplan, monkeypatch, settings):
+    from django.core.cache import cache
+
+    hubiplan.maintenance = True
+    token = hubiplan.preview_session
+    client.cookies["vorschau"] = token
+    assert client.get("/vorstand/").status_code == 200
+    # Poison an old fresh/stale cache and hold the refresh lock. Revocation still
+    # goes to the backend instead of serving either cached privileged response.
+    full = f"{api.PREFIX}{KEY}/board/"
+    ck = api._key("get", full, token)
+    cache.set(ck, (api.time.monotonic(), (200, {"leaked": "secret"})), 600)
+    lock = api._lock_for(ck)
+    lock.acquire()
+    hubiplan.preview_session = "revoked-and-replaced-session"
+    try:
+        assert client.get("/vorstand/").status_code == 503
+        assert client.get("/medien/a/images/festbild1/").status_code == 404
+    finally:
+        lock.release()
+
+
+@pytest.mark.parametrize("age", [0, 6, 599])
+@pytest.mark.parametrize("path", ["", "board/"])
+def test_api_widerruf_trotz_frischem_oder_veraltetem_cache(hubiplan, age, path):
+    from django.core.cache import cache
+
+    hubiplan.maintenance = True
+    token = hubiplan.preview_session
+    api.get(KEY, path, preview=token)
+    ck = api._key("get", f"{api.PREFIX}{KEY}/{path}", token)
+    cache.set(ck, (api.time.monotonic() - age, (200, {"private": "old-value"})), 700)
+    lock = api._lock_for(ck)
+    lock.acquire()
+    hubiplan.preview_session = "revoked-and-replaced-session"
+    before = len(hubiplan.calls)
+    try:
+        with pytest.raises(api.Maintenance):
+            api.get(KEY, path, preview=token)
+        assert len(hubiplan.calls) == before + 1
+    finally:
+        lock.release()
