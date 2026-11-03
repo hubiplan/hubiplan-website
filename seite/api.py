@@ -10,6 +10,8 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import threading
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -119,21 +121,59 @@ def get(
     ttl = seconds or settings.CACHE_SECONDS
     if preview:
         ttl = min(ttl, settings.PREVIEW_CACHE_SECONDS)
-    if use_cache:
-        hit = cache.get(ck)
-        if hit is not None:
-            status, data = hit
-            return _result(status, data)
+    if not use_cache:
+        return _result(*_fetch(full, path, preview))
+    hit = cache.get(ck)
+    if hit is not None and time.monotonic() - hit[0] < ttl:
+        return _result(*hit[1])
+    lock = _lock_for(ck)
+    if hit is not None:
+        # Abgelaufen: Ein Thread holt neu, die anderen nehmen so lange den alten Stand,
+        # statt HUBIplan gleichzeitig mit denselben teuren Abrufen zu treffen
+        if not lock.acquire(blocking=False):
+            return _result(*hit[1])
+    elif not lock.acquire(timeout=settings.API_TIMEOUT):
+        return _result(*_fetch(full, path, preview))
+    try:
+        again = cache.get(ck)
+        if again is not None and again is not hit and time.monotonic() - again[0] < ttl:
+            return _result(*again[1])
+        result = _fetch(full, path, preview)
+        if result[0] in (200, 404, 503):
+            cache.set(ck, (time.monotonic(), result), ttl + STALE_SECONDS)
+        return _result(*result)
+    finally:
+        lock.release()
+
+
+# So lange darf ein abgelaufener Stand noch dienen, während ein anderer Thread neu holt
+STALE_SECONDS = 600
+_locks: dict[str, threading.Lock] = {}
+_locks_guard = threading.Lock()
+
+
+def _lock_for(ck: str) -> threading.Lock:
+    with _locks_guard:
+        if len(_locks) > 2000:
+            _locks.clear()
+        return _locks.setdefault(ck, threading.Lock())
+
+
+def _fetch(full: str, path: str, preview: str | None) -> tuple[int, object]:
     res = _request("GET", full, preview=preview)
     if res.status >= 500 and res.status != 503:
         raise Unavailable(f"{path} {res.status}")
     try:
-        data = res.json()
+        return res.status, res.json()
     except ValueError as exc:
         raise Unavailable(f"{path}: keine JSON-Antwort") from exc
-    if use_cache and res.status in (200, 404, 503):
-        cache.set(ck, (res.status, data), ttl)
-    return _result(res.status, data)
+
+
+def cached_maintenance(key: str) -> bool:
+    """Steht die Webseite laut zwischengespeicherten Grunddaten in Wartung? Ruft
+    HUBIplan nicht auf; unbekannt gilt als nein."""
+    hit = cache.get(_key("get", f"{PREFIX}{key}/", ""))
+    return bool(hit) and hit[1][0] == 503
 
 
 def _result(status: int, data):

@@ -324,12 +324,18 @@ def host_of(request) -> str:
     return request.get_host().split(":")[0].lower()
 
 
+def preview_session(request) -> str | None:
+    """Vorschau-Sitzung aus dem Cookie (nur in gültiger Form); prüft HUBIplan."""
+    preview = request.COOKIES.get(PREVIEW_COOKIE) or None
+    if preview and not re.fullmatch(r"[A-Za-z0-9:_\-.]{10,400}", preview):
+        return None
+    return preview
+
+
 def load(request) -> Site:
     """Webseite zur Anfrage. Wirft api.NotFound, api.Unavailable oder api.Maintenance."""
     key = api.resolve(host_of(request))
-    preview = request.COOKIES.get(PREVIEW_COOKIE) or None
-    if preview and not re.fullmatch(r"[A-Za-z0-9:_\-.]{10,400}", preview):
-        preview = None
+    preview = preview_session(request)
     design = request.COOKIES.get(DESIGN_COOKIE) if preview else None
     # Standarddesign oder Paket; ob es das Paket gibt, prüft Site.design
     design = design if design and designpaket.KEY.match(design) else None
