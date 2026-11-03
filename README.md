@@ -94,13 +94,13 @@ docs/             Konzept, Betrieb und Lizenzen
 Alle Einstellungen kommen aus Umgebungsvariablen (Vorlage [.env.example](.env.example),
 Beschreibung in `config/settings.py`). Lokal gegen ein HUBIplan auf Port 8000 (siehe
 [Ausprobieren mit Docker](https://github.com/hubiplan/hubiplan#ausprobieren-mit-docker), mit
-Demodaten aus `seed_testdata`):
+Demodaten aus `seed_demoverein`):
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements-dev.txt
 DJANGO_DEBUG=1 HUBIPLAN_API_URL=http://localhost:8000 \
-  SITE_HOST_OVERRIDE=www.hubertus-grimlinghausen.test python manage.py runserver 8001
+  SITE_HOST_OVERRIDE=www.sv-musterstadt.test python manage.py runserver 8001
 ```
 
 `SITE_HOST_OVERRIDE` ordnet alle Aufrufe der Demo-Webseite zu; ohne die Variable entscheidet

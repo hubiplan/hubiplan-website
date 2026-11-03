@@ -5,8 +5,8 @@
 #   deploy/deploy.sh origin/main   # bestimmter Branch/Commit
 #   deploy/deploy.sh v2026.11.0    # Release (Tag), siehe hubiplan/docs/releases.md
 #
-# Echtserver (Dogado, hinter HestiaCP), siehe docs/betrieb.md:
-#   SSH=/mnt/c/Windows/System32/OpenSSH/ssh.exe DEPLOY_HOST=administrator@dogado DEPLOY_SUDO=1 \
+# Hosting hinter HestiaCP, siehe docs/betrieb.md:
+#   DEPLOY_HOST=benutzer@server.example.org DEPLOY_SUDO=1 \
 #   deploy/deploy.sh origin/main
 # Beim ersten Mal zusätzlich (nur für die neue .env):
 #   WEBSITE_HINTER_PROXY=1 SITE_DOMAINS=beispiel.de,www.beispiel.de HUBIPLAN_HOST=verein.beispiel.de

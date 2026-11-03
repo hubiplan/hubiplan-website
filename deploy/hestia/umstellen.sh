@@ -1,12 +1,12 @@
 #!/bin/bash
-# Stellt eine Domain in HestiaCP auf die Vereinswebseite um (Echtserver bei Dogado).
+# Stellt eine Domain in HestiaCP auf die Vereinswebseite um (Hosting hinter einem Reverse-Proxy).
 # Voraussetzung: deploy/deploy.sh ist mit WEBSITE_HINTER_PROXY=1 gelaufen, der Container
 # lauscht also auf 127.0.0.1:8111.
 #
-# Aufruf von Ralfs PC (PowerShell), läuft als root auf dem Server:
-#   nur prüfen:  Get-Content -Raw deploy\hestia\umstellen.sh | ssh administrator@dogado "sudo env DOMAIN=example.org bash -s"
-#   umstellen:   Get-Content -Raw deploy\hestia\umstellen.sh | ssh administrator@dogado "sudo env DOMAIN=example.org AKTION=umstellen bash -s"
-#   zurück:      Get-Content -Raw deploy\hestia\umstellen.sh | ssh administrator@dogado "sudo env DOMAIN=example.org AKTION=zurueck bash -s"
+# Aufruf vom lokalen Entwicklungsrechner (PowerShell), läuft als root auf dem Server:
+#   nur prüfen:  Get-Content -Raw deploy\hestia\umstellen.sh | ssh benutzer@server.example.org "sudo env HUSER=hosting-user DOMAIN=example.org bash -s"
+#   umstellen:   Get-Content -Raw deploy\hestia\umstellen.sh | ssh benutzer@server.example.org "sudo env HUSER=hosting-user DOMAIN=example.org AKTION=umstellen bash -s"
+#   zurück:      Get-Content -Raw deploy\hestia\umstellen.sh | ssh benutzer@server.example.org "sudo env HUSER=hosting-user DOMAIN=example.org AKTION=zurueck bash -s"
 #
 # Umstellen sichert vorher die bisherige Seite (Dateien und, bei WordPress, die
 # Datenbank) nach /root/sicherung-webseite/<Datum>/ und merkt sich die alte
@@ -15,7 +15,7 @@
 set -euo pipefail
 export PATH=/usr/local/hestia/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-HUSER=${HUSER:-ralf}
+HUSER=${HUSER:?HUSER fehlt, z. B. HUSER=hosting-user}
 DOMAIN=${DOMAIN:?DOMAIN fehlt, z. B. DOMAIN=example.org}
 VORLAGE=webseite-8111
 PORT=8111

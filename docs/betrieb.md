@@ -40,11 +40,10 @@ Die Webseite läuft auf `test.example.org` in `/opt/hubiplan-website` als Contai
 `https://test.example.org/webseite/` dorthin weiter und entfernt dabei `/webseite`.
 
 - `BASE_PATH=/webseite`: Adressen der Seite beginnen mit `/webseite/`.
-- `SITE_HOST_OVERRIDE=www.hubertus-grimlinghausen.test`: Alle Aufrufe gehören zur
-  Demo-Webseite aus `seed_testdata` (statt Zuordnung über den Hostnamen). Ein
+- `SITE_HOST_OVERRIDE=www.sv-musterstadt.test`: Alle Aufrufe gehören zur
+  Demo-Webseite aus `seed_demoverein` (statt Zuordnung über den Hostnamen). Ein
   Vorschau-Link mit `?seite=<hostname>` (HUBIplan hängt ihn auf dem Testserver an) zeigt
-  für die Dauer dieser Vorschau eine andere Webseite derselben Instanz, z. B. die des
-  zusätzlichen Demovereins (`seed_demoverein`, `www.sv-musterstadt.test`).
+  für die Dauer dieser Vorschau eine andere eingerichtete Webseite derselben Instanz.
 - Die Seite ruft HUBIplan intern unter `http://backend:8000` auf und setzt dabei den
   Hostnamen `test.example.org`. Logos und Bilder (`/media/…`) holt sie intern bei Caddy
   (`HUBIPLAN_MEDIA_URL=http://web:8081`, Port nur im Docker-Netz; über die eigene
@@ -64,7 +63,7 @@ Die neue Fassung wird in `/opt/hubiplan-website.neu` gebaut, während die alte l
 danach werden die Ordner getauscht. Wird der Container nicht gesund, geht es automatisch
 zurück (die fehlerhafte Fassung bleibt in `….fehler`). Von Hand zurück (ein zweiter
 Aufruf geht wieder vor): `cd /opt/hubiplan-website && sh deploy/zurueck.sh`
-(auf Dogado mit `sudo`).
+(bei eingeschränkten Benutzerrechten mit `sudo`).
 
 Ansehen: In HUBIplan unter Webseite › Einstellungen „Vorschau öffnen“. Die Demo-Webseite
 steht im Wartungsmodus; ohne Vorschau zeigt `/webseite/` nur die Wartungsseite.
@@ -77,11 +76,11 @@ mit `~/hubiplan/scripts/release.sh entwurf|taggen` im Klon dieses Repos, Ablauf 
 `docs/releases.md` von hubiplan. `deploy/deploy.sh` nimmt auch Tags, legt die Version als
 `.version` ab und schreibt je Lauf eine Zeile nach `/opt/hubiplan-website.protokoll`.
 
-## Echtbetrieb (Dogado)
+## Betrieb hinter HestiaCP
 
-Auf Ralfs Dogado-Server (HestiaCP) läuft die Webseite unter der Hauptdomain des Vereins.
-HUBIplan läuft dort unter `verein.…` (siehe `docs/echtbetrieb.md` in hubiplan). Wie
-HUBIplan belegt die Webseite weder Port 80 noch 443:
+Bei einem Hosting mit HestiaCP kann die Webseite unter einer Vereinsdomain laufen,
+HUBIplan beispielsweise unter `verein.example.org` (siehe `docs/echtbetrieb.md` in
+hubiplan). Die Container belegen weder Port 80 noch 443:
 
 ```
 Browser ──HTTPS──> nginx (HestiaCP, Let's Encrypt, Vorlage webseite-8111)
@@ -94,16 +93,21 @@ Browser ──HTTPS──> nginx (HestiaCP, Let's Encrypt, Vorlage webseite-8111
 3. **Ausrollen**, beim ersten Mal mit den Angaben für die `.env`:
 
    ```bash
-   SSH=/mnt/c/Windows/System32/OpenSSH/ssh.exe DEPLOY_HOST=administrator@dogado DEPLOY_SUDO=1 \
+   DEPLOY_HOST=benutzer@server.example.org DEPLOY_SUDO=1 \
    WEBSITE_HINTER_PROXY=1 SITE_DOMAINS=<domain>,www.<domain> HUBIPLAN_HOST=verein.<domain> \
    deploy/deploy.sh origin/main
    ```
 
    Später reicht die erste Zeile mit `deploy/deploy.sh origin/main`.
-4. **Domain umstellen** mit `deploy/hestia/umstellen.sh` (erst nur prüfen, dann
-   `AKTION=umstellen`). Das Skript sichert die bisherige Seite (Dateien und
-   WordPress-Datenbank) nach `/root/sicherung-webseite/<Datum>/`, merkt sich die alte
+4. **Domain umstellen** mit `deploy/hestia/umstellen.sh`: `HUSER` muss explizit den
+   Hestia-Benutzer angeben, beispielsweise `HUSER=hosting-user DOMAIN=example.org`.
+   Erst nur prüfen, dann `AKTION=umstellen` setzen. Das Skript sichert die bisherige Seite
+   (Dateien und WordPress-Datenbank) nach `/root/sicherung-webseite/<Datum>/`, merkt sich die alte
    nginx-Vorlage und löscht nichts. `AKTION=zurueck` stellt die alte Vorlage wieder her.
+
+   Auch bestehende Aufrufe müssen `HUSER` ausdrücklich setzen. Ohne die Angabe bricht
+   das Skript vor jeder Serveraktion ab. Die bisherige Vorlage kann weiterhin mit
+   `HUSER=hosting-user DOMAIN=example.org AKTION=zurueck` wiederhergestellt werden.
 
 Antwortet der Container nicht (z. B. beim Ausrollen), zeigt nginx statt „502 Bad Gateway“
 die Seite „Die Webseite wird gerade aktualisiert“, die sich alle 5 Sekunden neu lädt.

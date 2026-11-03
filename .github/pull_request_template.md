@@ -15,6 +15,7 @@ für Entwickler, auf Deutsch und Englisch. „–“, wenn nichts sichtbar ist. 
 
 - [ ] `scripts/test.sh` ist grün, oder: <!-- was wurde stattdessen geprüft? -->
 - [ ] Nur erfundene Daten in Code, Tests und Bildschirmfotos
+- [ ] Keine Geheimnisse, internen Chat-Links, Host-/SSH-Zuordnungen oder privaten Betriebsdetails in Dateien, Commit-Nachrichten und PR-Text
 
 ## Beitragsbedingungen
 

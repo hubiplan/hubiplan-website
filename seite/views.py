@@ -911,7 +911,7 @@ def _media_cache(private: bool, kind: str, path: str) -> str:
 def media(request, kind: str, path: str):
     """Bild aus HUBIplan über diese Seite. Ohne die Grunddaten der Seite: Ob ein Bild
     gezeigt werden darf (Wartung, Vorschau), prüft HUBIplan beim Bild selbst. Sonst
-    wartete jedes Bild auf die Grunddaten (auf Dogado bis 1,7 s, 03.11.2026)."""
+    wartete jedes Bild erneut auf die Grunddaten."""
     if global_maintenance():
         return HttpResponse(status=503)
     preview = preview_session(request)

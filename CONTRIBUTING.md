@@ -12,6 +12,11 @@ willkommen. Contributions in English are welcome as well.
 - **Nur erfundene Daten**: in Code, Tests, Beispielen, Bildschirmfotos und Fehlerberichten
   nie echte Namen, Anschriften, Bankverbindungen oder Fotos von Vereinsmitgliedern.
 - **Keine Geheimnisse**: keine Passwörter, Schlüssel oder `.env`-Dateien einchecken.
+- **Keine privaten Betriebsdetails**: interne Chat-Links und Gesprächsverläufe, reale
+  Hostnamen und SSH-Zuordnungen, persönliche Rechnerpfade sowie kundenbezogene Betriebs-
+  oder Freigabevermerke gehören nicht in Dateien, Commit-Nachrichten, Issues oder PR-Texte.
+  Beispiele verwenden reservierte Beispieldomains und erfundene Daten; tatsächliche
+  Ausrollziele und Betriebsunterlagen bleiben in privater Konfiguration.
 
 ## Pull Requests
 
