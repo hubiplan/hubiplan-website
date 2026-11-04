@@ -1,7 +1,13 @@
-{% extends "seite/basis.html" %}{% load seite i18n %}
+{% extends "seite/basis.html" %}{% load seite static i18n %}
 {% block titel %}{% translate "Ergebnisse" as std %}{% baustein site "results" std %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Ergebnisse" as std %}{% baustein site "results" std %}</h1>
+{% if latest %}
+<section aria-labelledby="aktuelles-ergebnis">
+  <h2 id="aktuelles-ergebnis">{{ latest.title }}</h2>
+  {% include "seite/ergebnis_block.html" with c=latest embedded=True %}
+</section>
+{% endif %}
 {% if live %}
 <section>
   <h2>{% translate "Gerade im Gange" %}</h2>
@@ -30,5 +36,6 @@
   </table>
 </section>
 {% endfor %}
-{% if not live and not years and not series and not trophies %}<p>{% translate "Hier stehen noch keine Ergebnisse." %}</p>{% endif %}
+{% if not latest and not live and not years and not series and not trophies %}<p>{% translate "Hier stehen noch keine Ergebnisse." %}</p>{% endif %}
 {% endblock %}
+{% block skripte %}{% if latest.poll_seconds %}<script src="{% static 'seite/ergebnisse.js' %}" defer></script>{% endif %}{% endblock %}

@@ -3,13 +3,6 @@
 {% block inhalt %}
 <p class="klein"><a href="{% url 'ergebnisse' %}">{% translate "Alle Ergebnisse" %}</a></p>
 <h1>{{ c.title }}</h1>
-<p class="klein">{{ c.date|datum }}{% if c.location %} · {{ c.location }}{% endif %}{% if c.discipline %} · {{ c.discipline }}{% endif %}{% if not c.own and c.organizer %} · {% translate "Veranstalter:" %} {{ c.organizer }}{% endif %}</p>
-{% if c.description %}<p>{{ c.description|linebreaksbr }}</p>{% endif %}
-<div id="ergebnis"{% if c.poll_seconds %} data-stand="{% url 'ergebnis_stand' c.id %}" data-tabelle="{% url 'ergebnis_tabelle' c.id %}" data-version="{{ c.version }}" data-sekunden="{{ c.poll_seconds }}"{% endif %}>
-{% include "seite/ergebnis_inhalt.html" %}
-</div>
-{% if c.poll_seconds %}
-<p class="klein" id="ergebnis-hinweis" aria-live="polite">{% translate "Die Ergebnisse werden laufend ergänzt." %} <a href="{% url 'ergebnis' c.id %}">{% translate "Aktualisieren" %}</a></p>
-{% endif %}
+{% include "seite/ergebnis_block.html" %}
 {% endblock %}
 {% block skripte %}{% if c.poll_seconds %}<script src="{% static 'seite/ergebnisse.js' %}" defer></script>{% endif %}{% endblock %}

@@ -464,22 +464,29 @@ def honorary(request, site: Site):
 @require_GET
 @site_view()
 def results(request, site: Site):
-    """Übersicht: veröffentlichte Wettbewerbe, Reihen und Wanderpokale."""
+    """Neuester veröffentlichter Wettbewerb direkt, ältere als Links im Archiv."""
     if not _results_on(site):
         raise api.NotFound()
     data = site.get("results/", seconds=OVERVIEW_SECONDS)
     comps = [_with_date(c) for c in data.get("competitions", [])]
-    return _page(
+    # HUBIplan liefert veröffentlichte Wettbewerbe nach Datum absteigend.
+    latest = _result(site, comps[0]["id"]) if comps else None
+    older = comps[1:]
+    response = _page(
         request,
         "seite/ergebnisse.html",
         site,
         {
-            "live": [c for c in comps if not c.get("final")],
-            "years": _by_year([c for c in comps if c.get("final")]),
+            "latest": latest,
+            "live": [c for c in older if not c.get("final")],
+            "years": _by_year([c for c in older if c.get("final")]),
             "series": data.get("series", []),
             "trophies": data.get("trophies", []),
         },
     )
+    if latest and not latest.get("final"):
+        response["Cache-Control"] = "no-cache"
+    return response
 
 
 def _by_year(comps: list[dict]) -> list[tuple[int, list[dict]]]:
@@ -514,7 +521,12 @@ def result(request, site: Site, kennung: str):
 def result_table(request, site: Site, kennung: str):
     """Nur die Rangliste (für das Nachladen während „live“)."""
     data = _result(site, kennung)
-    response = _page(request, "seite/ergebnis_inhalt.html", site, {"c": data})
+    response = _page(
+        request,
+        "seite/ergebnis_inhalt.html",
+        site,
+        {"c": data, "embedded": request.GET.get("eingebettet") == "1"},
+    )
     response["Cache-Control"] = "no-cache"
     return response
 
