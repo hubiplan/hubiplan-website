@@ -22,7 +22,6 @@
     <thead><tr><th scope="col">{% translate "Platz" %}</th><th scope="col">{% if s.kind == "einheit" %}{% if site.info.unit_label %}{{ site.info.unit_label }}{% else %}{% translate "Einheit" %}{% endif %}{% elif s.kind == "mannschaft" %}{% translate "Mannschaft" %}{% else %}{% translate "Name" %}{% endif %}</th><th scope="col" class="zahl">{% translate "Ergebnis" %}</th></tr></thead>
     <tbody>{% for r in s.rows %}<tr><td>{% if r.place %}{{ r.place }}.{% endif %}</td><td>{{ r.name }}{% if r.club %} <span class="klein">({{ r.club }})</span>{% elif r.unit %} <span class="klein">({{ r.unit }})</span>{% endif %}{% if r.out_of_competition %} <span class="klein">{% translate "außer Konkurrenz" %}</span>{% endif %}{% if r.members %}<br><span class="klein">{{ r.members|join:", " }}</span>{% endif %}{% if r.note %}<br><span class="klein">{{ r.note }}</span>{% endif %}</td><td class="zahl">{{ r.value }}</td></tr>{% endfor %}</tbody>
   </table>
-  {% if not s.complete and s.field %}<p class="klein">{% blocktranslate with n=s.field %}Gezeigt sind die Preisplätze von {{ n }} Teilnehmenden.{% endblocktranslate %}</p>{% endif %}
   {% else %}<p class="klein">{% translate "Noch keine Ergebnisse." %}</p>{% endif %}
 </section>
 {% empty %}{% if not c.prizes and not c.titles %}<p>{% translate "Noch keine Ergebnisse." %}</p>{% endif %}

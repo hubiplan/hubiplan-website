@@ -305,10 +305,6 @@ msgstr "Result"
 msgid "außer Konkurrenz"
 msgstr "hors concours"
 
-#, python-format
-msgid "Gezeigt sind die Preisplätze von %(n)s Teilnehmenden."
-msgstr "Showing the prize places of %(n)s participants."
-
 msgid "Noch keine Ergebnisse."
 msgstr "No results yet."
 

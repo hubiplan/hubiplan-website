@@ -136,7 +136,7 @@ def test_leeres_ergebnisarchiv(client, hubiplan, monkeypatch):
     assert not any("/version/" in c[1] for c in hubiplan.calls)
 
 
-def test_preisplatz_hinweis_und_eingebettetes_nachladen(client, hubiplan, monkeypatch):
+def test_preisplaetze_ohne_hinweis_und_eingebettetes_nachladen(client, hubiplan, monkeypatch):
     mit_ergebnissen(hubiplan)
     original = fake.results_detail
 
@@ -153,7 +153,7 @@ def test_preisplatz_hinweis_und_eingebettetes_nachladen(client, hubiplan, monkey
         f"/ergebnisse/{LIVE}/tabelle/?eingebettet=1",
     ):
         html = text(client.get(url))
-        assert "Gezeigt sind die Preisplätze von 4 Teilnehmenden." in html
+        assert "Gezeigt sind" not in html
         assert "Plätze 1 bis 3" not in html
         assert "Gerd G." not in html
         if "tabelle" in url:
