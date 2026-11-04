@@ -3,6 +3,7 @@
 Ralf 2026-11-01: eigener Baustein „Ergebnisse“ und Block auf der Startseite; live fragt der
 Browser alle 15 Sekunden nach dem Stand und lädt die Rangliste nur bei Änderung neu."""
 
+from . import fake
 from .fake import BASE, COMP, LIVE, SERIES
 
 
@@ -29,7 +30,15 @@ def test_uebersicht_und_menue(client, hubiplan):
     html = text(r)
     assert r.status_code == 200
     assert 'href="/ergebnisse/" aria-current="page"' in html
-    assert "Gerade im Gange" in html and "Pokalschießen" in html
+    assert '<h2 id="aktuelles-ergebnis">Pokalschießen</h2>' in html
+    assert "Max M." in html and "ohne Namen" in html
+    assert "Gerade im Gange" not in html
+    assert f'href="/ergebnisse/{LIVE}/"' not in html
+    assert f'data-stand="/ergebnisse/{LIVE}/stand/"' in html
+    assert f'data-tabelle="/ergebnisse/{LIVE}/tabelle/?eingebettet=1"' in html
+    assert "ergebnisse.js" in html and "<h3>Einzel</h3>" in html
+    assert r["Cache-Control"] == "no-cache"
+    assert not any(f"results/{COMP}/" in c[1] for c in hubiplan.calls)
     assert f'href="/ergebnisse/{COMP}/"' in html
     assert "<h2>2027</h2>" in html
     assert f'href="/ergebnisse/reihe/{SERIES}/"' in html
@@ -89,3 +98,64 @@ def test_startseite_block(client, hubiplan):
     hubiplan.calls.clear()
     assert "Aktuelle Ergebnisse" not in text(client.get("/"))
     assert not any("results/" in c[1] for c in hubiplan.calls)
+
+
+def test_neuestes_abgeschlossenes_schiessen_direkt(client, hubiplan, monkeypatch):
+    mit_ergebnissen(hubiplan)
+    overview = fake.results_overview()
+    overview["competitions"].reverse()  # Neuester Eintrag laut öffentlicher Schnittstelle.
+    monkeypatch.setattr(fake, "results_overview", lambda: overview)
+    html = text(client.get("/ergebnisse/"))
+    assert '<h2 id="aktuelles-ergebnis">Vereinsmeisterschaft 2027</h2>' in html
+    assert "Vereinsmeister 2027" in html and "Max M." in html
+    assert f'href="/ergebnisse/{COMP}/"' not in html
+    assert f'href="/ergebnisse/{LIVE}/"' in html
+    assert "Gerade im Gange" in html
+    assert "ergebnisse.js" not in html and "data-stand" not in html
+    assert not any(f"results/{LIVE}/" in c[1] for c in hubiplan.calls)
+
+
+def test_einziges_schiessen_zeigt_ergebnisse_ohne_leermeldung(client, hubiplan, monkeypatch):
+    mit_ergebnissen(hubiplan)
+    overview = fake.results_overview()
+    overview.update(competitions=overview["competitions"][1:], series=[], trophies=[])
+    monkeypatch.setattr(fake, "results_overview", lambda: overview)
+    html = text(client.get("/ergebnisse/"))
+    assert "Max M." in html and "Vereinsmeister 2027" in html
+    assert "Hier stehen noch keine Ergebnisse." not in html
+    assert f'href="/ergebnisse/{COMP}/"' not in html
+
+
+def test_leeres_ergebnisarchiv(client, hubiplan, monkeypatch):
+    mit_ergebnissen(hubiplan)
+    monkeypatch.setattr(fake, "results_overview", lambda: {})
+    response = client.get("/ergebnisse/")
+    assert response.status_code == 200
+    assert "Hier stehen noch keine Ergebnisse." in text(response)
+    assert 'id="ergebnis"' not in text(response)
+    assert not any("/version/" in c[1] for c in hubiplan.calls)
+
+
+def test_preisplatz_hinweis_und_eingebettetes_nachladen(client, hubiplan, monkeypatch):
+    mit_ergebnissen(hubiplan)
+    original = fake.results_detail
+
+    def limited(token, version="v1"):
+        data = original(token, version)
+        scoring = data["scorings"][0]
+        scoring.update(complete=False, rows=scoring["rows"][:2])
+        return data
+
+    monkeypatch.setattr(fake, "results_detail", limited)
+    for url in (
+        "/ergebnisse/",
+        f"/ergebnisse/{LIVE}/",
+        f"/ergebnisse/{LIVE}/tabelle/?eingebettet=1",
+    ):
+        html = text(client.get(url))
+        assert "Gezeigt sind die Preisplätze von 4 Teilnehmenden." in html
+        assert "Plätze 1 bis 3" not in html
+        assert "Gerd G." not in html
+        if "tabelle" in url:
+            assert "<h3>Einzel</h3>" in html and "<h2>Einzel</h2>" not in html
+    assert "<h2>Einzel</h2>" in text(client.get(f"/ergebnisse/{LIVE}/tabelle/"))

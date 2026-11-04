@@ -100,7 +100,9 @@ def test_ergebnisse_englisch(client, englisch):
     englisch.info["results_url"] = BASE + "results/"
     englisch.info["nav"] = [{"key": "results", "label": "Results", "children": []}]
     html = text(client.get("/ergebnisse/"))
-    assert "<h1>Results</h1>" in html and "In progress" in html
+    assert "<h1>Results</h1>" in html and "Place" in html
+    assert "Max M." in html and "ergebnisse.js" in html
+    assert "Platz" not in html
     html = text(client.get(f"/ergebnisse/{COMP}/"))
     assert "All results" in html and "Place" in html
     assert "Platz" not in html

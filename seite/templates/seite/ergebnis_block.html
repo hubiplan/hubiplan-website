@@ -1,0 +1,9 @@
+{% load seite i18n %}
+<p class="klein">{{ c.date|datum }}{% if c.location %} · {{ c.location }}{% endif %}{% if c.discipline %} · {{ c.discipline }}{% endif %}{% if not c.own and c.organizer %} · {% translate "Veranstalter:" %} {{ c.organizer }}{% endif %}</p>
+{% if c.description %}<p>{{ c.description|linebreaksbr }}</p>{% endif %}
+<div id="ergebnis"{% if c.poll_seconds %} data-stand="{% url 'ergebnis_stand' c.id %}" data-tabelle="{% url 'ergebnis_tabelle' c.id %}{% if embedded %}?eingebettet=1{% endif %}" data-version="{{ c.version }}" data-sekunden="{{ c.poll_seconds }}"{% endif %}>
+{% include "seite/ergebnis_inhalt.html" %}
+</div>
+{% if c.poll_seconds %}
+<p class="klein" id="ergebnis-hinweis" aria-live="polite">{% translate "Die Ergebnisse werden laufend ergänzt." %} <a href="{% if embedded %}{% url 'ergebnisse' %}{% else %}{% url 'ergebnis' c.id %}{% endif %}">{% translate "Aktualisieren" %}</a></p>
+{% endif %}
