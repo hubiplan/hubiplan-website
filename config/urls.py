@@ -47,6 +47,7 @@ urlpatterns = [
     path("mitglieder/<slug:slug>/", views.members, name="mitglieder"),
     path("in-gedenken/", views.memorial, name="gedenken"),
     path("repertoire/", views.repertoire, name="repertoire"),
+    path("belegung/", views.bookings, name="belegung"),
     path("presse/", views.press, name="presse"),
     path("suche/", views.search, name="suche"),
     path("galerie/", views.gallery, name="galerie"),

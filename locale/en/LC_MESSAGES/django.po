@@ -770,3 +770,21 @@ msgstr[1] "%(n)s results"
 #, python-format
 msgid "Zu „%(query)s“ wurde nichts gefunden."
 msgstr "Nothing was found for “%(query)s”."
+
+msgid "Belegung"
+msgstr "Bookings"
+
+msgid "Vorige Woche"
+msgstr "Previous week"
+
+msgid "Nächste Woche"
+msgstr "Next week"
+
+msgid "ganztägig"
+msgstr "all day"
+
+msgid "frei"
+msgstr "free"
+
+msgid "Belegung im eigenen Kalender"
+msgstr "Bookings in your own calendar"
