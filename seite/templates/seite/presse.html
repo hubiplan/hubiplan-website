@@ -1,0 +1,11 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Presse" as std %}{% baustein site "press" std %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Presse" as std %}{% baustein site "press" std %}</h1>
+{# Pressespiegel (Ralf 05.11.2026): Vorschaubild, Titel, Quelle und Datum #}
+{% if artikel %}<ul class="presse">
+{% for a in artikel %}
+  <li><a href="{{ a.url }}" target="_blank" rel="noopener">{% if a.preview %}<img src="{{ a.preview }}" alt="" loading="lazy">{% else %}<span class="dok-symbol" aria-hidden="true">PDF</span>{% endif %}<strong>{{ a.title }}</strong>{% if a.source or a.when %}<span class="klein">{{ a.source }}{% if a.source and a.when %}, {% endif %}{% if a.when %}{{ a.when|date:"j. F Y" }}{% endif %}</span>{% endif %}<span class="nur-vorlesen"> ({% if a.kind == "pdf" %}PDF, {% endif %}{% translate "öffnet in neuem Fenster" %})</span></a></li>
+{% endfor %}
+</ul>{% else %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endif %}
+{% endblock %}

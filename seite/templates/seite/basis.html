@@ -10,7 +10,7 @@
 {% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}
 </head>
-<body class="design-{% if site %}{{ site.design }}{% else %}classic{% endif %}">
+<body class="design-{% if site %}{{ site.design }}{% else %}classic{% endif %}"{% block body_seite %}{% endblock %}>
 <a class="sprung" href="#inhalt">{% translate "Zum Inhalt springen" %}</a>
 {% if site.is_preview %}
 <div class="vorschau-hinweis" role="status">

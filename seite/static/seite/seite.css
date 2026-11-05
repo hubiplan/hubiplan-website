@@ -1,5 +1,6 @@
 /* Vereinswebseite: schlicht, fürs Handy zuerst, Farben aus HUBIplan (--primaer usw.) */
-/* Schriften für Designpakete (Ralf 05.11.2026): Open Sans und Roboto liegen hier, weil Pakete
+/* Schriften für Designpakete (Ralf 05.11.2026): Open Sans, Roboto und die
+   Schreibschrift Great Vibes liegen hier, weil Pakete
    keine Schriften laden dürfen und die Seite nichts von fremden Servern holt. Der Browser lädt
    eine Schrift erst, wenn ein Design sie benutzt (Lizenz SIL OFL 1.1, schriften/OFL-*.txt). */
 @font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/open-sans-400.woff2") format("woff2"); }
@@ -8,6 +9,7 @@
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/roboto-400.woff2") format("woff2"); }
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/roboto-600.woff2") format("woff2"); }
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/roboto-700.woff2") format("woff2"); }
+@font-face { font-family: "Great Vibes"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/great-vibes-400.woff2") format("woff2"); }
 :root {
   --primaer: #1f4e2c;
   --auf-primaer: #fff;
@@ -319,6 +321,29 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .dokumente a.mit-vorschau { flex-direction: column; align-items: stretch; text-align: center; }
 .dok-vorschau { display: block; width: 100%; height: auto; aspect-ratio: 210 / 297; object-fit: cover; object-position: top; background: #fff; border: 1px solid var(--linie); border-radius: 4px; }
 .dok-symbol { flex: none; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 8px; background: var(--primaer); color: var(--auf-primaer); font-size: .75rem; font-weight: 700; }
+
+/* Kapelle (Ralf 05.11.2026): Mitgliederlisten, Gedenken, Repertoire, Presse, Suche */
+.person .instrument, .mitglied .instrument { color: var(--text-leise); font-style: italic; }
+.person .anschrift { font-size: .9rem; }
+.mitgliederliste { list-style: none; padding: 0; margin: 0; display: grid; gap: .3rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+.mitglied { display: flex; align-items: center; gap: .7rem; padding: .35rem 0; border-bottom: 1px solid var(--linie); }
+.mitglied > span { display: flex; flex-direction: column; }
+.mitglied img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; }
+.gedenken .mitglied img { filter: grayscale(1); }
+.repertoire { list-style: none; padding: 0; margin: 0; columns: 3 14rem; column-gap: 2rem; }
+.repertoire li { break-inside: avoid; padding: .2rem 0; }
+.repertoire .klein { display: block; color: var(--text-leise); }
+.presse { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); }
+.presse a { display: flex; flex-direction: column; gap: .35rem; color: var(--text); }
+.presse img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; border: 1px solid var(--linie); border-radius: 4px; background: #fff; }
+.presse .klein { color: var(--text-leise); }
+.suche { display: flex; flex-wrap: wrap; gap: .5rem; align-items: end; margin-bottom: 1rem; }
+.suche label { flex-basis: 100%; font-weight: 600; }
+.suche input { flex: 1 1 14rem; min-width: 0; padding: .5rem .6rem; font: inherit; border: 1px solid var(--linie); border-radius: 6px; }
+.suchtreffer { list-style: none; padding: 0; }
+.suchtreffer li { padding: .6rem 0; border-bottom: 1px solid var(--linie); }
+.suche-punkt a { display: flex; align-items: center; }
+.lupe { display: block; }
 
 /* Nur für Screenreader (z. B. Überschrift der Startseite, der Name steht im Kopf) */
 .nur-vorlesen { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

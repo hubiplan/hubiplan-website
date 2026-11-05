@@ -1,5 +1,7 @@
 {% extends "seite/basis.html" %}{% load seite static i18n %}
 {% block main_klasse %} start{% endblock %}
+{# Für Designpakete: Startseite anders gestalten, z. B. Menü über dem Kopfbild #}
+{% block body_seite %} data-seite="start"{% endblock %}
 {% block inhalt %}
 {% if not greeting_title %}
 {# Der Name steht schon im Kopf; die Überschrift bleibt nur für Screenreader #}

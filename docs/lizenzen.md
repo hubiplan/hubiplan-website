@@ -27,8 +27,10 @@ Designpakete dürfen keine Schriften laden. Damit ein Paket trotzdem eine gängi
 nutzen kann, liegen in `seite/static/seite/schriften/` **Open Sans** und **Roboto**
 (Schnitte 400, 600, 700, Zeichensatz Latein) als WOFF2-Dateien, übernommen aus
 [Fontsource](https://fontsource.org) 5.3.0. Beide stehen unter der **SIL Open Font License 1.1**
-(Lizenztexte daneben als `OFL-open-sans.txt` und `OFL-roboto.txt`). Der Browser lädt eine
-Schrift nur, wenn das gewählte Design sie verwendet.
+(Lizenztexte daneben als `OFL-open-sans.txt` und `OFL-roboto.txt`). Dazu kommt die
+Schreibschrift **Great Vibes** (Schnitt 400, Latein, ebenfalls Fontsource 5.3.0, SIL OFL 1.1,
+`OFL-great-vibes.txt`) für Begrüßungen. Der Browser lädt eine Schrift nur, wenn das gewählte
+Design sie verwendet.
 
 ## Server
 

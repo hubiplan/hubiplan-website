@@ -7,11 +7,13 @@ gültiger Vorschau.
 
 from __future__ import annotations
 
+import datetime
 import functools
 import io
 import logging
 import re
 from collections import OrderedDict
+from urllib.parse import quote
 
 import qrcode
 import qrcode.image.svg
@@ -660,9 +662,120 @@ def documents(request, site: Site):
                 "preview": site.local(site.info.get("founding_deed_preview_url")),
             }
         )
+    # Eigene Dokumente aus HUBIplan (Ralf 05.11.); ältere Stände kennen sie nicht
+    try:
+        own = site.get("documents/?section=documents").get("documents", [])
+    except api.NotFound:
+        own = []
+    for d in own:
+        docs.append(
+            {
+                "title": d.get("title") or "",
+                "url": site.local(d.get("url")),
+                "kind": "PDF" if d.get("kind") == "pdf" else "",
+                "preview": site.local(d.get("preview_url")),
+            }
+        )
     if not docs:
         raise api.NotFound()
     return _page(request, "seite/dokumente.html", site, {"documents": docs})
+
+
+# --- Kapelle (Ralf 05.11.2026): Mitgliederlisten, Gedenken, Repertoire, Presse, Suche ---
+
+
+@require_GET
+@site_view()
+def members(request, site: Site, slug: str):
+    if not site.block("members"):
+        raise api.NotFound()
+    data = site.get(f"members/{slug}/")
+    return _page(request, "seite/mitglieder.html", site, {"liste": data})
+
+
+@require_GET
+@site_view()
+def memorial(request, site: Site):
+    if not site.block("memorial"):
+        raise api.NotFound()
+    data = site.get("memorial/")
+    return _page(
+        request,
+        "seite/gedenken.html",
+        site,
+        {"intro": data.get("intro"), "personen": data.get("members", [])},
+    )
+
+
+@require_GET
+@site_view()
+def repertoire(request, site: Site):
+    if not site.block("repertoire"):
+        raise api.NotFound()
+    pieces = site.get("repertoire/").get("pieces", [])
+    return _page(request, "seite/repertoire.html", site, {"stuecke": pieces})
+
+
+@require_GET
+@site_view()
+def press(request, site: Site):
+    if not site.block("press"):
+        raise api.NotFound()
+    items = []
+    for d in site.get("documents/?section=press").get("documents", []):
+        try:
+            when = datetime.date.fromisoformat(d["date"]) if d.get("date") else None
+        except ValueError:
+            when = None
+        items.append(
+            {
+                **d,
+                "when": when,
+                "url": site.local(d.get("url")),
+                "preview": site.local(d.get("preview_url")),
+            }
+        )
+    return _page(request, "seite/presse.html", site, {"artikel": items})
+
+
+SEARCH_MAX = 100
+
+
+def _search_url(site: Site, hit: dict) -> str | None:
+    kind = hit.get("kind")
+    if kind == "page" and hit.get("slug"):
+        return reverse("seite", args=[hit["slug"]])
+    if kind == "history":
+        return reverse("chronik")
+    if kind == "memorial":
+        return reverse("gedenken")
+    if kind == "album" and hit.get("slug"):
+        return reverse("album", args=[hit["slug"]])
+    if kind == "press":
+        return reverse("presse")
+    if kind == "documents":
+        return reverse("dokumente")
+    if kind == "event":
+        return reverse("termine")
+    return None
+
+
+@require_GET
+@site_view()
+def search(request, site: Site):
+    if not site.block("search"):
+        raise api.NotFound()
+    query = " ".join((request.GET.get("q") or "").split())[:SEARCH_MAX]
+    hits = []
+    if query:
+        data = site.get(f"search/?q={quote(query)}", cached=False)
+        for h in data.get("results", []):
+            url = _search_url(site, h)
+            if not url:
+                continue
+            start = parse_datetime(h["starts_at"]) if h.get("starts_at") else None
+            hits.append({**h, "url": url, "start": timezone.localtime(start) if start else None})
+    return _page(request, "seite/suche.html", site, {"query": query, "treffer": hits})
 
 
 @require_GET
@@ -914,7 +1027,7 @@ def _host(request) -> str:
 ALLOWED_API_FILES = re.compile(
     r"^(images/[A-Za-z0-9_\-]{4,40}/|photos/[a-f0-9]{20}/|honors/photos/[a-f0-9]{20}/"
     r"|posts/images/[A-Za-z0-9_\-]{4,40}/|statute/preview/|fee-rules/preview/"
-    r"|founding-deed/preview/)$"
+    r"|founding-deed/preview/|files/[A-Za-z0-9_\-]{8,24}/)$"
 )
 ALLOWED_MEDIA = re.compile(r"^[A-Za-z0-9_\-/.]{1,300}\.(png|jpe?g|webp)$")
 
@@ -963,9 +1076,15 @@ def media(request, kind: str, path: str):
     except api.Unavailable:
         return HttpResponse(status=503)
     ctype = res.content_type.split(";")[0].strip()
-    if ctype not in ("image/png", "image/jpeg", "image/webp"):
+    # PDF nur bei Dokumenten der Webseite (Pressespiegel, Ralf 05.11.)
+    pdf_ok = kind == "a" and path.startswith("files/")
+    if ctype not in ("image/png", "image/jpeg", "image/webp") and not (
+        pdf_ok and ctype == "application/pdf"
+    ):
         return HttpResponse(status=404)
     response = HttpResponse(res.body, content_type=ctype)
+    if ctype == "application/pdf":
+        response["Content-Disposition"] = "inline"
     # Mit Vorschau oder in der Wartung nur im eigenen Browser; der Zustand steht im
     # Zwischenspeicher der Grunddaten, wenn eine Seite davor geladen wurde
     private = bool(preview) or api.cached_maintenance(key)

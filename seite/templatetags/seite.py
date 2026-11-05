@@ -82,6 +82,8 @@ def _nav_url(site, node: dict) -> str | None:
         return reverse("wuerde", args=[node["id"]]) if node.get("id") else None
     if key == "units":
         return einheiten_url(site)
+    if key == "membertype":
+        return reverse("mitglieder", args=[node["id"]]) if node.get("id") else None
     name = NAV_URLS.get(key)
     return reverse(name) if name else None
 
@@ -99,6 +101,9 @@ NAV_URLS = {
     "statutes": "dokumente",
     "gallery": "galerie",
     "contact": "kontakt",
+    "memorial": "gedenken",
+    "repertoire": "repertoire",
+    "press": "presse",
 }
 
 

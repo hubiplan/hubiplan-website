@@ -742,3 +742,31 @@ msgid "%(n)s Album"
 msgid_plural "%(n)s Alben"
 msgstr[0] "%(n)s album"
 msgstr[1] "%(n)s albums"
+
+msgid "In Gedenken"
+msgstr "In memoriam"
+
+msgid "Repertoire"
+msgstr "Repertoire"
+
+msgid "Presse"
+msgstr "Press"
+
+msgid "Suche"
+msgstr "Search"
+
+msgid "Suchbegriff"
+msgstr "Search term"
+
+msgid "Suchen"
+msgstr "Search"
+
+#, python-format
+msgid "%(n)s Treffer"
+msgid_plural "%(n)s Treffer"
+msgstr[0] "%(n)s result"
+msgstr[1] "%(n)s results"
+
+#, python-format
+msgid "Zu „%(query)s“ wurde nichts gefunden."
+msgstr "Nothing was found for “%(query)s”."
