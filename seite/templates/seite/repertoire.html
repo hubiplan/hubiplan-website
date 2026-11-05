@@ -1,0 +1,9 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Repertoire" as std %}{% baustein site "repertoire" std %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Repertoire" as std %}{% baustein site "repertoire" std %}</h1>
+{# Stücke aus dem Notenarchiv (Ralf 05.11.2026), auf breiten Bildschirmen in Spalten #}
+{% if stuecke %}<ul class="repertoire">
+{% for p in stuecke %}<li><strong>{{ p.title }}</strong>{% if p.composer %} <span class="klein">{{ p.composer }}</span>{% endif %}</li>
+{% endfor %}</ul>{% else %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endif %}
+{% endblock %}

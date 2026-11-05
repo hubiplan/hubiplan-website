@@ -1,0 +1,14 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{{ liste.title }} · {% endblock %}
+{% block inhalt %}
+<h1>{{ liste.title }}</h1>
+{# Mitgliederliste einer Mitgliedsart (Ralf 05.11.2026): Name, Eintrittsjahr, Instrument #}
+<ul class="mitgliederliste">
+{% for p in liste.members %}
+  <li class="mitglied">
+    {% lokal site p.photo_url as foto %}{% if foto %}<img src="{{ foto }}" alt="" loading="lazy" width="96" height="96">{% endif %}
+    <span><strong>{{ p.name }}</strong>{% if p.instrument %}<span class="instrument">{{ p.instrument }}</span>{% endif %}{% if p.since %}<span class="klein seit">{% blocktranslate with jahr=p.since %}seit {{ jahr }}{% endblocktranslate %}</span>{% endif %}</span>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

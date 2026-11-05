@@ -380,6 +380,8 @@ class FakeHubiplan:
     versions: dict = field(default_factory=dict)
     # Eingespielte Designpakete (Schlüssel → Antwort von design/<schlüssel>/)
     packages: dict = field(default_factory=dict)
+    # Antworten weiterer Pfade (Tests), z. B. {"repertoire/": {...}}
+    antworten: dict = field(default_factory=dict)
 
     def __call__(self, method, path, *, data=None, preview=None, base=None):
         self.calls.append((method, path, preview))
@@ -475,6 +477,10 @@ class FakeHubiplan:
         if hidden:
             # Wie HUBIplan: Dateien einer verborgenen Webseite gibt es nicht
             return self.json({"detail": "nicht gefunden"}, 404 if files else 503)
+        # Weitere Antworten setzen Tests über ``antworten`` (Pfad mit oder ohne Abfrage)
+        extra = self.antworten.get(rest, self.antworten.get(rest.split("?")[0]))
+        if extra is not None:
+            return extra if isinstance(extra, api.Response) else self.json(extra)
         if (
             rest.startswith("images/")
             or rest.startswith("photos/")

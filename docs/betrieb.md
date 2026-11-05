@@ -16,6 +16,11 @@
 | `/ehrungen/` | Ehrungen, wenn in HUBIplan „Würden und Ehrungen unter einem Menüpunkt“ an ist (dann nicht beim Vorstand) |
 | `/chronik/` | Text „geschichte“ aus HUBIplan, darunter die Zeitleiste: Ereignisse mit Jahr oder Zeitraum, Kapitel als Zwischenüberschriften, Sprungmarken (Kapitel, sonst ab 15 Einträgen Jahrzehnte), Bild vergrößert im Fenster (`zeitleiste.js`); mit `timeline_newest_first` neueste Einträge oben; bis zu sechs Bilder je Ereignis (`images`), im Fenster zum Blättern; Bildposition `image_position` (automatisch abwechselnd, links, rechts, groß darunter) |
 | `/aemter/` | frühere und heutige Inhaber der Ämter |
+| `/mitglieder/<name>/` | Mitgliederliste einer Mitgliedsart (Name, Eintrittsjahr, auf Wunsch Instrument) |
+| `/in-gedenken/` | verstorbene Mitglieder mit Todesjahr, Einleitung aus der Textseite „in-gedenken“ |
+| `/repertoire/` | Stücke aus dem Notenarchiv mit „im Repertoire auf der Webseite“ |
+| `/presse/` | Pressespiegel (PDF oder Bild mit Quelle und Datum) |
+| `/suche/?q=…` | Suche in Textseiten, Alben, Dokumenten und Terminen (Lupe im Menü) |
 | `/geschichte/` | alte Adresse, leitet zu `/chronik/` bzw. `/aemter/` weiter |
 | `/seite/<name>/` | weitere Textseiten aus HUBIplan |
 | `/kontakt/` | Kontaktformular (der Browser schickt direkt an HUBIplan) |

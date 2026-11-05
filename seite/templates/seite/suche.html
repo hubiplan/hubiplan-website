@@ -1,0 +1,22 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Suche" %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Suche" %}</h1>
+<form class="suche" action="{% url 'suche' %}" method="get" role="search">
+  <label for="suche-q">{% translate "Suchbegriff" %}</label>
+  <input id="suche-q" type="search" name="q" value="{{ query }}" maxlength="100" minlength="2" autofocus>
+  <button class="knopf" type="submit">{% translate "Suchen" %}</button>
+</form>
+{% if query %}
+{% if treffer %}
+<p class="klein">{% blocktranslate count n=treffer|length %}{{ n }} Treffer{% plural %}{{ n }} Treffer{% endblocktranslate %}</p>
+<ul class="suchtreffer">
+{% for h in treffer %}
+  <li><a href="{{ h.url }}"><strong>{{ h.title }}</strong></a>{% if h.start %} <span class="klein">{{ h.start|date:"j. F Y" }}</span>{% endif %}{% if h.text %}<br><span class="klein">{{ h.text }}</span>{% endif %}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>{% blocktranslate %}Zu „{{ query }}“ wurde nichts gefunden.{% endblocktranslate %}</p>
+{% endif %}
+{% endif %}
+{% endblock %}
