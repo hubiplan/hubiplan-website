@@ -1,0 +1,9 @@
+{% load seite i18n %}<ul class="galerie-alben">
+{% for a in alben %}
+  <li><a href="{% url 'album' a.slug %}">
+    {% lokal site a.cover.small_url as titelbild %}{% if titelbild %}<img src="{{ titelbild }}" alt="" loading="lazy"{% if a.cover.width and a.cover.height %} width="{{ a.cover.width }}" height="{{ a.cover.height }}"{% endif %}>{% else %}<span class="galerie-ohne-bild" aria-hidden="true"></span>{% endif %}
+    <span class="galerie-album-titel">{{ a.title }}</span>
+    <span class="klein">{% if a.year %}{{ a.year }} · {% endif %}{% blocktranslate count n=a.images %}{{ n }} Bild{% plural %}{{ n }} Bilder{% endblocktranslate %}{% if a.albums %} · {% blocktranslate count n=a.albums %}{{ n }} Album{% plural %}{{ n }} Alben{% endblocktranslate %}{% endif %}</span>
+  </a></li>
+{% endfor %}
+</ul>

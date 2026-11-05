@@ -421,6 +421,19 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   .bild-rechts .zeitleiste-bilder.mehrere .zeitleiste-bild img, .bild-links .zeitleiste-bilder.mehrere .zeitleiste-bild img { width: 100%; height: auto; aspect-ratio: 3 / 2; }
   .zeitleiste-zeitraum { display: inline; position: absolute; left: calc(-1 * var(--zl-einzug)); width: 6.4rem; text-align: right; top: .3em; }
 }
+/* Galerie (Ralf 05.11.2026): Alben als Kacheln mit Titelbild, Bilder als Raster */
+.galerie-alben { list-style: none; padding: 0; margin: 1rem 0 1.5rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
+.galerie-alben a { display: flex; flex-direction: column; gap: .2rem; height: 100%; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); overflow: hidden; color: var(--text); padding-bottom: .7rem; }
+.galerie-alben a:hover { border-color: var(--primaer); opacity: 1; }
+.galerie-alben img, .galerie-ohne-bild { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: .4rem; }
+.galerie-ohne-bild { background: var(--grund); }
+.galerie-album-titel { font-weight: 600; padding: 0 .8rem; }
+.galerie-alben .klein { padding: 0 .8rem; }
+.galerie-bilder { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: .4rem; grid-template-columns: repeat(auto-fill, minmax(min(11rem, 45%), 1fr)); }
+.galerie-bild { display: block; line-height: 0; border-radius: 6px; overflow: hidden; }
+.galerie-bild img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+.galerie-bild:hover { opacity: 1; }
+.galerie-bild:hover img { filter: brightness(1.05); }
 .bild-fenster { max-width: min(60rem, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); border: 1px solid var(--linie); border-radius: var(--rund); padding: .8rem; background: var(--flaeche); color: inherit; }
 .bild-fenster::backdrop { background: rgb(0 0 0 / .6); }
 .bild-fenster img { display: block; max-width: 100%; max-height: calc(100vh - 9rem); height: auto; margin: 0 auto; }
@@ -428,4 +441,4 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .bild-fenster form { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; align-items: center; }
 .bild-blaettern { display: inline-flex; gap: .5rem; align-items: center; margin-right: auto; }
 .bild-blaettern[hidden] { display: none; }
-@media print { .zeitleiste-sprung, .bild-fenster { display: none; } }
+@media print { .zeitleiste-sprung, .bild-fenster { display: none; } .galerie-bilder { grid-template-columns: repeat(4, 1fr); } }

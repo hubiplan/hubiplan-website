@@ -537,6 +537,10 @@ class FakeHubiplan:
             return self.json(events())
         if base.startswith("results/"):
             return self.results(base, rest)
+        if base.startswith("galleries/"):
+            # Galerie (Tests setzen die Antworten über info["galerie"])
+            found = self.info.get("galerie", {}).get(base)
+            return self.json(found) if found else self.json({"detail": "nicht gefunden"}, 404)
         if base in table:
             return self.json(table[base])
         return self.json({"detail": "nicht gefunden"}, 404)

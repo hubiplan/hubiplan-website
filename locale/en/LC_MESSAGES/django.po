@@ -721,3 +721,24 @@ msgstr "%(jahr)ss"
 
 msgid "Bild {n} von {m}"
 msgstr "Image {n} of {m}"
+
+msgid "Galerie"
+msgstr "Gallery"
+
+msgid "Hier stehen noch keine Alben."
+msgstr "There are no albums here yet."
+
+msgid "In diesem Album sind noch keine Bilder."
+msgstr "There are no images in this album yet."
+
+#, python-format
+msgid "%(n)s Bild"
+msgid_plural "%(n)s Bilder"
+msgstr[0] "%(n)s image"
+msgstr[1] "%(n)s images"
+
+#, python-format
+msgid "%(n)s Album"
+msgid_plural "%(n)s Alben"
+msgstr[0] "%(n)s album"
+msgstr[1] "%(n)s albums"

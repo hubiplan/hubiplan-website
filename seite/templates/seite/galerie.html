@@ -1,0 +1,6 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Galerie" as std %}{% baustein site "gallery" std %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Galerie" as std %}{% baustein site "gallery" std %}</h1>
+{% if albums %}{% include "seite/album_kacheln.html" with alben=albums %}{% else %}<p>{% translate "Hier stehen noch keine Alben." %}</p>{% endif %}
+{% endblock %}
