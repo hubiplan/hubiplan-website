@@ -7,8 +7,9 @@ anwaltliche Prüfung. Die ausführliche Beschreibung für das Gesamtsystem steht
 
 ## Was der Browser bekommt
 
-Eigene Vorlagen, eigenes CSS und eigene Skripte; keine fremden Skripte, Schriften oder
-Bilder aus dem Repository, kein Laden von fremden Servern. Logos, Wappen, Fotos und Texte
+Eigene Vorlagen, eigenes CSS und eigene Skripte; keine fremden Skripte oder Bilder, kein
+Laden von fremden Servern. Einzige fremde Bestandteile sind die Schriften für Designpakete
+(siehe unten). Logos, Wappen, Fotos und Texte
 kommen zur Laufzeit aus HUBIplan; für ihre Rechte sorgen die Vereine (Hinweise in HUBIplan).
 
 Symbole für Social-Media-Kanäle (`seite/templatetags/seite.py`): Die Pfade für Facebook,
@@ -19,6 +20,15 @@ nur als Link auf den eigenen Kanal des Vereins.
 Beiträge aus Instagram und Facebook speichert HUBIplan mit Text und Bildern und gibt sie an
 die Webseite weiter. Die Verbindung zu Meta gibt keine Rechte an fremden Bildern oder Musik;
 Videos zeigt die Webseite nur als Vorschaubild mit Link.
+
+## Schriften
+
+Designpakete dürfen keine Schriften laden. Damit ein Paket trotzdem eine gängige Schrift
+nutzen kann, liegen in `seite/static/seite/schriften/` **Open Sans** und **Roboto**
+(Schnitte 400, 600, 700, Zeichensatz Latein) als WOFF2-Dateien, übernommen aus
+[Fontsource](https://fontsource.org) 5.3.0. Beide stehen unter der **SIL Open Font License 1.1**
+(Lizenztexte daneben als `OFL-open-sans.txt` und `OFL-roboto.txt`). Der Browser lädt eine
+Schrift nur, wenn das gewählte Design sie verwendet.
 
 ## Server
 
