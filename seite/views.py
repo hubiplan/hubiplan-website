@@ -595,6 +595,26 @@ def chronicle(request, site: Site):
     )
 
 
+# --- Galerie (Ralf 05.11.2026): Alben mit Unteralben, Bilder groß im Fenster ---
+
+
+@require_GET
+@site_view()
+def gallery(request, site: Site):
+    if not site.block("gallery"):
+        raise api.NotFound()
+    albums = site.get("galleries/").get("albums", [])
+    return _page(request, "seite/galerie.html", site, {"albums": albums})
+
+
+@require_GET
+@site_view()
+def album(request, site: Site, slug: str):
+    if not site.block("gallery"):
+        raise api.NotFound()
+    return _page(request, "seite/album.html", site, {"album": site.get(f"galleries/{slug}/")})
+
+
 @require_GET
 @site_view()
 def offices(request, site: Site):

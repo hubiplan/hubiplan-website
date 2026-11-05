@@ -1,6 +1,7 @@
-// Zeitleiste der Chronik: Ein Klick auf ein Bild zeigt es groß in einem Fenster
-// (<dialog>); ohne JavaScript öffnet der Link das Bild selbst. Hat ein Ereignis mehrere
-// Bilder, blättert man im Fenster mit „Voriges/Nächstes Bild“ oder den Pfeiltasten.
+// Bilder groß im Fenster (Zeitleiste der Chronik, Galerie): Ein Klick auf ein Bild zeigt
+// es groß in einem Fenster (<dialog>); ohne JavaScript öffnet der Link das Bild selbst.
+// Mehrere Bilder einer Gruppe (Ereignis, Album) blättert man mit „Voriges/Nächstes Bild“
+// oder den Pfeiltasten.
 // Esc, „Schließen“ oder ein Klick daneben schließen das Fenster.
 (function () {
   "use strict";
@@ -36,12 +37,12 @@
     }
     if (e.target.closest && e.target.closest(".bild-zurueck")) return zeigen(stelle - 1);
     if (e.target.closest && e.target.closest(".bild-weiter")) return zeigen(stelle + 1);
-    var link = e.target.closest ? e.target.closest("a.zeitleiste-bild") : null;
+    var link = e.target.closest ? e.target.closest("a.zeitleiste-bild, a.galerie-bild") : null;
     if (!link || e.ctrlKey || e.metaKey || e.shiftKey) return;
     e.preventDefault();
-    var behaelter = link.closest(".zeitleiste-bilder");
+    var behaelter = link.closest(".zeitleiste-bilder, .galerie-bilder");
     gruppe = behaelter
-      ? Array.prototype.slice.call(behaelter.querySelectorAll("a.zeitleiste-bild"))
+      ? Array.prototype.slice.call(behaelter.querySelectorAll("a.zeitleiste-bild, a.galerie-bild"))
       : [link];
     zeigen(gruppe.indexOf(link));
     fenster.showModal();

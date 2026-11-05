@@ -1,0 +1,18 @@
+{% extends "seite/basis.html" %}{% load static seite i18n %}
+{% block titel %}{{ album.title }} · {% endblock %}
+{% block inhalt %}
+<p class="brotkrumen"><a href="{% url 'galerie' %}">{% translate "Galerie" as std %}{% baustein site "gallery" std %}</a>{% if album.parent %} › <a href="{% url 'album' album.parent.slug %}">{{ album.parent.title }}</a>{% endif %}</p>
+<h1>{{ album.title }}</h1>
+{% if album.year %}<p class="klein">{{ album.year }}</p>{% endif %}
+{% if album.description %}<p>{{ album.description|linebreaksbr }}</p>{% endif %}
+{% if album.albums %}{% include "seite/album_kacheln.html" with alben=album.albums %}{% endif %}
+{% if album.images %}
+<ul class="galerie-bilder">
+  {% for b in album.images %}{% lokal site b.small_url as klein %}{% lokal site b.url as gross %}
+  <li><a class="galerie-bild" href="{{ gross }}" data-unterschrift="{{ b.caption }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a></li>
+  {% endfor %}
+</ul>
+{% include "seite/bildfenster.html" %}
+{% elif not album.albums %}<p>{% translate "In diesem Album sind noch keine Bilder." %}</p>{% endif %}
+{% endblock %}
+{% block skripte %}{% if album.images %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}{% endblock %}

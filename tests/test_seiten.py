@@ -290,7 +290,7 @@ def test_chronik_zeitleiste(client, hubiplan):
     assert 'src="/medien/a/images/fahne1/?size=small"' in html
     assert 'data-unterschrift="Die neue Fahne"' in html
     assert 'alt="Fahne mit Wappen"' in html
-    assert 'id="bild-fenster"' in html and "zeitleiste.js" in html
+    assert 'id="bild-fenster"' in html and "bildfenster.js" in html
     # Ohne Kapitel und mit wenigen Einträgen keine Sprungmarken
     assert "zeitleiste-sprung" not in html
 

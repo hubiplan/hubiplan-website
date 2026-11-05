@@ -97,6 +97,7 @@ NAV_URLS = {
     "honorary": "ehrungen",
     "results": "ergebnisse",
     "statutes": "dokumente",
+    "gallery": "galerie",
     "contact": "kontakt",
 }
 
