@@ -1,4 +1,13 @@
 /* Vereinswebseite: schlicht, fürs Handy zuerst, Farben aus HUBIplan (--primaer usw.) */
+/* Schriften für Designpakete (Ralf 05.11.2026): Open Sans und Roboto liegen hier, weil Pakete
+   keine Schriften laden dürfen und die Seite nichts von fremden Servern holt. Der Browser lädt
+   eine Schrift erst, wenn ein Design sie benutzt (Lizenz SIL OFL 1.1, schriften/OFL-*.txt). */
+@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/open-sans-400.woff2") format("woff2"); }
+@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/open-sans-600.woff2") format("woff2"); }
+@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/open-sans-700.woff2") format("woff2"); }
+@font-face { font-family: "Roboto"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/roboto-400.woff2") format("woff2"); }
+@font-face { font-family: "Roboto"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/roboto-600.woff2") format("woff2"); }
+@font-face { font-family: "Roboto"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/roboto-700.woff2") format("woff2"); }
 :root {
   --primaer: #1f4e2c;
   --auf-primaer: #fff;
@@ -80,6 +89,9 @@ code { word-break: break-all; font-size: .85em; }
 .kopf-innen { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; position: relative; }
 .marke { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: .75rem; color: inherit; text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.25; padding: .5rem 0; }
 .marke img { width: 56px; height: 56px; object-fit: contain; flex: none; }
+/* Kopfbild statt Wappen und Name: so breit wie Platz ist, höchstens in Originalgröße */
+.marke.marke-bild { flex: 0 1 auto; padding: .5rem 0; }
+.marke.marke-bild img { width: auto; height: auto; max-width: 100%; max-height: 10rem; object-fit: contain; }
 /* Lange Vereinsnamen brechen notfalls im Wort um, statt unter den Menüknopf zu laufen */
 .marke span { overflow-wrap: anywhere; hyphens: auto; }
 .menue summary {

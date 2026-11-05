@@ -1,10 +1,15 @@
 {% load seite i18n %}{# Kopf für alle Designs; die Designs unterscheiden sich im CSS (design-<name>.css) #}
 <header class="kopf">
   <div class="breite kopf-innen">
+    {% lokal site site.info.header_image.url as kopfbild %}{% if kopfbild %}
+    {# Kopfbild aus HUBIplan statt Wappen und Name (Ralf 05.11.2026); der Name steht im Alternativtext #}
+    <a class="marke marke-bild" href="{% url 'start' %}"><img src="{{ kopfbild }}" alt="{{ site.info.header_image.alt|default:site.info.name }}"{% if site.info.header_image.width and site.info.header_image.height %} width="{{ site.info.header_image.width }}" height="{{ site.info.header_image.height }}"{% endif %}></a>
+    {% else %}
     <a class="marke" href="{% url 'start' %}">
       {% lokal site site.info.logo_url as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="56" height="56">{% endif %}
       <span>{% if site %}{{ site.info.name }}{% else %}{% translate "Vereinswebseite" %}{% endif %}</span>
     </a>
+    {% endif %}
     {% if punkte %}
     <nav class="menue-breit" aria-label="{% translate "Hauptmenü" %}">
       <ul>{% for p in punkte %}<li{% if p.children %} class="hat-unter"{% endif %}>{% if p.children %}<details class="untermenue"><summary{% if p.active %} class="aktiv"{% endif %}>{{ p.label }}</summary><ul>{% for c in p.children %}<li><a href="{{ c.url }}"{% if c.active %} aria-current="page"{% endif %}>{{ c.label }}</a></li>{% endfor %}</ul></details>{% else %}<a href="{{ p.url }}"{% if p.active %} aria-current="page"{% endif %}>{{ p.label }}</a>{% endif %}</li>{% endfor %}</ul>
