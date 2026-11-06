@@ -709,6 +709,55 @@ def memorial(request, site: Site):
 
 @require_GET
 @site_view()
+def bookings(request, site: Site):
+    """Belegung von Schützenhaus, Stand oder Material (nur „belegt“ bzw. öffentliche Zwecke)."""
+    if not site.block("bookings"):
+        raise api.NotFound()
+    try:
+        start = datetime.date.fromisoformat(request.GET.get("ab") or "")
+    except ValueError:
+        start = timezone.localdate()
+    start -= datetime.timedelta(days=start.weekday())
+    data = site.get(f"bookings/?start={start.isoformat()}")
+    titles = {i["id"]: i["title"] for i in data.get("items", [])}
+    days = OrderedDict((start + datetime.timedelta(days=n), []) for n in range(7))
+    for row in data.get("occurrences", []):
+        begin = parse_datetime(row.get("starts_at") or "")
+        end = parse_datetime(row.get("ends_at") or "")
+        if begin is None or end is None:
+            continue
+        begin, end = timezone.localtime(begin), timezone.localtime(end)
+        last = (end - datetime.timedelta(seconds=1)).date()
+        for day in days:
+            if begin.date() <= day <= last:
+                days[day].append(
+                    {
+                        "objekt": titles.get(row.get("item"), ""),
+                        "titel": row.get("title", ""),
+                        "beginn": begin if begin.date() == day else None,
+                        "ende": end if end.date() == day else None,
+                        "ganztags": row.get("all_day", False),
+                    }
+                )
+    ics = data.get("ics_url")
+    return _page(
+        request,
+        "seite/belegung.html",
+        site,
+        {
+            "tage": list(days.items()),
+            "objekte": data.get("items", []),
+            "vorher": (start - datetime.timedelta(days=7)).isoformat(),
+            "nachher": (start + datetime.timedelta(days=7)).isoformat(),
+            "ics_url": ics,
+            "webcal_url": _webcal(ics),
+            "qr": mark_safe(_qr_svg(_webcal(ics))) if ics else "",  # noqa: S308
+        },
+    )
+
+
+@require_GET
+@site_view()
 def repertoire(request, site: Site):
     if not site.block("repertoire"):
         raise api.NotFound()

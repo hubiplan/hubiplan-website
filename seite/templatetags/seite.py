@@ -103,6 +103,7 @@ NAV_URLS = {
     "contact": "kontakt",
     "memorial": "gedenken",
     "repertoire": "repertoire",
+    "bookings": "belegung",
     "press": "presse",
 }
 

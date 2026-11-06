@@ -1,0 +1,24 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Belegung" as std %}{% baustein site "bookings" std %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Belegung" as std %}{% baustein site "bookings" std %}</h1>
+{# Belegung von Schützenhaus, Stand oder Material; Namen erscheinen nie #}
+{% if objekte %}<p class="klein">{% for o in objekte %}{{ o.title }}{% if not forloop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+<p class="blaettern"><a href="?ab={{ vorher }}">{% translate "Vorige Woche" %}</a> · <a href="?ab={{ nachher }}">{% translate "Nächste Woche" %}</a></p>
+{% for tag, liste in tage %}
+<section class="belegung-tag">
+  <h2>{{ tag|date:"l, j. F" }}</h2>
+  {% if liste %}<ul class="termine">{% for b in liste %}
+    <li><strong>{% if b.ganztags or not b.beginn and not b.ende %}{% translate "ganztägig" %}{% else %}{% if b.beginn %}{{ b.beginn|time:"H:i" }}{% endif %}–{% if b.ende %}{{ b.ende|time:"H:i" }}{% endif %}{% endif %}</strong> {{ b.objekt }}: {{ b.titel }}</li>
+  {% endfor %}</ul>{% else %}<p class="klein">{% translate "frei" %}</p>{% endif %}
+</section>
+{% endfor %}
+{% if ics_url %}
+<section class="abo karte">
+  <h2>{% translate "Belegung im eigenen Kalender" %}</h2>
+  <p><a class="knopf" href="{{ webcal_url }}">{% translate "Kalender abonnieren" %}</a></p>
+  <p class="klein">{% translate "Oder diese Adresse im Kalender als Abo hinzufügen:" %}<br><code>{{ ics_url }}</code></p>
+  <div class="qr" aria-label="{% translate "QR-Code für das Kalender-Abo" %}">{{ qr }}</div>
+</section>
+{% endif %}
+{% endblock %}
