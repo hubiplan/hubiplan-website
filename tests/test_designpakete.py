@@ -205,3 +205,14 @@ def test_standard_export_bleibt_als_datenpaket_zeichenbar(client, hubiplan, layo
     )
     assert compiled is not None and compiled["layout"] == layout
     assert not compiled["templates"]
+
+
+def test_paket_css_in_der_vorschau_kurz_im_browser(client, mit_paket):
+    """Vorschau: Das CSS mit passender Kennung behält der eigene Browser kurz, sonst holt
+    jeder Seitenwechsel die Grunddaten noch einmal nur für das CSS."""
+    mit_paket.maintenance = True
+    client.cookies["vorschau"] = mit_paket.preview_session
+    r = client.get("/design/hubertus.css?v=abc123def4567890")
+    assert r.status_code == 200
+    assert r["Cache-Control"] == "private, max-age=300"
+    assert client.get("/design/hubertus.css?v=alt")["Cache-Control"] == "private, no-store"

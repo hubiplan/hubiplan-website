@@ -1087,6 +1087,12 @@ LOGO_STAMPED = re.compile(r"^logos/.+-\d{14}\.(png|jpe?g|webp)$")
 IMAGE_VERSIONED = re.compile(r"^images/[A-Za-z0-9_\-]+-v\d+/$")
 
 
+# Bilder in der Vorschau: Seiten und Daten prüft HUBIplan bei jedem Aufruf (Widerruf
+# wirkt sofort), Bilder darf aber der eigene Browser kurz behalten. Sonst lädt jeder
+# Seitenwechsel alle Bilder neu, und jedes kostet einen Abruf in HUBIplan.
+PREVIEW_MEDIA_CACHE = "private, max-age=300"
+
+
 def _media_cache(private: bool, kind: str, path: str) -> str:
     """Wie lange der Browser ein Bild behalten darf. Vorschau und Wartung: nur der eigene
     Browser, 10 Minuten (sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu)."""
@@ -1138,7 +1144,7 @@ def media(request, kind: str, path: str):
     # Zwischenspeicher der Grunddaten, wenn eine Seite davor geladen wurde
     private = bool(preview) or api.cached_maintenance(key)
     response["Cache-Control"] = (
-        "private, no-store" if preview else _media_cache(private, kind, path)
+        PREVIEW_MEDIA_CACHE if preview else _media_cache(private, kind, path)
     )
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
@@ -1179,7 +1185,8 @@ def design_css(request, site: Site, key: str):
     if request.GET.get("v") != package["hash"]:
         response["Cache-Control"] = "private, no-store"
     elif site.is_preview:
-        response["Cache-Control"] = "private, no-store"
+        # Sonst holt jeder Seitenwechsel die Grunddaten noch einmal nur für das CSS
+        response["Cache-Control"] = PREVIEW_MEDIA_CACHE
     elif site.maintenance:
         response["Cache-Control"] = "private, max-age=86400"
     else:
