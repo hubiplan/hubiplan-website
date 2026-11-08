@@ -10,7 +10,7 @@
     {% if p.images|length > 1 %}<ul class="beitrag-weitere">{% for b in p.images|slice:"1:5" %}{% lokal site b.url as bild %}{% if bild %}<li><img src="{{ bild }}?size=small" alt="{{ b.alt }}" loading="lazy"></li>{% endif %}{% endfor %}</ul>{% endif %}
     <p class="klein">{% if p.when %}<time datetime="{{ p.when|date:'c' }}">{{ p.when|datum:"tag" }}</time> · {% endif %}{{ p.kind_label }}</p>
     {% if p.text %}{% if p.text|wordcount > 45 %}
-    <p class="beitrag-text">{{ p.text|truncatewords:40 }}</p>
+    <p class="beitrag-text beitrag-anriss">{{ p.text|truncatewords:40 }}</p>
     <details class="beitrag-mehr"><summary>{% translate "Weiterlesen" %}</summary><p class="beitrag-text">{{ p.text|linebreaksbr }}</p></details>
     {% else %}<p class="beitrag-text">{{ p.text|linebreaksbr }}</p>{% endif %}{% endif %}
     {% if p.permalink %}<p class="klein"><a href="{{ p.permalink }}" rel="noopener noreferrer nofollow" target="_blank">{% if p.media_type == "video" %}{% blocktranslate with ort=p.kind_label %}Video auf {{ ort }} ansehen{% endblocktranslate %}{% else %}{% blocktranslate with ort=p.kind_label %}Beitrag auf {{ ort }} ansehen{% endblocktranslate %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}

@@ -1,7 +1,11 @@
 """Aktuelles: Beiträge aus Instagram/Facebook, von HUBIplan gespeichert (alles erfunden)."""
 
+from pathlib import Path
+
 import pytest
 from django.core.cache import cache
+
+from . import fake
 
 
 def text(response) -> str:
@@ -77,3 +81,16 @@ def test_zugseite(client, mit_beitraegen):
     assert "<h2>Aktuelles</h2>" in html and "Probe für den Umzug." in html
     calls = [c[1] for c in mit_beitraegen.calls if "posts/" in c[1]]
     assert any("einheit=jaeger" in c for c in calls)
+
+
+def test_weiterlesen_ersetzt_anriss(client, mit_beitraegen, monkeypatch):
+    """Langer Text: Anriss plus „Weiterlesen“; aufgeklappt verschwindet der Anriss (CSS),
+    damit der Text nicht doppelt dasteht."""
+    lang = " ".join(f"Wort{i}" for i in range(60))
+    monkeypatch.setattr(fake, "POSTS", [fake._post(9, "instagram", lang)])
+    html = text(client.get("/aktuelles/"))
+    assert '<p class="beitrag-text beitrag-anriss">Wort0' in html
+    assert html.count("Wort59") == 1  # nur im vollen Text, nicht im Anriss
+    assert 'class="beitrag-mehr"' in html
+    css = (Path(__file__).parent.parent / "seite/static/seite/seite.css").read_text()
+    assert ".beitrag-anriss:has(+ .beitrag-mehr[open]) { display: none; }" in css
