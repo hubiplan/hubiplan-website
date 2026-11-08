@@ -385,6 +385,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .beitrag-weitere img { width: 3.5rem; height: 3.5rem; object-fit: cover; border-radius: 4px; display: block; }
 .beitrag-text { overflow-wrap: anywhere; }
 .beitrag-mehr summary { cursor: pointer; color: var(--link); font-weight: 600; }
+/* Aufgeklappt ersetzt der volle Text den Anriss, statt ihn zu wiederholen */
+.beitrag-anriss:has(+ .beitrag-mehr[open]) { display: none; }
 .auswahl a[aria-current="page"] { font-weight: 700; }
 
 /* Wettbewerbsergebnisse */
