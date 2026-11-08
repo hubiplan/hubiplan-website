@@ -35,8 +35,16 @@ Ein allgemeiner Wartungsschalter: `MAINTENANCE=true` oder die Datei `/tmp/wartun
 Container.
 
 Zwischenspeicher: Antworten von HUBIplan hält die Seite `CACHE_SECONDS` lang vor (Standard
-120). In der Vorschau gilt `PREVIEW_CACHE_SECONDS` (Standard 5, je Vorschau getrennt,
-`0` = aus), damit nicht jedes Bild die Grunddaten der Seite neu abruft.
+120). Die Vorschau wird nie zwischengespeichert; ihr Zugang wird bei jedem Aufruf geprüft.
+
+Ist HUBIplan nicht erreichbar (z. B. während es ausgerollt wird), zeigt die Seite den letzten
+guten Stand weiter, höchstens `STALE_IF_ERROR_SECONDS` alt (Standard 86400 = 24 h), statt
+„Gerade nicht erreichbar“. Bilder bis `STALE_IMAGE_MAX_BYTES` (Standard 2 MB, höchstens
+`STALE_IMAGE_ENTRIES` = 300 Stück) bleiben dafür ebenfalls als Kopie liegen. Wartung, Widerruf
+und gelöschte Inhalte wirken sofort, sobald HUBIplan wieder antwortet. Der Zwischenspeicher
+liegt im Volume `zwischenspeicher` (`CACHE_DIR=/zwischenspeicher`), übersteht so Neustarts
+und Ausrollen der Webseite und wird von beiden gunicorn-Prozessen geteilt. Leeren:
+Volume löschen oder `docker compose exec website sh -c 'rm -rf /zwischenspeicher/*'`.
 
 ## Testserver
 

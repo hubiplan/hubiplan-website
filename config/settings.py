@@ -30,6 +30,12 @@ HUBIPLAN_HOST = os.environ.get("HUBIPLAN_HOST", urlparse(HUBIPLAN_PUBLIC_URL).ho
 API_TIMEOUT = float(os.environ.get("API_TIMEOUT", "10"))
 # Antworten der Schnittstelle so lange zwischenspeichern
 CACHE_SECONDS = int(os.environ.get("CACHE_SECONDS", "120"))
+# Ist HUBIplan nicht erreichbar (z. B. beim Ausrollen), zeigt die Seite höchstens so alte
+# Stände weiter statt einer Fehlerseite (Ralf 08.11.: 24 h). Wartung und Widerruf wirken
+# sofort, sobald HUBIplan wieder antwortet.
+STALE_IF_ERROR_SECONDS = int(os.environ.get("STALE_IF_ERROR_SECONDS", "86400"))
+# Bilder für diesen Fall bis zu dieser Größe zwischenspeichern (nur mit CACHE_DIR)
+STALE_IMAGE_MAX_BYTES = int(os.environ.get("STALE_IMAGE_MAX_BYTES", str(2 * 1024 * 1024)))
 # Vorschau wird bei jedem Aufruf autorisiert und niemals zwischen Anfragen gecacht.
 # Die frühere Umgebungsvariable PREVIEW_CACHE_SECONDS hat keine Wirkung mehr.
 
@@ -71,12 +77,35 @@ TEMPLATES = [
 ]
 
 DATABASES: dict = {}
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "OPTIONS": {"MAX_ENTRIES": 2000},
+# Zwischenspeicher: auf dem Server auf der Platte (CACHE_DIR, eigenes Volume), damit er
+# Neustarts übersteht und beide gunicorn-Prozesse ihn teilen; sonst im Prozess.
+CACHE_DIR = os.environ.get("CACHE_DIR", "").strip()
+if CACHE_DIR:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": os.path.join(CACHE_DIR, "daten"),
+            "OPTIONS": {"MAX_ENTRIES": 3000},
+        },
+        "bilder": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": os.path.join(CACHE_DIR, "bilder"),
+            "TIMEOUT": STALE_IF_ERROR_SECONDS,
+            "OPTIONS": {"MAX_ENTRIES": int(os.environ.get("STALE_IMAGE_ENTRIES", "300"))},
+        },
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "OPTIONS": {"MAX_ENTRIES": 2000},
+        },
+        "bilder": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "TIMEOUT": STALE_IF_ERROR_SECONDS,
+            "OPTIONS": {"MAX_ENTRIES": 50},
+        },
+    }
 
 LANGUAGE_CODE = "de"
 LANGUAGES = [("de", "Deutsch"), ("en", "English")]

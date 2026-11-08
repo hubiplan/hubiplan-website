@@ -1,5 +1,5 @@
 import pytest
-from django.core.cache import cache
+from django.core.cache import cache, caches
 
 from seite import api
 
@@ -11,8 +11,10 @@ def hubiplan(monkeypatch):
     fake = FakeHubiplan()
     monkeypatch.setattr(api, "_request", fake)
     cache.clear()
+    caches["bilder"].clear()
     yield fake
     cache.clear()
+    caches["bilder"].clear()
 
 
 @pytest.fixture(autouse=True)

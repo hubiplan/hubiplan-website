@@ -150,7 +150,7 @@ def test_widerruf_vorschau_ohne_cache_grace(client, hubiplan, monkeypatch, setti
     # goes to the backend instead of serving either cached privileged response.
     full = f"{api.PREFIX}{KEY}/board/"
     ck = api._key("get", full, token)
-    cache.set(ck, (api.time.monotonic(), (200, {"leaked": "secret"})), 600)
+    cache.set(ck, (api.time.time(), (200, {"leaked": "secret"})), 600)
     lock = api._lock_for(ck)
     lock.acquire()
     hubiplan.preview_session = "revoked-and-replaced-session"
@@ -170,7 +170,7 @@ def test_api_widerruf_trotz_frischem_oder_veraltetem_cache(hubiplan, age, path):
     token = hubiplan.preview_session
     api.get(KEY, path, preview=token)
     ck = api._key("get", f"{api.PREFIX}{KEY}/{path}", token)
-    cache.set(ck, (api.time.monotonic() - age, (200, {"private": "old-value"})), 700)
+    cache.set(ck, (api.time.time() - age, (200, {"private": "old-value"})), 700)
     lock = api._lock_for(ck)
     lock.acquire()
     hubiplan.preview_session = "revoked-and-replaced-session"

@@ -8,6 +8,12 @@ services:
     read_only: true
     tmpfs:
       - /tmp
+    # Zwischenspeicher der HUBIplan-Antworten auf der Platte: übersteht Neustarts und
+    # überbrückt Ausfälle von HUBIplan beim Ausrollen (seite/api.py, STALE_IF_ERROR_SECONDS)
+    environment:
+      CACHE_DIR: /zwischenspeicher
+    volumes:
+      - zwischenspeicher:/zwischenspeicher
     security_opt:
       - no-new-privileges:true
     cap_drop: [ALL]
@@ -20,6 +26,9 @@ services:
     networks:
       web:
         aliases: [website]
+
+volumes:
+  zwischenspeicher:
 
 networks:
   web:

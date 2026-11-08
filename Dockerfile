@@ -18,7 +18,8 @@ RUN apt-get update -q && apt-get install -y -q --no-install-recommends gettext >
            apt-get purge -y -q gettext > /dev/null && apt-get autoremove -y -q > /dev/null; fi \
     && rm -rf /var/lib/apt/lists/*
 RUN DJANGO_SECRET_KEY=nur-zum-bauen python manage.py collectstatic --noinput -v0 \
-    && useradd --system --uid 10001 --no-create-home seite
+    && useradd --system --uid 10001 --no-create-home seite \
+    && mkdir /zwischenspeicher && chown seite /zwischenspeicher
 USER seite
 
 EXPOSE 8000

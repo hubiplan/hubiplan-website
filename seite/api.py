@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from urllib.parse import quote, urlparse
 
 from django.conf import settings
-from django.core.cache import cache
+from django.core.cache import cache, caches
 
 log = logging.getLogger(__name__)
 
@@ -82,25 +82,35 @@ def _request(
 
 
 def _key(*parts: str) -> str:
-    return "api:" + hashlib.sha256("\x00".join(parts).encode()).hexdigest()
+    return "api2:" + hashlib.sha256("\x00".join(parts).encode()).hexdigest()
 
 
 def resolve(host: str) -> str:
-    """Schlüssel der Webseite zu einem Hostnamen."""
+    """Schlüssel der Webseite zu einem Hostnamen.
+
+    Ist HUBIplan nicht erreichbar (z. B. beim Ausrollen), gilt die letzte bekannte
+    Zuordnung weiter (bis ``STALE_IF_ERROR_SECONDS``)."""
     ck = _key("resolve", host)
     cached = cache.get(ck)
-    if cached is not None:
-        if cached == "":
-            raise NotFound(host)
-        return cached
-    res = _request("GET", f"{PREFIX}resolve/?host={quote(host)}")
+    if cached == "":
+        raise NotFound(host)
+    if isinstance(cached, tuple) and 0 <= _now() - cached[0] < RESOLVE_SECONDS:
+        return cached[1]
+    try:
+        res = _request("GET", f"{PREFIX}resolve/?host={quote(host)}")
+    except Unavailable:
+        if isinstance(cached, tuple):
+            return cached[1]
+        raise
     if res.status == 404:
         cache.set(ck, "", 60)
         raise NotFound(host)
     if res.status != 200:
+        if isinstance(cached, tuple) and res.status in (502, 504):
+            return cached[1]
         raise Unavailable(f"resolve {res.status}")
     key = res.json()["key"]
-    cache.set(ck, key, 300)
+    cache.set(ck, (_now(), key), settings.STALE_IF_ERROR_SECONDS)
     return key
 
 
@@ -123,30 +133,52 @@ def get(
     if not use_cache:
         return _result(*_fetch(full, path, preview))
     hit = cache.get(ck)
-    if hit is not None and time.monotonic() - hit[0] < ttl:
+    age = _now() - hit[0] if hit is not None else None
+    if hit is not None and 0 <= age < ttl:
         return _result(*hit[1])
     lock = _lock_for(ck)
-    if hit is not None:
+    if hit is not None and 0 <= age < ttl + STALE_SECONDS:
         # Abgelaufen: Ein Thread holt neu, die anderen nehmen so lange den alten Stand,
         # statt HUBIplan gleichzeitig mit denselben teuren Abrufen zu treffen
         if not lock.acquire(blocking=False):
             return _result(*hit[1])
     elif not lock.acquire(timeout=settings.API_TIMEOUT):
-        return _result(*_fetch(full, path, preview))
+        return _result(*_fetch_or_stale(full, path, hit)[0])
     try:
         again = cache.get(ck)
-        if again is not None and again is not hit and time.monotonic() - again[0] < ttl:
+        if again is not None and 0 <= _now() - again[0] < ttl:
             return _result(*again[1])
-        result = _fetch(full, path, preview)
-        if result[0] in (200, 404, 503):
-            cache.set(ck, (time.monotonic(), result), ttl + STALE_SECONDS)
+        result, fresh = _fetch_or_stale(full, path, again or hit)
+        if fresh and result[0] in (200, 404, 503):
+            cache.set(ck, (_now(), result), settings.STALE_IF_ERROR_SECONDS)
         return _result(*result)
     finally:
         lock.release()
 
 
+def _fetch_or_stale(full: str, path: str, hit) -> tuple[tuple[int, object], bool]:
+    """Neu holen; ist HUBIplan nicht erreichbar (Ausrollen, Neustart), den letzten guten
+    Stand liefern statt einer Fehlerseite. Wartung (503) und „gibt es nicht“ (404) kommen
+    von HUBIplan selbst und wirken daher sofort, sobald es wieder antwortet."""
+    try:
+        return _fetch(full, path, None), True
+    except Unavailable:
+        if hit is None:
+            raise
+        log.warning("HUBIplan nicht erreichbar, Stand von vor %d s: %s", _now() - hit[0], path)
+        return hit[1], False
+
+
+def _now() -> float:
+    # Wanduhr statt monotonic: Der Zwischenspeicher liegt auf der Platte und übersteht
+    # Neustarts des Containers (negative Alter gelten als abgelaufen)
+    return time.time()
+
+
 # So lange darf ein abgelaufener Stand noch dienen, während ein anderer Thread neu holt
 STALE_SECONDS = 600
+# Zuordnung Hostname → Webseite so lange ohne Rückfrage
+RESOLVE_SECONDS = 300
 _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
 
@@ -194,11 +226,33 @@ def fetch_file(path: str, *, preview: str | None = None) -> Response:
 
     Hochgeladene Dateien (/media/…) liefert auf dem Server Caddy aus, nicht das
     Backend: Dafür gilt HUBIPLAN_MEDIA_URL.
+
+    Ohne Vorschau bleibt eine Kopie (bis ``STALE_IMAGE_MAX_BYTES``) im Zwischenspeicher
+    „bilder“. Sie wird nur ausgeliefert, wenn HUBIplan nicht erreichbar ist (Ausrollen);
+    ob ein Bild gezeigt werden darf, entscheidet sonst immer HUBIplan.
     """
     base = settings.HUBIPLAN_MEDIA_URL if path.startswith("/media/") else None
-    res = _request("GET", path, preview=preview, base=base)
+    store = None if preview else caches["bilder"]
+    ck = _key("datei", path)
+    try:
+        res = _request("GET", path, preview=preview, base=base)
+    except Unavailable:
+        stale = store.get(ck) if store is not None else None
+        if stale is not None:
+            return stale
+        raise
     if res.status == 404:
+        if store is not None:
+            store.delete(ck)
         raise NotFound(path)
+    if res.status in (502, 504) and store is not None:
+        stale = store.get(ck)
+        if stale is not None:
+            return stale
     if res.status != 200 or len(res.body) > MAX_FILE_BYTES:
         raise Unavailable(f"{path} {res.status}")
+    if store is not None and len(res.body) <= settings.STALE_IMAGE_MAX_BYTES:
+        # Nur anlegen, nicht bei jedem Abruf neu schreiben: geänderte Bilder bekommen in
+        # HUBIplan eine neue Adresse (Fassung bzw. Zeitstempel im Pfad)
+        store.add(ck, res)
     return res
