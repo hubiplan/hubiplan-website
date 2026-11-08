@@ -32,25 +32,33 @@ und Veröffentlichen.
   Bilderkarussell (Wechselzeit und Startbild aus HUBIplan), nächste Termine, Geburtstage,
   aktuelle Würdenträger, aktuelle Ergebnisse, Untereinheiten
 - **Aktuelles**: eigene Beiträge des Vereins von Instagram und Facebook
+- **Galerie** mit Albenübersicht, Unteralben und Bildern groß im Fenster
 - **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen
 - **Untereinheiten** (z. B. Abteilungen oder Züge) mit eigenen Unterseiten; der Pfad folgt
   der Bezeichnung in HUBIplan
 - **Terminkalender** nach Monaten, Filter je Untereinheit, Kalender-Abo fürs Smartphone mit
   QR-Code
-- **Würden** mit aktuellen Trägern und Chronik, **Ehrungen**, **Geschichte** mit Chronik und
-  Ämtern, Satzung, Dokumente und weitere Textseiten
+- **Würden** mit aktuellen Trägern und Chronik, **Ehrungen**, **Geschichte** mit Chronik als
+  Zeitleiste und Ämtern, Satzung, Dokumente und weitere Textseiten
+- **Belegung** von Räumen und Anlagen als Wochenansicht mit Kalender-Abo
+- für Musikvereine und Kapellen: **Mitgliederlisten** je Mitgliedsart (nur mit Einwilligung)
+  und **Repertoire** aus dem Notenarchiv
+- **Suche** über Textseiten, Alben, Dokumente und Termine
 - **Ergebnisse** der Wettbewerbe (wenn der Verein das Modul nutzt): Ranglisten, Reihen und
   Wanderpokale; laufende Wettbewerbe aktualisieren sich von selbst
 - **Kontaktformular**: Der Browser schickt direkt an HUBIplan, Spamschutz ohne Fremddienst
 - **Impressum, Datenschutzhinweise und Erklärung zur Barrierefreiheit**, auch im
   Wartungsmodus erreichbar
-- **Wartungsmodus und Vorschau-Link** aus HUBIplan
+- **Wartungsmodus und Vorschau-Link** aus HUBIplan; ist HUBIplan kurz nicht erreichbar (etwa
+  beim Ausrollen), zeigt die Seite den letzten guten Stand weiter
 - **Sprache je Webseite**: Deutsch (Standard) oder Englisch für alle festen Texte, Menü,
   Datumsangaben und Meldungen; Vereinsdaten (Namen, Texte, Bezeichnungen) bleiben, wie sie in
   HUBIplan stehen. Impressum und Datenschutz zeigen auf Englisch einen Hinweis, dass die
   deutsche Fassung maßgeblich ist.
-- mehrere Gestaltungen, Farben und Wappen des Vereins aus HUBIplan; passt sich an Monitor,
-  Tablet und Smartphone an
+- **Designpakete**: mehrere Standardlayouts (z. B. Klassisch, Festlich, Seitenleiste, Bühne,
+  Zeitung), eigene Farben, Kopfbild und CSS aus HUBIplan, exportier- und importierbar; Farben
+  und Wappen des Vereins; Schriften liegen auf der Seite selbst (keine fremden Server); passt
+  sich an Monitor, Tablet und Smartphone an
 
 Alle Seiten und Adressen: [docs/betrieb.md](docs/betrieb.md#seiten).
 
@@ -145,8 +153,8 @@ DEPLOY_HOST=root@server.example.org deploy/deploy.sh <commit>
 - In HUBIplan den Verein anlegen, das Modul Webseite einschalten und unter Webseite ›
   Internetadresse die Domain eintragen.
 
-Einzelheiten, Wartungsschalter und ein Beispiel hinter HestiaCP:
-[docs/betrieb.md](docs/betrieb.md).
+Einzelheiten, Wartungsschalter, Zwischenspeicher, Sicherheitsgrenzen der Designpakete und ein
+Beispiel hinter HestiaCP: [docs/betrieb.md](docs/betrieb.md).
 
 ## Mitwirken
 
@@ -179,39 +187,3 @@ Wer eine veränderte Fassung der Webseite öffentlich betreibt, muss ihren Quell
 derselben Lizenz zugänglich machen; die Fußzeile jeder Seite verlinkt dazu den Quellcode der
 laufenden Fassung. Lizenzen der Abhängigkeiten und der HestiaCP-Vorlagen (GPL-3.0):
 [docs/lizenzen.md](docs/lizenzen.md).
-
-
-### Sicherheitsgrenzen von Designpaketen und Vorschau
-
-Designpakete enthalten ausschließlich `design.json` und `design.css`. `quelle` bzw.
-`skizze_wie` wählt eines der mitgelieferten Standardlayouts; freies HTML/Django-DTL
-wird nie ausgeführt. Standarddesigns lassen sich weiterhin exportieren und mit eigenem
-Kürzel importieren. Pakete mit alten freien Vorlagen bleiben in HUBIplan gespeichert,
-werden aber bis zum Ersetzen durch ein reines CSS-/Layoutpaket nicht veröffentlicht:
-die Seite zeigt Klassisch. HUBIplan und Webseite gemeinsam aktualisieren.
-Vorschauantworten werden bei jedem Abruf neu autorisiert, ohne frischen oder veralteten
-Antwortcache. Vorschau-Dateien senden `private, no-store`; bereits vorher gespeicherte
-Browserkopien werden durch einen Widerruf nicht rückwirkend gelöscht.
-`PREVIEW_CACHE_SECONDS` hat keine Wirkung mehr. Öffentliche Seiten behalten ihren Cache.
-
-Design packages contain only `design.json` and `design.css`. `quelle`/`skizze_wie`
-selects a maintained built-in layout; imported HTML/Django templates are never executed.
-Built-in export/import remains available. Legacy template packages remain stored but
-are quarantined and display Classic until replaced by a CSS/layout-only package.
-Update both HUBIplan and the website. Preview reads always revalidate authorization,
-without fresh or stale response caching; preview files use `private, no-store`.
-Revocation cannot erase browser copies retained before this update.
-
-### Gemeinsamer Docker-/Hestia-Server
-
-Die Domainumstellung sichert nach `/root/sicherung-webseite/<Benutzer>/<Domain>/<Zeit.Zufall>/`.
-Der Rückweg prüft die gespeicherte Benutzer-/Domainzuordnung. Alte unzugeordnete Sicherungen
-werden nicht automatisch ausgewählt; ihre Herkunft muss vor manueller Verwendung geprüft
-werden. Der Rückweg schaltet die nginx-Vorlage zurück, Dateien/DB bleiben unverändert.
-Das Deployment löscht nur die vorher erfasste frühere eigene Rückweg-Image-ID ohne `--force`.
-Es verwendet kein daemonweites `docker image prune`; aktive und markierte Images bleiben.
-
-Migration backups are bound to hosting user and domain. Unbound legacy backups require
-manual origin verification. Rollback changes the nginx template; files/database stay in place.
-Deployment cleanup removes only the previously captured own former rollback image ID,
-without force or daemon-wide pruning.
