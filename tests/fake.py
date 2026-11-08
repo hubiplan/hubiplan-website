@@ -382,9 +382,16 @@ class FakeHubiplan:
     packages: dict = field(default_factory=dict)
     # Antworten weiterer Pfade (Tests), z. B. {"repertoire/": {...}}
     antworten: dict = field(default_factory=dict)
+    # HUBIplan nicht erreichbar (z. B. beim Ausrollen): None, "weg" (keine Verbindung)
+    # oder ein Statuscode wie 502
+    ausfall: object = None
 
     def __call__(self, method, path, *, data=None, preview=None, base=None):
         self.calls.append((method, path, preview))
+        if self.ausfall == "weg":
+            raise api.Unavailable("Verbindung abgelehnt")
+        if self.ausfall:
+            return api.Response(self.ausfall, b"<html>Bad Gateway</html>", "text/html")
         self.bases.append(base)
         ok_preview = preview == self.preview_session
         prefix = f"{api.PREFIX}{KEY}/"

@@ -27,7 +27,7 @@ def test_bild_der_verborgenen_seite_fehlt(client, hubiplan):
 
 def test_abgelaufen_alter_stand_waehrend_neuabruf(hubiplan, monkeypatch, settings):
     jetzt = [1000.0]
-    monkeypatch.setattr(api.time, "monotonic", lambda: jetzt[0])
+    monkeypatch.setattr(api.time, "time", lambda: jetzt[0])
     assert api.get(KEY)["name"] == hubiplan.info["name"]
     hubiplan.info["name"] = "Neuer Name"
     jetzt[0] += settings.CACHE_SECONDS + 1
