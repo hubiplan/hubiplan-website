@@ -30,8 +30,9 @@ Hilfreich sind:
 
 ## Unterstützte Fassungen
 
-Die Webseite wird fortlaufend aus `main` ausgerollt; es gibt keine Release-Zweige.
-Korrekturen gibt es für den aktuellen Stand von `main`.
+Die Webseite wird fortlaufend aus `main` entwickelt und zusammen mit HUBIplan in Releases
+(`JJJJ.MM.N`, siehe [CHANGELOG.md](CHANGELOG.md)) veröffentlicht; es gibt keine
+Release-Zweige. Korrekturen gibt es für das neueste Release und den aktuellen Stand von `main`.
 
 ## Umfang
 
@@ -46,7 +47,11 @@ Skripte und Vorlagen fürs Ausrollen. Besonders interessant sind:
 - Umgehung des Spamschutzes im Kontaktformular oder Missbrauch des Formulars zum Versand an
   beliebige Empfänger,
 - Inhalte, die nur in der Vorschau oder im Wartungsmodus sichtbar sein dürften, in Caches
-  oder über die Live-Abfrage der Ergebnisseiten.
+  oder über die Live-Abfrage der Ergebnisseiten,
+- widerrufene oder gelöschte Inhalte, die der Zwischenspeicher für den Ausfall von HUBIplan
+  weiter ausliefert, obwohl HUBIplan wieder antwortet,
+- Designpakete, die fremde Inhalte nachladen oder eigenen Vorlagen- oder Skriptcode ausführen,
+- Suche, Galerie oder Belegung, die mehr zeigen als die öffentliche Schnittstelle freigibt.
 
 Zeigt die Webseite Daten, die HUBIplan gar nicht hätte herausgeben dürfen, liegt der Fehler
 meist in HUBIplan; dann bitte [dort melden](https://github.com/hubiplan/hubiplan/security/advisories/new).
@@ -74,7 +79,7 @@ Please do **not** open a public issue. Report vulnerabilities privately via
 If the website shows data that HUBIplan should never have published, the bug is most likely
 in [HUBIplan](https://github.com/hubiplan/hubiplan/security/advisories/new). We usually
 acknowledge reports within 7 days and ask you to keep details private until a fix is
-available, for at most 90 days. Fixes are made on `main`; there are no release branches.
+available, for at most 90 days. Fixes go into `main` and the latest release; there are no release branches.
 Test only against your own installation with made-up data, never against other clubs'
 websites or real data. Good-faith research that follows these rules will not face legal
 action from us.

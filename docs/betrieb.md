@@ -5,6 +5,7 @@
 | Adresse | Inhalt |
 | --- | --- |
 | `/` | Begrüßung, nächste Termine, aktuelle Majestäten, Untereinheiten |
+| `/aktuelles/` | eigene Beiträge des Vereins von Instagram und Facebook |
 | `/termine/` | Termine nach Monaten, Filter je Untereinheit, Kalender-Abo mit QR-Code |
 | `/vorstand/` | Vorstand, Ansprechpartner, Ehrungen |
 | `/zuege/` bzw. `/einheiten/` | Untereinheiten (Pfad je nach Bezeichnung in HUBIplan); auf der Seite einer Untereinheit auf Wunsch ein Link zu ihrer eigenen Homepage (neuer Tab) |
@@ -16,6 +17,9 @@
 | `/ehrungen/` | Ehrungen, wenn in HUBIplan „Würden und Ehrungen unter einem Menüpunkt“ an ist (dann nicht beim Vorstand) |
 | `/chronik/` | Text „geschichte“ aus HUBIplan, darunter die Zeitleiste: Ereignisse mit Jahr oder Zeitraum, Kapitel als Zwischenüberschriften, Sprungmarken (Kapitel, sonst ab 15 Einträgen Jahrzehnte), Bild vergrößert im Fenster (`zeitleiste.js`); mit `timeline_newest_first` neueste Einträge oben; bis zu sechs Bilder je Ereignis (`images`), im Fenster zum Blättern; Bildposition `image_position` (automatisch abwechselnd, links, rechts, groß darunter) |
 | `/aemter/` | frühere und heutige Inhaber der Ämter |
+| `/dokumente/` | öffentliche Dokumente aus HUBIplan |
+| `/galerie/` | Albenübersicht; `/galerie/<kennung>/` ein Album mit Unteralben, Bilder groß im Fenster |
+| `/belegung/` | Belegung von Räumen und Anlagen als Wochenansicht, Kalender-Abo |
 | `/mitglieder/<name>/` | Mitgliederliste einer Mitgliedsart (Name, Eintrittsjahr, auf Wunsch Instrument) |
 | `/in-gedenken/` | verstorbene Mitglieder mit Todesjahr, Einleitung aus der Textseite „in-gedenken“ |
 | `/repertoire/` | Stücke aus dem Notenarchiv mit „im Repertoire auf der Webseite“ |
@@ -24,7 +28,7 @@
 | `/geschichte/` | alte Adresse, leitet zu `/chronik/` bzw. `/aemter/` weiter |
 | `/seite/<name>/` | weitere Textseiten aus HUBIplan |
 | `/kontakt/` | Kontaktformular (der Browser schickt direkt an HUBIplan) |
-| `/impressum/`, `/datenschutz/` | auch im Wartungsmodus erreichbar |
+| `/impressum/`, `/datenschutz/`, `/barrierefreiheit/` | auch im Wartungsmodus erreichbar |
 | `/vorschau/?schluessel=…` | Vorschau-Link aus HUBIplan einlösen (Cookie, max. 8 Stunden) |
 | `/medien/…` | Bilder und Logos aus HUBIplan über diese Seite |
 | `/gesund` | Healthcheck des Containers |
@@ -149,3 +153,39 @@ die Seite „Die Webseite wird gerade aktualisiert“, die sich alle 5 Sekunden 
 Antworten des Containers selbst, auch die gewollte Wartungsseite (503), bleiben
 unverändert. Eine geänderte Vorlage spielt `hubiplan/deploy/hestia/vorlagen-erneuern.sh`
 nach dem Ausrollen ein (siehe `hubiplan/docs/echtbetrieb.md`).
+
+## Designpakete und Vorschau
+
+Designpakete enthalten ausschließlich `design.json` und `design.css`. `quelle` bzw.
+`skizze_wie` wählt eines der mitgelieferten Standardlayouts; freies HTML/Django-DTL wird nie
+ausgeführt. Standarddesigns lassen sich weiterhin exportieren und mit eigenem Kürzel
+importieren. Pakete mit alten freien Vorlagen bleiben in HUBIplan gespeichert, werden aber bis
+zum Ersetzen durch ein reines CSS-/Layoutpaket nicht veröffentlicht: die Seite zeigt
+Klassisch. HUBIplan und Webseite gemeinsam aktualisieren.
+
+Vorschauantworten werden bei jedem Abruf neu autorisiert, ohne frischen oder veralteten
+Antwortcache. Vorschau-Dateien senden `private, no-store`; bereits vorher gespeicherte
+Browserkopien werden durch einen Widerruf nicht rückwirkend gelöscht.
+`PREVIEW_CACHE_SECONDS` hat keine Wirkung mehr. Öffentliche Seiten behalten ihren Cache.
+
+**English:** Design packages contain only `design.json` and `design.css`.
+`quelle`/`skizze_wie` selects a maintained built-in layout; imported HTML/Django templates are
+never executed. Built-in export/import remains available. Legacy template packages remain
+stored but are quarantined and display Classic until replaced by a CSS/layout-only package.
+Update both HUBIplan and the website. Preview reads always revalidate authorization, without
+fresh or stale response caching; preview files use `private, no-store`. Revocation cannot
+erase browser copies retained before this update.
+
+## Gemeinsamer Docker-/Hestia-Server
+
+Die Domainumstellung sichert nach `/root/sicherung-webseite/<Benutzer>/<Domain>/<Zeit.Zufall>/`.
+Der Rückweg prüft die gespeicherte Benutzer-/Domainzuordnung. Alte unzugeordnete Sicherungen
+werden nicht automatisch ausgewählt; ihre Herkunft muss vor manueller Verwendung geprüft
+werden. Der Rückweg schaltet die nginx-Vorlage zurück, Dateien/DB bleiben unverändert.
+Das Ausrollen löscht nur die vorher erfasste frühere eigene Rückweg-Image-ID ohne `--force`.
+Es verwendet kein daemonweites `docker image prune`; aktive und markierte Images bleiben.
+
+**English:** Migration backups are bound to hosting user and domain. Unbound legacy backups
+require manual origin verification. Rollback changes the nginx template; files/database stay
+in place. Deployment cleanup removes only the previously captured own former rollback image ID,
+without force or daemon-wide pruning.
