@@ -40,3 +40,15 @@ def test_abgelaufen_alter_stand_waehrend_neuabruf(hubiplan, monkeypatch, setting
     finally:
         lock.release()
     assert api.get(KEY)["name"] == "Neuer Name"
+
+
+def test_vorschau_bilder_und_wappen_im_browser(client, hubiplan):
+    """Vorschau: Seiten prüfen den Zugang jedes Mal neu, Bilder und Wappen darf der
+    eigene Browser aber kurz behalten (sonst lädt jeder Seitenwechsel alles neu)."""
+    hubiplan.maintenance = True
+    client.cookies["vorschau"] = hubiplan.preview_session
+    assert client.get("/")["Cache-Control"] == "private, no-store"
+    for url in ("/medien/a/images/festbild1/?size=small", "/medien/m/logos/wappen.png"):
+        r = client.get(url)
+        assert r.status_code == 200
+        assert r["Cache-Control"] == "private, max-age=300"

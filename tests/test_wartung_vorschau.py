@@ -63,7 +63,8 @@ def test_vorschau(client, hubiplan, settings):
     # Bilder in der Vorschau
     r = client.get("/medien/a/images/festbild1/")
     assert r.content == PNG
-    assert r["Cache-Control"] == "private, no-store"
+    # Bilder behält nur der eigene Browser kurz; sonst lädt jeder Seitenwechsel alle neu
+    assert r["Cache-Control"] == "private, max-age=300"
     # Every preview read revalidates authorization, even within the old fresh TTL.
     n = len(hubiplan.calls)
     client.get("/vorstand/")
