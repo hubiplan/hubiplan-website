@@ -418,6 +418,16 @@ class FakeHubiplan:
         if rest.startswith("design/") and rest.endswith("/"):
             package = self.packages.get(rest[len("design/") : -1])
             return self.json(package) if package else self.json({"detail": "nicht gefunden"}, 404)
+        if rest.startswith("icon-") and rest.endswith(".png"):
+            # Favicon wie HUBIplan: auch in der Wartung, nur mit Symbol oder Wappen
+            if self.info.get("icon") and rest in (
+                "icon-32.png",
+                "icon-180.png",
+                "icon-192.png",
+                "icon-512.png",
+            ):
+                return api.Response(200, PNG, "image/png")
+            return self.json({"detail": "nicht gefunden"}, 404)
         if rest == "":
             if hidden:
                 return self.json(
@@ -425,6 +435,7 @@ class FakeHubiplan:
                         **{
                             k: self.info[k] for k in ("name", "theme", "logo_url", "allow_indexing")
                         },
+                        "icon": self.info.get("icon", False),
                         "state": "maintenance",
                         "preview": False,
                         "maintenance_text": "Bald geht es los.",
