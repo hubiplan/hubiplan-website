@@ -178,6 +178,8 @@ code { word-break: break-all; font-size: .85em; }
 .titelbild img { border-radius: var(--rund); width: 100%; max-height: 28rem; object-fit: cover; }
 figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .text { max-width: 44rem; }
+/* Die kurze Begrüßung auf der Startseite läuft so breit wie Titelbild und Termine. */
+.begruessung .text { max-width: none; }
 .text img { border-radius: var(--rund); }
 .brotkrumen { margin: 0; font-size: .92rem; }
 .hinweis-seite { text-align: center; padding: 3rem 0; max-width: 36rem; margin: 0 auto; }
