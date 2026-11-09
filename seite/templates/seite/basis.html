@@ -6,6 +6,9 @@
 <title>{% block titel %}{% endblock %}{% if site %}{{ site.info.short_name|default:site.info.name }}{% else %}{% translate "Vereinswebseite" %}{% endif %}</title>
 {% if site and not site.info.allow_indexing %}<meta name="robots" content="noindex">{% endif %}
 <link rel="stylesheet" href="{% static 'seite/seite.css' %}">
+{% if site.info.icon %}{# Favicon und Handy-Symbol: Symbol der Einheit oder Wappen, quadratisch aus HUBIplan #}<link rel="icon" type="image/png" sizes="32x32" href="{% url 'medien' 'a' 'icon-32.png' %}">
+<link rel="icon" type="image/png" sizes="192x192" href="{% url 'medien' 'a' 'icon-192.png' %}">
+<link rel="apple-touch-icon" href="{% url 'medien' 'a' 'icon-180.png' %}">{% endif %}
 {% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}}</style>{% endwith %}
 {% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}

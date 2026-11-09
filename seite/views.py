@@ -1076,7 +1076,9 @@ def _host(request) -> str:
 ALLOWED_API_FILES = re.compile(
     r"^(images/[A-Za-z0-9_\-]{4,40}/|photos/[a-f0-9]{20}/|honors/photos/[a-f0-9]{20}/"
     r"|posts/images/[A-Za-z0-9_\-]{4,40}/|statute/preview/|fee-rules/preview/"
-    r"|founding-deed/preview/|files/[A-Za-z0-9_\-]{8,24}/)$"
+    r"|founding-deed/preview/|files/[A-Za-z0-9_\-]{8,24}/"
+    # Favicon und Handy-Symbol (Wappen quadratisch, Ralf 09.11.2026)
+    r"|icon-(?:32|180|192|512)\.png)$"
 )
 ALLOWED_MEDIA = re.compile(r"^[A-Za-z0-9_\-/.]{1,300}\.(png|jpe?g|webp)$")
 
@@ -1147,6 +1149,15 @@ def media(request, kind: str, path: str):
         PREVIEW_MEDIA_CACHE if preview else _media_cache(private, kind, path)
     )
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
+    return response
+
+
+@require_GET
+def favicon(request):
+    """Browser fragen ohne Seite oft /favicon.ico ab: auf das Symbol aus HUBIplan
+    weiterleiten (ohne Symbol antwortet es mit 404)."""
+    response = HttpResponseRedirect(reverse("medien", args=["a", "icon-32.png"]))
+    response["Cache-Control"] = "public, max-age=86400"
     return response
 
 

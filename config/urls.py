@@ -72,5 +72,6 @@ urlpatterns = [
     ),
     re_path(r"^medien/(?P<kind>[am])/(?P<path>.+)$", views.media, name="medien"),
     path("robots.txt", views.robots, name="robots"),
+    path("favicon.ico", views.favicon, name="favicon"),
     path("gesund", views.health, name="gesund"),
 ]
