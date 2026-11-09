@@ -159,3 +159,14 @@ def test_preisplaetze_ohne_hinweis_und_eingebettetes_nachladen(client, hubiplan,
         if "tabelle" in url:
             assert "<h3>Einzel</h3>" in html and "<h2>Einzel</h2>" not in html
     assert "<h2>Einzel</h2>" in text(client.get(f"/ergebnisse/{LIVE}/tabelle/"))
+
+
+def test_zugwertung_verlinkt_zugseite(client, hubiplan):
+    """Ralf 2026-11-09: Einträge der Zugwertung und der Zug in Klammern führen auf die
+    Zugseite, wenn die Webseite sie zeigt; Züge ohne eigene Seite bleiben reiner Text."""
+    mit_ergebnissen(hubiplan)
+    html = text(client.get(f"/ergebnisse/{COMP}/"))
+    assert '<td><a href="/zuege/jaeger/">Jägerzug</a></td>' in html
+    assert '(<a href="/zuege/jaeger/">Jägerzug</a>)' in html
+    assert "<td>Zug 1</td>" in html
+    assert '<span class="klein">(Zug 1)</span>' in html

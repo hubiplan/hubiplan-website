@@ -235,7 +235,15 @@ def results_detail(token: str, version: str = "v1") -> dict:
                 "field": 4,
                 "complete": True,
                 "rows": [
-                    {"place": 1, "value": "30", "prize": False, "name": "Max M.", "unit": "Zug 1"},
+                    {
+                        "place": 1,
+                        "value": "30",
+                        "prize": False,
+                        "name": "Max M.",
+                        "unit": "Jägerzug",
+                        "unit_slug": "jaeger",
+                    },
+                    {"place": 1, "value": "29", "prize": False, "name": "Lena L.", "unit": "Zug 1"},
                     {"place": 2, "value": "28", "prize": False, "name": "ohne Namen", "unit": ""},
                     {
                         "place": 3,
@@ -246,7 +254,23 @@ def results_detail(token: str, version: str = "v1") -> dict:
                         "club": "Nachbarverein",
                     },
                 ],
-            }
+            },
+            {
+                "name": "Zugwertung",
+                "kind": "einheit",
+                "field": 2,
+                "complete": True,
+                "rows": [
+                    {
+                        "place": 1,
+                        "value": "85",
+                        "prize": True,
+                        "name": "Jägerzug",
+                        "unit_slug": "jaeger",
+                    },
+                    {"place": 2, "value": "80", "prize": True, "name": "Zug 1"},
+                ],
+            },
         ],
         "prizes": [],
         "titles": [] if live else [{"title": "Vereinsmeister 2027", "name": "Max M."}],
