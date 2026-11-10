@@ -48,6 +48,12 @@ DEFAULT_DESIGN = "classic"
 LANGUAGES = ("de", "en")
 COLOR_ROLES = ("header", "nav", "line", "footer", "band", "band2", "date")
 DARK = "#1d2421"
+# Rollen für Text, Flächen und Hintergrund (HUBIplan ab 10.11.2026): nur gesetzt, wenn
+# gewählt; sie überschreiben die Variablen aus seite.css
+COMMON_ROLES = {"text": "text", "muted": "text-leise", "surface": "flaeche", "background": "grund"}
+# Rollen, die statt einer Farbe einen Verlauf haben können (verlauf.css)
+GRADIENT_ROLES = ("header", "footer", "band", "band2", "line")
+DIRECTIONS = {"right": "to right", "down": "to bottom"}
 
 
 # Hintergründe, auf denen Links stehen (seite.css: --flaeche, --grund)
@@ -75,10 +81,10 @@ def darken(hex_color: str, amount: float) -> str:
     return "#" + "".join(f"{round(c * (1 - amount)):02x}" for c in parts)
 
 
-def link_color(primary: str, background: str | None = None) -> str:
+def link_color(primary: str, background: str | None = None, *more: str | None) -> str:
     """Linkfarbe aus der Vereinsfarbe: so wenig wie nötig abgedunkelt, bis Text auf
     Weiß und auf dem Seitengrund 4,5 : 1 erreicht (WCAG 1.4.3; wie HUBIplan)."""
-    backgrounds = LINK_BACKGROUNDS + ((background,) if background else ())
+    backgrounds = LINK_BACKGROUNDS + tuple(b for b in (background, *more) if b)
     for step in range(21):
         color = darken(primary, step * 0.05)
         if min(contrast(color, bg) for bg in backgrounds) >= 4.5:
@@ -93,6 +99,17 @@ LAYOUTS = {
     "units": ("large", "small", "list"),
     "gallery": ("tiles", "masonry"),
 }
+
+
+def gradient_css(item) -> str | None:
+    """{from, to, direction} aus HUBIplan → linear-gradient(…); sonst None."""
+    if not isinstance(item, dict):
+        return None
+    start, end = item.get("from"), item.get("to")
+    if not all(isinstance(v, str) and HEX.match(v) for v in (start, end)):
+        return None
+    direction = DIRECTIONS.get(item.get("direction"), DIRECTIONS["right"])
+    return f"linear-gradient({direction},{start.lower()},{end.lower()})"
 
 
 @dataclass
@@ -160,7 +177,12 @@ class Site:
                 theme[k] = v
         # Für Text und Fokusrahmen im Inhalt; die Vereinsfarbe selbst bleibt für Flächen.
         # Gilt auch auf einem per Stilregler getönten oder grauen Seitengrund.
-        theme["link"] = link_color(theme["primary"], self.background_for(theme["primary"]))
+        # Eigene Flächenfarbe (Rolle „surface“) zählt ebenfalls
+        theme["link"] = link_color(
+            theme["primary"],
+            self.background_for(theme["primary"]),
+            self.common_colors.get("surface"),
+        )
         return theme
 
     # --- Stilregler (Konzept G1) ---
@@ -177,7 +199,8 @@ class Site:
         return stil.attrs(self.style)
 
     def background_for(self, primary: str) -> str | None:
-        return stil.background(self.style, primary)
+        # Rolle „Seitenhintergrund“ aus HUBIplan geht dem Stilregler vor
+        return self.common_colors.get("background") or stil.background(self.style, primary)
 
     @property
     def header_image_shown(self) -> bool:
@@ -270,6 +293,38 @@ class Site:
         return self.design != (self.info.get("design") or DEFAULT_DESIGN)
 
     @property
+    def _given_roles(self) -> dict:
+        """Farben je Rolle des gewählten Designs, wie HUBIplan sie schickt (ungeprüft)."""
+        designs = self.info.get("designs") if isinstance(self.info.get("designs"), dict) else {}
+        given = designs.get(self.design) or {}
+        if not given and self.design not in DESIGNS:
+            # Paket ohne eigene Farben aus HUBIplan: wie Klassisch
+            given = designs.get(DEFAULT_DESIGN) or {}
+        return given if isinstance(given, dict) else {}
+
+    @property
+    def common_colors(self) -> dict[str, str]:
+        """Gewählte Farben für Text, Sekundärtext, Flächen und Hintergrund (nur geprüfte)."""
+        result = {}
+        for role in COMMON_ROLES:
+            item = self._given_roles.get(role)
+            color = item.get("color") if isinstance(item, dict) else None
+            if isinstance(color, str) and HEX.match(color):
+                result[role] = color.lower()
+        return result
+
+    @property
+    def gradients(self) -> dict[str, str]:
+        """Verläufe je Rolle als CSS (nur geprüfte Farben und bekannte Richtungen)."""
+        result = {}
+        for role in GRADIENT_ROLES:
+            item = self._given_roles.get(role)
+            css = gradient_css(item.get("gradient") if isinstance(item, dict) else None)
+            if css:
+                result[role] = css
+        return result
+
+    @property
     def colors(self) -> dict:
         """Farben je Rolle des Designs aus HUBIplan; ältere Stände: aus den zwei Farben."""
         t = self.theme
@@ -282,10 +337,7 @@ class Site:
             "band2": (t["primary"], t["on_primary"]),
             "date": (t["primary"], t["on_primary"]),
         }
-        given = (self.info.get("designs") or {}).get(self.design) or {}
-        if not given and self.design not in DESIGNS:
-            # Paket ohne eigene Farben aus HUBIplan: wie Klassisch
-            given = (self.info.get("designs") or {}).get(DEFAULT_DESIGN) or {}
+        given = self._given_roles
         result = {}
         for role in COLOR_ROLES:
             item = given.get(role) if isinstance(given, dict) else None
@@ -311,6 +363,14 @@ class Site:
         for role, (color, on) in self.colors.items():
             name = names.get(role, role)
             parts.append(f"--farbe-{name}:{color};--auf-{name}:{on}")
+        # Verläufe: als Fläche (--bild-…) und für gerade Linien (--linie-…, border-image)
+        for role, css in self.gradients.items():
+            name = names.get(role, role)
+            parts.append(f"--bild-{name}:{css};--linie-{name}:{css} 1")
+        common = self.common_colors
+        for role, var in COMMON_ROLES.items():
+            if role in common and role != "background":
+                parts.append(f"--{var}:{common[role]}")
         grund = self.background_for(self.theme["primary"])
         if grund:
             parts.append(f"--grund:{grund}")
