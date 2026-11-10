@@ -582,3 +582,51 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .zitat figcaption { margin-top: .5rem; color: var(--text-leise); }
 .zitat figcaption::before { content: "– "; }
 .abschnitt-farbig.zitat figcaption { color: inherit; }
+
+/* Darstellung der festen Bereiche (Baukasten G5) */
+.einleitung { margin-bottom: 1.5rem; }
+.kacheln:not(.gross) .wappen-platz { display: none; }
+.kacheln:not(.gross) img { width: 32px; height: 32px; }
+.einheiten-liste { padding-left: 1.2rem; }
+.einheiten-liste li { margin: .3rem 0; }
+.einheiten-liste small { color: var(--text-leise); }
+.rollenliste { margin: 0; display: grid; gap: 0; }
+.rollenliste > div { display: grid; gap: .1rem 1rem; padding: .55rem 0; border-bottom: 1px solid var(--linie); }
+.rollenliste dt { font-weight: 600; }
+.rollenliste dd { margin: 0; }
+@media (min-width: 40rem) {
+  .rollenliste > div { grid-template-columns: minmax(10rem, 1fr) 2fr; }
+}
+/* Mauerwerk: Bilder in ihrer eigenen Höhe, spaltenweise */
+.galerie-bilder.mauerwerk, .galerie-alben.mauerwerk { display: block; columns: 2 11rem; column-gap: .4rem; }
+.galerie-alben.mauerwerk { column-gap: 1rem; columns: 2 15rem; }
+.mauerwerk > li { break-inside: avoid; margin-bottom: .4rem; }
+.galerie-alben.mauerwerk > li { margin-bottom: 1rem; }
+.mauerwerk img { aspect-ratio: auto; height: auto; }
+.galerie-bilder.mauerwerk img { display: block; width: 100%; object-fit: contain; }
+/* Monatskalender: auf dem Handy nur die Tage mit Terminen, ab 40rem als Monatsblatt */
+.monatskalender { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+.monatskalender, .monatskalender tbody, .monatskalender tr, .monatskalender td { display: block; }
+.monatskalender thead, .monatskalender td:not(.mit-termin) { display: none; }
+.monatskalender td { padding: .5rem 0; border-bottom: 1px solid var(--linie); }
+.monatskalender .tag { display: block; font-weight: 600; }
+.monatskalender td.heute .tag { color: var(--primaer); }
+.termine-tag { list-style: none; padding: 0; margin: .2rem 0 0; }
+.termin.termin-kurz { display: block; margin: 0 0 .2rem; padding: .35rem .5rem; line-height: 1.25; border-left: 3px solid var(--farbe-datum, var(--primaer)); }
+.termin-kurz .termin-knopf { text-align: left; overflow-wrap: break-word; hyphens: auto; }
+.termin-kurz .zeit { color: var(--text-leise); font-variant-numeric: tabular-nums; }
+.termin-kurz.abgesagt .termin-knopf { text-decoration: line-through; }
+@media (min-width: 40rem) {
+  .monatskalender { display: table; table-layout: fixed; }
+  .monatskalender thead { display: table-header-group; }
+  .monatskalender tbody { display: table-row-group; }
+  .monatskalender tr { display: table-row; }
+  .monatskalender td, .monatskalender td:not(.mit-termin) { display: table-cell; }
+  .monatskalender th { font-weight: 600; padding: .3rem; text-align: left; color: var(--text-leise); }
+  .monatskalender td { vertical-align: top; border: 1px solid var(--linie); padding: .3rem; height: 5.5rem; background: var(--flaeche); }
+  .monatskalender td.fremd { background: transparent; }
+  .monatskalender .tag { font-weight: 400; font-size: .9rem; }
+  .monatskalender td.heute .tag { font-weight: 700; }
+  .monatskalender .nur-handy { display: none; }
+  .termin.termin-kurz { font-size: .85rem; padding: .2rem .3rem; border-width: 0 0 0 3px; border-radius: 0; background: var(--abschnitt-hell); }
+}

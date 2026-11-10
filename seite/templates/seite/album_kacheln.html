@@ -1,4 +1,4 @@
-{% load seite i18n %}<ul class="galerie-alben">
+{% load seite i18n %}<ul class="galerie-alben{% if darstellung == "masonry" %} mauerwerk{% endif %}">
 {% for a in alben %}
   <li><a href="{% url 'album' a.slug %}">
     {% lokal site a.cover.small_url as titelbild %}{% if titelbild %}<img src="{{ titelbild }}" alt="" loading="lazy"{% if a.cover.width and a.cover.height %} width="{{ a.cover.width }}" height="{{ a.cover.height }}"{% endif %}>{% else %}<span class="galerie-ohne-bild" aria-hidden="true"></span>{% endif %}

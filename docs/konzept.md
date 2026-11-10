@@ -31,6 +31,9 @@ Untereinheiten erscheinen, wird dort je Webseite festgelegt. Die Darstellung umf
   Hex-Werte), Breite und Spalte im Design „Zeitung“. Ohne `home_layout` gilt `home` wie bisher.
 - Textseiten aus denselben Abschnitten (`sections` der Seite): „body“ ist Bild und Text der
   Seite wie bisher. Ohne eigene Abschnitte bleibt die Seite unverändert.
+- Darstellung der festen Bereiche (`layouts`): Vorstand als Karten oder Liste, Termine als
+  Liste oder Monatskalender, Untereinheiten als große oder kleine Kacheln oder Liste, Galerie als
+  Kacheln oder Mauerwerk; je Bereich eine Einleitung aus `intros`. Ohne Angaben wie bisher.
 - Vorstand, Ansprechpartner und Untereinheiten mit jeweils freigegebenen Kontaktwegen.
 - Würdenträger, Ehrungen und Chronik aus den veröffentlichten Daten.
 - Termine mit Kalenderansicht und Kalender-Abo sowie Wettbewerbsergebnisse.

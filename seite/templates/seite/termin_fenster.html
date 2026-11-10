@@ -1,0 +1,9 @@
+{% load i18n %}<dialog id="{{ tid }}" class="termin-fenster" aria-labelledby="{{ tid }}-titel">
+    <h2 id="{{ tid }}-titel">{{ e.title }}{% if e.is_cancelled %} <span class="marke-abgesagt">{% translate "fällt aus" %}</span>{% endif %}</h2>
+    <p>{% include "seite/termin_zeit.html" with lang=True %}</p>
+    {% if e.owner %}<p class="klein">{% blocktranslate with name=e.owner %}Termin von {{ name }}{% endblocktranslate %}</p>{% endif %}
+    {% if e.note %}<p>{{ e.note }}</p>{% endif %}
+    {% if e.location or e.address %}<p><strong>{% translate "Ort:" %}</strong> {{ e.location }}{% if e.location and e.address %}, {% endif %}{% if e.address %}<a href="https://www.openstreetmap.org/search?query={{ e.address|urlencode }}" rel="noopener">{{ e.address }}</a>{% endif %}</p>{% endif %}
+    {% if e.description %}<p>{{ e.description|linebreaksbr }}</p>{% endif %}
+    <form method="dialog"><button class="knopf" type="submit">{% translate "Schließen" %}</button></form>
+  </dialog>

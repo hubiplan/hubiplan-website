@@ -1,0 +1,20 @@
+{% load i18n %}{# Termine als Monatskalender (G5); auf dem Handy nur die Tage mit Terminen #}
+{% for blatt in kalender %}
+<section class="monat">
+  <h2>{{ blatt.title }}</h2>
+  <table class="monatskalender">
+    <thead><tr>{% for tag in blatt.weekdays %}<th scope="col">{{ tag }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for woche in blatt.weeks %}<tr>
+      {% for tag in woche %}<td{% if not tag.in_month %} class="fremd"{% elif tag.events or tag.today %} class="{% if tag.events %}mit-termin{% endif %}{% if tag.events and tag.today %} {% endif %}{% if tag.today %}heute{% endif %}"{% endif %}>{% if tag.in_month %}
+        <span class="tag"><span class="nur-handy">{{ tag.date|date:"D" }}, </span>{{ tag.date|date:"j" }}<span class="nur-handy">. {{ tag.date|date:"F" }}</span></span>
+        {% if tag.events %}<ul class="termine-tag">{% for e in tag.events %}{% with ts=e.start|date:"U" %}{% with tid="termin-"|add:e.id|add:"-"|add:ts %}<li class="termin termin-kurz{% if e.is_cancelled %} abgesagt{% endif %}">
+          <button type="button" class="termin-knopf" aria-haspopup="dialog" data-termin="{{ tid }}">{% if not e.all_day %}<span class="zeit">{{ e.start|time:"H:i" }}</span> {% endif %}{{ e.title }}</button>{% if e.is_cancelled %} <span class="marke-abgesagt">{% translate "fällt aus" %}</span>{% endif %}
+          {% include "seite/termin_fenster.html" %}
+        </li>{% endwith %}{% endwith %}{% endfor %}</ul>{% endif %}
+      {% endif %}</td>{% endfor %}
+    </tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}

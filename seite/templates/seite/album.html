@@ -7,7 +7,7 @@
 {% if album.description %}<p>{{ album.description|linebreaksbr }}</p>{% endif %}
 {% if album.albums %}{% include "seite/album_kacheln.html" with alben=album.albums %}{% endif %}
 {% if album.images %}
-<ul class="galerie-bilder">
+<ul class="galerie-bilder{% if darstellung == "masonry" %} mauerwerk{% endif %}">
   {% for b in album.images %}{% lokal site b.small_url as klein %}{% lokal site b.url as gross %}
   <li><a class="galerie-bild" href="{{ gross }}" data-unterschrift="{{ b.caption }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a></li>
   {% endfor %}

@@ -2,7 +2,15 @@
 {% block titel %}{% baustein site "units" site.info.unit_label_plural|default:"Einheiten" %} · {% endblock %}
 {% block inhalt %}
 <h1>{% baustein site "units" site.info.unit_label_plural|default:"Einheiten" %}</h1>
-<ul class="kacheln gross">
+{% include "seite/einleitung.html" %}
+{% if darstellung == "list" %}
+<ul class="einheiten-liste">
+{% for u in units %}
+  <li><a href="{% einheit_url site u.slug %}">{{ u.name }}</a>{% if u.founding_year %} <small>{% blocktranslate with jahr=u.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</small>{% endif %}</li>
+{% endfor %}
+</ul>
+{% else %}
+<ul class="kacheln{% if darstellung != "small" %} gross{% endif %}">
 {% for u in units %}
   <li><a href="{% einheit_url site u.slug %}">
     {% lokal site u.logo_url as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="60" height="60" loading="lazy">{% else %}<span class="wappen-platz" aria-hidden="true"></span>{% endif %}
@@ -10,4 +18,5 @@
   </a></li>
 {% endfor %}
 </ul>
+{% endif %}
 {% endblock %}
