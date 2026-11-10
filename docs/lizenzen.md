@@ -1,9 +1,21 @@
 # Lizenzen
 
 Die Vereinswebseite steht unter der **AGPL-3.0-or-later** ([LICENSE](../LICENSE)), wie HUBIplan.
-Dieses Dokument beschreibt fremde Bestandteile und ihre Lizenzen; es ist keine
-anwaltliche Prüfung. Die ausführliche Beschreibung für das Gesamtsystem steht in
+Dieses Dokument beschreibt fremde Bestandteile und ihre Lizenzen; es beruht auf den
+Lizenzaudits vom 31.10.2026 und 10.11.2026 (Berichte im Projektordner unter `audit/`) und ist
+keine anwaltliche Prüfung. Die ausführliche Beschreibung für das Gesamtsystem steht in
 `hubiplan/docs/lizenzen.md`.
+
+## Quellcode für Besucher (AGPL § 13)
+
+Das Repository ist öffentlich (`https://github.com/hubiplan/hubiplan-website`). Jede Seite
+verlinkt im Fuß „Quellcode“: `deploy/deploy.sh` legt beim Ausrollen den Commit als `.fassung`
+ab, der Link zeigt dann auf `…/tree/<commit>`, also genau auf die laufende Fassung; ohne
+diese Datei (Entwicklung) auf das Repository (`seite/templatetags/seite.py`, `quellcode`).
+Eingespielte Designpakete bringen keine Vorlagen mit und können den Fuß nicht ersetzen. Ein
+Design im Repo mit eigenem Fuß muss den Link behalten; `tests/test_designs.py` prüft das für
+jedes Design. Wer eine veränderte Fassung betreibt, ändert `QUELLCODE` auf sein eigenes
+öffentliches Repository.
 
 ## Was der Browser bekommt
 
@@ -14,8 +26,9 @@ kommen zur Laufzeit aus HUBIplan; für ihre Rechte sorgen die Vereine (Hinweise 
 
 Symbole für Social-Media-Kanäle (`seite/templatetags/seite.py`): Die Pfade für Facebook,
 TikTok und X entsprechen weitgehend [Simple Icons](https://simpleicons.org) (CC0 1.0, keine
-Nennung nötig). Die Zeichen sind Marken der jeweiligen Unternehmen; die Webseite nutzt sie
-nur als Link auf den eigenen Kanal des Vereins.
+Nennung nötig; das X-Symbol stammt wahrscheinlich aus Version 11.15.0). Die Zeichen sind
+Marken der jeweiligen Unternehmen; CC0 gibt keine Markenrechte. Die Webseite nutzt sie nur als
+Link auf den eigenen Kanal des Vereins (Lizenzaudit 10.11.2026, L11).
 
 Beiträge aus Instagram und Facebook speichert HUBIplan mit Text und Bildern und gibt sie an
 die Webseite weiter. Die Verbindung zu Meta gibt keine Rechte an fremden Bildern oder Musik;
@@ -45,11 +58,10 @@ Die Python-Bibliotheken laufen nur im eigenen Container und werden nicht weiterg
 
 Die Hestia-Vorlagen sind nach den Standardvorlagen von HestiaCP 1.9.4 aufgebaut und als
 solche gekennzeichnet; der GPL-Volltext liegt in `deploy/hestia/LICENSE-GPL-3.0.txt`. Sie
-bleiben GPL-3.0; GPL-3.0 und AGPL-3.0 dürfen kombiniert werden (jeweils § 13).
+bleiben GPL-3.0; GPL-3.0 und AGPL-3.0 dürfen kombiniert werden (jeweils § 13). Der Kopf
+jeder Vorlage nennt Herkunft und das Datum der letzten Änderung (GPL § 5a); bei jeder Änderung
+das Datum anpassen.
 
 ## Offen
 
-- **Quellcode-Angebot (AGPL § 13):** zurückgestellt wie in HUBIplan. Nötig,
-  sobald ein anderer als der Rechteinhaber die Webseite betreibt oder Images weitergegeben
-  werden.
 - **Images weitergeben:** vorher Stückliste und Lizenztexte aller Pakete im Image beilegen.
