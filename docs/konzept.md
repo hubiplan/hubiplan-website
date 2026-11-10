@@ -59,6 +59,12 @@ Schnittstelle werden kurz zwischengespeichert; die Vorschau hat einen getrennten
 kürzeren Zwischenspeicher. Medien und Designpakete kommen über die freigegebenen
 Schnittstellen aus HUBIplan.
 
+Stilregler (HUBIplan › Webseite › Gestaltung › Feinabstimmung) kommen als `style` in der
+öffentlichen Schnittstelle, nur mit den verstellten Reglern. Die Seite nimmt davon nur bekannte
+Regler und Stufen (`seite/stil.py`), schreibt sie als `data-st-…` an das `<html>`-Element und
+lädt `stil.css` mit festen Regeln je Stufe. Ohne Regler bleibt jedes Design unverändert; was
+ein Design selbst festlegt, sperrt `stil.LOCKS` (gleiche Liste in HUBIplan).
+
 Die Gestaltung passt sich Smartphone, Tablet und großen Bildschirmen an. Feste
 Rahmentexte stehen auf Deutsch und Englisch zur Verfügung. Inhalte werden in der
 Sprache der jeweiligen Webseite gezeigt. Tastaturbedienung, Kontraste und Alternativtexte

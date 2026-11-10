@@ -1,0 +1,169 @@
+"""Stilregler aus HUBIplan (Konzept G1, Ralf 10.11.2026). Alle Daten erfunden."""
+
+import re
+from pathlib import Path
+
+import pytest
+
+from seite import stil
+from seite.site import DESIGNS, contrast
+
+from . import fake
+
+STATIC = Path(__file__).resolve().parents[1] / "seite" / "static" / "seite"
+KEY = fake.KEY
+
+
+def text(response) -> str:
+    return response.content.decode()
+
+
+def html_tag(html: str) -> str:
+    return re.search(r"<html[^>]*>", html).group(0)
+
+
+@pytest.mark.parametrize("design", list(DESIGNS))
+def test_ohne_regler_alles_wie_bisher(client, hubiplan, design):
+    hubiplan.info["design"] = design
+    html = text(client.get("/"))
+    assert "data-st-" not in html
+    assert "stil.css" not in html
+    assert "--grund:" not in html
+
+
+def test_regler_als_merkmale_am_html(client, hubiplan):
+    hubiplan.info["style"] = {
+        "font": "modern",
+        "corners": "round",
+        "sticky": True,
+        "image_frame": False,
+        "footer_align": "center",
+    }
+    html = text(client.get("/"))
+    tag = html_tag(html)
+    assert 'data-st-font="modern"' in tag
+    assert 'data-st-corners="round"' in tag
+    assert 'data-st-sticky="on"' in tag
+    assert 'data-st-image-frame="off"' in tag
+    assert 'data-st-footer-align="center"' in tag
+    # stil.css nach dem Design
+    assert html.index("design-classic.css") < html.index("seite/stil.css")
+
+
+def test_unbekannte_regler_und_stufen_fallen_weg(client, hubiplan):
+    hubiplan.info["style"] = {
+        "font": "comic",
+        "corners": '"><script>alert(1)</script>',
+        "sticky": "ja",
+        "farbe": "rot",
+        "width": "wide",
+    }
+    tag = html_tag(text(client.get("/")))
+    assert tag.count("data-st-") == 1 and 'data-st-width="wide"' in tag
+    assert "<script>alert" not in text(client.get("/"))
+
+
+def test_kein_dict_ist_kein_regler(client, hubiplan):
+    hubiplan.info["style"] = ["font", "modern"]
+    assert "data-st-" not in text(client.get("/"))
+
+
+def test_wappen_und_name_nie_beide_aus():
+    assert stil.clean({"logo": False, "name": False}, "classic") == {"logo": "off"}
+    assert stil.clean({"name": False}, "classic") == {"name": "off"}
+
+
+def test_vom_design_gesperrte_regler(client, hubiplan):
+    hubiplan.info["design"] = "sidebar"
+    hubiplan.info["style"] = {"logo_pos": "center", "width": "narrow", "corners": "square"}
+    tag = html_tag(text(client.get("/")))
+    assert "data-st-logo-pos" not in tag and "data-st-width" not in tag
+    assert 'data-st-corners="square"' in tag
+    hubiplan.info["design"] = "stage"
+    hubiplan.info["style"] = {"width": "wide", "hero_name": True}
+    tag = html_tag(text(client.get("/")))
+    assert 'data-st-width="wide"' in tag and "data-st-hero-name" not in tag
+
+
+def test_jede_stufe_hat_regeln():
+    css = (STATIC / "stil.css").read_text()
+    for key, allowed in stil.CATALOG.items():
+        values = ("on", "off") if allowed is bool else allowed
+        attr = key.replace("_", "-")
+        for value in values:
+            if (key, value) in {
+                ("image_frame", "off"),
+                ("hero_name", "off"),
+                ("logo", "on"),
+                ("name", "on"),
+                ("header_bg", "image"),
+            }:
+                continue  # Vorgabe ohne eigene Regel (oder in der Vorlage gelöst)
+            assert f'data-st-{attr}="{value}"' in css, (key, value)
+        if allowed is not bool:
+            assert f"data-st-{attr}" in css
+
+
+def test_getoenter_grund_und_lesbare_links(client, hubiplan):
+    hubiplan.info["theme"] = {**hubiplan.info["theme"], "primary": "#3a7d44"}
+    hubiplan.info["style"] = {"background": "tinted"}
+    html = text(client.get("/"))
+    grund = re.search(r"--grund:(#[0-9a-f]{6})", html).group(1)
+    assert grund == stil.mix("#3a7d44", "#ffffff", stil.TINT)
+    link = re.search(r"--link:(#[0-9a-fA-F]{6})", html).group(1)
+    assert contrast(link, grund) >= 4.5
+    hubiplan.info["style"] = {"background": "grey"}
+    assert "--grund:#eff1f0" in text(client.get("/"))
+
+
+def test_kopf_weiss_statt_kopfbild(client, hubiplan):
+    hubiplan.info["header_image"] = {
+        "key": "banner",
+        "url": f"{fake.BASE}images/banner/",
+        "width": 1200,
+        "height": 300,
+        "alt": "Banner",
+    }
+    assert 'class="marke marke-bild"' in text(client.get("/"))
+    hubiplan.info["style"] = {"header_bg": "image"}
+    assert 'class="marke marke-bild"' in text(client.get("/"))
+    hubiplan.info["style"] = {"header_bg": "white"}
+    html = text(client.get("/"))
+    assert 'class="marke marke-bild"' not in html
+    assert "/medien/m/logos/wappen.png" in html
+
+
+def _galerie(hubiplan, anzahl):
+    bild = {
+        "key": "festbild1",
+        "url": f"{fake.BASE}images/festbild1/",
+        "small_url": "",
+        "width": 800,
+        "height": 400,
+        "caption": "",
+        "alt": "Festzug",
+    }
+    hubiplan.info["home"] = ["carousel", "greeting"]
+    hubiplan.info["greeting"] = {
+        "title": "Willkommen",
+        "text": "Hallo",
+        "image": bild if anzahl == 1 else None,
+        "gallery": [bild] * anzahl if anzahl > 1 else [],
+    }
+
+
+@pytest.mark.parametrize("anzahl", [1, 2])
+def test_name_auf_dem_titelbild(client, hubiplan, anzahl):
+    _galerie(hubiplan, anzahl)
+    assert 'class="titel-name"' not in text(client.get("/"))
+    hubiplan.info["style"] = {"hero_name": True}
+    html = text(client.get("/"))
+    assert '<p class="titel-name" aria-hidden="true">Schützenverein Musterdorf 1900</p>' in html
+
+
+def test_schriften_der_regler_liegen_lokal():
+    css = (STATIC / "stil.css").read_text()
+    assert "url(" not in css and "@import" not in css
+    for family in ('"Open Sans"', '"Roboto"', '"Great Vibes"'):
+        assert family in css
+        assert f"font-family: {family}" in (STATIC / "seite.css").read_text()

@@ -15,7 +15,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from . import api, designpaket
+from . import api, designpaket, stil
 
 PREVIEW_COOKIE = "vorschau"
 # Testserver mit fester Zuordnung (SITE_HOST_OVERRIDE): In der Vorschau eine andere
@@ -75,12 +75,13 @@ def darken(hex_color: str, amount: float) -> str:
     return "#" + "".join(f"{round(c * (1 - amount)):02x}" for c in parts)
 
 
-def link_color(primary: str) -> str:
+def link_color(primary: str, background: str | None = None) -> str:
     """Linkfarbe aus der Vereinsfarbe: so wenig wie nötig abgedunkelt, bis Text auf
     Weiß und auf dem Seitengrund 4,5 : 1 erreicht (WCAG 1.4.3; wie HUBIplan)."""
+    backgrounds = LINK_BACKGROUNDS + ((background,) if background else ())
     for step in range(21):
         color = darken(primary, step * 0.05)
-        if min(contrast(color, bg) for bg in LINK_BACKGROUNDS) >= 4.5:
+        if min(contrast(color, bg) for bg in backgrounds) >= 4.5:
             return color
     return "#000000"
 
@@ -137,9 +138,38 @@ class Site:
         for k, v in (self.info.get("theme") or {}).items():
             if k in theme and isinstance(v, str) and HEX.match(v):
                 theme[k] = v
-        # Für Text und Fokusrahmen im Inhalt; die Vereinsfarbe selbst bleibt für Flächen
-        theme["link"] = link_color(theme["primary"])
+        # Für Text und Fokusrahmen im Inhalt; die Vereinsfarbe selbst bleibt für Flächen.
+        # Gilt auch auf einem per Stilregler getönten oder grauen Seitengrund.
+        theme["link"] = link_color(theme["primary"], self.background_for(theme["primary"]))
         return theme
+
+    # --- Stilregler (Konzept G1) ---
+
+    @property
+    def style(self) -> dict[str, str]:
+        """Verstellte Stilregler aus HUBIplan (geprüft, ohne die vom Design gesperrten)."""
+        if "_style" not in self.cache:
+            self.cache["_style"] = stil.clean(self.info.get("style"), self.design)
+        return self.cache["_style"]
+
+    @property
+    def style_attrs(self) -> str:
+        return stil.attrs(self.style)
+
+    def background_for(self, primary: str) -> str | None:
+        return stil.background(self.style, primary)
+
+    @property
+    def header_image_shown(self) -> bool:
+        """Kopfbild statt Wappen und Name, außer ein Regler wählt weißen oder farbigen Kopf."""
+        image = self.info.get("header_image")
+        has = isinstance(image, dict) and bool(image.get("url"))
+        return has and self.style.get("header_bg") not in ("white", "color")
+
+    @property
+    def hero_name(self) -> bool:
+        """Name auf dem Titelbild (Bühne zeigt ihn immer)."""
+        return self.style.get("hero_name") == "on"
 
     @property
     def packages(self) -> dict:
@@ -261,6 +291,9 @@ class Site:
         for role, (color, on) in self.colors.items():
             name = names.get(role, role)
             parts.append(f"--farbe-{name}:{color};--auf-{name}:{on}")
+        grund = self.background_for(self.theme["primary"])
+        if grund:
+            parts.append(f"--grund:{grund}")
         return ";".join(parts)
 
     @property

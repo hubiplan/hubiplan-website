@@ -1,7 +1,7 @@
 {% load seite i18n %}{# Kopf für alle Designs; die Designs unterscheiden sich im CSS (design-<name>.css) #}
 <header class="kopf">
   <div class="breite kopf-innen">
-    {% lokal site site.info.header_image.url as kopfbild %}{% if kopfbild %}
+    {% lokal site site.info.header_image.url as kopfbild %}{% if kopfbild and site.header_image_shown %}
     {# Kopfbild aus HUBIplan statt Wappen und Name (Ralf 05.11.2026); der Name steht im Alternativtext #}
     <a class="marke marke-bild" href="{% url 'start' %}"><img src="{{ kopfbild }}" alt="{{ site.info.header_image.alt|default:site.info.name }}"{% if site.info.header_image.width and site.info.header_image.height %} width="{{ site.info.header_image.width }}" height="{{ site.info.header_image.height }}"{% endif %}></a>
     {% else %}
