@@ -1,0 +1,4 @@
+{% load seite %}{% lokal site page.image.url as bild %}{% if abschnitt %}<section{% abschnitt "seite-text" %}>{% endif %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ page.image.alt }}">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+<div class="text">{{ page.text|md:site }}</div>
+{% if abschnitt %}</section>{% endif %}

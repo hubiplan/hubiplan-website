@@ -29,6 +29,8 @@ Untereinheiten erscheinen, wird dort je Webseite festgelegt. Die Darstellung umf
   Abschnitte (Text, Text mit Bild, Banner, Knopfleiste, Kacheln, Termin mit Countdown,
   Album-Auszug, Zitat, Ansprechpartner), je mit Hintergrund (nur Palettenfarben als geprüfte
   Hex-Werte), Breite und Spalte im Design „Zeitung“. Ohne `home_layout` gilt `home` wie bisher.
+- Textseiten aus denselben Abschnitten (`sections` der Seite): „body“ ist Bild und Text der
+  Seite wie bisher. Ohne eigene Abschnitte bleibt die Seite unverändert.
 - Vorstand, Ansprechpartner und Untereinheiten mit jeweils freigegebenen Kontaktwegen.
 - Würdenträger, Ehrungen und Chronik aus den veröffentlichten Daten.
 - Termine mit Kalenderansicht und Kalender-Abo sowie Wettbewerbsergebnisse.
