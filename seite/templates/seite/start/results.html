@@ -1,5 +1,5 @@
 {% load seite i18n %}{% if results %}
-<section>
+<section{% abschnitt %}>
   <h2>{% translate "Aktuelle Ergebnisse" %}</h2>
   <div class="karten">{% for c in results %}<div class="karte">
     <h3><a href="{% url 'ergebnis' c.id %}">{{ c.title }}</a></h3>

@@ -1,0 +1,4 @@
+{% load seite i18n %}<section{% abschnitt "ansprechpartner" %}>
+  <h2>{{ abschnitt.title|default:_("Ansprechpartner") }}</h2>
+  {% include "seite/rollen.html" with rollen=abschnitt.roles homepage=None %}
+</section>

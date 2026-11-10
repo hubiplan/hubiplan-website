@@ -1,0 +1,3 @@
+{% load seite %}<section{% abschnitt "zitat" %}>
+  <figure><blockquote><p>{{ abschnitt.text|linebreaksbr }}</p></blockquote>{% if abschnitt.name %}<figcaption>{{ abschnitt.name }}</figcaption>{% endif %}</figure>
+</section>

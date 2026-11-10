@@ -492,3 +492,93 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .bild-blaettern { display: inline-flex; gap: .5rem; align-items: center; margin-right: auto; }
 .bild-blaettern[hidden] { display: none; }
 @media print { .zeitleiste-sprung, .bild-fenster { display: none; } .galerie-bilder { grid-template-columns: repeat(4, 1fr); } }
+
+/* Abschnitte der Startseite (G3, Ralf 10.11.2026): Breite und Hintergrund aus HUBIplan.
+   Der Hintergrund kommt als style-Attribut (Palettenfarbe mit passender Schriftfarbe). */
+:root { --abschnitt-hell: color-mix(in srgb, var(--primaer) 7%, var(--flaeche)); }
+.abschnitt-text { max-width: 44rem; margin-left: auto; margin-right: auto; }
+.abschnitt-text .text { max-width: none; }
+.abschnitt-hg { padding: .4rem 1.2rem 1.2rem; border-radius: var(--rund); margin: 1.5rem 0; }
+.abschnitt-hg.abschnitt-text { margin-left: auto; margin-right: auto; }
+.abschnitt-voll { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); border-radius: 0; }
+.spalte-haupt .abschnitt-voll, .spalte-seite .abschnitt-voll { margin-left: 0; margin-right: 0; padding-left: 1.2rem; padding-right: 1.2rem; }
+.abschnitt-farbig h2, .abschnitt-farbig h3, .abschnitt-farbig p, .abschnitt-farbig .klein,
+.abschnitt-farbig .text a, .abschnitt-farbig figcaption { color: inherit; }
+.abschnitt-farbig :focus-visible { outline-color: currentColor; }
+.abschnitt-farbig .karte, .abschnitt-farbig .bildkachel { color: var(--text); }
+.abschnitt-farbig .karte h3, .abschnitt-farbig .karte p, .abschnitt-farbig .bildkachel h3,
+.abschnitt-farbig .bildkachel p { color: var(--text); }
+
+/* Text mit Bild */
+.text-bild-raster { display: grid; gap: 1rem 1.5rem; align-items: start; }
+.text-bild-bild { margin: 0; }
+.text-bild-bild img { display: block; width: 100%; border-radius: var(--rund); }
+.text-bild-bild figcaption { font-size: .9rem; color: var(--text-leise); margin-top: .3rem; }
+@media (min-width: 40rem) {
+  .text-bild-raster.bild-half { grid-template-columns: 1fr 1fr; }
+  .text-bild-raster.bild-small { grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); }
+  .text-bild-raster.bild-right.bild-small { grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); }
+  .text-bild-raster.bild-right .text-bild-bild { order: 2; }
+}
+.text-bild-text > h2:first-child { margin-top: 0; }
+
+/* Banner: breites Bild, auf Wunsch mit einer Zeile darauf */
+.banner-bild { position: relative; margin: 0; }
+.banner-bild img { display: block; width: 100%; height: 14rem; object-fit: cover; border-radius: var(--rund); }
+.banner-high .banner-bild img { height: min(30rem, 70vh); }
+.abschnitt-voll .banner-bild img { border-radius: 0; }
+.banner.abschnitt-voll { padding-left: 0; padding-right: 0; }
+.banner-zeile { position: absolute; left: 0; right: 0; bottom: 0; padding: 1rem max(16px, calc(50% - 31rem)); font-family: var(--schrift-titel); font-size: clamp(1.3rem, 4vw, 2.2rem); font-weight: 700; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / .65)); border-radius: 0 0 var(--rund) var(--rund); }
+.abschnitt-voll .banner-zeile { border-radius: 0; }
+
+/* Knopfleiste */
+.knoepfe { display: flex; flex-wrap: wrap; gap: .6rem; }
+.knoepfe-center { justify-content: center; }
+.knoepfe-right { justify-content: flex-end; }
+.abschnitt-farbig .knopf { background: var(--abschnitt-auf); color: var(--text); }
+
+/* Kacheln mit Bild und Ziel */
+.bildkacheln { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 40rem) {
+  .bildkacheln { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64rem) {
+  .bildkacheln.spalten-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.spalte-seite .bildkacheln { grid-template-columns: 1fr; }
+.bildkachel { position: relative; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); overflow: hidden; display: flex; flex-direction: column; }
+.bildkachel img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.bildkachel h3 { margin: .8rem 1rem .2rem; font-size: 1.1rem; }
+.bildkachel p { margin: 0 1rem 1rem; color: var(--text-leise); }
+.bildkachel h3 a { color: var(--link); font-weight: 700; }
+/* Die ganze Kachel ist klickbar, der Link bleibt der Titel (für Screenreader) */
+.bildkachel h3 a::after { content: ""; position: absolute; inset: 0; }
+.bildkachel:has(a):hover { border-color: var(--primaer); }
+.bildkachel:has(a:focus-visible) { outline: 3px solid var(--link); outline-offset: 2px; }
+.bildkachel h3 a:focus-visible { outline: none; }
+
+/* Hervorgehobener Termin mit Countdown */
+.termin-gross { text-align: center; }
+.termin-gross .countdown { font-family: var(--schrift-titel); font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; margin: .2rem 0 .4rem; color: var(--farbe-datum); }
+.abschnitt-farbig.termin-gross .countdown { color: inherit; }
+.termin-gross-titel { font-weight: 600; font-size: 1.15rem; }
+
+/* Album-Auszug */
+.album-auszug-bilder { list-style: none; padding: 0; display: grid; gap: .5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 40rem) {
+  .album-auszug-bilder { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.spalte-seite .album-auszug-bilder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.album-auszug-bilder a { display: block; }
+.album-auszug-bilder img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: calc(var(--rund) / 2); }
+
+/* Zitat */
+.zitat figure { margin: 1.5rem auto; max-width: 40rem; text-align: center; }
+.zitat blockquote { margin: 0; font-family: var(--schrift-titel); font-size: 1.35rem; line-height: 1.45; }
+.zitat blockquote { quotes: "„" "“"; }
+:lang(en) .zitat blockquote { quotes: "“" "”"; }
+.zitat blockquote p::before { content: open-quote; }
+.zitat blockquote p::after { content: close-quote; }
+.zitat figcaption { margin-top: .5rem; color: var(--text-leise); }
+.zitat figcaption::before { content: "– "; }
+.abschnitt-farbig.zitat figcaption { color: inherit; }

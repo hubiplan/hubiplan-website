@@ -1,5 +1,5 @@
 {% load seite %}{% if site.info.units %}
-<section>
+<section{% abschnitt %}>
   <h2>{{ site.info.unit_label_plural|default:"Einheiten" }}</h2>
   <ul class="kacheln">{% for u in site.info.units %}<li><a href="{% einheit_url site u.slug %}">{{ u.name }}</a></li>{% endfor %}</ul>
 </section>

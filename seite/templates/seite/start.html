@@ -9,6 +9,6 @@
 {% endif %}
 {# Bausteine in der Reihenfolge aus HUBIplan (Webseite › Menü und Bereiche › Startseite) #}
 {# Anordnung je Design: seite/designs/<design>/start.html ersetzt den Block „bausteine“ #}
-{% block bausteine %}{% for vorlage in sections %}{% include vorlage %}{% endfor %}{% endblock %}
+{% block bausteine %}{% for s in abschnitte %}{% include s.vorlage with abschnitt=s %}{% endfor %}{% endblock %}
 {% endblock %}
 {% block skripte %}{% if carousel %}<script src="{% static 'seite/karussell.js' %}" defer></script>{% endif %}{% endblock %}

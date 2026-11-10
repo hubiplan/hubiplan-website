@@ -1,0 +1,5 @@
+{% load seite i18n %}<section{% abschnitt "album-auszug" %}>
+  <h2>{{ abschnitt.title }}</h2>
+  <ul class="album-auszug-bilder">{% for b in abschnitt.images %}{% lokal site b.small_url as bild %}{% if bild %}<li><a href="{% url 'album' abschnitt.album.slug %}"><img src="{{ bild }}" alt="{{ b.alt }}" loading="lazy"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}></a></li>{% endif %}{% endfor %}</ul>
+  <p><a class="knopf" href="{% url 'album' abschnitt.album.slug %}">{% blocktranslate with name=abschnitt.album.title %}Album „{{ name }}“ ansehen{% endblocktranslate %}</a></p>
+</section>

@@ -9,9 +9,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from django import template
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from django.utils.formats import date_format
-from django.utils.html import json_script
+from django.utils.html import format_html, json_script
 from django.utils.translation import get_language, gettext_noop
 from django.utils.translation import gettext as _
 
@@ -220,6 +220,36 @@ def baustein(site, key, standard=""):
     names = (site.info.get("names") if site is not None else None) or {}
     name = names.get(key) if isinstance(names, dict) else None
     return name.strip() if isinstance(name, str) and name.strip() else standard
+
+
+@register.simple_tag
+def ziel(site, target) -> dict | None:
+    """Ziel eines Knopfs oder einer Kachel der Startseite (G3): ``url`` und ``extern``."""
+    if not isinstance(target, dict):
+        return None
+    try:
+        url = _nav_url(site, target)
+    except (KeyError, TypeError, ValueError, NoReverseMatch):  # unvollständig: kein Link
+        return None
+    if not url:
+        return None
+    return {"url": url, "extern": target.get("key") == "link"}
+
+
+@register.simple_tag(takes_context=True)
+def abschnitt(context, klassen: str = ""):
+    """Klassen und Hintergrund eines Abschnitts der Startseite (G3) als Attribute.
+
+    Breite und Hintergrund kommen aus HUBIplan; Palettenfarben nur als geprüfte Hex-Werte."""
+    a = context.get("abschnitt") or {}
+    parts = [klassen] if klassen else []
+    parts += a.get("klassen") or []
+    style = a.get("stil") or ""
+    if parts and style:
+        return format_html(' class="{}" style="{}"', " ".join(parts), style)
+    if parts:
+        return format_html(' class="{}"', " ".join(parts))
+    return format_html(' style="{}"', style) if style else ""
 
 
 @register.simple_tag

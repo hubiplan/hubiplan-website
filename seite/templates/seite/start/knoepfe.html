@@ -1,0 +1,4 @@
+{% load seite i18n %}<section{% abschnitt "knopfleiste" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <p class="knoepfe knoepfe-{{ abschnitt.align|default:'left' }}">{% for b in abschnitt.buttons %}{% ziel site b.target as z %}{% if z %}<a class="knopf" href="{{ z.url }}"{% if z.extern %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ b.label }}{% if z.extern %}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span>{% endif %}</a>{% endif %}{% endfor %}</p>
+</section>

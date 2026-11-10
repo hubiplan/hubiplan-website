@@ -1,0 +1,9 @@
+{% load seite %}{% lokal site abschnitt.image.url as bild %}<section{% abschnitt "text-bild" %}>
+  <div class="text-bild-raster bild-{{ abschnitt.side|default:'right' }} bild-{{ abschnitt.size|default:'half' }}">
+    {% if bild %}<figure class="text-bild-bild"><img src="{{ bild }}" alt="{{ abschnitt.image.alt }}" loading="lazy"{% if abschnitt.image.width %} width="{{ abschnitt.image.width }}" height="{{ abschnitt.image.height }}"{% endif %}>{% if abschnitt.image.caption %}<figcaption>{{ abschnitt.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+    <div class="text-bild-text">
+      {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+      {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+    </div>
+  </div>
+</section>

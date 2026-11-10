@@ -1,0 +1,4 @@
+{% load seite %}<section{% abschnitt "abschnitt-textblock" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+</section>
