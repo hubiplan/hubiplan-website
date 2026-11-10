@@ -6,6 +6,7 @@ import datetime
 import functools
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from django import template
 from django.urls import reverse
@@ -56,7 +57,7 @@ def menue(context):
     path = context["request"].path
     start = reverse("start")
 
-    def entry(label, url):
+    def entry(label, url, extra=None):
         if isinstance(url, list):
             children = [entry(*c) for c in url]
             return {
@@ -64,13 +65,18 @@ def menue(context):
                 "children": children,
                 "active": any(c["active"] for c in children),
             }
+        extra = extra or {}
+        if extra.get("extern"):
+            # Link nach außen (Ralf 10.11.): neuer Tab, nie „aktiv“
+            return {"label": label, "url": url, "active": False, **extra}
         return {
             "label": label,
             "url": url,
             "active": path == url or (url != start and path.startswith(url)),
+            **extra,
         }
 
-    return [entry(label, url) for label, url in items]
+    return [entry(*item) for item in items]
 
 
 def _nav_url(site, node: dict) -> str | None:
@@ -84,6 +90,8 @@ def _nav_url(site, node: dict) -> str | None:
         return einheiten_url(site)
     if key == "membertype":
         return reverse("mitglieder", args=[node["id"]]) if node.get("id") else None
+    if key == "link":
+        return _extern(node.get("url"))
     name = NAV_URLS.get(key)
     return reverse(name) if name else None
 
@@ -108,6 +116,26 @@ NAV_URLS = {
 }
 
 
+def _extern(url) -> str | None:
+    """Adresse eines Links nach außen: nur vollständige http(s)-Adressen."""
+    if not isinstance(url, str) or len(url) > 300:
+        return None
+    parts = urlsplit(url.strip())
+    if parts.scheme not in ("http", "https") or not parts.netloc:
+        return None
+    return url.strip()
+
+
+def _extra(node: dict) -> dict:
+    """Zusätze eines Menüpunkts: Link nach außen, als Knopf hervorgehoben."""
+    extra = {}
+    if node.get("key") == "link":
+        extra["extern"] = True
+    if node.get("button") is True:
+        extra["knopf"] = True
+    return extra
+
+
 def _nav_items(site, nav: list) -> list:
     """Menü in der Anordnung aus HUBIplan (Ralf 2026-10-31: per Ziehen, mit Unterpunkten).
     Ein Punkt mit eigener Seite und Unterpunkten wird ein Aufklappmenü, in dem er selbst
@@ -117,15 +145,16 @@ def _nav_items(site, nav: list) -> list:
         if not isinstance(node, dict) or not node.get("label"):
             continue
         children = [
-            (c["label"], url)
+            (c["label"], url, _extra({**c, "button": False}))
             for c in node.get("children") or []
             if isinstance(c, dict) and c.get("label") and (url := _nav_url(site, c))
         ]
         url = None if node.get("heading") else _nav_url(site, node)
         if url and children:
-            items.append((node["label"], [(node["label"], url), *children]))
+            own = _extra({**node, "button": False})
+            items.append((node["label"], [(node["label"], url, own), *children]))
         elif url:
-            items.append((node["label"], url))
+            items.append((node["label"], url, _extra(node)))
         elif len(children) == 1:
             items.append(children[0])
         elif children:

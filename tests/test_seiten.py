@@ -962,6 +962,43 @@ def test_menue_aus_hubiplan(client, hubiplan):
     assert ">Neu<" not in html
 
 
+def test_menue_link_nach_aussen_und_knopf(client, hubiplan):
+    """Ralf 2026-11-10: Links nach außen im Menü (neuer Tab) und ein Punkt als Knopf."""
+    hubiplan.info["nav"] = [
+        {"key": "contact", "label": "Kontakt"},
+        {
+            "key": "link",
+            "label": "Mitglied werden",
+            "url": "https://www.example.org/beitritt",
+            "button": True,
+        },
+        {
+            "key": "events",
+            "label": "Termine",
+            "children": [
+                {"key": "link", "label": "Dachverband", "url": "https://verband.example.org/"}
+            ],
+        },
+        {"key": "link", "label": "Böse", "url": "javascript:alert(1)"},
+        {"key": "link", "label": "Ohne Adresse"},
+    ]
+    html = text(client.get("/kontakt/"))
+    assert (
+        '<a href="https://www.example.org/beitritt" class="menue-knopf" target="_blank" '
+        'rel="noopener noreferrer">Mitglied werden<span class="nur-vorlesen">'
+    ) in html
+    assert (
+        '<a href="https://verband.example.org/" target="_blank" '
+        'rel="noopener noreferrer">Dachverband' in html
+    )
+    # Nur vollständige http(s)-Adressen
+    assert "javascript:" not in html
+    assert ">Böse<" not in html and "Ohne Adresse" not in html
+    # Der Knopf ist nie „aktiv“; Kontakt bleibt die aktuelle Seite
+    assert '<a href="/kontakt/" aria-current="page">Kontakt</a>' in html
+    assert html.count('class="menue-knopf"') == 2  # breites Menü und Handymenü
+
+
 def test_eigene_namen_der_bausteine(client, hubiplan):
     """Ralf 2026-11-01: eigener Name eines Bausteins steht in Menü, Überschrift und Titel."""
     hubiplan.info["nav"] = [
