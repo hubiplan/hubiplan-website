@@ -181,3 +181,17 @@ def test_api_widerruf_trotz_frischem_oder_veraltetem_cache(hubiplan, age, path):
         assert len(hubiplan.calls) == before + 1
     finally:
         lock.release()
+
+
+def test_vorschau_im_rahmen_nur_fuer_hubiplan(client, hubiplan):
+    """Konzept G2: Vorschau neben den Einstellungen; Besucher-Seiten bleiben unrahmbar."""
+    r = client.get("/")
+    assert "frame-ancestors 'none'" in r["Content-Security-Policy"]
+    assert r["X-Frame-Options"] == "DENY"
+    hubiplan.maintenance = True
+    r = client.get("/vorschau/?schluessel=gut")
+    assert "X-Frame-Options" not in r
+    r = client.get("/")
+    csp = r["Content-Security-Policy"]
+    assert "frame-ancestors 'self' https://hubiplan.example;" in csp
+    assert "X-Frame-Options" not in r

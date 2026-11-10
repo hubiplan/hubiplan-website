@@ -51,6 +51,10 @@ Einwilligungen und Widersprüchen in HUBIplan.
 Ein Vorschau-Link wird in HUBIplan ausgestellt und auf der Webseite gegen ein zeitlich
 begrenztes Cookie eingetauscht. Vorschauinhalte bleiben von öffentlich zwischengespeicherten
 Antworten getrennt. Die Vorschau darf nicht von Suchmaschinen aufgenommen werden.
+In der Vorschau zeigt HUBIplan den Entwurf der Gestaltung (Design, Farben, Stilregler, Kopfbild,
+Startseite); Besucher sehen nur den veröffentlichten Stand. Nur Vorschau-Anfragen darf HUBIplan
+selbst in einem Rahmen zeigen (`frame-ancestors` mit der Adresse aus `HUBIPLAN_PUBLIC_URL`),
+alle anderen Seiten bleiben mit `frame-ancestors 'none'` unrahmbar.
 
 ## Darstellung und Anbindung
 
