@@ -22,7 +22,7 @@ def text(response) -> str:
 def seite(client) -> str:
     """Startseite frisch holen: die Antwort von HUBIplan ist sonst zwischengespeichert."""
     cache.clear()
-    return seite(client)
+    return text(client.get("/"))
 
 
 def html_tag(html: str) -> str:
@@ -94,22 +94,25 @@ def test_vom_design_gesperrte_regler(client, hubiplan):
 
 def test_jede_stufe_hat_regeln():
     css = (STATIC / "stil.css").read_text()
+    # Vorgaben ohne eigene Regel, oder in Vorlage bzw. --grund gelöst
+    ohne_regel = {
+        ("script_greeting", "off"),
+        ("spacing", "normal"),
+        ("date", "tile"),
+        ("header_bg", "image"),
+        ("logo", "on"),
+        ("name", "on"),
+        ("hero_name", "on"),
+        ("hero_name", "off"),
+    }
     for key, allowed in stil.CATALOG.items():
+        if key == "background":
+            continue  # als --grund im <style> (test_getoenter_grund_und_lesbare_links)
         values = ("on", "off") if allowed is bool else allowed
         attr = key.replace("_", "-")
         for value in values:
-            if (key, value) in {
-                ("image_frame", "off"),
-                ("script_greeting", "off"),
-                ("hero_name", "off"),
-                ("logo", "on"),
-                ("name", "on"),
-                ("header_bg", "image"),
-            }:
-                continue  # Vorgabe ohne eigene Regel (oder in der Vorlage gelöst)
-            assert f'data-st-{attr}="{value}"' in css, (key, value)
-        if allowed is not bool:
-            assert f"data-st-{attr}" in css
+            if (key, value) not in ohne_regel:
+                assert f'data-st-{attr}="{value}"' in css, (key, value)
 
 
 def test_getoenter_grund_und_lesbare_links(client, hubiplan):
