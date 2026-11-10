@@ -37,6 +37,7 @@ from .site import (
     Site,
     chosen_host,
     global_maintenance,
+    gradient_css,
     host_of,
     load,
     preview_session,
@@ -335,6 +336,7 @@ CUSTOM_SECTIONS = {
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 PALETTE_BG = re.compile(r"^p([0-9])$")
+GRADIENT_BG = re.compile(r"^g([01])$")
 
 
 def _look(site: Site, s: dict) -> dict:
@@ -360,6 +362,23 @@ def _look(site: Site, s: dict) -> dict:
             klassen.append("abschnitt-hg")
             klassen.append("abschnitt-farbig")
             stil = f"background:{color};color:{on};--abschnitt-auf:{on}"
+    elif isinstance(bg, str) and (m := GRADIENT_BG.match(bg)):
+        # Verlauf aus Einstellungen › Erscheinungsbild (HUBIplan ab 10.11.2026)
+        gradients = site.info.get("gradients") or []
+        i = int(m.group(1))
+        entry = gradients[i] if isinstance(gradients, list) and i < len(gradients) else None
+        entry = entry if isinstance(entry, dict) else {}
+        pair = entry.get("colors")
+        on = entry.get("on_color")
+        css = None
+        if isinstance(pair, list) and len(pair) == 2:
+            css = gradient_css(
+                {"from": pair[0], "to": pair[1], "direction": entry.get("direction")}
+            )
+        if css and isinstance(on, str) and HEX.match(on):
+            klassen.append("abschnitt-hg")
+            klassen.append("abschnitt-farbig")
+            stil = f"background:{pair[0]};background-image:{css};color:{on};--abschnitt-auf:{on}"
     return {"klassen": klassen, "stil": stil}
 
 

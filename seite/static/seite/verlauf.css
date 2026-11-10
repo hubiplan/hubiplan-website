@@ -1,0 +1,29 @@
+/* Verläufe aus HUBIplan (Einstellungen › Erscheinungsbild › Verläufe, Webseite › Gestaltung).
+   Nur geladen, wenn eine Rolle einen Verlauf hat. --bild-… (Fläche) und --linie-… (gerade
+   Linie, border-image) sind nur bei diesen Rollen gesetzt; sonst bleibt alles wie im Design.
+   Abgerundete Ränder und kleine Marken behalten die Vollfarbe (erste Farbe des Verlaufs). */
+
+/* Kopf als farbige Fläche: Festlich, Seitenleiste, Bühne oder Regler „Kopf farbig“ */
+body.design-festive .kopf, body.design-sidebar .kopf, body.design-stage .kopf,
+html[data-st-header-bg="color"] .kopf { background-image: var(--bild-kopf, none); }
+html[data-st-header-bg="white"] .kopf { background-image: none; }
+
+/* Fuß in der Farbe der Rolle (nicht bei den Reglern dunkel, hell, Vereinsfarbe) */
+.fuss { background-image: var(--bild-fuss, none); }
+html[data-st-footer] .fuss { background-image: none; }
+
+/* Bühne: Titelbereich und Farbbänder der Startseite */
+body.design-stage .buehne,
+body.design-stage main.start > section:nth-of-type(even) { background-image: var(--bild-band, none); }
+body.design-stage main.start > section:nth-of-type(4n) { background-image: var(--bild-band2, none); }
+
+/* Zierlinien: gerade Linien als Verlauf */
+body.design-classic .fuss { border-image: var(--linie-zier, none); }
+html[data-st-footer="light"] body.design-classic .fuss { border-image: none; }
+@media (min-width: 64rem) {
+  body.design-festive .menue-breit { border-image: var(--linie-zier, none); }
+}
+body.design-newspaper main h2,
+html[data-st-headings="line"] main h2 { border-image: var(--linie-zier, none); }
+body.design-festive main > section > h2::after, body.design-festive main > h1::after,
+html[data-st-headings="color"] main h2::after { background-image: var(--bild-zier, none); }
