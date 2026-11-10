@@ -136,17 +136,26 @@ def site_view(*, maintenance_ok: bool = False):
 # --- Termine ---
 
 
+def _event(e) -> dict | None:
+    """Termin aus HUBIplan mit Beginn und Ende in Ortszeit (None ohne Beginn)."""
+    if not isinstance(e, dict):
+        return None
+    start = parse_datetime(e["starts_at"]) if e.get("starts_at") else None
+    end = parse_datetime(e["ends_at"]) if e.get("ends_at") else None
+    if start is None:
+        return None
+    start = timezone.localtime(start)
+    end = timezone.localtime(end) if end else None
+    return {**e, "start": start, "end": end}
+
+
 def _events(site: Site, unit: str | None = None) -> list[dict]:
     path = "events/" + (f"?einheit={unit}" if unit else "")
     events = []
     for e in site.get(path).get("events", []):
-        start = parse_datetime(e["starts_at"]) if e.get("starts_at") else None
-        end = parse_datetime(e["ends_at"]) if e.get("ends_at") else None
-        if start is None:
-            continue
-        start = timezone.localtime(start)
-        end = timezone.localtime(end) if end else None
-        events.append({**e, "start": start, "end": end})
+        event = _event(e)
+        if event is not None:
+            events.append(event)
     events.sort(key=lambda e: e["start"])
     return events
 
@@ -265,6 +274,81 @@ def _home(site: Site) -> list[str]:
 
 SIDE_SECTIONS = {"events", "honors", "units"}
 
+# Eigene Abschnitte der Startseite (G3, Ralf 10.11.2026) → Vorlage unter seite/start/
+CUSTOM_SECTIONS = {
+    "text": "text",
+    "text_image": "text_bild",
+    "banner": "banner",
+    "buttons": "knoepfe",
+    "tiles": "kacheln",
+    "event": "termin",
+    "album": "album",
+    "quote": "zitat",
+    "contacts": "ansprechpartner",
+}
+HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
+PALETTE_BG = re.compile(r"^p([0-9])$")
+
+
+def _look(site: Site, s: dict) -> dict:
+    """Breite und Hintergrund eines Abschnitts als Klassen und Stil (nur feste Werte)."""
+    klassen = []
+    width = s.get("width")
+    if width == "text":
+        klassen.append("abschnitt-text")
+    elif width == "full":
+        klassen.append("abschnitt-voll")
+    stil = ""
+    bg = s.get("bg")
+    if bg == "light":
+        klassen.append("abschnitt-hg")
+        stil = "background:var(--abschnitt-hell);color:var(--text)"
+    elif isinstance(bg, str) and (m := PALETTE_BG.match(bg)):
+        palette = site.info.get("palette") or []
+        i = int(m.group(1))
+        entry = palette[i] if isinstance(palette, list) and i < len(palette) else None
+        color = entry.get("color") if isinstance(entry, dict) else None
+        on = entry.get("on_color") if isinstance(entry, dict) else None
+        if isinstance(color, str) and isinstance(on, str) and HEX.match(color) and HEX.match(on):
+            klassen.append("abschnitt-hg")
+            klassen.append("abschnitt-farbig")
+            stil = f"background:{color};color:{on};--abschnitt-auf:{on}"
+    return {"klassen": klassen, "stil": stil}
+
+
+def _layout(site: Site) -> list[dict]:
+    """Abschnitte der Startseite in Reihenfolge mit Vorlage, Gestaltung und Inhalt.
+
+    Ältere HUBIplan-Stände ohne ``home_layout``: die festen Bausteine aus ``home``."""
+    layout = site.info.get("home_layout")
+    if not isinstance(layout, list):
+        layout = [
+            {"key": k, "kind": k, "column": "side" if k in SIDE_SECTIONS else "main"}
+            for k in _home(site)
+        ]
+    result = []
+    for s in layout:
+        if not isinstance(s, dict):
+            continue
+        kind = s.get("kind")
+        if kind in HOME_SECTIONS:
+            name = kind
+        elif kind in CUSTOM_SECTIONS:
+            name = CUSTOM_SECTIONS[kind]
+        else:
+            continue
+        entry = {**s, "vorlage": f"seite/start/{name}.html", **_look(site, s)}
+        if kind == "event":
+            event = _event(s.get("event"))
+            if event is None:
+                continue
+            # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
+            entry["event"] = event
+            entry["tage"] = (event["start"].date() - timezone.localdate()).days
+        result.append(entry)
+    return result
+
+
 # Wettbewerbsergebnisse (Wettbewerbe Schritt 5): Stand laufender Wettbewerbe nur kurz
 # zwischenspeichern; die Rangliste selbst hängt am Stand und ist dann sofort neu
 LIVE_SECONDS = 5
@@ -297,7 +381,8 @@ def _with_date(comp: dict) -> dict:
 @require_GET
 @site_view()
 def start(request, site: Site):
-    home = _home(site)
+    layout = _layout(site)
+    home = [s["kind"] for s in layout if s["kind"] in HOME_SECTIONS]
     greeting = site.info.get("greeting") or None
     events = _upcoming(_events(site), 3) if "events" in home and site.block("events") else []
     honors = (
@@ -312,12 +397,14 @@ def start(request, site: Site):
         site,
         {
             "greeting": greeting,
-            "sections": [f"seite/start/{key}.html" for key in home],
-            # Zeitung: Termine, Majestäten und Untereinheiten in der rechten Spalte
-            "sections_side": [f"seite/start/{key}.html" for key in home if key in SIDE_SECTIONS],
-            "sections_main": [
-                f"seite/start/{key}.html" for key in home if key not in SIDE_SECTIONS
-            ],
+            # Abschnitte mit Gestaltung (G3); Zeitung: Spalte je Abschnitt aus HUBIplan
+            "abschnitte": layout,
+            "abschnitte_seite": [s for s in layout if s.get("column") == "side"],
+            "abschnitte_haupt": [s for s in layout if s.get("column") != "side"],
+            # Für Designpakete mit eigener start.html: nur die Vorlagen wie bisher
+            "sections": [s["vorlage"] for s in layout],
+            "sections_side": [s["vorlage"] for s in layout if s.get("column") == "side"],
+            "sections_main": [s["vorlage"] for s in layout if s.get("column") != "side"],
             "greeting_title": bool(greeting and greeting.get("title") and "greeting" in home),
             "carousel": bool(
                 greeting and "carousel" in home and len(greeting.get("gallery") or []) > 1

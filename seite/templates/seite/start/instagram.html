@@ -1,5 +1,5 @@
-{% load i18n %}{% if instagram_posts %}
-<section>
+{% load seite i18n %}{% if instagram_posts %}
+<section{% abschnitt %}>
   <h2>{% translate "Neu auf Instagram" %}</h2>
   {% include "seite/beitraege.html" with beitraege=instagram_posts %}
   <p><a class="knopf" href="{% url 'aktuelles' %}?kanal=instagram">{% translate "Alle Beiträge" %}</a></p>

@@ -1,5 +1,5 @@
-{% load i18n %}{% if events %}
-<section>
+{% load seite i18n %}{% if events %}
+<section{% abschnitt %}>
   <h2>{% translate "Nächste Termine" %}</h2>
   <ul class="termine">{% for e in events %}{% include "seite/termin.html" %}{% endfor %}</ul>
   <p><a class="knopf" href="{% url 'termine' %}">{% translate "Alle Termine" %}</a></p>

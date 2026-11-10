@@ -25,6 +25,10 @@ Eine Einheit richtet ihre Webseite ausdrücklich in HUBIplan ein. Welche Inhalte
 Untereinheiten erscheinen, wird dort je Webseite festgelegt. Die Darstellung umfasst:
 
 - Startseite mit Begrüßung, nächsten Terminen und wählbaren Bausteinen.
+- Startseite aus Abschnitten (`home_layout` der Schnittstelle): feste Bausteine und eigene
+  Abschnitte (Text, Text mit Bild, Banner, Knopfleiste, Kacheln, Termin mit Countdown,
+  Album-Auszug, Zitat, Ansprechpartner), je mit Hintergrund (nur Palettenfarben als geprüfte
+  Hex-Werte), Breite und Spalte im Design „Zeitung“. Ohne `home_layout` gilt `home` wie bisher.
 - Vorstand, Ansprechpartner und Untereinheiten mit jeweils freigegebenen Kontaktwegen.
 - Würdenträger, Ehrungen und Chronik aus den veröffentlichten Daten.
 - Termine mit Kalenderansicht und Kalender-Abo sowie Wettbewerbsergebnisse.

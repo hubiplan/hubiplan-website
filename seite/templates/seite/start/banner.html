@@ -1,0 +1,3 @@
+{% load seite %}{% lokal site abschnitt.image.url as bild %}{% if bild %}<section{% abschnitt "banner banner-"|add:abschnitt.height %}>
+  <figure class="banner-bild"><img src="{{ bild }}" alt="{{ abschnitt.image.alt }}" loading="lazy"{% if abschnitt.image.width %} width="{{ abschnitt.image.width }}" height="{{ abschnitt.image.height }}"{% endif %}>{% if abschnitt.line %}<figcaption class="banner-zeile">{{ abschnitt.line }}</figcaption>{% endif %}</figure>
+</section>{% endif %}

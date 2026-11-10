@@ -788,3 +788,20 @@ msgstr "free"
 
 msgid "Belegung im eigenen Kalender"
 msgstr "Bookings in your own calendar"
+
+msgid "noch %(n)s Tag"
+msgid_plural "noch %(n)s Tage"
+msgstr[0] "%(n)s day to go"
+msgstr[1] "%(n)s days to go"
+
+msgid "morgen"
+msgstr "tomorrow"
+
+msgid "heute"
+msgstr "today"
+
+msgid "Album „%(name)s“ ansehen"
+msgstr "View album “%(name)s”"
+
+msgid "Ansprechpartner"
+msgstr "Contacts"

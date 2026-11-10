@@ -1,0 +1,7 @@
+{% load seite i18n %}{% with e=abschnitt.event %}<section{% abschnitt "termin-gross" %}>
+  <h2>{{ abschnitt.title|default:e.title }}</h2>
+  <p class="countdown">{% if abschnitt.tage > 1 %}{% blocktranslate count n=abschnitt.tage %}noch {{ n }} Tag{% plural %}noch {{ n }} Tage{% endblocktranslate %}{% elif abschnitt.tage == 1 %}{% translate "morgen" %}{% else %}{% translate "heute" %}{% endif %}</p>
+  {% if abschnitt.title %}<p class="termin-gross-titel">{{ e.title }}{% if e.is_cancelled %} <span class="marke-abgesagt">{% translate "fällt aus" %}</span>{% endif %}</p>{% elif e.is_cancelled %}<p><span class="marke-abgesagt">{% translate "fällt aus" %}</span></p>{% endif %}
+  <p>{% include "seite/termin_zeit.html" with lang=True %}{% if e.location %} · {{ e.location }}{% endif %}</p>
+  {% if site.info.blocks.events %}<p><a class="knopf" href="{% url 'termine' %}">{% translate "Alle Termine" %}</a></p>{% endif %}
+</section>{% endwith %}
