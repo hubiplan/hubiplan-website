@@ -120,6 +120,15 @@ code { word-break: break-all; font-size: .85em; }
 .menue-breit a { display: block; color: var(--auf-kopf); padding: .45rem .55rem; font-size: .95rem; white-space: nowrap; border-radius: 6px; text-decoration: none; }
 .menue-breit a:hover { background: color-mix(in srgb, var(--auf-kopf) 15%, transparent); }
 .menue-breit a[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--farbe-menue); font-weight: 700; }
+/* Hervorgehobener Menüpunkt als Knopf (Ralf 10.11., z. B. „Mitglied werden“); gilt in jedem Design */
+.menue-breit a.menue-knopf, .menue-breit a.menue-knopf[aria-current="page"],
+.menue a.menue-knopf, .menue a.menue-knopf[aria-current="page"] {
+  background: var(--farbe-menue); color: var(--auf-menue); font-weight: 700;
+  border-radius: 999px; box-shadow: none; padding-left: 1rem; padding-right: 1rem;
+}
+.menue-breit a.menue-knopf:hover, .menue a.menue-knopf:hover { background: color-mix(in srgb, var(--farbe-menue) 85%, var(--auf-menue)); }
+.menue a.menue-knopf { margin: .3rem 0; }
+.menue-breit a.menue-knopf:focus-visible { outline-color: var(--auf-kopf); }
 /* Untermenü (z. B. „Würdenträger“): am Bildschirm aufklappbar, im Handymenü eingerückt */
 .menue-breit .hat-unter { position: relative; }
 .menue-breit .untermenue summary {

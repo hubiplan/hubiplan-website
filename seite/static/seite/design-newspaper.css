@@ -21,6 +21,9 @@
   .menue-breit a:hover { background: color-mix(in srgb, var(--auf-menue) 15%, transparent); }
   .menue-breit a[aria-current="page"] { box-shadow: none; background: var(--grund); color: var(--text); }
   .menue-breit :focus-visible { outline-color: var(--auf-menue); }
+  /* Knopf auf der farbigen Reiterleiste: Farben vertauscht, damit er sich abhebt */
+  .menue-breit a.menue-knopf, .menue-breit a.menue-knopf[aria-current="page"] { background: var(--auf-menue); color: var(--farbe-menue); border-radius: 999px; margin-bottom: .3rem; }
+  .menue-breit a.menue-knopf:hover { background: color-mix(in srgb, var(--auf-menue) 85%, var(--farbe-menue)); }
   .menue-breit .untermenue summary { color: var(--auf-menue); font-weight: 600; padding: .5rem .9rem; }
   .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-menue) 15%, transparent); }
 }
