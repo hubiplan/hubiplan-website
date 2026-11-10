@@ -175,3 +175,36 @@ def test_zeitung_spalte_je_abschnitt(client, hubiplan):
     seite = html.split('<div class="spalte-seite">', 1)[1]
     assert "Hauptspalte" in haupt and "begruessung" not in haupt
     assert "begruessung" in seite.split("</main>", 1)[0]
+
+
+def test_textseite_ohne_abschnitte_wie_bisher(client, hubiplan):
+    html = text(client.get("/seite/anfahrt/"))
+    assert "<h1>Anfahrt</h1>" in html and "Mit dem Bus." in html
+    assert "seite-text" not in html
+
+
+def test_textseite_aus_abschnitten(client, hubiplan):
+    """G4: Textseiten aus denselben Abschnitten; der bisherige Text ist „body“."""
+    hubiplan.antworten["pages/anfahrt/"] = {
+        "slug": "anfahrt",
+        "title": "Anfahrt",
+        "text": "Mit dem Bus.",
+        "image": None,
+        "sections": layout(
+            {"key": "c:z1", "kind": "quote", "text": "Herzlich willkommen!", "name": ""},
+            {"key": "body", "kind": "body", "width": "text"},
+            {
+                "key": "c:k1",
+                "kind": "buttons",
+                "title": "",
+                "align": "left",
+                "buttons": [{"label": "Schreiben Sie uns", "target": {"key": "contact"}}],
+            },
+        ),
+    }
+    html = text(client.get("/seite/anfahrt/"))
+    main = html.split("<h1>Anfahrt</h1>", 1)[1]
+    assert main.index("Herzlich willkommen!") < main.index("Mit dem Bus.")
+    assert main.index("Mit dem Bus.") < main.index("Schreiben Sie uns")
+    assert '<section class="seite-text abschnitt-text">' in main
+    assert '<a class="knopf" href="/kontakt/">Schreiben Sie uns</a>' in main

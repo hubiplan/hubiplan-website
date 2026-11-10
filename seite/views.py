@@ -326,6 +326,10 @@ def _layout(site: Site) -> list[dict]:
             {"key": k, "kind": k, "column": "side" if k in SIDE_SECTIONS else "main"}
             for k in _home(site)
         ]
+    return _layout_entries(site, layout)
+
+
+def _layout_entries(site: Site, layout: list) -> list[dict]:
     result = []
     for s in layout:
         if not isinstance(s, dict):
@@ -919,7 +923,28 @@ def search(request, site: Site):
 def page(request, site: Site, slug: str):
     if slug == "geschichte":
         return HttpResponseRedirect(reverse("chronik"))
-    return _page(request, "seite/textseite.html", site, {"page": site.get(f"pages/{slug}/")})
+    data = site.get(f"pages/{slug}/")
+    # Abschnitte (G4): ohne eigene Abschnitte sieht die Seite aus wie bisher
+    sections = data.get("sections") if isinstance(data, dict) else None
+    layout = _page_layout(site, sections) if isinstance(sections, list) else []
+    custom = any(s["kind"] != "body" for s in layout)
+    return _page(
+        request,
+        "seite/textseite.html",
+        site,
+        {"page": data, "abschnitte": layout if custom else []},
+    )
+
+
+def _page_layout(site: Site, sections: list) -> list[dict]:
+    """Abschnitte einer Textseite: fester Abschnitt „body“ (Bild und Text) und eigene."""
+    result = []
+    for s in sections:
+        if isinstance(s, dict) and s.get("kind") == "body":
+            result.append({**s, "vorlage": "seite/seite_text.html", **_look(site, s)})
+        elif isinstance(s, dict) and s.get("kind") in CUSTOM_SECTIONS:
+            result.extend(_layout_entries(site, [s]))
+    return result
 
 
 def _contact_recipient(recipients: list, wanted: str) -> dict | None:

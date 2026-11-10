@@ -2,7 +2,6 @@
 {% block titel %}{{ page.title }} · {% endblock %}
 {% block inhalt %}
 <h1>{{ page.title }}</h1>
-{% lokal site page.image.url as bild %}
-{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ page.image.alt }}">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
-<div class="text">{{ page.text|md:site }}</div>
+{# Abschnitte aus HUBIplan (G4); ohne eigene Abschnitte wie bisher Bild und Text #}
+{% if abschnitte %}{% for s in abschnitte %}{% include s.vorlage with abschnitt=s %}{% endfor %}{% else %}{% include "seite/seite_text.html" %}{% endif %}
 {% endblock %}
