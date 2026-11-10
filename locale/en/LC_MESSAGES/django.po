@@ -805,3 +805,15 @@ msgstr "View album “%(name)s”"
 
 msgid "Ansprechpartner"
 msgstr "Contacts"
+
+msgid "Route planen"
+msgstr "Plan route"
+
+msgid "Video ansehen"
+msgstr "Watch video"
+
+msgid "Aus der Chronik"
+msgstr "From the chronicle"
+
+msgid "Zur Chronik"
+msgstr "To the chronicle"

@@ -1,0 +1,7 @@
+{% load seite i18n %}<section{% abschnitt "chronik-auszug" %}>
+  <h2>{{ abschnitt.title|default:_("Aus der Chronik") }}</h2>
+  <ol class="chronik-auszug-liste">{% for e in abschnitt.entries %}
+    <li><span class="chronik-jahr">{{ e.year }}{% if e.until and e.until != e.year %}–{{ e.until }}{% endif %}</span> <strong>{{ e.title }}</strong>{% if e.text %}<p>{{ e.text|linebreaksbr }}</p>{% endif %}</li>{% endfor %}
+  </ol>
+  <p><a class="knopf" href="{% url 'chronik' %}">{% translate "Zur Chronik" %}</a></p>
+</section>

@@ -1,0 +1,4 @@
+{% load seite i18n %}{% lokal site abschnitt.url as datei %}{% if datei %}<section{% abschnitt "dokument" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <p><a class="knopf" href="{{ datei }}" target="_blank" rel="noopener">{{ abschnitt.label }}<span class="nur-vorlesen"> ({% if abschnitt.file_type == "pdf" %}PDF{% else %}{% translate "Bild" %}{% endif %}, {% translate "öffnet in neuem Fenster" %})</span></a>{% if abschnitt.file_type == "pdf" %} <span class="klein">PDF</span>{% endif %}</p>
+</section>{% endif %}
