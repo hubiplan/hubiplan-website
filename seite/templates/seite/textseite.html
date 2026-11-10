@@ -1,6 +1,7 @@
 {% extends "seite/basis.html" %}{% load seite %}
 {% block titel %}{{ page.title }} · {% endblock %}
 {% block inhalt %}
+{% if titelbild %}{% include "seite/titelbild.html" %}{% endif %}
 <h1>{{ page.title }}</h1>
 {# Abschnitte aus HUBIplan (G4); ohne eigene Abschnitte wie bisher Bild und Text #}
 {% if abschnitte %}{% for s in abschnitte %}{% include s.vorlage with abschnitt=s %}{% endfor %}{% else %}{% include "seite/seite_text.html" %}{% endif %}

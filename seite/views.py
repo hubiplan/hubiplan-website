@@ -978,13 +978,20 @@ def page(request, site: Site, slug: str):
     data = site.get(f"pages/{slug}/")
     # Abschnitte (G4): ohne eigene Abschnitte sieht die Seite aus wie bisher
     sections = data.get("sections") if isinstance(data, dict) else None
-    layout = _page_layout(site, sections) if isinstance(sections, list) else []
+    sections = sections if isinstance(sections, list) else []
+    # Titelbild (G6) steht immer über der Überschrift, nicht zwischen den Abschnitten
+    cover = next((x for x in sections if isinstance(x, dict) and x.get("kind") == "cover"), None)
+    layout = _page_layout(site, [x for x in sections if x is not cover])
     custom = any(s["kind"] != "body" for s in layout)
     return _page(
         request,
         "seite/textseite.html",
         site,
-        {"page": data, "abschnitte": layout if custom else []},
+        {
+            "page": data,
+            "abschnitte": layout if custom else [],
+            "titelbild": cover if cover and isinstance(cover.get("image"), dict) else None,
+        },
     )
 
 

@@ -87,6 +87,12 @@ code { word-break: break-all; font-size: .85em; }
   padding: .5rem 1rem; font-size: .95rem;
 }
 .vorschau-hinweis a { color: inherit; font-weight: 600; margin-left: .5rem; }
+/* Hinweisleiste aus HUBIplan (G6): oben auf allen Seiten, Link an der Schriftstärke erkennbar */
+.hinweisleiste { background: var(--primaer); color: var(--auf-primaer); text-align: center; font-size: .95rem; }
+.hinweisleiste p { margin: 0 auto; padding: .5rem 1rem; }
+.hinweisleiste a { color: inherit; font-weight: 700; text-decoration: none; }
+.hinweisleiste a:hover { text-decoration: none; opacity: .85; }
+.hinweisleiste :focus-visible { outline-color: var(--auf-primaer); }
 .kopf { background: var(--farbe-kopf); color: var(--auf-kopf); }
 .kopf-innen { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; position: relative; }
 .marke { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: .75rem; color: inherit; text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.25; padding: .5rem 0; }
@@ -630,3 +636,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   .monatskalender .nur-handy { display: none; }
   .termin.termin-kurz { font-size: .85rem; padding: .2rem .3rem; border-width: 0 0 0 3px; border-radius: 0; background: var(--abschnitt-hell); }
 }
+
+/* Titelbild einer Textseite (G6): schmaler Streifen über der Überschrift */
+.seiten-titelbild { margin: 0 0 1.25rem; }
+.seiten-titelbild img { display: block; width: 100%; height: clamp(7rem, 22vw, 14rem); object-fit: cover; border-radius: var(--rund); }

@@ -1,0 +1,1 @@
+{% load seite %}{# Titelbild einer Textseite (G6): schmales Bild über der Überschrift #}{% lokal site titelbild.image.url as bild %}{% if bild %}<figure class="seiten-titelbild"><img src="{{ bild }}" alt="{{ titelbild.image.alt }}"{% if titelbild.image.width %} width="{{ titelbild.image.width }}" height="{{ titelbild.image.height }}"{% endif %}></figure>{% endif %}
