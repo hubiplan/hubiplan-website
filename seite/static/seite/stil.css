@@ -1,0 +1,284 @@
+/* Stilregler aus HUBIplan (Webseite › Gestaltung › Feinabstimmung, Konzept G1).
+   Lädt nach dem Design und greift nur bei gesetzten data-st-… am <html> (seite/stil.py);
+   ohne Regler bleibt jedes Design unverändert. Nutzer schreiben kein CSS, jede Stufe steht hier. */
+
+/* ---------- Schrift ---------- */
+/* Feste Paare, nur Schriften unter SIL OFL 1.1 aus schriften/ oder Systemschriften */
+html[data-st-font="system"] body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --schrift-titel: inherit; }
+html[data-st-font="modern"] body { font-family: "Open Sans", system-ui, sans-serif; --schrift-titel: "Roboto", "Open Sans", system-ui, sans-serif; }
+html[data-st-font="festive"] body { font-family: "Open Sans", system-ui, sans-serif; --schrift-titel: Georgia, Cambria, "Times New Roman", serif; }
+html[data-st-font] .marke { font-family: var(--schrift-titel); }
+
+html[data-st-size="large"] { font-size: 112.5%; }
+html[data-st-size="large"] body { font-size: 19px; }
+html[data-st-size="normal"] { font-size: 100%; }
+html[data-st-size="normal"] body { font-size: 17px; }
+
+html[data-st-leading="tight"] body { line-height: 1.45; }
+html[data-st-leading="normal"] body { line-height: 1.6; }
+html[data-st-leading="airy"] body { line-height: 1.8; }
+
+/* Überschriften im Inhalt */
+html[data-st-headings] main h2 { border: 0; padding-bottom: 0; }
+html[data-st-headings] main h2::after { content: none; }
+html[data-st-headings="plain"] main h2 { color: inherit; }
+html[data-st-headings="line"] main h2 { padding-bottom: .3rem; border-bottom: 2px solid var(--farbe-zier); }
+html[data-st-headings="color"] main h2 { color: var(--link); }
+html[data-st-headings="color"] main h2::after {
+  content: ""; display: block; width: 3rem; height: 3px; margin-top: .4rem;
+  background: var(--farbe-zier); border-radius: 2px;
+}
+html[data-st-heading-align="center"] main h1, html[data-st-heading-align="center"] main h2 { text-align: center; }
+html[data-st-heading-align="center"] main h2::after { margin-left: auto; margin-right: auto; }
+html[data-st-heading-align="left"] main h1, html[data-st-heading-align="left"] main h2 { text-align: left; }
+html[data-st-heading-align="left"] main h2::after { margin-left: 0; }
+
+/* Schmuckschrift für die Überschrift der Begrüßung (Great Vibes, SIL OFL 1.1) */
+html[data-st-script-greeting="on"] .begruessung h1 {
+  font-family: "Great Vibes", cursive; font-weight: 400; font-size: clamp(2.3rem, 7vw, 3.4rem); color: var(--link);
+}
+
+/* ---------- Seite ---------- */
+html[data-st-width="normal"] { --breite: 64rem; }
+html[data-st-width="wide"] { --breite: 80rem; }
+/* Schmal: die ganze Seite als Kasten auf dem Seitengrund */
+html[data-st-width="narrow"] { --breite: 56rem; background: var(--grund); }
+html[data-st-width="narrow"] body { max-width: 56rem; margin: 0 auto; background: var(--flaeche); box-shadow: 0 0 0 1px var(--linie), 0 10px 40px rgb(0 0 0 / .06); }
+html[data-st-width="narrow"] .karte, html[data-st-width="narrow"] .termin, html[data-st-width="narrow"] .kacheln a { border-color: var(--linie); }
+@media (min-width: 64rem) {
+  html[data-st-width] body.design-sidebar main.breite, html[data-st-width] body.design-sidebar .fuss .breite { max-width: var(--breite); }
+  html[data-st-width="narrow"] body.design-festive .menue-breit { width: 100%; }
+  /* Farbige Menüleiste nur bis zum Rand des Kastens */
+  html[data-st-width="narrow"] .menue-breit { clip-path: inset(0 -16px); }
+}
+
+html[data-st-spacing="compact"] main { padding-top: 1rem; padding-bottom: 2rem; }
+html[data-st-spacing="compact"] main h2 { margin-top: 1.1em; }
+html[data-st-spacing="compact"] body.design-stage main.start > section { padding-top: 1rem; padding-bottom: 1.2rem; }
+html[data-st-spacing="generous"] main { padding-top: 2.2rem; padding-bottom: 4rem; }
+html[data-st-spacing="generous"] main h2 { margin-top: 2.4em; }
+html[data-st-spacing="generous"] body.design-stage main.start > section { padding-top: 2.5rem; padding-bottom: 3rem; }
+html[data-st-spacing="generous"] .karten, html[data-st-spacing="generous"] .termine { gap: 1.4rem; }
+
+html[data-st-corners="square"] { --rund: 0px; }
+html[data-st-corners="slight"] { --rund: 4px; }
+html[data-st-corners="round"] { --rund: 16px; }
+html[data-st-corners] .karte, html[data-st-corners] .termin, html[data-st-corners] .kacheln a,
+html[data-st-corners] .dokumente a, html[data-st-corners] .spalte-seite > section,
+html[data-st-corners] .karussell-band, html[data-st-corners] .titelbild img { border-radius: var(--rund); }
+html[data-st-corners] .termin-datum { border-radius: calc(var(--rund) * .7); }
+html[data-st-corners] .menue-breit a.menue-knopf, html[data-st-corners] .menue a.menue-knopf { border-radius: max(var(--rund), 4px); }
+html[data-st-corners="round"] .menue-breit a.menue-knopf, html[data-st-corners="round"] .menue a.menue-knopf { border-radius: 999px; }
+
+/* ---------- Karten, Bilder, Knöpfe ---------- */
+html[data-st-cards] .karte, html[data-st-cards] .termin, html[data-st-cards] .dokumente a { box-shadow: none; }
+html[data-st-cards="border"] .karte, html[data-st-cards="border"] .termin, html[data-st-cards="border"] .dokumente a { border: 1px solid var(--linie); }
+html[data-st-cards="shadow"] .karte, html[data-st-cards="shadow"] .termin, html[data-st-cards="shadow"] .dokumente a {
+  border: 0; box-shadow: 0 1px 2px rgb(0 0 0 / .07), 0 6px 18px rgb(0 0 0 / .07);
+}
+html[data-st-cards="flat"] .karte, html[data-st-cards="flat"] .termin, html[data-st-cards="flat"] .dokumente a {
+  border: 0; background: color-mix(in srgb, var(--text) 4%, var(--flaeche));
+}
+
+html[data-st-images="square"] .titelbild img, html[data-st-images="square"] .karussell-band,
+html[data-st-images="square"] .text img, html[data-st-images="square"] .majestaet img,
+html[data-st-images="square"] .karte.homepage .homepage-bild img, html[data-st-images="square"] .beitrag-bild img { border-radius: 0; }
+html[data-st-images="cards"] .titelbild img, html[data-st-images="cards"] .karussell-band,
+html[data-st-images="cards"] .text img, html[data-st-images="cards"] .majestaet img { border-radius: var(--rund); }
+
+/* Rahmen um Bilder im Text und um Fotos der Würdenträger (Titelbilder bleiben ohne) */
+html[data-st-image-frame="on"] .text img, html[data-st-image-frame="on"] .majestaet img {
+  border: 1px solid var(--linie); padding: 5px; background: var(--flaeche);
+}
+html[data-st-image-frame="off"] .text img, html[data-st-image-frame="off"] .majestaet img { border: 0; padding: 0; }
+
+html[data-st-buttons="filled"] .knopf:not(.hell) { background: var(--primaer); color: var(--auf-primaer); border: 0; }
+html[data-st-buttons="outline"] .knopf:not(.hell) {
+  background: transparent; color: var(--link); border: 2px solid currentColor; padding: calc(.65rem - 2px) calc(1.1rem - 2px);
+}
+html[data-st-buttons="outline"] .knopf.klein-knopf:not(.hell) { padding: calc(.35rem - 2px) calc(.8rem - 2px); }
+html[data-st-buttons="outline"] .knopf:not(.hell):hover { filter: none; background: color-mix(in srgb, currentColor 10%, transparent); }
+
+/* Datumsfeld als Streifen über dem Termin */
+html[data-st-date="strip"] .termin { flex-direction: column; gap: .5rem; }
+html[data-st-date="strip"] .termin-datum {
+  width: auto; display: inline-flex; align-items: baseline; gap: .35rem; padding: .2rem .7rem; line-height: 1.3;
+}
+html[data-st-date="strip"] .termin-datum span { display: inline; font-size: 1.05rem; }
+html[data-st-date="strip"] .termin-datum small, html[data-st-date="strip"] .termin-datum .termin-jahr { display: inline; font-size: .8rem; }
+
+/* ---------- Kopf und Menü ---------- */
+html[data-st-header-bg="white"] .kopf { background: var(--flaeche); color: var(--text); }
+html[data-st-header-bg="white"] .kopf .marke, html[data-st-header-bg="white"] .kopf .menue summary,
+html[data-st-header-bg="white"] .kopf-sozial .sozial-symbole a { color: var(--link); }
+html[data-st-header-bg="white"] .kopf-sozial .sozial-symbole a { background: var(--grund); }
+html[data-st-header-bg="white"] .kopf :focus-visible { outline-color: var(--link); }
+html[data-st-header-bg="color"] .kopf { background: var(--farbe-kopf); color: var(--auf-kopf); }
+html[data-st-header-bg="color"] body.design-newspaper .kopf { border-top-color: color-mix(in srgb, var(--auf-kopf) 25%, var(--farbe-kopf)); }
+html[data-st-header-bg="color"] .kopf .marke, html[data-st-header-bg="color"] .kopf .menue summary,
+html[data-st-header-bg="color"] .kopf-sozial .sozial-symbole a { color: var(--auf-kopf); }
+html[data-st-header-bg="color"] .kopf-sozial .sozial-symbole a { background: color-mix(in srgb, var(--auf-kopf) 12%, transparent); }
+html[data-st-header-bg="color"] .kopf :focus-visible { outline-color: var(--auf-kopf); }
+html[data-st-header-bg="color"] .kopf .menue nav :focus-visible { outline-color: var(--link); }
+@media (min-width: 64rem) {
+  /* Menü im Kopf (nicht die Reiterleiste der Zeitung): Schrift passend zum Hintergrund */
+  html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a,
+  html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary { color: var(--link); }
+  html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit { border-top-color: var(--linie); }
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a,
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary { color: var(--auf-kopf); }
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit { border-top-color: color-mix(in srgb, var(--auf-kopf) 18%, transparent); }
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a:hover,
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-kopf) 15%, transparent); }
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit a:focus-visible,
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-kopf); }
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue ul a:focus-visible { outline-color: var(--link); }
+  /* Farbig hinterlegter aktiver Punkt im farbigen Kopf: Menüfarbe statt Kopffarbe */
+  html[data-st-header-bg="color"] body.design-classic .menue-breit a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-header-bg="color"] body.design-classic .menue-breit .untermenue summary.aktiv { background: var(--farbe-menue); color: var(--auf-menue); }
+  html[data-st-header-bg="color"] body.design-sidebar .menue-breit .untermenue ul a { color: var(--auf-kopf); }
+  html[data-st-header-bg="white"] body.design-sidebar .menue-breit .untermenue ul a { color: var(--text); }
+  html[data-st-header-bg="white"] body.design-sidebar .marke { border-bottom-color: var(--linie); }
+}
+
+/* Wappen und Name (nie beide aus, prüft seite/stil.py); ausgeblendeter Name bleibt für Screenreader */
+html[data-st-logo="off"] .marke:not(.marke-bild) img { display: none; }
+html[data-st-name="off"] .marke:not(.marke-bild) span {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+html[data-st-logo-pos="left"] .marke { flex-direction: row; text-align: left; }
+html[data-st-logo-pos="right"] .marke { flex-direction: row-reverse; text-align: right; }
+html[data-st-logo-pos="center"] .marke { flex-direction: column; text-align: center; gap: .35rem; }
+html[data-st-logo-pos="center"] body:not(.design-festive) .kopf-innen { justify-content: center; }
+html[data-st-logo-pos="center"] body:not(.design-festive) .marke { flex: 1 1 auto; }
+@media (max-width: 63.99rem) {
+  html[data-st-logo-pos="center"] body:not(.design-festive) .marke { padding-left: 3.5rem; }
+}
+@media (min-width: 64rem) {
+  html[data-st-logo-pos="center"] body:not(.design-festive) .marke { flex: 1 1 100%; }
+  html[data-st-logo-pos="center"] body:not(.design-festive) .menue-breit ul { justify-content: center; margin-left: 0; }
+  html[data-st-logo-pos="center"] body:not(.design-festive) .kopf-sozial { position: absolute; right: 16px; top: 1rem; }
+  html[data-st-logo-pos="center"] body.design-newspaper .kopf-sozial { top: -2.2rem; }
+  html[data-st-logo-pos="center"] body.design-stage .kopf-innen { flex-wrap: wrap; }
+  html[data-st-logo-pos="center"] body.design-stage .menue-breit { order: 3; flex: 1 1 100%; }
+}
+
+html[data-st-header-height="low"] .kopf-innen { min-height: 3.4rem; }
+html[data-st-header-height="low"] .marke { padding-top: .3rem; padding-bottom: .3rem; }
+html[data-st-header-height="low"] .marke:not(.marke-bild) img { width: 40px; height: 40px; }
+html[data-st-header-height="low"] .marke.marke-bild img { max-height: 5rem; }
+html[data-st-header-height="normal"] .marke:not(.marke-bild) img { width: 56px; height: 56px; }
+html[data-st-header-height="high"] .kopf-innen { min-height: 7rem; }
+html[data-st-header-height="high"] .marke { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+html[data-st-header-height="high"] .marke:not(.marke-bild) img { width: 88px; height: 88px; }
+html[data-st-header-height="high"] .marke.marke-bild img { max-height: 14rem; }
+@media (min-width: 64rem) {
+  html[data-st-header-height="high"] .marke { font-size: 1.5rem; }
+  html[data-st-header-height="high"] .marke:not(.marke-bild) img { width: 104px; height: 104px; }
+}
+
+/* Zierlinie unter dem Kopf in der Farbrolle „Zierlinie“ */
+html[data-st-line="none"] .kopf { border-bottom: 0; box-shadow: none; }
+html[data-st-line="none"] body.design-classic .kopf { border-top: 0; }
+html[data-st-line="thin"] .kopf { border-bottom: 2px solid var(--farbe-zier); }
+html[data-st-line="strong"] .kopf { border-bottom: 5px solid var(--farbe-zier); }
+
+/* Menü am Bildschirm (das Handymenü bleibt gleich); Farben für den aktiven Punkt je Art */
+@media (min-width: 64rem) {
+  html[data-st-nav] .menue-breit, html[data-st-nav-active] .menue-breit {
+    --st-strich: var(--farbe-menue); --st-aktiv: var(--farbe-menue); --st-auf-aktiv: var(--auf-menue);
+  }
+  /* Leiste: farbiges Band über die ganze Breite in der Menüfarbe */
+  html[data-st-nav="bar"] .menue-breit {
+    background: var(--farbe-menue); box-shadow: 0 0 0 100vmax var(--farbe-menue); clip-path: inset(0 -100vmax);
+    border-top: 0; padding: .2rem 0;
+    --st-strich: var(--auf-menue); --st-aktiv: var(--auf-menue); --st-auf-aktiv: var(--farbe-menue);
+  }
+  html[data-st-nav="bar"] .menue-breit > ul > li > a, html[data-st-nav="bar"] .menue-breit .untermenue summary {
+    color: var(--auf-menue); border-radius: 6px; font-weight: 600; background: transparent;
+  }
+  html[data-st-nav="bar"] .menue-breit > ul > li > a:hover, html[data-st-nav="bar"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-menue) 15%, transparent); }
+  html[data-st-nav="bar"] .menue-breit a:focus-visible, html[data-st-nav="bar"] .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-menue); }
+  html[data-st-nav="bar"] .menue-breit .untermenue ul a:focus-visible { outline-color: var(--link); }
+  html[data-st-nav="bar"] .menue-breit a.menue-knopf, html[data-st-nav="bar"] .menue-breit a.menue-knopf[aria-current="page"] { background: var(--auf-menue); color: var(--farbe-menue); }
+  html[data-st-nav="bar"] body.design-festive .menue-breit { border-top: 0; border-bottom: 0; }
+  /* Knöpfe: runde Felder, aktiver Punkt hinterlegt */
+  html[data-st-nav="buttons"] .menue-breit > ul > li > a, html[data-st-nav="buttons"] .menue-breit .untermenue summary {
+    color: inherit; font-weight: 600; border-radius: 999px; padding: .45rem .9rem;
+  }
+  html[data-st-nav="buttons"] .menue-breit > ul > li > a:hover, html[data-st-nav="buttons"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+  html[data-st-nav="buttons"] .menue-breit ul { margin-left: -.9rem; }
+  /* Text: schlichte Wörter ohne Flächen */
+  html[data-st-nav="text"] .menue-breit > ul > li > a, html[data-st-nav="text"] .menue-breit .untermenue summary {
+    color: inherit; font-weight: 400; border-radius: 0; background: transparent;
+  }
+  html[data-st-nav="text"] .menue-breit > ul > li > a:hover, html[data-st-nav="text"] .menue-breit .untermenue summary:hover { background: transparent; opacity: .75; }
+  html[data-st-nav="text"] .menue-breit a[aria-current="page"], html[data-st-nav="text"] .menue-breit .untermenue summary.aktiv { font-weight: 700; }
+  html[data-st-nav="text"] .menue-breit a.menue-knopf { border-radius: 999px; }
+  html[data-st-nav="text"] body.design-classic .menue-breit, html[data-st-nav="buttons"] body.design-classic .menue-breit { border-top: 0; }
+
+  /* Aktiver Punkt */
+  html[data-st-nav="buttons"]:not([data-st-nav-active]) .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav="buttons"]:not([data-st-nav-active]) .menue-breit .untermenue summary.aktiv,
+  html[data-st-nav-active="filled"] .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav-active="filled"] .menue-breit .untermenue summary.aktiv {
+    background: var(--st-aktiv); color: var(--st-auf-aktiv); box-shadow: none;
+  }
+  html[data-st-nav="bar"]:not([data-st-nav-active]) .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav="bar"]:not([data-st-nav-active]) .menue-breit .untermenue summary.aktiv,
+  html[data-st-nav="text"]:not([data-st-nav-active]) .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav="text"]:not([data-st-nav-active]) .menue-breit .untermenue summary.aktiv,
+  html[data-st-nav-active="underline"] .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav-active="underline"] .menue-breit .untermenue summary.aktiv {
+    background: transparent; color: inherit; box-shadow: inset 0 -3px 0 var(--st-strich); font-weight: 700;
+  }
+  html[data-st-nav="bar"] .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav="bar"] .menue-breit .untermenue summary.aktiv { color: var(--auf-menue); }
+  html[data-st-nav="bar"][data-st-nav-active="filled"] .menue-breit > ul > li > a[aria-current="page"]:not(.menue-knopf),
+  html[data-st-nav="bar"][data-st-nav-active="filled"] .menue-breit .untermenue summary.aktiv { color: var(--st-auf-aktiv); }
+  html[data-st-nav-active="underline"] body.design-sidebar .menue-breit a[aria-current="page"]:not(.menue-knopf) { box-shadow: inset 4px 0 0 var(--st-strich); }
+  html[data-st-nav-active="underline"] body.design-newspaper .menue-breit a[aria-current="page"]:not(.menue-knopf) { color: var(--auf-menue); --st-strich: var(--auf-menue); }
+  html[data-st-nav-active="filled"] body.design-newspaper .menue-breit a[aria-current="page"]:not(.menue-knopf) { background: var(--grund); color: var(--text); }
+}
+
+/* Menü beim Blättern oben angeheftet */
+html[data-st-sticky="on"] .kopf { position: sticky; top: 0; z-index: 6; }
+html[data-st-sticky="off"] .kopf { position: relative; }
+
+/* ---------- Startseite ---------- */
+html[data-st-hero="low"] .karussell { --karussell-hoehe: min(18rem, 45vh); }
+html[data-st-hero="low"] .titelbild img { max-height: 18rem; }
+html[data-st-hero="normal"] .karussell { --karussell-hoehe: min(28rem, 60vh); }
+html[data-st-hero="normal"] .titelbild img { max-height: 28rem; }
+html[data-st-hero="high"] .karussell { --karussell-hoehe: min(40rem, 80vh); }
+html[data-st-hero="high"] .titelbild img { max-height: 40rem; }
+html[data-st-hero] .begruessung-bilder .titelbild img, html[data-st-hero] .buehne .titelbild img { width: 100%; object-fit: cover; }
+html[data-st-hero="low"] .buehne .titelbild img { height: 18rem; }
+html[data-st-hero="high"] .buehne .titelbild img { height: min(40rem, 80vh); }
+
+/* Name auf dem Titelbild (Bühne zeigt ihn ohnehin) */
+.begruessung-bilder { position: relative; }
+.titel-name {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 1; margin: 0; pointer-events: none;
+  padding: 1.2rem 1.4rem 3rem; color: #fff; font-weight: 700; line-height: 1.15;
+  font-family: var(--schrift-titel); font-size: clamp(1.4rem, 4.2vw, 2.4rem);
+  background: linear-gradient(rgb(0 0 0 / .62), transparent); border-radius: var(--rund) var(--rund) 0 0;
+  text-shadow: 0 1px 3px rgb(0 0 0 / .45);
+}
+
+/* ---------- Fuß ---------- */
+html[data-st-footer="dark"] .fuss { background: #1d2421; color: #fff; --farbe-fuss: #1d2421; --auf-fuss: #fff; }
+html[data-st-footer="light"] .fuss { background: var(--flaeche); color: var(--text); border-top: 1px solid var(--linie); --farbe-fuss: var(--flaeche); --auf-fuss: var(--text); }
+html[data-st-footer="light"] .fuss a { color: var(--link); }
+html[data-st-footer="light"] .fuss :focus-visible { outline-color: var(--link); }
+html[data-st-footer="color"] .fuss { background: var(--primaer); color: var(--auf-primaer); --farbe-fuss: var(--primaer); --auf-fuss: var(--auf-primaer); }
+html[data-st-footer="dark"] .fuss a, html[data-st-footer="color"] .fuss a { color: var(--auf-fuss); }
+
+html[data-st-footer-align] .fuss-innen > * { flex-basis: 100%; }
+html[data-st-footer-align] .fuss .sozial, html[data-st-footer-align] .fuss .recht, html[data-st-footer-align] .fuss .sozial-symbole { display: flex; }
+html[data-st-footer-align="left"] .fuss-innen { justify-content: flex-start; text-align: left; }
+html[data-st-footer-align="left"] .fuss-innen ul { justify-content: flex-start; }
+html[data-st-footer-align="center"] .fuss-innen { justify-content: center; text-align: center; }
+html[data-st-footer-align="center"] .fuss-innen ul { justify-content: center; }
+html[data-st-footer-align="right"] .fuss-innen { justify-content: flex-end; text-align: right; }
+html[data-st-footer-align="right"] .fuss-innen ul { justify-content: flex-end; }
