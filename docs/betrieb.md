@@ -40,6 +40,9 @@ Container.
 
 Zwischenspeicher: Antworten von HUBIplan hält die Seite `CACHE_SECONDS` lang vor (Standard
 120). Die Vorschau wird nie zwischengespeichert; ihr Zugang wird bei jedem Aufruf geprüft.
+Danach liefert sie höchstens 10 weitere Minuten den alten Stand, während sie neu lädt. Was in
+HUBIplan entfernt wird, ist so nach höchstens 15 Minuten auch hier weg; `CACHE_SECONDS` daher
+nicht über 300 setzen (`tests/test_entfernen_frist.py`).
 
 Ist HUBIplan nicht erreichbar (z. B. während es ausgerollt wird), zeigt die Seite den letzten
 guten Stand weiter, höchstens `STALE_IF_ERROR_SECONDS` alt (Standard 86400 = 24 h), statt
