@@ -323,6 +323,15 @@ CUSTOM_SECTIONS = {
     "album": "album",
     "quote": "zitat",
     "contacts": "ansprechpartner",
+    "faq": "fragen",
+    "partners": "partner",
+    "directions": "anfahrt",
+    "event_list": "terminliste",
+    "document": "dokument",
+    "video": "video",
+    "chronicle": "chronik",
+    "facts": "zahlen",
+    "divider": "trenner",
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 PALETTE_BG = re.compile(r"^p([0-9])$")
@@ -387,6 +396,11 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
             entry["event"] = event
             entry["tage"] = (event["start"].date() - timezone.localdate()).days
+        elif kind == "event_list":
+            events = [e for e in map(_event, s.get("events") or []) if e is not None]
+            if not events:
+                continue
+            entry["events"] = events
         result.append(entry)
     return result
 

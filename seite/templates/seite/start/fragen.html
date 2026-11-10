@@ -1,0 +1,7 @@
+{% load seite %}<section{% abschnitt "fragen" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% for f in abschnitt.items %}<details class="frage">
+    <summary>{{ f.question }}</summary>
+    {% if f.answer %}<div class="text">{{ f.answer|md:site }}</div>{% endif %}
+  </details>{% endfor %}
+</section>

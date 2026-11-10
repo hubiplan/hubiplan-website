@@ -1,0 +1,6 @@
+{% load seite i18n %}<section{% abschnitt "partner" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <ul class="partner-liste">{% for p in abschnitt.items %}{% lokal site p.image.small_url as bild %}{% with link=p.url|web_ziel %}
+    <li>{% if link %}<a href="{{ link }}" target="_blank" rel="noopener noreferrer">{% endif %}{% if bild %}<img src="{{ bild }}" alt="{{ p.name }}" loading="lazy"{% if p.image.width %} width="{{ p.image.width }}" height="{{ p.image.height }}"{% endif %}>{% else %}<span class="partner-name">{{ p.name }}</span>{% endif %}{% if link %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a>{% endif %}</li>{% endwith %}{% endfor %}
+  </ul>
+</section>

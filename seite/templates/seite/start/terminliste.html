@@ -1,0 +1,5 @@
+{% load seite i18n %}<section{% abschnitt "terminliste" %}>
+  <h2>{{ abschnitt.title }}</h2>
+  <ul class="termine">{% for e in abschnitt.events %}{% include "seite/termin.html" %}{% endfor %}</ul>
+  {% if site.info.blocks.events %}<p><a class="knopf" href="{% url 'termine' %}">{% translate "Alle Termine" %}</a></p>{% endif %}
+</section>

@@ -1,0 +1,8 @@
+{% load seite i18n %}<section{% abschnitt "anfahrt" %}>
+  <h2>{{ abschnitt.title|default:abschnitt.name }}</h2>
+  {% if abschnitt.title and abschnitt.title != abschnitt.name %}<p class="anfahrt-ort">{{ abschnitt.name }}</p>{% endif %}
+  {% if abschnitt.address %}<address>{{ abschnitt.address|linebreaksbr }}</address>{% endif %}
+  {% if abschnitt.directions %}<p>{{ abschnitt.directions|linebreaksbr }}</p>{% endif %}
+  {% if abschnitt.text %}<p>{{ abschnitt.text|linebreaksbr }}</p>{% endif %}
+  {% with route=abschnitt.route_url|web_ziel %}{% if route %}<p><a class="knopf" href="{{ route }}" target="_blank" rel="noopener noreferrer">{% translate "Route planen" %}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}{% endwith %}
+</section>

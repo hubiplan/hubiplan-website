@@ -1,0 +1,6 @@
+{% load seite %}<section{% abschnitt "zahlen" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <ul class="zahlen-liste">{% for z in abschnitt.items %}
+    <li><span class="zahl">{{ z.value }}</span>{% if z.label %} <span class="zahl-text">{{ z.label }}</span>{% endif %}</li>{% endfor %}
+  </ul>
+</section>
