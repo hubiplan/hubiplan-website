@@ -34,6 +34,8 @@ Untereinheiten erscheinen, wird dort je Webseite festgelegt. Die Darstellung umf
 - Darstellung der festen Bereiche (`layouts`): Vorstand als Karten oder Liste, Termine als
   Liste oder Monatskalender, Untereinheiten als große oder kleine Kacheln oder Liste, Galerie als
   Kacheln oder Mauerwerk; je Bereich eine Einleitung aus `intros`. Ohne Angaben wie bisher.
+- Hinweisleiste oben auf allen Seiten (`notice`, nur im Zeitraum, den HUBIplan prüft) und
+  Titelbild je Textseite (Abschnitt `cover`, immer über der Überschrift). Ohne Angaben wie bisher.
 - Vorstand, Ansprechpartner und Untereinheiten mit jeweils freigegebenen Kontaktwegen.
 - Würdenträger, Ehrungen und Chronik aus den veröffentlichten Daten.
 - Termine mit Kalenderansicht und Kalender-Abo sowie Wettbewerbsergebnisse.

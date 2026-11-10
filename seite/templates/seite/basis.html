@@ -25,6 +25,7 @@
 {% elif request.GET.vorschau == "beendet" %}
 <div class="vorschau-hinweis" role="status">{% translate "Vorschau beendet. Sie sehen die Webseite jetzt wie alle Besucher." %}</div>
 {% endif %}
+{% if site.info.notice and not site.maintenance %}{% include "seite/hinweisleiste.html" with hinweis=site.info.notice %}{% endif %}
 {% menue as punkte %}{% if site %}{% include site.kopf_vorlage %}{% else %}{% include "seite/kopf.html" %}{% endif %}
 <main id="inhalt" class="breite{% block main_klasse %}{% endblock %}">
 {% block inhalt %}{% endblock %}
