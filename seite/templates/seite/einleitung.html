@@ -1,0 +1,4 @@
+{% load seite %}{% if einleitung %}{# Einleitung eines festen Bereichs aus HUBIplan (G5) #}<div class="einleitung">
+{% lokal site einleitung.image.url as bild %}{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ einleitung.image.alt }}">{% if einleitung.image.caption %}<figcaption>{{ einleitung.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% if einleitung.text %}<div class="text">{{ einleitung.text|md:site }}</div>{% endif %}
+</div>{% endif %}

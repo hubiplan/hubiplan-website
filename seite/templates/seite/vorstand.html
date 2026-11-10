@@ -2,7 +2,8 @@
 {% block titel %}{% translate "Vorstand" as std %}{% baustein site "board" std %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Vorstand" as std %}{% baustein site "board" std %}</h1>
-{% if roles %}{% include "seite/rollen.html" with rollen=roles %}{% else %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endif %}
+{% include "seite/einleitung.html" %}
+{% if roles %}{% if darstellung == "list" %}{% include "seite/rollen_liste.html" with rollen=roles %}{% else %}{% include "seite/rollen.html" with rollen=roles %}{% endif %}{% else %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endif %}
 {% if honorary|length == 1 %}
 {# Nur eine Ehrung: sein Name ist die Überschrift, kein Sammelbegriff (Ralf 2026-10-30) #}
 {% with t=honorary.0 %}<h2>{{ t.heading|default:t.title }}</h2>

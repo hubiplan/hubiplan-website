@@ -12,6 +12,8 @@
   <button class="knopf" type="submit">{% translate "Anzeigen" %}</button>
 </form>
 {% endif %}
+{% include "seite/einleitung.html" %}
+{% if darstellung == "calendar" and kalender %}{% include "seite/termine_kalender.html" %}{% else %}
 {% for monat, liste in months %}
 <section>
   <h2>{{ monat }}</h2>
@@ -19,7 +21,7 @@
 </section>
 {% empty %}
 <p>{% translate "Zurzeit stehen keine Termine an." %}</p>
-{% endfor %}
+{% endfor %}{% endif %}
 {% if ics_url %}
 <section class="abo karte">
   <h2>{% translate "Termine im eigenen Kalender" %}</h2>

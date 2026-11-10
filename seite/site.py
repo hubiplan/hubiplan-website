@@ -86,6 +86,15 @@ def link_color(primary: str, background: str | None = None) -> str:
     return "#000000"
 
 
+# Darstellung der festen Bereiche (HUBIplan website/variants.py); erste = Standard
+LAYOUTS = {
+    "board": ("cards", "list"),
+    "events": ("list", "calendar"),
+    "units": ("large", "small", "list"),
+    "gallery": ("tiles", "masonry"),
+}
+
+
 @dataclass
 class Site:
     key: str
@@ -113,6 +122,17 @@ class Site:
             # Ältere HUBIplan-Stände: „Ämter“ gehörten zum Schalter „Geschichte“
             return self.block("history")
         return bool(blocks.get(name, False))
+
+    def layout(self, area: str) -> str:
+        """Darstellung eines festen Bereichs (G5); unbekannt oder ältere Stände: erste Variante."""
+        chosen = (self.info.get("layouts") or {}).get(area)
+        choices = LAYOUTS.get(area, ())
+        return chosen if chosen in choices else (choices[0] if choices else "")
+
+    def intro(self, area: str) -> dict | None:
+        """Einleitungstext oben in einem festen Bereich (G5), sonst None."""
+        intro = (self.info.get("intros") or {}).get(area)
+        return intro if isinstance(intro, dict) else None
 
     def history_parts(self) -> tuple[bool, bool]:
         """Menü „Geschichte“: (Chronik, Ämter) vorhanden? Ältere HUBIplan-Stände

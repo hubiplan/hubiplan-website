@@ -7,6 +7,7 @@ gültiger Vorschau.
 
 from __future__ import annotations
 
+import calendar as kalender
 import datetime
 import functools
 import io
@@ -219,6 +220,43 @@ def _by_month(events: list[dict]) -> list[tuple[str, list[dict]]]:
     for e in events:
         groups.setdefault(formats.date_format(e["start"], "F Y"), []).append(e)
     return list(groups.items())
+
+
+def _calendar(events: list[dict]) -> list[dict]:
+    """Monatskalender (G5): je Monat mit Terminen ein Blatt, Woche ab Montag. Ein Termin
+    steht an seinem ersten Tag."""
+    months: OrderedDict[tuple[int, int], dict] = OrderedDict()
+    for e in events:
+        day = e["start"].date()
+        months.setdefault((day.year, day.month), {}).setdefault(day, []).append(e)
+    today = timezone.localdate()
+    result = []
+    for (year, month), days in months.items():
+        weeks = kalender.Calendar(firstweekday=0).monthdatescalendar(year, month)
+        result.append(
+            {
+                "title": formats.date_format(datetime.date(year, month, 1), "F Y"),
+                "weekdays": [formats.date_format(d, "D") for d in weeks[0]],
+                "weeks": [
+                    [
+                        {
+                            "date": d,
+                            "in_month": d.month == month,
+                            "today": d == today,
+                            "events": days.get(d, []) if d.month == month else [],
+                        }
+                        for d in week
+                    ]
+                    for week in weeks
+                ],
+            }
+        )
+    return result
+
+
+def _area(site: Site, area: str) -> dict:
+    """Darstellung und Einleitung eines festen Bereichs (G5) für die Vorlage."""
+    return {"darstellung": site.layout(area), "einleitung": site.intro(area)}
 
 
 def _webcal(url: str | None) -> str | None:
@@ -459,6 +497,7 @@ def board(request, site: Site):
         site,
         {
             "roles": data.get("roles", []),
+            **_area(site, "board"),
             # Menü „Würdenträger“: Ehrungen stehen dort auf einer eigenen Seite
             "honorary": [] if site.info.get("honors_menu") else data.get("honorary", []),
         },
@@ -475,12 +514,15 @@ def events(request, site: Site):
         unit = None
     items = _upcoming(_events(site, unit))
     ics = _public_ics(site, unit)
+    area = _area(site, "events")
     return _page(
         request,
         "seite/termine.html",
         site,
         {
+            **area,
             "months": _by_month(items),
+            "kalender": _calendar(items) if area["darstellung"] == "calendar" else [],
             "ics_url": ics,
             "webcal_url": _webcal(ics),
             "qr": mark_safe(_qr_svg(_webcal(ics))) if ics else "",  # noqa: S308
@@ -496,7 +538,12 @@ def events(request, site: Site):
 def units(request, site: Site, pfad: str):
     if not site.info.get("units"):
         raise api.NotFound()
-    return _page(request, "seite/einheiten.html", site, {"units": site.info["units"]})
+    return _page(
+        request,
+        "seite/einheiten.html",
+        site,
+        {"units": site.info["units"], **_area(site, "units")},
+    )
 
 
 @require_GET
@@ -697,7 +744,7 @@ def gallery(request, site: Site):
     if not site.block("gallery"):
         raise api.NotFound()
     albums = site.get("galleries/").get("albums", [])
-    return _page(request, "seite/galerie.html", site, {"albums": albums})
+    return _page(request, "seite/galerie.html", site, {"albums": albums, **_area(site, "gallery")})
 
 
 @require_GET
@@ -705,7 +752,12 @@ def gallery(request, site: Site):
 def album(request, site: Site, slug: str):
     if not site.block("gallery"):
         raise api.NotFound()
-    return _page(request, "seite/album.html", site, {"album": site.get(f"galleries/{slug}/")})
+    return _page(
+        request,
+        "seite/album.html",
+        site,
+        {"album": site.get(f"galleries/{slug}/"), "darstellung": site.layout("gallery")},
+    )
 
 
 @require_GET

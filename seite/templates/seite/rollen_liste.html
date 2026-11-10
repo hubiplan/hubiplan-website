@@ -1,0 +1,8 @@
+{% load seite i18n %}{# Vorstand als kompakte Liste (G5): Amt, Namen, Kontakt #}<dl class="rollenliste">
+{% for r in rollen %}
+  <div>
+    <dt>{{ r.name }}</dt>
+    <dd>{% if r.vacant %}<span class="klein">{% translate "Zurzeit nicht besetzt." %}</span>{% else %}{% for p in r.holders %}{% if not forloop.first %}, {% endif %}{{ p.name }}{% endfor %}{% endif %}{% if r.email %} · <a href="mailto:{{ r.email }}">{{ r.email }}</a>{% endif %}{% if r.contact_form %} · <a href="{% url 'kontakt' %}?an={{ r.id }}">{% translate "Nachricht schreiben" %}</a>{% endif %}</dd>
+  </div>
+{% endfor %}
+</dl>
