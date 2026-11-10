@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 import pytest
+from django.core.cache import cache
 
 from seite import stil
 from seite.site import DESIGNS, contrast
@@ -18,6 +19,12 @@ def text(response) -> str:
     return response.content.decode()
 
 
+def seite(client) -> str:
+    """Startseite frisch holen: die Antwort von HUBIplan ist sonst zwischengespeichert."""
+    cache.clear()
+    return seite(client)
+
+
 def html_tag(html: str) -> str:
     return re.search(r"<html[^>]*>", html).group(0)
 
@@ -25,7 +32,7 @@ def html_tag(html: str) -> str:
 @pytest.mark.parametrize("design", list(DESIGNS))
 def test_ohne_regler_alles_wie_bisher(client, hubiplan, design):
     hubiplan.info["design"] = design
-    html = text(client.get("/"))
+    html = seite(client)
     assert "data-st-" not in html
     assert "stil.css" not in html
     assert "--grund:" not in html
@@ -39,7 +46,7 @@ def test_regler_als_merkmale_am_html(client, hubiplan):
         "image_frame": False,
         "footer_align": "center",
     }
-    html = text(client.get("/"))
+    html = seite(client)
     tag = html_tag(html)
     assert 'data-st-font="modern"' in tag
     assert 'data-st-corners="round"' in tag
@@ -58,14 +65,14 @@ def test_unbekannte_regler_und_stufen_fallen_weg(client, hubiplan):
         "farbe": "rot",
         "width": "wide",
     }
-    tag = html_tag(text(client.get("/")))
+    tag = html_tag(seite(client))
     assert tag.count("data-st-") == 1 and 'data-st-width="wide"' in tag
-    assert "<script>alert" not in text(client.get("/"))
+    assert "<script>alert" not in seite(client)
 
 
 def test_kein_dict_ist_kein_regler(client, hubiplan):
     hubiplan.info["style"] = ["font", "modern"]
-    assert "data-st-" not in text(client.get("/"))
+    assert "data-st-" not in seite(client)
 
 
 def test_wappen_und_name_nie_beide_aus():
@@ -76,12 +83,12 @@ def test_wappen_und_name_nie_beide_aus():
 def test_vom_design_gesperrte_regler(client, hubiplan):
     hubiplan.info["design"] = "sidebar"
     hubiplan.info["style"] = {"logo_pos": "center", "width": "narrow", "corners": "square"}
-    tag = html_tag(text(client.get("/")))
+    tag = html_tag(seite(client))
     assert "data-st-logo-pos" not in tag and "data-st-width" not in tag
     assert 'data-st-corners="square"' in tag
     hubiplan.info["design"] = "stage"
     hubiplan.info["style"] = {"width": "wide", "hero_name": True}
-    tag = html_tag(text(client.get("/")))
+    tag = html_tag(seite(client))
     assert 'data-st-width="wide"' in tag and "data-st-hero-name" not in tag
 
 
@@ -93,6 +100,7 @@ def test_jede_stufe_hat_regeln():
         for value in values:
             if (key, value) in {
                 ("image_frame", "off"),
+                ("script_greeting", "off"),
                 ("hero_name", "off"),
                 ("logo", "on"),
                 ("name", "on"),
@@ -107,13 +115,13 @@ def test_jede_stufe_hat_regeln():
 def test_getoenter_grund_und_lesbare_links(client, hubiplan):
     hubiplan.info["theme"] = {**hubiplan.info["theme"], "primary": "#3a7d44"}
     hubiplan.info["style"] = {"background": "tinted"}
-    html = text(client.get("/"))
+    html = seite(client)
     grund = re.search(r"--grund:(#[0-9a-f]{6})", html).group(1)
     assert grund == stil.mix("#3a7d44", "#ffffff", stil.TINT)
     link = re.search(r"--link:(#[0-9a-fA-F]{6})", html).group(1)
     assert contrast(link, grund) >= 4.5
     hubiplan.info["style"] = {"background": "grey"}
-    assert "--grund:#eff1f0" in text(client.get("/"))
+    assert "--grund:#eff1f0" in seite(client)
 
 
 def test_kopf_weiss_statt_kopfbild(client, hubiplan):
@@ -124,11 +132,11 @@ def test_kopf_weiss_statt_kopfbild(client, hubiplan):
         "height": 300,
         "alt": "Banner",
     }
-    assert 'class="marke marke-bild"' in text(client.get("/"))
+    assert 'class="marke marke-bild"' in seite(client)
     hubiplan.info["style"] = {"header_bg": "image"}
-    assert 'class="marke marke-bild"' in text(client.get("/"))
+    assert 'class="marke marke-bild"' in seite(client)
     hubiplan.info["style"] = {"header_bg": "white"}
-    html = text(client.get("/"))
+    html = seite(client)
     assert 'class="marke marke-bild"' not in html
     assert "/medien/m/logos/wappen.png" in html
 
@@ -155,9 +163,9 @@ def _galerie(hubiplan, anzahl):
 @pytest.mark.parametrize("anzahl", [1, 2])
 def test_name_auf_dem_titelbild(client, hubiplan, anzahl):
     _galerie(hubiplan, anzahl)
-    assert 'class="titel-name"' not in text(client.get("/"))
+    assert 'class="titel-name"' not in seite(client)
     hubiplan.info["style"] = {"hero_name": True}
-    html = text(client.get("/"))
+    html = seite(client)
     assert '<p class="titel-name" aria-hidden="true">Schützenverein Musterdorf 1900</p>' in html
 
 
