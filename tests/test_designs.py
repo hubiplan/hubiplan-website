@@ -37,6 +37,8 @@ def test_jedes_design_zeigt_alle_seiten(client, hubiplan, design):
         # Kopf mit Menü, Sprunglink und Fuß in jedem Design
         assert 'href="#inhalt"' in html and 'aria-label="Hauptmenü"' in html
         assert "Impressum</a>" in html
+        # Quellcode-Link (AGPL § 13) auch in Designs mit eigenem Fuß (Lizenzaudit 10.11., L01)
+        assert 'href="https://github.com/hubiplan/hubiplan-website' in html
         assert f"seite/design-{design}.css" in html
     assert finders.find(f"seite/design-{design}.css")
 

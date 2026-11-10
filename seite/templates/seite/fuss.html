@@ -1,4 +1,4 @@
-{% load seite i18n %}{# Fuß für alle Designs; ein Designpaket darf ihn ersetzen #}
+{% load seite i18n %}{# Fuß für alle Designs. Ein Design im Repo darf ihn ersetzen (seite/designs/<design>/fuss.html), muss aber den Quellcode-Link behalten (AGPL § 13, tests/test_designs.py); eingespielte Pakete bringen keine Vorlagen mit. #}
 <footer class="fuss">
   <div class="breite fuss-innen">
     {% if site %}
