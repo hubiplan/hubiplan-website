@@ -62,6 +62,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "seite.middleware.SecurityHeaders",
+    "seite.besucher.Besucher",
 ]
 
 ROOT_URLCONF = "config.urls"

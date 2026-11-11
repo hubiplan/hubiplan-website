@@ -20,6 +20,8 @@ from urllib.parse import quote, urlparse
 from django.conf import settings
 from django.core.cache import cache, caches
 
+from .besucher import besucher
+
 log = logging.getLogger(__name__)
 
 PREFIX = "/api/public/site/v1/"
@@ -65,6 +67,10 @@ def _request(
         headers["X-Forwarded-Proto"] = "https"
     if preview:
         headers["X-Preview-Session"] = preview
+    visitor = besucher()
+    if visitor and path.startswith("/api/"):
+        # HUBIplan drosselt je Besucher, nicht alle Besucher zusammen als diesen Dienst
+        headers["X-Hubiplan-Besucher"] = visitor
     body = None
     if data is not None:
         body = json.dumps(data).encode()
@@ -106,7 +112,7 @@ def resolve(host: str) -> str:
         cache.set(ck, "", 60)
         raise NotFound(host)
     if res.status != 200:
-        if isinstance(cached, tuple) and res.status in (502, 504):
+        if isinstance(cached, tuple) and res.status in (429, 502, 504):
             return cached[1]
         raise Unavailable(f"resolve {res.status}")
     key = res.json()["key"]
@@ -192,7 +198,8 @@ def _lock_for(ck: str) -> threading.Lock:
 
 def _fetch(full: str, path: str, preview: str | None) -> tuple[int, object]:
     res = _request("GET", full, preview=preview)
-    if res.status >= 500 and res.status != 503:
+    # 429: HUBIplan drosselt gerade; wie ein Ausfall zählt dann der letzte gute Stand
+    if res.status == 429 or (res.status >= 500 and res.status != 503):
         raise Unavailable(f"{path} {res.status}")
     try:
         return res.status, res.json()
@@ -245,7 +252,7 @@ def fetch_file(path: str, *, preview: str | None = None) -> Response:
         if store is not None:
             store.delete(ck)
         raise NotFound(path)
-    if res.status in (502, 504) and store is not None:
+    if res.status in (429, 502, 504) and store is not None:
         stale = store.get(ck)
         if stale is not None:
             return stale
