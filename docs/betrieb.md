@@ -53,6 +53,13 @@ liegt im Volume `zwischenspeicher` (`CACHE_DIR=/zwischenspeicher`), übersteht s
 und Ausrollen der Webseite und wird von beiden gunicorn-Prozessen geteilt. Leeren:
 Volume löschen oder `docker compose exec website sh -c 'rm -rf /zwischenspeicher/*'`.
 
+HUBIplan drosselt die öffentliche Schnittstelle je Besucher. Die Webseite nennt dazu bei jedem
+Abruf die Adresse des Besuchers (`X-Hubiplan-Besucher`: letzter Eintrag in `X-Forwarded-For`,
+den der vorgeschaltete Proxy anhängt, sonst die Adresse der Verbindung); gespeichert wird sie
+hier nicht. HUBIplan glaubt die Angabe nur dem Webseiten-Dienst im gemeinsamen Docker-Netz
+(dort `HUBIPLAN_WEBSITE_HOSTS`, Standard `website`). Antwortet HUBIplan mit 429 (gedrosselt),
+zeigt die Seite wie bei einem Ausfall den letzten guten Stand.
+
 ## Testserver
 
 Die Webseite läuft auf `test.example.org` in `/opt/hubiplan-website` als Container

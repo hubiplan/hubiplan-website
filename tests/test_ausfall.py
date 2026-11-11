@@ -14,7 +14,7 @@ def uhr(monkeypatch):
     return jetzt
 
 
-@pytest.mark.parametrize("ausfall", ["weg", 502, 504])
+@pytest.mark.parametrize("ausfall", ["weg", 429, 502, 504])
 def test_seite_bleibt_beim_ausfall(client, hubiplan, uhr, settings, ausfall):
     assert client.get("/").status_code == 200
     assert client.get("/vorstand/").status_code == 200
