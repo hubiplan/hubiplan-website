@@ -28,6 +28,7 @@
 | `/geschichte/` | alte Adresse, leitet zu `/chronik/` bzw. `/aemter/` weiter |
 | `/seite/<name>/` | weitere Textseiten aus HUBIplan |
 | `/kontakt/` | Kontaktformular (der Browser schickt direkt an HUBIplan) |
+| `/mitglied-werden/` | Einleitung, Mitgliedsarten mit Beitrag und Link zum Online-Mitgliedsantrag in HUBIplan (auf Wunsch je Untereinheit); das Formular selbst liegt in HUBIplan |
 | `/impressum/`, `/datenschutz/`, `/barrierefreiheit/` | auch im Wartungsmodus erreichbar |
 | `/vorschau/?schluessel=…` | Vorschau-Link aus HUBIplan einlösen (Cookie, max. 8 Stunden) |
 | `/medien/…` | Bilder und Logos aus HUBIplan über diese Seite |

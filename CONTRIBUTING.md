@@ -37,6 +37,11 @@ Hinweise zum Stil:
   [hubiplan](https://github.com/hubiplan/hubiplan).
 - Neue Funktionen allgemein halten: Die Seite soll für Vereine jeder Art passen.
   Besonderheiten gehören hinter Bausteine oder Einstellungen in HUBIplan.
+- Neue feste Texte gleich auch auf Englisch (`{% translate %}`/`gettext`, Katalog
+  `locale/en/LC_MESSAGES/django.po` über `scripts/uebersetzung.sh`); `tests/test_sprache.py`
+  schlägt sonst fehl.
+- Keine Inhalte von fremden Servern (Schriften, Skripte, Einbettungen) und keine echten
+  Vereinsdaten in Vorlagen, Tests oder Beispielen.
 - Links auf der Webseite werden nie unterstrichen (auch nicht beim Darüberfahren); sie sind
   an Farbe und Schriftstärke erkennbar.
 - Neue Abhängigkeiten müssen mit der AGPL-3.0 verträglich sein (z. B. MIT, BSD, Apache-2.0,
