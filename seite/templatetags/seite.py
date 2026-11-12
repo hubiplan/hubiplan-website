@@ -334,7 +334,8 @@ def nur_jahr(value):
 # (simpleicons.org, CC0 1.0; X verglichen mit Version 11.15.0); ob sie von dort
 # stammen, ist nicht belegt (Lizenzaudit 31.10.2026, L11). CC0 verlangt keine Nennung.
 # Die Zeichen sind Marken der jeweiligen Unternehmen und dienen nur als Link auf
-# den eigenen Kanal des Vereins.
+# den eigenen Kanal des Vereins. Das LinkedIn-Symbol ist selbst aus Grundformen gezeichnet
+# (abgerundetes Quadrat mit „in“), Simple Icons führt LinkedIn nicht mehr.
 _STROKE = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"'
 ICONS = {
     "facebook": '<circle cx="12" cy="12" r="12" fill="currentColor"/>'
@@ -350,6 +351,11 @@ ICONS = {
     '0 1.9 5.2 2.9 2.9 0 0 0 2.8-2.7V0h2.3z"/>',
     "x": '<path fill="currentColor" d="M18.9 1.2h3.7l-8 9.1L24 22.8h-7.4l-5.8-7.6-6.6 '
     '7.6H.5l8.6-9.8L0 1.2h7.6l5.2 6.9 6.1-6.9zm-1.3 19.5h2L6.5 3.2H4.3l13.3 17.5z"/>',
+    "linkedin": '<rect x="1" y="1" width="22" height="22" rx="3.5" fill="currentColor"/>'
+    '<g fill="var(--sm-auf, #fff)"><rect x="5.2" y="9.4" width="3" height="9.4"/>'
+    '<circle cx="6.7" cy="6.4" r="1.75"/>'
+    '<path d="M10.4 9.4h2.9v1.3c.5-.9 1.6-1.6 3.2-1.6 2.6 0 3.3 1.7 3.3 4.2v5.5h-3v-4.9c0-1.2'
+    '-.3-2.1-1.5-2.1s-1.9.9-1.9 2.1v4.9h-3z"/></g>',
     "youtube": '<rect x="1.5" y="4.5" width="21" height="15" rx="4" fill="currentColor"/>'
     '<path d="M10 8.8v6.4l5.5-3.2z" fill="var(--sm-auf, #fff)"/>',
 }

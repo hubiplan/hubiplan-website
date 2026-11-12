@@ -1124,3 +1124,21 @@ def test_bilder_browser_zwischenspeicher(client, hubiplan):
     assert r["Cache-Control"] == "public, max-age=86400"
     r = client.get("/medien/a/images/festbild1/")
     assert r["Cache-Control"] == "public, max-age=600"
+
+
+def test_linkedin_eigenes_symbol(client, hubiplan):
+    from seite.templatetags.seite import ICONS
+
+    hubiplan.info["social"] = [
+        {
+            "kind": "linkedin",
+            "label": "LinkedIn",
+            "url": "https://linkedin.example/company/sv",
+            "display": "linkedin.example/company/sv",
+        }
+    ]
+    html = text(client.get("/"))
+    assert "sm-linkedin" in html
+    assert 'href="https://linkedin.example/company/sv"' in html
+    # eigenes Symbol, nicht die Weltkugel für unbekannte Kanäle
+    assert ICONS["linkedin"] in html
