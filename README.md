@@ -4,9 +4,9 @@
 
 Termine, Vorstand, Untereinheiten, Würdenträger, Chronik und Satzung pflegt der Verein ohnehin
 in HUBIplan. Die HUBIplan-Website macht daraus eine eigene Webseite unter der Domain des
-Vereins, ohne zweites Redaktionssystem und ohne doppelte Pflege. Texte, Bilder und
-Startseiten-Bausteine bearbeitet der Vorstand ebenfalls in HUBIplan, mit Entwurf, Vorschau
-und Veröffentlichen.
+Vereins, ohne zweites Redaktionssystem und ohne doppelte Pflege. Texte, Bilder, Abschnitte und
+Gestaltung bearbeitet der Vorstand ebenfalls in HUBIplan, mit Entwurf, Vorschau und
+Veröffentlichen.
 
 > **English:** HUBIplan-Website renders public club websites from the public API of
 > [HUBIplan](https://github.com/hubiplan/hubiplan), a free membership management system. It is
@@ -31,13 +31,22 @@ und Veröffentlichen.
   umbenennt (eigener Name in Menü, Überschrift und Seitentitel): Begrüßung,
   Bilderkarussell (Wechselzeit und Startbild aus HUBIplan), nächste Termine, Geburtstage,
   aktuelle Würdenträger, aktuelle Ergebnisse, Untereinheiten
+- **Eigene Abschnitte** auf Startseite und Textseiten, mit Hintergrund und Breite: Text, Text
+  mit Bild, Banner, Knopfleiste, Kacheln, hervorgehobener Termin mit Countdown, Album-Auszug,
+  Zitat, Ansprechpartner, häufige Fragen, Partner und Sponsoren, Anfahrt mit Routenlink,
+  Termine einer Art, Dokument, Video als Link (ohne Einbettung), Chronik-Auszug, Zahlen und
+  Trenner
+- **Hinweisleiste** mit Zeitraum oben auf allen Seiten, **Titelbild** je Textseite
+- **Mitglied werden**: Einleitung, Mitgliedsarten mit Beitrag und Link zum
+  Online-Mitgliedsantrag in HUBIplan (die Eingaben macht der Besucher dort, nicht auf der
+  Webseite)
 - **Aktuelles**: eigene Beiträge des Vereins von Instagram und Facebook
 - **Galerie** mit Albenübersicht, Unteralben und Bildern groß im Fenster
-- **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen
+- **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen, als Karten oder Liste
 - **Untereinheiten** (z. B. Abteilungen oder Züge) mit eigenen Unterseiten; der Pfad folgt
   der Bezeichnung in HUBIplan
-- **Terminkalender** nach Monaten, Filter je Untereinheit, Kalender-Abo fürs Smartphone mit
-  QR-Code
+- **Terminkalender** als Liste oder Monatskalender, Filter je Untereinheit, Kalender-Abo fürs
+  Smartphone mit QR-Code
 - **Würden** mit aktuellen Trägern und Chronik, **Ehrungen**, **Geschichte** mit Chronik als
   Zeitleiste und Ämtern, Satzung, Dokumente und weitere Textseiten
 - **Belegung** von Räumen und Anlagen als Wochenansicht mit Kalender-Abo
@@ -49,16 +58,20 @@ und Veröffentlichen.
 - **Kontaktformular**: Der Browser schickt direkt an HUBIplan, Spamschutz ohne Fremddienst
 - **Impressum, Datenschutzhinweise und Erklärung zur Barrierefreiheit**, auch im
   Wartungsmodus erreichbar
-- **Wartungsmodus und Vorschau-Link** aus HUBIplan; ist HUBIplan kurz nicht erreichbar (etwa
-  beim Ausrollen), zeigt die Seite den letzten guten Stand weiter
+- **Wartungsmodus und Vorschau-Link** aus HUBIplan, Vorschau des Entwurfs auch im Rahmen in
+  HUBIplan; ist HUBIplan kurz nicht erreichbar (etwa beim Ausrollen) oder drosselt es einen
+  Besucher, zeigt die Seite den letzten guten Stand weiter
 - **Sprache je Webseite**: Deutsch (Standard) oder Englisch für alle festen Texte, Menü,
   Datumsangaben und Meldungen; Vereinsdaten (Namen, Texte, Bezeichnungen) bleiben, wie sie in
   HUBIplan stehen. Impressum und Datenschutz zeigen auf Englisch einen Hinweis, dass die
   deutsche Fassung maßgeblich ist.
+- **Menü** mit Links nach außen und einem hervorgehobenen Knopf (z. B. „Mitglied werden“)
 - **Designpakete**: mehrere Standardlayouts (z. B. Klassisch, Festlich, Seitenleiste, Bühne,
-  Zeitung), eigene Farben, Kopfbild und CSS aus HUBIplan, exportier- und importierbar; Farben
-  und Wappen des Vereins; Schriften liegen auf der Seite selbst (keine fremden Server); passt
-  sich an Monitor, Tablet und Smartphone an
+  Zeitung), eigene Farben mit Verläufen, Kopfbild und CSS aus HUBIplan, exportier- und
+  importierbar; **Feinabstimmung** mit festen Stufen statt CSS (Schrift, Breite, Abstände,
+  Ecken, Kopf, Menü, Fuß …); Farben und Wappen des Vereins, Favicon aus dem Wappen; Schriften
+  liegen auf der Seite selbst (keine fremden Server); passt sich an Monitor, Tablet und
+  Smartphone an
 
 Alle Seiten und Adressen: [docs/betrieb.md](docs/betrieb.md#seiten).
 

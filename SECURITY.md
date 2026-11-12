@@ -37,7 +37,8 @@ Release-Zweige. Korrekturen gibt es für das neueste Release und den aktuellen S
 ## Umfang
 
 Gemeint ist der Code in diesem Repository: Darstellung, Vorlagen, Abruf der Schnittstelle,
-Medien-Weiterleitung, Kontaktformular, Ergebnisseiten, Vorschau und Wartungsmodus sowie die
+Medien-Weiterleitung, Kontaktformular, Seite „Mitglied werden“, Ergebnisseiten, Vorschau und
+Wartungsmodus sowie die
 Skripte und Vorlagen fürs Ausrollen. Besonders interessant sind:
 
 - Cross-Site-Scripting oder eingeschleuste Inhalte über Texte und Daten aus HUBIplan,
@@ -51,7 +52,11 @@ Skripte und Vorlagen fürs Ausrollen. Besonders interessant sind:
 - widerrufene oder gelöschte Inhalte, die der Zwischenspeicher für den Ausfall von HUBIplan
   weiter ausliefert, obwohl HUBIplan wieder antwortet,
 - Designpakete, die fremde Inhalte nachladen oder eigenen Vorlagen- oder Skriptcode ausführen,
-- Suche, Galerie oder Belegung, die mehr zeigen als die öffentliche Schnittstelle freigibt.
+- Suche, Galerie oder Belegung, die mehr zeigen als die öffentliche Schnittstelle freigibt,
+- Links aus HUBIplan (Menü, Abschnitte, „Mitglied werden“), die andere Ziele als `http(s)`
+  ausführen (z. B. `javascript:`),
+- eine Besucheradresse, die sich beim Weiterreichen an HUBIplan fälschen lässt, um dessen
+  Drosselung zu umgehen oder andere Besucher sperren zu lassen.
 
 Zeigt die Webseite Daten, die HUBIplan gar nicht hätte herausgeben dürfen, liegt der Fehler
 meist in HUBIplan; dann bitte [dort melden](https://github.com/hubiplan/hubiplan/security/advisories/new).
