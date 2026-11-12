@@ -1078,6 +1078,36 @@ def contact(request, site: Site):
 
 @require_GET
 @site_view()
+def join(request, site: Site):
+    """Mitglied werden: Einleitung, Mitgliedsarten mit Beitrag und Link zum Antrag in HUBIplan.
+    Die Webseite nimmt selbst keine Angaben an (hubiplan konzepte/online-beitrittsformular.md)."""
+    if not site.block("join"):
+        raise api.NotFound()
+    data = site.get("join/")
+    form_url = data.get("form_url") or ""
+    if not form_url.startswith(("https://", "http://")):
+        raise api.NotFound()
+    units = [
+        {"name": u["name"], "url": f"{form_url}?einheit={int(u['id'])}"}
+        for u in data.get("units") or []
+        if isinstance(u, dict) and u.get("name") and str(u.get("id", "")).isdigit()
+    ]
+    return _page(
+        request,
+        "seite/mitglied_werden.html",
+        site,
+        {
+            "einleitung": data.get("intro") or "",
+            "arten": data.get("types") or [],
+            "lastschrift": data.get("sepa") in ("offer", "required"),
+            "formular": form_url,
+            "einheiten_links": units,
+        },
+    )
+
+
+@require_GET
+@site_view()
 def contact_challenge(request, site: Site):
     """Neue Rechenaufgabe ohne Neuladen der Seite (UX-Audit 31.10. S03)."""
     if not site.block("contact"):

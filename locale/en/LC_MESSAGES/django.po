@@ -817,3 +817,33 @@ msgstr "From the chronicle"
 
 msgid "Zur Chronik"
 msgstr "To the chronicle"
+
+msgid "Mitglied werden"
+msgstr "Become a member"
+
+msgid "Mitgliedsarten"
+msgstr "Membership types"
+
+#, python-format
+msgid "%(betrag)s € im Jahr"
+msgstr "€%(betrag)s per year"
+
+msgid ""
+"Den Beitrag können Sie bequem per Lastschrift zahlen; das Mandat erteilen "
+"Sie gleich im Antrag."
+msgstr ""
+"You can conveniently pay the fee by direct debit; you grant the mandate "
+"right in the application."
+
+msgid "Zum Mitgliedsantrag"
+msgstr "To the membership application"
+
+msgid "Direkt bei einer Untereinheit"
+msgstr "Directly with a sub-unit"
+
+msgid ""
+"Der Antrag läuft über die Mitgliederverwaltung des Vereins. Hinweise zur "
+"Verarbeitung Ihrer Angaben stehen in den"
+msgstr ""
+"The application runs through the club's member management. Information on "
+"how your details are processed is in the"

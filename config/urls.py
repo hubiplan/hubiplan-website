@@ -54,6 +54,7 @@ urlpatterns = [
     path("galerie/<slug:slug>/", views.album, name="album"),
     path("seite/<slug:slug>/", views.page, name="seite"),
     path("kontakt/", views.contact, name="kontakt"),
+    path("mitglied-werden/", views.join, name="mitglied_werden"),
     path("kontakt/pruefung/", views.contact_challenge, name="kontakt_pruefung"),
     path("impressum/", views.imprint, name="impressum"),
     path("datenschutz/", views.privacy, name="datenschutz"),

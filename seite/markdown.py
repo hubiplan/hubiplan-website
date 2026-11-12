@@ -34,6 +34,7 @@ PAGES = {
     "aemter": "aemter",
     "dokumente": "dokumente",
     "kontakt": "kontakt",
+    "mitglied-werden": "mitglied_werden",
     "impressum": "impressum",
     "datenschutz": "datenschutz",
     "barrierefreiheit": "barrierefreiheit",

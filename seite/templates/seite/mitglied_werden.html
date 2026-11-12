@@ -1,0 +1,16 @@
+{% extends "seite/basis.html" %}{% load seite i18n %}
+{% block titel %}{% translate "Mitglied werden" as std %}{% baustein site "join" std %} · {% endblock %}
+{% block inhalt %}
+<h1>{% translate "Mitglied werden" as std %}{% baustein site "join" std %}</h1>
+{# Formular liegt in HUBIplan; hier nur Einleitung, Arten und Link (keine Eingaben auf der Webseite) #}
+{% if einleitung %}<div class="text">{{ einleitung|linebreaks }}</div>{% endif %}
+{% if arten %}<h2>{% translate "Mitgliedsarten" %}</h2>
+<ul class="mitgliedsarten">
+{% for a in arten %}<li><strong>{{ a.label }}</strong>{% if a.fee %} · {% blocktranslate with betrag=a.fee %}{{ betrag }} € im Jahr{% endblocktranslate %}{% endif %}{% if a.text %}<br><span class="klein">{{ a.text }}</span>{% endif %}</li>
+{% endfor %}</ul>{% endif %}
+{% if lastschrift %}<p class="klein">{% translate "Den Beitrag können Sie bequem per Lastschrift zahlen; das Mandat erteilen Sie gleich im Antrag." %}</p>{% endif %}
+<p><a class="knopf" href="{{ formular }}">{% translate "Zum Mitgliedsantrag" %}</a></p>
+{% if einheiten_links %}<h2>{% translate "Direkt bei einer Untereinheit" %}</h2>
+<ul>{% for e in einheiten_links %}<li><a href="{{ e.url }}">{{ e.name }}</a></li>{% endfor %}</ul>{% endif %}
+<p class="klein">{% translate "Der Antrag läuft über die Mitgliederverwaltung des Vereins. Hinweise zur Verarbeitung Ihrer Angaben stehen in den" %} <a href="{% url 'datenschutz' %}">{% translate "Datenschutzhinweisen" %}</a>.</p>
+{% endblock %}
