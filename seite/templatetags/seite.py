@@ -113,6 +113,7 @@ NAV_URLS = {
     "repertoire": "repertoire",
     "bookings": "belegung",
     "press": "presse",
+    "join": "mitglied_werden",
 }
 
 
