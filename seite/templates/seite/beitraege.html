@@ -13,7 +13,7 @@
     <p class="beitrag-text beitrag-anriss">{{ p.text|truncatewords:40 }}</p>
     <details class="beitrag-mehr"><summary>{% translate "Weiterlesen" %}</summary><p class="beitrag-text">{{ p.text|linebreaksbr }}</p></details>
     {% else %}<p class="beitrag-text">{{ p.text|linebreaksbr }}</p>{% endif %}{% endif %}
-    {% if p.permalink %}<p class="klein"><a href="{{ p.permalink }}" rel="noopener noreferrer nofollow" target="_blank">{% if p.media_type == "video" %}{% blocktranslate with ort=p.kind_label %}Video auf {{ ort }} ansehen{% endblocktranslate %}{% else %}{% blocktranslate with ort=p.kind_label %}Beitrag auf {{ ort }} ansehen{% endblocktranslate %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}
+    {% with ziel=p.permalink|web_ziel %}{% if ziel %}<p class="klein"><a href="{{ ziel }}" rel="noopener noreferrer nofollow" target="_blank">{% if p.media_type == "video" %}{% blocktranslate with ort=p.kind_label %}Video auf {{ ort }} ansehen{% endblocktranslate %}{% else %}{% blocktranslate with ort=p.kind_label %}Beitrag auf {{ ort }} ansehen{% endblocktranslate %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}{% endwith %}
   </li>
 {% endfor %}
 </ul>
