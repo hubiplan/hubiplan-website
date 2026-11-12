@@ -4,8 +4,8 @@
 <h1>{% translate "Datenschutzhinweise" %}</h1>
 {% get_current_language as sprache %}{% if sprache != "de" %}<p class="klein">{% translate "Der folgende Text steht auf Deutsch; maßgeblich ist die deutsche Fassung." %}</p>{% endif %}
 {% if stand %}<p class="klein" role="status">{% with zeit=stand|datum:"zeit" %}{% blocktranslate %}Gespeicherte Fassung, Stand {{ zeit }}. Die Seite ist gerade nicht vollständig erreichbar.{% endblocktranslate %}{% endwith %}</p>{% endif %}
-{% if privacy.mode == "link" and privacy.url %}
-<p>{% translate "Die Datenschutzhinweise stehen hier:" %} <a href="{{ privacy.url }}" rel="noopener noreferrer">{{ privacy.url }}</a></p>
+{% if privacy.mode == "link" and privacy.url|web_ziel %}
+<p>{% translate "Die Datenschutzhinweise stehen hier:" %} <a href="{{ privacy.url|web_ziel }}" rel="noopener noreferrer">{{ privacy.url }}</a></p>
 {% elif privacy.text %}
 <div class="text">{{ privacy.text|md:site }}</div>
 {% else %}

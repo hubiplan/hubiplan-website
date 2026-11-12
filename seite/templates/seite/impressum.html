@@ -5,8 +5,8 @@
 {% get_current_language as sprache %}{% if sprache != "de" %}<p class="klein">{% translate "Der folgende Text steht auf Deutsch; maßgeblich ist die deutsche Fassung." %}</p>{% endif %}
 {% if stand %}<p class="klein" role="status">{% with zeit=stand|datum:"zeit" %}{% blocktranslate %}Gespeicherte Fassung, Stand {{ zeit }}. Die Seite ist gerade nicht vollständig erreichbar.{% endblocktranslate %}{% endwith %}</p>{% endif %}
 {% with d=imprint.details %}
-{% if imprint.mode == "link" and imprint.external_url %}
-<p>{% translate "Das Impressum steht hier:" %} <a href="{{ imprint.external_url }}" rel="noopener noreferrer">{{ imprint.external_url }}</a></p>
+{% if imprint.mode == "link" and imprint.external_url|web_ziel %}
+<p>{% translate "Das Impressum steht hier:" %} <a href="{{ imprint.external_url|web_ziel }}" rel="noopener noreferrer">{{ imprint.external_url }}</a></p>
 {% elif d %}
 <section class="text">
   {% if imprint.inherited %}<p class="klein">{% translate "Diese Seite wird verantwortet von:" %}</p>{% endif %}

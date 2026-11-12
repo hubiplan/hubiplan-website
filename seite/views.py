@@ -42,6 +42,7 @@ from .site import (
     load,
     preview_session,
 )
+from .templatetags.seite import web_ziel
 from .zeitleiste import gliedern
 
 log = logging.getLogger(__name__)
@@ -810,30 +811,30 @@ def offices(request, site: Site):
 def documents(request, site: Site):
     """Dokumente des Vereins: Satzung, (optional) Beitragsordnung und Gründungsurkunde."""
     docs = []
-    if site.info.get("statute_url"):
+    if web_ziel(site.info.get("statute_url")):
         docs.append(
             {
                 "title": _("Satzung"),
-                "url": site.info["statute_url"],
+                "url": web_ziel(site.info["statute_url"]),
                 "kind": "§",
                 # Erste Seite als Bild (ältere HUBIplan-Stände: nur das Symbol)
                 "preview": site.local(site.info.get("statute_preview_url")),
             }
         )
-    if site.info.get("fee_rules_url"):
+    if web_ziel(site.info.get("fee_rules_url")):
         docs.append(
             {
                 "title": _("Beitragsordnung"),
-                "url": site.info["fee_rules_url"],
+                "url": web_ziel(site.info["fee_rules_url"]),
                 "kind": "€",
                 "preview": site.local(site.info.get("fee_rules_preview_url")),
             }
         )
-    if site.info.get("founding_deed_url"):
+    if web_ziel(site.info.get("founding_deed_url")):
         docs.append(
             {
                 "title": _("Gründungsurkunde"),
-                "url": site.info["founding_deed_url"],
+                "url": web_ziel(site.info["founding_deed_url"]),
                 "kind": "§",
                 "preview": site.local(site.info.get("founding_deed_preview_url")),
             }

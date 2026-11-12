@@ -2,7 +2,7 @@
 <footer class="fuss">
   <div class="breite fuss-innen">
     {% if site %}
-    {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% if site.info.member_of.website %}<a href="{{ site.info.member_of.website }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}</p>{% endif %}
+    {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% with ziel=site.info.member_of.website|web_ziel %}{% if ziel %}<a href="{{ ziel }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}{% endwith %}</p>{% endif %}
     {# Social Media steht im Kopf; im Fuß nur, wenn es kein Menü gibt #}
     {% if not punkte %}{% include "seite/sozial.html" with kanaele=site.info.social titel=_("Social Media") %}{% endif %}
     {% endif %}
