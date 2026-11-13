@@ -14,7 +14,8 @@
   .marke img { width: 80px; height: 80px; }
   .menue-breit {
     order: 3; border-top: 0; padding: .3rem 0 0;
-    background: var(--farbe-menue); box-shadow: 0 0 0 100vmax var(--farbe-menue); clip-path: inset(0 -100vmax);
+    /* Band über die ganze Breite ohne clip-path, das sonst die Untermenüs abschneidet */
+    background: var(--farbe-menue); box-shadow: none; border-image: linear-gradient(var(--farbe-menue), var(--farbe-menue)) fill 0 / 0 / 0 100vmax;
   }
   .menue-breit ul { margin: 0; gap: .2rem; }
   .menue-breit a { color: var(--auf-menue); font-weight: 600; border-radius: 6px 6px 0 0; padding: .5rem .9rem; }

@@ -188,3 +188,26 @@ def test_menuestile_lassen_den_menueknopf_in_ruhe():
         assert ":not(.menue-knopf)" in match.group(1), match.group(0)
     # Für die Leiste behält der Knopf eigene Farben
     assert 'html[data-st-nav="bar"] .menue-breit a.menue-knopf' in css
+
+
+def test_menueleiste_schneidet_untermenues_nicht_ab():
+    """Das farbige Band der Leiste reicht über die ganze Breite, ohne clip-path: das schnitt
+    die Aufklappmenüs unter dem Menü ab (#66)."""
+    for name in ("stil.css", "design-newspaper.css"):
+        css = (STATIC / name).read_text()
+        for block in re.findall(r"\.menue-breit\s*\{[^}]*\}", css):
+            assert "clip-path" not in block, (name, block)
+    assert "fill 0 / 0 / 0 100vmax" in (STATIC / "stil.css").read_text()
+
+
+def test_aufklappmenue_hover_und_regler():
+    """Hover und Fokus im Aufklappmenü sind deutlich markiert; Ecken und Karten wirken (#66)."""
+    seite = (STATIC / "seite.css").read_text()
+    rule = re.search(
+        r"\.untermenue ul a:hover,\s*\n?[^{]*\.untermenue ul a:focus-visible \{([^}]*)\}", seite
+    )
+    assert rule and "var(--farbe-zier)" in rule.group(1) and "var(--farbe-menue)" in rule.group(1)
+    stil = (STATIC / "stil.css").read_text()
+    corners = "html[data-st-corners] .menue-breit .untermenue ul { border-radius: var(--rund); }"
+    assert corners in stil
+    assert re.search(r'data-st-cards="flat"\][^{]*\.untermenue ul[^{]*\{\s*box-shadow: none', stil)
