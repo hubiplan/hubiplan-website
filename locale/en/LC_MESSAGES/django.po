@@ -135,6 +135,9 @@ msgstr "Club website"
 msgid "Zum Inhalt springen"
 msgstr "Skip to content"
 
+msgid "zur Startseite"
+msgstr "to the home page"
+
 msgid "Vorschau: Diese Ansicht sehen nur Sie."
 msgstr "Preview: only you can see this view."
 

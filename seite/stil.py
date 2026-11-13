@@ -43,6 +43,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "nav_active": ("underline", "filled"),
     "sticky": bool,
     "nav_mobile": ("toggle", "scroll"),
+    # Webseite #75: „Start“ in der Menüleiste am Bildschirm; Lage der Suche
+    "nav_start": bool,
+    "search": ("nav", "header", "footer"),
     # Startseite
     "hero": ("low", "medium", "normal", "high"),
     "hero_name": bool,
