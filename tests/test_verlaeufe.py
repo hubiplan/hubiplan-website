@@ -43,6 +43,8 @@ def test_css_variablen_mit_verlauf_und_textfarben():
     assert "--bild-fuss" not in css
     assert "--text:#3c3d3e" in css and "--text-leise:#5c5d5e" in css
     assert "--flaeche:#eef2f6" in css and "--grund:#ffffff" in css
+    # Tabellenzeilen abwechselnd in der Flächenfarbe (Ralf 13.11.2026)
+    assert "--zeile:#eef2f6" in css
 
 
 def test_ohne_neue_rollen_wie_bisher():
@@ -54,6 +56,7 @@ def test_ohne_neue_rollen_wie_bisher():
     site = site_mit(alt)
     css = site.css_vars
     assert "--bild-" not in css and "--text:" not in css and "--flaeche:" not in css
+    assert "--zeile:" not in css
     assert site.gradients == {}
 
 
