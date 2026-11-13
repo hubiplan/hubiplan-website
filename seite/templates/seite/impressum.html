@@ -11,7 +11,7 @@
 <section class="text">
   {% if imprint.inherited %}<p class="klein">{% translate "Diese Seite wird verantwortet von:" %}</p>{% endif %}
   <p><strong>{{ d.name }}</strong>{% if d.legal_form and d.legal_form not in d.name %}<br>{{ d.legal_form }}{% endif %}<br>
-  {{ d.address.street }}<br>{{ d.address.postal_code }} {{ d.address.city }}</p>
+  {% if d.address.address_extra %}{{ d.address.address_extra }}<br>{% endif %}{{ d.address.street }}<br>{{ d.address.postal_code }} {{ d.address.city }}</p>
   {% if d.representatives or d.representatives_text %}
   <h2>{% translate "Vertreten durch" %}</h2>
   {% if d.representatives_text %}<p>{{ d.representatives_text|linebreaksbr }}</p>{% else %}

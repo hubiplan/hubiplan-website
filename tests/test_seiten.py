@@ -539,6 +539,8 @@ def test_impressum_und_datenschutz(client, hubiplan):
     html = text(client.get("/impressum/"))
     assert "VR 1234" in html
     assert "Max Muster (1. Vorsitzender)" in html
+    # Adresszusatz steht über Straße und Hausnummer
+    assert "c/o Vereinsheim Musterdorf<br>Dorfstraße 1<br>" in html
     html = text(client.get("/datenschutz/"))
     assert "<h2>Datenschutz</h2>" in html
     assert "Stand: 1.10.2026" not in html  # Stand steht schon im Text aus HUBIplan
