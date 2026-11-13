@@ -104,6 +104,15 @@ def test_jede_stufe_hat_regeln():
         ("name", "on"),
         ("hero_name", "on"),
         ("hero_name", "off"),
+        # Ralf 13.11.: Grundstellung ohne Regel, Karussell im Skript, Knopf in der Vorlage
+        ("nav_mobile", "toggle"),
+        ("dark", "off"),
+        ("contrast", "off"),
+        ("to_top", "off"),
+        ("to_top", "on"),
+        ("carousel", "off"),
+        ("carousel", "slow"),
+        ("carousel", "normal"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":

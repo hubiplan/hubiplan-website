@@ -81,15 +81,37 @@ def darken(hex_color: str, amount: float) -> str:
     return "#" + "".join(f"{round(c * (1 - amount)):02x}" for c in parts)
 
 
-def link_color(primary: str, background: str | None = None, *more: str | None) -> str:
+def link_color(
+    primary: str, background: str | None = None, *more: str | None, target: float = 4.5
+) -> str:
     """Linkfarbe aus der Vereinsfarbe: so wenig wie nötig abgedunkelt, bis Text auf
-    Weiß und auf dem Seitengrund 4,5 : 1 erreicht (WCAG 1.4.3; wie HUBIplan)."""
+    Weiß und auf dem Seitengrund 4,5 : 1 erreicht (WCAG 1.4.3; wie HUBIplan). „Kontrast
+    erhöht“ verlangt 7 : 1 (WCAG 1.4.6)."""
     backgrounds = LINK_BACKGROUNDS + tuple(b for b in (background, *more) if b)
     for step in range(21):
         color = darken(primary, step * 0.05)
-        if min(contrast(color, bg) for bg in backgrounds) >= 4.5:
+        if min(contrast(color, bg) for bg in backgrounds) >= target:
             return color
     return "#000000"
+
+
+def lighten(hex_color: str, amount: float) -> str:
+    """Farbe mit Weiß mischen (0 = unverändert, 1 = weiß)."""
+    parts = (int(hex_color[i : i + 2], 16) for i in (1, 3, 5))
+    return "#" + "".join(f"{round(c + (255 - c) * amount):02x}" for c in parts)
+
+
+# Grundflächen der dunklen Darstellung (stil.css: --grund, --flaeche)
+DARK_BACKGROUNDS = ("#121514", "#1c201e")
+
+
+def link_color_dark(primary: str, target: float = 4.5) -> str:
+    """Linkfarbe für die dunkle Darstellung: so wenig wie nötig aufgehellt."""
+    for step in range(21):
+        color = lighten(primary, step * 0.05)
+        if min(contrast(color, bg) for bg in DARK_BACKGROUNDS) >= target:
+            return color
+    return "#ffffff"
 
 
 # Darstellung der festen Bereiche (HUBIplan website/variants.py); erste = Standard
@@ -191,7 +213,11 @@ class Site:
     def style(self) -> dict[str, str]:
         """Verstellte Stilregler aus HUBIplan (geprüft, ohne die vom Design gesperrten)."""
         if "_style" not in self.cache:
-            self.cache["_style"] = stil.clean(self.info.get("style"), self.design)
+            style = stil.clean(self.info.get("style"), self.design)
+            # Designpakete bringen eigenes CSS mit festen Farben mit: dort bleibt es hell
+            if self.package is not None:
+                style.pop("dark", None)
+            self.cache["_style"] = style
         return self.cache["_style"]
 
     @property
@@ -377,6 +403,13 @@ class Site:
         grund = self.background_for(self.theme["primary"])
         if grund:
             parts.append(f"--grund:{grund}")
+        primary = self.theme["primary"]
+        target = 7.0 if self.style.get("contrast") == "on" else 4.5
+        if target > 4.5 and HEX.match(primary or ""):
+            surface = common.get("surface")
+            parts.append(f"--link:{link_color(primary, grund, surface, target=target)}")
+        if self.style.get("dark") == "auto" and HEX.match(primary or ""):
+            parts.append(f"--link-dunkel:{link_color_dark(primary, target)}")
         return ";".join(parts)
 
     @property

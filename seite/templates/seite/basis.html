@@ -32,6 +32,7 @@
 {% block inhalt %}{% endblock %}
 </main>
 {% if site %}{% include site.fuss_vorlage %}{% else %}{% include "seite/fuss.html" %}{% endif %}
+{% if site.style.to_top == "on" %}<a class="nach-oben" href="#top" hidden><span aria-hidden="true">↑</span><span class="nur-vorlesen">{% translate "Nach oben" %}</span></a>{% endif %}
 {% seite_texte %}<script src="{% static 'seite/menue.js' %}" defer></script>
 <script src="{% static 'seite/termin.js' %}" defer></script>
 {% block skripte %}{% endblock %}

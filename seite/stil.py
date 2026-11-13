@@ -12,7 +12,7 @@ from __future__ import annotations
 CATALOG: dict[str, tuple[str, ...] | type] = {
     # Schrift
     "font": ("system", "modern", "festive"),
-    "size": ("normal", "large"),
+    "size": ("normal", "large", "xlarge"),
     "leading": ("tight", "normal", "airy"),
     "headings": ("plain", "line", "color"),
     "heading_align": ("left", "center"),
@@ -22,9 +22,13 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "background": ("light", "tinted", "grey"),
     "spacing": ("compact", "normal", "generous"),
     "corners": ("square", "slight", "round"),
+    "dark": ("off", "auto"),
+    "contrast": bool,
+    "to_top": bool,
     # Karten, Bilder, Knöpfe
     "cards": ("border", "shadow", "flat"),
     "images": ("cards", "square"),
+    "tile_ratio": ("wide", "classic", "square"),
     "image_frame": bool,
     "buttons": ("filled", "outline"),
     "date": ("tile", "strip"),
@@ -38,9 +42,11 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "nav": ("bar", "buttons", "text"),
     "nav_active": ("underline", "filled"),
     "sticky": bool,
+    "nav_mobile": ("toggle", "scroll"),
     # Startseite
-    "hero": ("low", "normal", "high"),
+    "hero": ("low", "medium", "normal", "high"),
     "hero_name": bool,
+    "carousel": ("off", "slow", "normal"),
     # Fuß
     "footer": ("dark", "light", "color"),
     "footer_align": ("left", "center", "right"),
@@ -56,6 +62,7 @@ LOCKS: dict[str, dict[str, tuple[str, ...] | None]] = {
         "line": None,
         "nav": None,
         "sticky": None,
+        "nav_mobile": None,
     },
     "stage": {"width": ("narrow",), "hero_name": None},
     "newspaper": {"nav": None},

@@ -48,3 +48,20 @@
     if (menue.open && !menue.contains(e.target)) menue.open = false;
   });
 })();
+
+// Knopf „Nach oben“ (Stilregler to_top): erst nach gut einer Bildschirmhöhe Blättern sichtbar
+(function () {
+  "use strict";
+  var knopf = document.querySelector(".nach-oben");
+  if (!knopf) return;
+  var zeigen = function () { knopf.hidden = window.scrollY < window.innerHeight * 1.2; };
+  window.addEventListener("scroll", zeigen, { passive: true });
+  zeigen();
+  knopf.addEventListener("click", function (e) {
+    e.preventDefault();
+    var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: ruhig ? "auto" : "smooth" });
+    var sprung = document.querySelector(".sprung");
+    if (sprung) sprung.focus({ preventScroll: true });
+  });
+})();

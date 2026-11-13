@@ -25,11 +25,14 @@ document.querySelectorAll('[data-karussell]').forEach((box) => {
   const weiter = box.querySelector('[data-weiter]')
   const pause = box.querySelector('[data-pause]')
   const sekunden = Number(box.dataset.takt)
-  const takt = (sekunden >= 3 && sekunden <= 30 ? sekunden : STANDARD) * 1000
+  // Stilregler „Bilderkarussell blättert“: nur von Hand, langsam (doppelte Zeit) oder normal
+  const art = document.documentElement.dataset.stCarousel
+  const grund = sekunden >= 3 && sekunden <= 30 ? sekunden : STANDARD
+  const takt = grund * 1000 * (art === 'slow' ? 2 : 1)
   const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   box.querySelector('.karussell-steuerung').hidden = false
 
-  let angehalten = ruhig // vom Besucher angehalten
+  let angehalten = ruhig || art === 'off' // vom Besucher angehalten
   let verweilt = false // Maus oder Fokus im Karussell
   let uhr
 

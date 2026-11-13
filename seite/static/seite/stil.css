@@ -13,6 +13,8 @@ html[data-st-size="large"] { font-size: 112.5%; }
 html[data-st-size="large"] body { font-size: 19px; }
 html[data-st-size="normal"] { font-size: 100%; }
 html[data-st-size="normal"] body { font-size: 17px; }
+html[data-st-size="xlarge"] { font-size: 125%; }
+html[data-st-size="xlarge"] body { font-size: 21px; }
 
 html[data-st-leading="tight"] body { line-height: 1.45; }
 html[data-st-leading="normal"] body { line-height: 1.6; }
@@ -93,6 +95,11 @@ html[data-st-images="square"] .text img, html[data-st-images="square"] .majestae
 html[data-st-images="square"] .karte.homepage .homepage-bild img, html[data-st-images="square"] .beitrag-bild img { border-radius: 0; }
 html[data-st-images="cards"] .titelbild img, html[data-st-images="cards"] .karussell-band,
 html[data-st-images="cards"] .text img, html[data-st-images="cards"] .majestaet img { border-radius: var(--rund); }
+
+/* Seitenverhältnis der Bilder in Kacheln: Startseite, Alben der Galerie, Beiträge */
+html[data-st-tile-ratio="wide"] :is(.bildkachel img, .galerie-alben img, .galerie-ohne-bild, .beitrag-bild img) { aspect-ratio: 3 / 2; }
+html[data-st-tile-ratio="classic"] :is(.bildkachel img, .galerie-alben img, .galerie-ohne-bild, .beitrag-bild img) { aspect-ratio: 4 / 3; }
+html[data-st-tile-ratio="square"] :is(.bildkachel img, .galerie-alben img, .galerie-ohne-bild, .beitrag-bild img) { aspect-ratio: 1; }
 
 /* Rahmen um Bilder im Text und um Fotos der Würdenträger (Titelbilder bleiben ohne) */
 html[data-st-image-frame="on"] .text img, html[data-st-image-frame="on"] .majestaet img {
@@ -259,15 +266,36 @@ html[data-st-line="strong"] .kopf { border-bottom: 5px solid var(--farbe-zier); 
 html[data-st-sticky="on"] .kopf { position: sticky; top: 0; z-index: 6; }
 html[data-st-sticky="off"] .kopf { position: relative; }
 
+/* Menü auf dem Handy als Leiste zum Wischen unter dem Kopf statt hinter „Menü“. Farben wie der
+   Kopf (currentColor), Untermenüs klappen in voller Breite unter der Leiste auf. */
+@media (max-width: 63.99rem) {
+  html[data-st-nav-mobile="scroll"] .kopf .menue { display: none; }
+  html[data-st-nav-mobile="scroll"] .kopf-innen { flex-wrap: wrap; row-gap: 0; }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit {
+    display: block; flex: 1 0 100%; order: 3; margin: 0 -16px; padding: 0 16px .35rem;
+    overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit > ul { justify-content: flex-start; width: max-content; }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit > ul > li { scroll-snap-align: start; }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit > ul > li > a:not(.menue-knopf),
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit .untermenue summary { color: inherit; }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit .hat-unter { position: static; }
+  html[data-st-nav-mobile="scroll"] .kopf .menue-breit .untermenue ul { left: 16px; right: 16px; min-width: 0; }
+}
+
 /* ---------- Startseite ---------- */
 html[data-st-hero="low"] .karussell { --karussell-hoehe: min(18rem, 45vh); }
 html[data-st-hero="low"] .titelbild img { max-height: 18rem; }
+html[data-st-hero="medium"] .karussell { --karussell-hoehe: min(23rem, 52vh); }
+html[data-st-hero="medium"] .titelbild img { max-height: 23rem; }
 html[data-st-hero="normal"] .karussell { --karussell-hoehe: min(28rem, 60vh); }
 html[data-st-hero="normal"] .titelbild img { max-height: 28rem; }
 html[data-st-hero="high"] .karussell { --karussell-hoehe: min(40rem, 80vh); }
 html[data-st-hero="high"] .titelbild img { max-height: 40rem; }
 html[data-st-hero] .begruessung-bilder .titelbild img, html[data-st-hero] .buehne .titelbild img { width: 100%; object-fit: cover; }
 html[data-st-hero="low"] .buehne .titelbild img { height: 18rem; }
+html[data-st-hero="medium"] .buehne .titelbild img { height: min(23rem, 52vh); }
 html[data-st-hero="high"] .buehne .titelbild img { height: min(40rem, 80vh); }
 
 /* Name auf dem Titelbild (Bühne zeigt ihn ohnehin) */
@@ -296,3 +324,38 @@ html[data-st-footer-align="center"] .fuss-innen { justify-content: center; text-
 html[data-st-footer-align="center"] .fuss-innen ul { justify-content: center; }
 html[data-st-footer-align="right"] .fuss-innen { justify-content: flex-end; text-align: right; }
 html[data-st-footer-align="right"] .fuss-innen ul { justify-content: flex-end; }
+
+/* ---------- Kontrast erhöht ---------- */
+html[data-st-contrast="on"] { --text: #0b0f0d; --text-leise: #2c332f; --linie: #8b928e; }
+html[data-st-contrast="on"] :is(.karte, .termin, .dokumente a, .kacheln a) { border-color: var(--linie); }
+html[data-st-contrast="on"] :focus-visible { outline-width: 3px; }
+
+/* ---------- Knopf „Nach oben“ (menue.js blendet ihn erst nach etwas Blättern ein) ---------- */
+.nach-oben {
+  position: fixed; right: 16px; bottom: 16px; z-index: 7; width: 2.9rem; height: 2.9rem;
+  display: flex; align-items: center; justify-content: center; border-radius: 999px;
+  background: var(--primaer); color: var(--auf-primaer); font-size: 1.3rem; text-decoration: none;
+  box-shadow: 0 2px 10px rgb(0 0 0 / .25);
+}
+.nach-oben[hidden] { display: none; }
+.nach-oben:hover { opacity: .9; }
+.nach-oben:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+@media print { .nach-oben { display: none; } }
+
+/* ---------- Dunkle Darstellung nach Gerät (Dunkelmodus D2) ----------
+   Nur Grundflächen, Schrift und Linien wechseln; Kopf, Menü, Fuß und farbige Abschnitte
+   behalten ihre Vereinsfarben. --link-dunkel rechnet seite/site.py auf 4,5 : 1 hoch. */
+@media (prefers-color-scheme: dark) {
+  html[data-st-dark="auto"] {
+    color-scheme: dark;
+    --text: #e8ebe9; --text-leise: #b3bab6; --grund: #121514; --flaeche: #1c201e; --linie: #3a403d;
+    --link: var(--link-dunkel, #9fd3ae); --zeile: #232826;
+    --abschnitt-hell: color-mix(in srgb, var(--primaer) 18%, #1c201e);
+  }
+  html[data-st-dark="auto"][data-st-contrast="on"] { --text: #ffffff; --text-leise: #d4d9d6; --linie: #7d8580; }
+  html[data-st-dark="auto"] body { background: var(--grund); color: var(--text); }
+  html[data-st-dark="auto"] :is(input, select, textarea) { background: var(--flaeche); color: var(--text); border-color: #7d8580; }
+  html[data-st-dark="auto"] :is(.meldung.fehler, .feld-fehler) { color: #ff9b9b; }
+  html[data-st-dark="auto"] .formular [aria-invalid="true"] { border-color: #ff9b9b; }
+  html[data-st-dark="auto"][data-st-cards="shadow"] :is(.karte, .termin, .dokumente a) { box-shadow: 0 0 0 1px var(--linie); }
+}
