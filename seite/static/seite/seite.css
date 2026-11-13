@@ -373,8 +373,22 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .suche input { flex: 1 1 14rem; min-width: 0; padding: .5rem .6rem; font: inherit; border: 1px solid var(--linie); border-radius: 6px; }
 .suchtreffer { list-style: none; padding: 0; }
 .suchtreffer li { padding: .6rem 0; border-bottom: 1px solid var(--linie); }
-.suche-punkt a { display: flex; align-items: center; }
-.lupe { display: block; }
+/* Lupe so hoch wie die Textpunkte (Webseite #75): ein unsichtbares Zeichen gibt dem Link
+   die Zeilenhöhe der anderen Menüpunkte, die Lupe steht darin mittig */
+.suche-punkt a, a.kopf-suche { display: flex; align-items: center; }
+.suche-punkt a::before, a.kopf-suche::before { content: "\200b"; width: 0; overflow: hidden; }
+.lupe { display: block; flex: none; }
+/* Suche oben rechts im Kopf (Stilregler search=header), vor Social Media; auf dem Handy
+   steht sie im Menü */
+.kopf-suche { color: var(--auf-kopf); padding: .45rem .55rem; border-radius: 6px; font-size: .95rem; text-decoration: none; }
+.kopf-suche:hover { background: color-mix(in srgb, var(--auf-kopf) 15%, transparent); }
+.kopf-suche:focus-visible { outline-color: var(--auf-kopf); }
+@media (min-width: 64rem) { .kopf-sozial:has(.kopf-suche) { display: flex; align-items: center; gap: .4rem; } }
+/* kleines Suchfeld im Fuß (Stilregler search=footer) */
+.fuss-suche { display: flex; gap: .3rem; flex: 0 1 18rem; min-width: 0; }
+.fuss-suche input { flex: 1 1 auto; min-width: 0; padding: .3rem .5rem; font: inherit; color: var(--text); background: var(--flaeche); border: 1px solid var(--linie); border-radius: 6px; }
+.fuss-suche button { font: inherit; font-weight: 600; padding: .3rem .7rem; border-radius: 6px; cursor: pointer; color: var(--auf-fuss); background: color-mix(in srgb, var(--auf-fuss) 14%, transparent); border: 1px solid color-mix(in srgb, var(--auf-fuss) 35%, transparent); }
+.fuss-suche button:hover { background: color-mix(in srgb, var(--auf-fuss) 24%, transparent); }
 
 /* Nur für Screenreader (z. B. Überschrift der Startseite, der Name steht im Kopf) */
 .nur-vorlesen { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

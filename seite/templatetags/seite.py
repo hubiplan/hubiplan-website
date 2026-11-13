@@ -48,7 +48,8 @@ def menue(context):
     if site is None or site.maintenance and not site.is_preview:
         return []
     info = site.info
-    items = [(_("Start"), reverse("start"))]
+    # „Start“ setzt die Webseite selbst davor; am Bildschirm ausblendbar (Stilregler nav_start)
+    items = [(_("Start"), reverse("start"), {"start": True})]
     nav = info.get("nav")
     if isinstance(nav, list):
         items += _nav_items(site, nav)
@@ -77,6 +78,21 @@ def menue(context):
         }
 
     return [entry(*item) for item in items]
+
+
+@register.simple_tag(takes_context=True)
+def menue_teile(context, punkte):
+    """Menüpunkte je Ort (Webseite #75): ``breit`` (Menüleiste am Bildschirm), ``handy``
+    (Aufklappmenü) und ``fuss`` (Links im Fuß). Punkte „nur im Fuß“ fehlen in beiden Menüs;
+    „Start“ fehlt am Bildschirm, wenn der Stilregler ``nav_start`` aus ist (Logo und Kopfbild
+    führen dann zur Startseite), im Handymenü bleibt er."""
+    site = context.get("site")
+    style = site.style if site is not None else {}
+    ohne_start = style.get("nav_start") == "off"
+    handy = [p for p in punkte if p.get("place") != "footer"]
+    breit = [p for p in handy if not (ohne_start and p.get("start"))]
+    fuss = [p for p in punkte if p.get("place") in ("footer", "both") and not p.get("children")]
+    return {"breit": breit, "handy": handy, "fuss": fuss}
 
 
 def _nav_url(site, node: dict) -> str | None:
@@ -134,6 +150,9 @@ def _extra(node: dict) -> dict:
         extra["extern"] = True
     if node.get("button") is True:
         extra["knopf"] = True
+    # Platz eines Hauptpunkts (Webseite #75): nur im Fuß oder im Hauptmenü und im Fuß
+    if node.get("place") in ("footer", "both"):
+        extra["place"] = node["place"]
     return extra
 
 
@@ -146,18 +165,20 @@ def _nav_items(site, nav: list) -> list:
         if not isinstance(node, dict) or not node.get("label"):
             continue
         children = [
-            (c["label"], url, _extra({**c, "button": False}))
+            (c["label"], url, _extra({**c, "button": False, "place": None}))
             for c in node.get("children") or []
             if isinstance(c, dict) and c.get("label") and (url := _nav_url(site, c))
         ]
         url = None if node.get("heading") else _nav_url(site, node)
         if url and children:
-            own = _extra({**node, "button": False})
+            own = _extra({**node, "button": False, "place": None})
             items.append((node["label"], [(node["label"], url, own), *children]))
         elif url:
             items.append((node["label"], url, _extra(node)))
         elif len(children) == 1:
-            items.append(children[0])
+            # einziger Unterpunkt rückt hoch und übernimmt den Platz der Überschrift
+            label, url, extra = children[0]
+            items.append((label, url, {**extra, **_extra({"place": node.get("place")})}))
         elif children:
             items.append((node["label"], children))
     return items

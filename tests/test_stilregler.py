@@ -113,6 +113,12 @@ def test_jede_stufe_hat_regeln():
         ("carousel", "off"),
         ("carousel", "slow"),
         ("carousel", "normal"),
+        # Webseite #75: Start und Suche löst die Vorlage (kopf.html, fuss.html)
+        ("nav_start", "on"),
+        ("nav_start", "off"),
+        ("search", "nav"),
+        ("search", "header"),
+        ("search", "footer"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":

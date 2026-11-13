@@ -6,7 +6,9 @@
     {# Social Media steht im Kopf; im Fuß nur, wenn es kein Menü gibt #}
     {% if not punkte %}{% include "seite/sozial.html" with kanaele=site.info.social titel=_("Social Media") %}{% endif %}
     {% endif %}
+    {% if site.info.blocks.search and site.style.search == "footer" %}{# kleines Suchfeld im Fuß (Webseite #75) #}<form class="fuss-suche" action="{% url 'suche' %}" method="get" role="search"><label class="nur-vorlesen" for="fuss-suche-q">{% translate "Suchbegriff" %}</label><input id="fuss-suche-q" type="search" name="q" maxlength="100" minlength="2" placeholder="{% translate "Suche" %}"><button type="submit">{% translate "Suchen" %}</button></form>{% endif %}
     <ul class="recht">
+      {% if punkte %}{% menue_teile punkte as teile %}{# Menüpunkte „im Fuß“ neben Impressum und Datenschutz (Webseite #75) #}{% for p in teile.fuss %}<li><a href="{{ p.url }}"{% if p.active %} aria-current="page"{% endif %}{% if p.extern %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ p.label }}{% if p.extern %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span>{% endif %}</a></li>{% endfor %}{% endif %}
       <li><a href="{% url 'impressum' %}">{% translate "Impressum" %}</a></li>
       <li><a href="{% url 'datenschutz' %}">{% translate "Datenschutz" %}</a></li>
       <li><a href="{% url 'barrierefreiheit' %}">{% translate "Barrierefreiheit" %}</a></li>
