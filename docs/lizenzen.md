@@ -28,7 +28,9 @@ Symbole für Social-Media-Kanäle (`seite/templatetags/seite.py`): Die Pfade fü
 TikTok und X entsprechen weitgehend [Simple Icons](https://simpleicons.org) (CC0 1.0, keine
 Nennung nötig; das X-Symbol stammt wahrscheinlich aus Version 11.15.0). Die Zeichen sind
 Marken der jeweiligen Unternehmen; CC0 gibt keine Markenrechte. Die Webseite nutzt sie nur als
-Link auf den eigenen Kanal des Vereins (Lizenzaudit 10.11.2026, L11).
+Link auf den eigenen Kanal des Vereins (Lizenzaudit 10.11.2026, L11). Das LinkedIn-Symbol
+ist selbst aus Grundformen gezeichnet (abgerundetes Quadrat mit „in“); auch hier ist das Zeichen
+eine Marke und dient nur als Link auf den Kanal des Vereins.
 
 Beiträge aus Instagram und Facebook speichert HUBIplan mit Text und Bildern und gibt sie an
 die Webseite weiter. Die Verbindung zu Meta gibt keine Rechte an fremden Bildern oder Musik;

@@ -293,6 +293,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .sm-tiktok { --sm: #111; }
 .sm-x { --sm: #111; }
 .sm-youtube { --sm: #ff0000; }
+.sm-linkedin { --sm: #0a66c2; }
 .sozial-symbole { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
 .sozial-symbole a {
   display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%;
@@ -316,8 +317,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   border-radius: var(--rund); background: var(--sm, var(--primaer)); color: #fff; --sm-auf: var(--sm, var(--primaer));
   font-weight: 600;
 }
-.sozial-gross .sm-facebook, .sozial-gross .sm-youtube { --sm-auf: var(--sm); }
-.sozial-gross .sm-facebook .sm-symbol, .sozial-gross .sm-youtube .sm-symbol { color: #fff; }
+.sozial-gross .sm-facebook, .sozial-gross .sm-youtube, .sozial-gross .sm-linkedin { --sm-auf: var(--sm); }
+.sozial-gross .sm-facebook .sm-symbol, .sozial-gross .sm-youtube .sm-symbol, .sozial-gross .sm-linkedin .sm-symbol { color: #fff; }
 .sozial-gross a:hover { opacity: .88; }
 .sozial-gross span { display: grid; line-height: 1.25; }
 .sozial-gross small { font-weight: 400; opacity: .9; }
