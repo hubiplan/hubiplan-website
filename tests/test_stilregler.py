@@ -178,3 +178,13 @@ def test_schriften_der_regler_liegen_lokal():
     for family in ('"Open Sans"', '"Roboto"', '"Great Vibes"'):
         assert family in css
         assert f"font-family: {family}" in (STATIC / "seite.css").read_text()
+
+
+def test_menuestile_lassen_den_menueknopf_in_ruhe():
+    """Regeln der Stilregler für Menüpunkte dürfen den hervorgehobenen Knopf („Mitglied werden“)
+    nicht umfärben; sonst steht etwa bei „Menü: Text“ die Kopfschrift auf der Menüfarbe (#64)."""
+    css = (STATIC / "stil.css").read_text()
+    for match in re.finditer(r"\.menue-breit > ul > li > a([^,{]*)", css):
+        assert ":not(.menue-knopf)" in match.group(1), match.group(0)
+    # Für die Leiste behält der Knopf eigene Farben
+    assert 'html[data-st-nav="bar"] .menue-breit a.menue-knopf' in css

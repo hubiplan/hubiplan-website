@@ -122,13 +122,13 @@ html[data-st-header-bg="color"] .kopf :focus-visible { outline-color: var(--auf-
 html[data-st-header-bg="color"] .kopf .menue nav :focus-visible { outline-color: var(--link); }
 @media (min-width: 64rem) {
   /* Menü im Kopf (nicht die Reiterleiste der Zeitung): Schrift passend zum Hintergrund */
-  html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a,
+  html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a:not(.menue-knopf),
   html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary { color: var(--link); }
   html[data-st-header-bg="white"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit { border-top-color: var(--linie); }
-  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a,
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a:not(.menue-knopf),
   html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary { color: var(--auf-kopf); }
   html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit { border-top-color: color-mix(in srgb, var(--auf-kopf) 18%, transparent); }
-  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a:hover,
+  html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit > ul > li > a:not(.menue-knopf):hover,
   html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-kopf) 15%, transparent); }
   html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit a:focus-visible,
   html[data-st-header-bg="color"]:not([data-st-nav="bar"]) body:not(.design-newspaper) .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-kopf); }
@@ -194,25 +194,25 @@ html[data-st-line="strong"] .kopf { border-bottom: 5px solid var(--farbe-zier); 
     border-top: 0; padding: .2rem 0;
     --st-strich: var(--auf-menue); --st-aktiv: var(--auf-menue); --st-auf-aktiv: var(--farbe-menue);
   }
-  html[data-st-nav="bar"] .menue-breit > ul > li > a, html[data-st-nav="bar"] .menue-breit .untermenue summary {
+  html[data-st-nav="bar"] .menue-breit > ul > li > a:not(.menue-knopf), html[data-st-nav="bar"] .menue-breit .untermenue summary {
     color: var(--auf-menue); border-radius: 6px; font-weight: 600; background: transparent;
   }
-  html[data-st-nav="bar"] .menue-breit > ul > li > a:hover, html[data-st-nav="bar"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-menue) 15%, transparent); }
+  html[data-st-nav="bar"] .menue-breit > ul > li > a:not(.menue-knopf):hover, html[data-st-nav="bar"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, var(--auf-menue) 15%, transparent); }
   html[data-st-nav="bar"] .menue-breit a:focus-visible, html[data-st-nav="bar"] .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-menue); }
   html[data-st-nav="bar"] .menue-breit .untermenue ul a:focus-visible { outline-color: var(--link); }
   html[data-st-nav="bar"] .menue-breit a.menue-knopf, html[data-st-nav="bar"] .menue-breit a.menue-knopf[aria-current="page"] { background: var(--auf-menue); color: var(--farbe-menue); }
   html[data-st-nav="bar"] body.design-festive .menue-breit { border-top: 0; border-bottom: 0; }
   /* Knöpfe: runde Felder, aktiver Punkt hinterlegt */
-  html[data-st-nav="buttons"] .menue-breit > ul > li > a, html[data-st-nav="buttons"] .menue-breit .untermenue summary {
+  html[data-st-nav="buttons"] .menue-breit > ul > li > a:not(.menue-knopf), html[data-st-nav="buttons"] .menue-breit .untermenue summary {
     color: inherit; font-weight: 600; border-radius: 999px; padding: .45rem .9rem;
   }
-  html[data-st-nav="buttons"] .menue-breit > ul > li > a:hover, html[data-st-nav="buttons"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+  html[data-st-nav="buttons"] .menue-breit > ul > li > a:not(.menue-knopf):hover, html[data-st-nav="buttons"] .menue-breit .untermenue summary:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
   html[data-st-nav="buttons"] .menue-breit ul { margin-left: -.9rem; }
   /* Text: schlichte Wörter ohne Flächen */
-  html[data-st-nav="text"] .menue-breit > ul > li > a, html[data-st-nav="text"] .menue-breit .untermenue summary {
+  html[data-st-nav="text"] .menue-breit > ul > li > a:not(.menue-knopf), html[data-st-nav="text"] .menue-breit .untermenue summary {
     color: inherit; font-weight: 400; border-radius: 0; background: transparent;
   }
-  html[data-st-nav="text"] .menue-breit > ul > li > a:hover, html[data-st-nav="text"] .menue-breit .untermenue summary:hover { background: transparent; opacity: .75; }
+  html[data-st-nav="text"] .menue-breit > ul > li > a:not(.menue-knopf):hover, html[data-st-nav="text"] .menue-breit .untermenue summary:hover { background: transparent; opacity: .75; }
   html[data-st-nav="text"] .menue-breit a[aria-current="page"], html[data-st-nav="text"] .menue-breit .untermenue summary.aktiv { font-weight: 700; }
   html[data-st-nav="text"] .menue-breit a.menue-knopf { border-radius: 999px; }
   html[data-st-nav="text"] body.design-classic .menue-breit, html[data-st-nav="buttons"] body.design-classic .menue-breit { border-top: 0; }
