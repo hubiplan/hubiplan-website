@@ -180,7 +180,31 @@ def test_zeitung_spalte_je_abschnitt(client, hubiplan):
 def test_textseite_ohne_abschnitte_wie_bisher(client, hubiplan):
     html = text(client.get("/seite/anfahrt/"))
     assert "<h1>Anfahrt</h1>" in html and "Mit dem Bus." in html
-    assert "seite-text" not in html
+    # #77: Titel und Text stehen als Lesespalte mittig (.textseite, .seite-text)
+    assert '<div class="textseite">' in html and '<div class="seite-text">' in html
+    assert "abschnitt-" not in html.split("<h1>", 1)[1].split("</main>", 1)[0]
+
+
+def test_textseite_volle_breite_ohne_weitere_abschnitte(client, hubiplan):
+    """#77: Breite des Textes der Seite gilt auch, wenn es sonst keine Abschnitte gibt."""
+    hubiplan.antworten["pages/anfahrt/"] = {
+        "slug": "anfahrt",
+        "title": "Anfahrt",
+        "text": "Mit dem Bus.",
+        "image": None,
+        "sections": layout({"key": "body", "kind": "body", "width": "full"}),
+    }
+    html = text(client.get("/seite/anfahrt/"))
+    assert '<section class="seite-text abschnitt-voll">' in html
+    assert "Mit dem Bus." in html
+
+
+def test_textseite_lesespalte_mittig_im_stil():
+    from pathlib import Path
+
+    css = (Path(__file__).resolve().parent.parent / "seite/static/seite/seite.css").read_text()
+    assert ".textseite > h1, .seite-text .text { max-width: 44rem; margin-left: auto;" in css
+    assert ".seite-text.abschnitt-voll .text { max-width: none; }" in css
 
 
 def test_textseite_aus_abschnitten(client, hubiplan):
