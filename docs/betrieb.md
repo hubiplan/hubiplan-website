@@ -133,6 +133,13 @@ Browser ──HTTPS──> nginx (HestiaCP, Let's Encrypt, Vorlage webseite-8111
    (Dateien und WordPress-Datenbank) nach
    `/root/sicherung-webseite/<Benutzer>/<Domain>/<Zeit.Zufall>/`, merkt sich die alte
    nginx-Vorlage und löscht nichts. `AKTION=zurueck` stellt die alte Vorlage wieder her.
+5. **Besucheradresse absichern** (geteilter Server): Der Container lauscht auf
+   `127.0.0.1:8111`, das erreicht dort jeder Prozess. Damit kein Nachbardienst eine
+   Besucheradresse vorgeben kann, glaubt die Webseite `X-Forwarded-For` nur mit dem geheimen
+   Kopfwert des nginx (derselbe wie für HUBIplan, `hubiplan/deploy/hestia/proxy-geheim.sh`)
+   oder vom Caddy von HUBIplan. Erst die Vorlage `webseite-8111` erneuern, dann
+   `deploy/hestia/proxy-geheim.sh` als root ausführen; `ZURUECK=1` nimmt es wieder heraus.
+   Ohne diesen Schritt bleibt alles wie bisher.
 
    Auch bestehende Aufrufe müssen `HUSER` ausdrücklich setzen. Ohne die Angabe bricht
    das Skript vor jeder Serveraktion ab. Die bisherige Vorlage kann weiterhin mit

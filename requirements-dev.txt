@@ -1,4 +1,4 @@
--r requirements.txt
+# Zusätzlich zu requirements.txt (dort mit Prüfsummen, deshalb getrennt installieren)
 pytest==9.2.0
 pytest-django==4.14.0
 ruff==0.17.3

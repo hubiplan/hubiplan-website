@@ -17,6 +17,11 @@ services:
     security_opt:
       - no-new-privileges:true
     cap_drop: [ALL]
+    # Grenzen wie bei den Diensten von HUBIplan: Ein überlasteter oder gekaperter Container
+    # zieht den Rechner nicht mit (Gesamtaudit 13.11. H-01)
+    mem_limit: ${WEBSITE_MEM_LIMIT:-512m}
+    cpus: ${WEBSITE_CPUS:-1}
+    pids_limit: 128
     # Logs begrenzt (3 × 10 MB)
     logging:
       driver: json-file

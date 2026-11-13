@@ -16,7 +16,21 @@ DEBUG = env_bool("DJANGO_DEBUG", False)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "nur-fuer-die-entwicklung" if DEBUG else "")
 if not SECRET_KEY:
     raise RuntimeError("DJANGO_SECRET_KEY fehlt.")
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "*").split(",") if h.strip()]
+# Ohne Angabe nimmt der Betrieb keinen Rechnernamen an (Gesamtaudit 13.11. H-03); nur in der
+# Entwicklung gilt jeder. deploy/server-setup.sh trägt die Domains ein.
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get("ALLOWED_HOSTS", "*" if DEBUG else "").split(",") if h.strip()
+]
+
+# --- Vorgeschalteter Proxy ---
+# Der Dienst lauscht hinter HestiaCP auf einem lokalen Port, den auf einem geteilten Server
+# jeder Prozess erreicht. Die Besucheradresse aus X-Forwarded-For gilt deshalb nur, wenn die
+# Anfrage den geheimen Kopfwert des nginx trägt (derselbe wie für HUBIplan,
+# hubiplan/deploy/hestia/proxy-geheim.sh) oder von einem vertrauten Container kommt (Caddy von
+# HUBIplan, Dienst „web“). Ist beides leer (Entwicklung, Tests), gilt die Kopfzeile immer
+# (Gesamtaudit 13.11. S-05; seite/besucher.py).
+PROXY_GEHEIM = os.environ.get("HUBIPLAN_PROXY_GEHEIM", "").strip()
+PROXY_HOSTS = [h.strip() for h in os.environ.get("WEBSITE_PROXY_HOSTS", "").split(",") if h.strip()]
 
 # --- HUBIplan ---
 # Adresse, unter der dieser Container HUBIplan erreicht (z. B. intern http://backend:8000)
