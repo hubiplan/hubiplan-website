@@ -152,8 +152,19 @@ code { word-break: break-all; font-size: .85em; }
   background: var(--flaeche); border-radius: var(--rund); box-shadow: 0 8px 30px rgba(0,0,0,.18); padding: .4rem;
 }
 .menue-breit .untermenue ul a { color: var(--text); white-space: normal; }
-.menue-breit .untermenue ul a:hover { background: var(--grund); }
+/* Aktuelle Seite im Aufklappmenü: Balken in der Menüfarbe, Schrift bleibt lesbar (Designs
+   färben den aktiven Hauptpunkt sonst auch hier voll ein). Die Seitenleiste zeigt das Untermenü
+   eingerückt auf der Kopffarbe und behält ihre eigenen Regeln. */
 .menue-breit .untermenue ul a[aria-current="page"] { box-shadow: inset 4px 0 0 var(--farbe-menue); }
+body:not(.design-sidebar) .menue-breit .untermenue ul a[aria-current="page"] {
+  background: transparent; color: var(--text); font-weight: 700; box-shadow: inset 4px 0 0 var(--farbe-menue);
+}
+/* Hover und Fokus deutlich: Fläche in der Menüfarbe und Balken in der Zierfarbe (#66) */
+body:not(.design-sidebar) .menue-breit .untermenue ul a:hover,
+body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
+  background: color-mix(in srgb, var(--farbe-menue) 14%, var(--flaeche)); color: var(--text);
+  box-shadow: inset 4px 0 0 var(--farbe-zier);
+}
 .menue-breit .untermenue :focus-visible { outline-color: var(--link); }
 .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-kopf); }
 .menue .menue-gruppe { display: block; padding: .65rem .9rem .2rem; font-weight: 700; color: var(--text-leise, var(--text)); }

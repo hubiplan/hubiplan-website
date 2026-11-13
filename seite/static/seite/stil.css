@@ -49,7 +49,7 @@ html[data-st-width="narrow"] .karte, html[data-st-width="narrow"] .termin, html[
   html[data-st-width] body.design-sidebar main.breite, html[data-st-width] body.design-sidebar .fuss .breite { max-width: var(--breite); }
   html[data-st-width="narrow"] body.design-festive .menue-breit { width: 100%; }
   /* Farbige Menüleiste nur bis zum Rand des Kastens */
-  html[data-st-width="narrow"] .menue-breit { clip-path: inset(0 -16px); }
+  html[data-st-width="narrow"] .menue-breit, html[data-st-width="narrow"][data-st-nav="bar"] .menue-breit { border-image-outset: 0 16px; }
 }
 
 html[data-st-spacing="compact"] main { padding-top: 1rem; padding-bottom: 2rem; }
@@ -67,6 +67,9 @@ html[data-st-corners] .karte, html[data-st-corners] .termin, html[data-st-corner
 html[data-st-corners] .dokumente a, html[data-st-corners] .spalte-seite > section,
 html[data-st-corners] .karussell-band, html[data-st-corners] .titelbild img { border-radius: var(--rund); }
 html[data-st-corners] .termin-datum { border-radius: calc(var(--rund) * .7); }
+/* Aufklappmenü folgt den Ecken, auch wenn ein Design eigene Rundungen setzt (#66) */
+html[data-st-corners] .menue-breit .untermenue ul { border-radius: var(--rund); }
+html[data-st-corners] .menue-breit .untermenue ul a { border-radius: calc(var(--rund) * .6); }
 html[data-st-corners] .menue-breit a.menue-knopf, html[data-st-corners] .menue a.menue-knopf { border-radius: max(var(--rund), 4px); }
 html[data-st-corners="round"] .menue-breit a.menue-knopf, html[data-st-corners="round"] .menue a.menue-knopf { border-radius: 999px; }
 
@@ -78,6 +81,11 @@ html[data-st-cards="shadow"] .karte, html[data-st-cards="shadow"] .termin, html[
 }
 html[data-st-cards="flat"] .karte, html[data-st-cards="flat"] .termin, html[data-st-cards="flat"] .dokumente a {
   border: 0; background: color-mix(in srgb, var(--text) 4%, var(--flaeche));
+}
+/* Aufklappmenü wie die Karten: ohne Schatten nur mit Linie (#66) */
+html[data-st-cards="flat"] body:not(.design-sidebar) .menue-breit .untermenue ul,
+html[data-st-cards="border"] body:not(.design-sidebar) .menue-breit .untermenue ul {
+  box-shadow: none; border: 1px solid var(--linie);
 }
 
 html[data-st-images="square"] .titelbild img, html[data-st-images="square"] .karussell-band,
@@ -190,7 +198,8 @@ html[data-st-line="strong"] .kopf { border-bottom: 5px solid var(--farbe-zier); 
   }
   /* Leiste: farbiges Band über die ganze Breite in der Menüfarbe */
   html[data-st-nav="bar"] .menue-breit {
-    background: var(--farbe-menue); box-shadow: 0 0 0 100vmax var(--farbe-menue); clip-path: inset(0 -100vmax);
+    /* Band über die ganze Breite ohne clip-path, das sonst die Untermenüs abschneidet (#66) */
+    background: var(--farbe-menue); box-shadow: none; border-image: linear-gradient(var(--farbe-menue), var(--farbe-menue)) fill 0 / 0 / 0 100vmax;
     border-top: 0; padding: .2rem 0;
     --st-strich: var(--auf-menue); --st-aktiv: var(--auf-menue); --st-auf-aktiv: var(--farbe-menue);
   }
