@@ -211,3 +211,27 @@ def test_aufklappmenue_hover_und_regler():
     corners = "html[data-st-corners] .menue-breit .untermenue ul { border-radius: var(--rund); }"
     assert corners in stil
     assert re.search(r'data-st-cards="flat"\][^{]*\.untermenue ul[^{]*\{\s*box-shadow: none', stil)
+
+
+def test_kopfhoehe_mittel(client, hubiplan):
+    """Zwischenstufe „mittel“ für die Kopfhöhe, etwa für ein queres Kopfbild (#68)."""
+    hubiplan.info["style"] = {"header_bg": "image", "header_height": "medium"}
+    assert 'data-st-header-height="medium"' in html_tag(seite(client))
+    css = (STATIC / "stil.css").read_text()
+    heights = {
+        stage: float(
+            re.search(
+                rf'data-st-header-height="{stage}"\] \.marke\.marke-bild img '
+                r"\{ max-height: ([\d.]+)rem",
+                css,
+            ).group(1)
+        )
+        for stage in ("low", "medium", "high")
+    }
+    normal = float(
+        re.search(
+            r"\.marke\.marke-bild img \{[^}]*max-height: ([\d.]+)rem",
+            (STATIC / "seite.css").read_text(),
+        ).group(1)
+    )
+    assert heights["low"] < heights["medium"] < normal < heights["high"]
