@@ -534,6 +534,10 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .abschnitt-text .text { max-width: none; }
 .abschnitt-hg { padding: .4rem 1.2rem 1.2rem; border-radius: var(--rund); margin: 1.5rem 0; }
 .abschnitt-hg.abschnitt-text { margin-left: auto; margin-right: auto; }
+/* Textseiten (#77): Titel und Text als Lesespalte mittig, damit die Seite neben der breiten
+   Menüleiste ausgewogen wirkt. „Volle Breite“ beim Text der Seite hebt die Lesebreite auf. */
+.textseite > h1, .seite-text .text { max-width: 44rem; margin-left: auto; margin-right: auto; }
+.seite-text.abschnitt-voll .text { max-width: none; }
 .abschnitt-voll { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); border-radius: 0; }
 .spalte-haupt .abschnitt-voll, .spalte-seite .abschnitt-voll { margin-left: 0; margin-right: 0; padding-left: 1.2rem; padding-right: 1.2rem; }
 .abschnitt-farbig h2, .abschnitt-farbig h3, .abschnitt-farbig p, .abschnitt-farbig .klein,
