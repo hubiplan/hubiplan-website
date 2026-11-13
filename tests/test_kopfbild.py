@@ -49,3 +49,36 @@ def test_schriften_liegen_lokal():
         assert "SIL Open Font License" in (STATIC / "schriften" / f"OFL-{name}.txt").read_text()
     # Keine Schrift von fremden Servern
     assert "fonts.googleapis" not in css and "http" not in css.split("@font-face", 1)[1][:2000]
+
+
+def test_kopfbild_fuer_schmale_bildschirme(client, hubiplan):
+    """Webseite #73: eigene Fassung fürs Handy unter 600 px, sonst das Kopfbild."""
+    hubiplan.info["header_image"] = {
+        "key": "banner",
+        "url": f"{fake.BASE}images/banner-v2/",
+        "width": 2200,
+        "height": 500,
+        "alt": "Schützenverein Musterdorf 1900",
+    }
+    html = text(client.get("/"))
+    kopf = html.split('<header class="kopf">', 1)[1].split("</header>", 1)[0]
+    # Ohne Handyfassung bleibt alles wie bisher
+    assert "<picture>" not in kopf and "<source" not in kopf
+
+    hubiplan.info["header_image_narrow"] = {
+        "key": "banner-schmal",
+        "url": f"{fake.BASE}images/banner-schmal-v1/",
+        "width": 800,
+        "height": 400,
+        "alt": "",
+    }
+    html = text(client.get("/"))
+    kopf = html.split('<header class="kopf">', 1)[1].split("</header>", 1)[0]
+    assert (
+        '<picture><source media="(max-width: 600px)" srcset="/medien/a/images/banner-schmal-v1/"'
+        ' width="800" height="400">'
+    ) in kopf
+    assert 'src="/medien/a/images/banner-v2/"' in kopf
+    assert 'alt="Schützenverein Musterdorf 1900"' in kopf
+    assert kopf.count("</picture>") == 1
+    assert "hubiplan.example" not in html

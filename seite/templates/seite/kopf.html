@@ -3,7 +3,9 @@
   <div class="breite kopf-innen">
     {% lokal site site.info.header_image.url as kopfbild %}{% if kopfbild and site.header_image_shown %}
     {# Kopfbild aus HUBIplan statt Wappen und Name (Ralf 05.11.2026); der Name steht im Alternativtext #}
-    <a class="marke marke-bild" href="{% url 'start' %}"><img src="{{ kopfbild }}" alt="{{ site.info.header_image.alt|default:site.info.name }}"{% if site.info.header_image.width and site.info.header_image.height %} width="{{ site.info.header_image.width }}" height="{{ site.info.header_image.height }}"{% endif %}></a>
+    {# Webseite #73: optional eine kompaktere Fassung für schmale Bildschirme unter 600 px #}
+    {% lokal site site.info.header_image_narrow.url as kopfbild_schmal %}
+    <a class="marke marke-bild" href="{% url 'start' %}">{% if kopfbild_schmal %}<picture><source media="(max-width: 600px)" srcset="{{ kopfbild_schmal }}"{% if site.info.header_image_narrow.width and site.info.header_image_narrow.height %} width="{{ site.info.header_image_narrow.width }}" height="{{ site.info.header_image_narrow.height }}"{% endif %}>{% endif %}<img src="{{ kopfbild }}" alt="{{ site.info.header_image.alt|default:site.info.name }}"{% if site.info.header_image.width and site.info.header_image.height %} width="{{ site.info.header_image.width }}" height="{{ site.info.header_image.height }}"{% endif %}>{% if kopfbild_schmal %}</picture>{% endif %}</a>
     {% else %}
     <a class="marke" href="{% url 'start' %}">
       {% lokal site site.info.logo_url as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="56" height="56">{% endif %}
