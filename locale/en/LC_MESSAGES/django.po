@@ -847,3 +847,6 @@ msgid ""
 msgstr ""
 "The application runs through the club's member management. Information on "
 "how your details are processed is in the"
+
+msgid "Nach oben"
+msgstr "Back to top"
