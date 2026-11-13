@@ -371,6 +371,9 @@ class Site:
         for role, var in COMMON_ROLES.items():
             if role in common and role != "background":
                 parts.append(f"--{var}:{common[role]}")
+        # Tabellenzeilen abwechselnd in der Flächenfarbe (Ralf 13.11.2026), nur wenn gewählt
+        if "surface" in common:
+            parts.append(f"--zeile:{common['surface']}")
         grund = self.background_for(self.theme["primary"])
         if grund:
             parts.append(f"--grund:{grund}")

@@ -67,6 +67,8 @@ h2 { font-size: 1.35rem; }
 h3 { font-size: 1.1rem; margin-top: 0; }
 table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: .95rem; }
 th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--linie); vertical-align: top; }
+/* Flächenfarbe der Einheit (Farbrolle „Flächen und Tabellenzeilen“): jede zweite Zeile */
+table:not(.monatskalender) > tbody > tr:nth-child(even) > :is(td, th) { background: var(--zeile, transparent); }
 /* Ämter- und Würdenlisten: überall gleiche Spaltenbreiten (Ralf 31.10.) */
 .zeitliste { table-layout: fixed; }
 .zeitliste th:first-child { width: 10rem; }
