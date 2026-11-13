@@ -194,7 +194,7 @@ def test_menueleiste_schneidet_untermenues_nicht_ab():
     """Das farbige Band der Leiste reicht über die ganze Breite, ohne clip-path: das schnitt
     die Aufklappmenüs unter dem Menü ab (#66)."""
     for name in ("stil.css", "design-newspaper.css"):
-        css = (STATIC / name).read_text()
+        css = re.sub(r"/\*.*?\*/", "", (STATIC / name).read_text(), flags=re.S)
         for block in re.findall(r"\.menue-breit\s*\{[^}]*\}", css):
             assert "clip-path" not in block, (name, block)
     assert "fill 0 / 0 / 0 100vmax" in (STATIC / "stil.css").read_text()
