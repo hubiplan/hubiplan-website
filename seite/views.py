@@ -1016,7 +1016,8 @@ def page(request, site: Site, slug: str):
     # Titelbild (G6) steht immer über der Überschrift, nicht zwischen den Abschnitten
     cover = next((x for x in sections if isinstance(x, dict) and x.get("kind") == "cover"), None)
     layout = _page_layout(site, [x for x in sections if x is not cover])
-    custom = any(s["kind"] != "body" for s in layout)
+    # Auch ohne weitere Abschnitte gelten Breite und Hintergrund des Textes der Seite (#77)
+    custom = any(s["kind"] != "body" or s["klassen"] or s["stil"] for s in layout)
     return _page(
         request,
         "seite/textseite.html",
