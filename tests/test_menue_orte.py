@@ -63,7 +63,9 @@ def test_suche_im_fuss(client, hubiplan):
     html = seite(client)
     assert "suche-punkt" not in breit(html) and "kopf-suche" not in html
     assert "/suche/" not in handy(html)
-    assert re.search(r'<form class="fuss-suche" action="/suche/" method="get" role="search">', fuss(html))
+    assert re.search(
+        r'<form class="fuss-suche" action="/suche/" method="get" role="search">', fuss(html)
+    )
 
 
 def test_ohne_baustein_keine_suche(client, hubiplan):
