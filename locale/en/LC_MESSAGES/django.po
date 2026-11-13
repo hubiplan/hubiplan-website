@@ -400,8 +400,8 @@ msgstr ""
 "Write to us. Your message is emailed to %(name)s; the reply goes to your "
 "email address."
 
-msgid "Alle Felder sind Pflicht, nur „Kopie an mich senden“ ist freiwillig."
-msgstr "All fields are required; only “Send me a copy” is optional."
+msgid "Alle Felder sind Pflicht, nur „Bestätigung an mich senden“ ist freiwillig."
+msgstr "All fields are required; only “Send me a confirmation” is optional."
 
 msgid "An"
 msgstr "To"
@@ -421,8 +421,8 @@ msgstr "Message"
 msgid "Bitte leer lassen"
 msgstr "Please leave empty"
 
-msgid "Kopie an mich senden"
-msgstr "Send me a copy"
+msgid "Bestätigung an mich senden"
+msgstr "Send me a confirmation"
 
 msgid "Hinweise zur Verarbeitung Ihrer Angaben stehen in den"
 msgstr "Information on how your details are processed is in the"

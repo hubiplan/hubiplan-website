@@ -8,7 +8,7 @@
       data-schwierigkeit="{{ challenge.difficulty }}" data-vorschau="{{ preview_session }}"
       data-neu="{% url 'kontakt_pruefung' %}">
   <p>{% blocktranslate with name=recipient.name %}Schreiben Sie uns. Die Nachricht geht per E-Mail an {{ name }}; die Antwort kommt an Ihre E-Mail-Adresse.{% endblocktranslate %}</p>
-  <p class="klein" id="k-pflicht">{% translate "Alle Felder sind Pflicht, nur „Kopie an mich senden“ ist freiwillig." %}</p>
+  <p class="klein" id="k-pflicht">{% translate "Alle Felder sind Pflicht, nur „Bestätigung an mich senden“ ist freiwillig." %}</p>
   {# Fester Empfänger je nach Herkunft, keine Auswahl (Ralf 31.10.) #}
   <p class="empfaenger"><span class="empfaenger-titel">{% translate "An" %}</span> <strong id="k-an">{{ recipient.name }}</strong></p>
   <input type="hidden" name="recipient" value="{{ recipient.id }}">
@@ -25,7 +25,7 @@
   <textarea id="k-text" aria-describedby="k-text-fehler" name="message" required rows="7" minlength="10" maxlength="5000"></textarea>
   <p class="feld-fehler" id="k-text-fehler" hidden></p>
   <div class="honig" aria-hidden="true"><label for="k-hp">{% translate "Bitte leer lassen" %}</label><input id="k-hp" name="homepage" tabindex="-1" autocomplete="off"></div>
-  <label class="haken"><input type="checkbox" name="copy" value="1"> {% translate "Kopie an mich senden" %}</label>
+  <label class="haken"><input type="checkbox" name="copy" value="1"> {% translate "Bestätigung an mich senden" %}</label>
   <p class="klein">{% translate "Hinweise zur Verarbeitung Ihrer Angaben stehen in den" %} <a href="{% url 'datenschutz' %}">{% translate "Datenschutzhinweisen" %}</a>.</p>
   {# Erst aktiv, wenn kontakt.js bereit ist (UX-Audit 31.10. S09) #}
   <button class="knopf" type="submit" disabled>{% translate "Nachricht senden" %}</button>
