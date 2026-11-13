@@ -485,6 +485,7 @@ class FakeHubiplan:
                         "name": self.info["name"],
                         "legal_form": "",
                         "address": {
+                            "address_extra": "c/o Vereinsheim Musterdorf",
                             "street": "Dorfstraße 1",
                             "postal_code": "12345",
                             "city": "Musterdorf",
