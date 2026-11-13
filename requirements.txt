@@ -1,10 +1,22 @@
-Django==5.2.19
-markdown-it-py==4.0.0
-mdurl==0.1.2
-qrcode==8.2
-whitenoise==6.12.0
-gunicorn==26.2.0
+# Feste Fassungen mit Prüfsummen (Gesamtaudit 13.11. H-01): pip installiert nur genau diese
+# Dateien (--require-hashes im Dockerfile). Nach einer Änderung die Prüfsumme des Rades von
+# pypi.org eintragen, z. B. mit: pip download --no-deps PAKET==FASSUNG && pip hash DATEI
+Django==5.2.19 \
+    --hash=sha256:5965d974a5218a2b68a11dd1276434707f23886525c23f0598eccedaf4f4ca00
+markdown-it-py==4.0.0 \
+    --hash=sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147
+mdurl==0.1.2 \
+    --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8
+qrcode==8.2 \
+    --hash=sha256:16e64e0716c14960108e85d853062c9e8bba5ca8252c0b4d0231b9df4060ff4f
+whitenoise==6.12.0 \
+    --hash=sha256:fc5e8c572e33ebf24795b47b6a7da8da3c00cff2349f5b04c02f28d0cc5a3cc2
+gunicorn==26.2.0 \
+    --hash=sha256:bd249d0b3f7972f7432f0a6b6ff3b3ee2d129f70cd1ff6c09a9dd9e29a2b88e3
 # Abhängigkeiten der obigen Pakete, ebenfalls fest (gleicher Bau auch später)
-asgiref==3.13.0
-sqlparse==0.6.0
-packaging==26.3
+asgiref==3.13.0 \
+    --hash=sha256:f9596a2434512686473d50f96ff6207fbba49ae1a785dfac614df4aeb085674d
+sqlparse==0.6.0 \
+    --hash=sha256:b861c0288ce2fa56209a9a6412d2e066ac664b3873b89c26c9d8415e8e32996f
+packaging==26.3 \
+    --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c

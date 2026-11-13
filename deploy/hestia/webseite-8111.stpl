@@ -8,7 +8,7 @@
 # Aufgebaut nach den Standardvorlagen von HestiaCP 1.9.4                  #
 # (nginx-Vorlagen, github.com/hestiacp/hestiacp, Commit aae8b2b),         #
 # GPL-3.0; von Ralf Philipsen geändert für die Vereinswebseite ab        #
-# Oktober 2026, letzte Änderung 2026-11-01 (bei jeder Änderung anpassen,  #
+# Oktober 2026, letzte Änderung 2026-11-13 (bei jeder Änderung anpassen,  #
 # GPL § 5a). Diese Datei steht daher unter der GPL-3.0; Volltext in       #
 # LICENSE-GPL-3.0.txt daneben, Einordnung in docs/lizenzen.md.            #
 #=========================================================================#
@@ -36,6 +36,9 @@ server {
 		proxy_http_version 1.1;
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
+		# Geheimer Kopfwert: nur damit glaubt die Webseite die Besucheradresse
+		# (hubiplan/deploy/hestia/proxy-geheim.sh legt die Datei an; fehlt sie, fehlt nichts).
+		include /etc/nginx/hubiplan/proxy-geheim*.inc;
 		proxy_set_header X-Forwarded-Proto https;
 		proxy_read_timeout 60s;
 		# Antwortet der Container nicht (z. B. beim Ausrollen), statt „502 Bad Gateway“

@@ -119,7 +119,7 @@ Demodaten aus `seed_demoverein`):
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install --require-hashes -r requirements.txt && pip install -r requirements-dev.txt
 DJANGO_DEBUG=1 HUBIPLAN_API_URL=http://localhost:8000 \
   SITE_HOST_OVERRIDE=www.sv-musterstadt.test python manage.py runserver 8001
 ```

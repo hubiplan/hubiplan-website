@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY requirements.txt requirements-dev.txt ./
 ARG DEV=0
-RUN pip install -r requirements.txt && if [ "$DEV" = "1" ]; then pip install -r requirements-dev.txt; fi
+RUN pip install --require-hashes -r requirements.txt && if [ "$DEV" = "1" ]; then pip install -r requirements-dev.txt; fi
 
 COPY . .
 # Übersetzungen (hubiplan/konzepte/englisch.md, W1): .po → .mo beim Bauen. GNU gettext bleibt

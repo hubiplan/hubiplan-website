@@ -67,3 +67,33 @@ def test_unbrauchbare_angabe_wird_nicht_gesendet(gesendet):
 def test_ausserhalb_einer_anfrage_keine_angabe(gesendet):
     api._request("GET", f"{api.PREFIX}schluessel/")
     assert gesendet[0].get_header("X-hubiplan-besucher") is None
+
+
+def test_mit_geheimnis_gilt_die_kopfzeile_nur_vom_proxy(gesendet, settings):
+    """Gesamtaudit 13.11. S-05: Ein Nachbardienst am lokalen Port kann keine Adresse vorgeben."""
+    settings.PROXY_GEHEIM = "ab" * 32
+    # ohne Kopfwert: Adresse der Verbindung, die behauptete zählt nicht
+    seen = _mit_besucher(HTTP_X_FORWARDED_FOR="203.0.113.7", REMOTE_ADDR="127.0.0.1")
+    assert seen == "127.0.0.1"
+    # falscher Kopfwert ebenso
+    seen = _mit_besucher(
+        HTTP_X_FORWARDED_FOR="203.0.113.7", REMOTE_ADDR="127.0.0.1", HTTP_X_HUBIPLAN_PROXY="falsch"
+    )
+    assert seen == "127.0.0.1"
+    # der nginx mit Kopfwert
+    seen = _mit_besucher(
+        HTTP_X_FORWARDED_FOR="203.0.113.7",
+        REMOTE_ADDR="127.0.0.1",
+        HTTP_X_HUBIPLAN_PROXY="ab" * 32,
+    )
+    assert seen == "203.0.113.7"
+
+
+def test_vertrauter_container_ohne_kopfwert(gesendet, settings):
+    """Caddy von HUBIplan (Testserver, Unterpfad) reicht die Adresse ohne Kopfwert weiter."""
+    settings.PROXY_GEHEIM = "ab" * 32
+    settings.PROXY_HOSTS = ["172.18.0.5"]
+    seen = _mit_besucher(HTTP_X_FORWARDED_FOR="203.0.113.7", REMOTE_ADDR="172.18.0.5")
+    assert seen == "203.0.113.7"
+    seen = _mit_besucher(HTTP_X_FORWARDED_FOR="203.0.113.7", REMOTE_ADDR="172.18.0.9")
+    assert seen == "172.18.0.9"
