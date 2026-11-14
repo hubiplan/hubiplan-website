@@ -1,4 +1,4 @@
 {% load seite %}{% if einleitung %}{# Einleitung eines festen Bereichs aus HUBIplan (G5) #}<div class="einleitung">
-{% lokal site einleitung.image.url as bild %}{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ einleitung.image.alt }}">{% if einleitung.image.caption %}<figcaption>{{ einleitung.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% lokal site einleitung.image.url as bild %}{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site einleitung.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ einleitung.image.alt }}" fetchpriority="high">{% if einleitung.image.caption %}<figcaption>{{ einleitung.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
 {% if einleitung.text %}<div class="text">{{ einleitung.text|md:site }}</div>{% endif %}
 </div>{% endif %}

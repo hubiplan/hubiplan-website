@@ -48,6 +48,9 @@ CACHE_SECONDS = int(os.environ.get("CACHE_SECONDS", "120"))
 # Stände weiter statt einer Fehlerseite (Ralf 08.11.: 24 h). Wartung und Widerruf wirken
 # sofort, sobald HUBIplan wieder antwortet.
 STALE_IF_ERROR_SECONDS = int(os.environ.get("STALE_IF_ERROR_SECONDS", "86400"))
+# Abgelaufene Stände im Hintergrund neu holen und solange den letzten zeigen (Ladezeiten
+# 14.11.); 0 = der Aufruf wartet auf HUBIplan (Tests)
+REFRESH_IN_BACKGROUND = os.environ.get("REFRESH_IN_BACKGROUND", "1") != "0"
 # Bilder für diesen Fall bis zu dieser Größe zwischenspeichern (nur mit CACHE_DIR)
 STALE_IMAGE_MAX_BYTES = int(os.environ.get("STALE_IMAGE_MAX_BYTES", str(2 * 1024 * 1024)))
 # Vorschau wird bei jedem Aufruf autorisiert und niemals zwischen Anfragen gecacht.
@@ -108,6 +111,14 @@ if CACHE_DIR:
             "TIMEOUT": STALE_IF_ERROR_SECONDS,
             "OPTIONS": {"MAX_ENTRIES": int(os.environ.get("STALE_IMAGE_ENTRIES", "300"))},
         },
+        # Gerechnete Bildfassungen (mittel, kleine Logos, WebP; seite/bilder.py) unter der
+        # Prüfsumme des Ausgangsbildes: ändern sich nie, werden nur verdrängt
+        "varianten": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": os.path.join(CACHE_DIR, "varianten"),
+            "TIMEOUT": 30 * 86400,
+            "OPTIONS": {"MAX_ENTRIES": int(os.environ.get("VARIANT_ENTRIES", "3000"))},
+        },
     }
 else:
     CACHES = {
@@ -119,6 +130,11 @@ else:
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
             "TIMEOUT": STALE_IF_ERROR_SECONDS,
             "OPTIONS": {"MAX_ENTRIES": 50},
+        },
+        "varianten": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "TIMEOUT": 30 * 86400,
+            "OPTIONS": {"MAX_ENTRIES": 200},
         },
     }
 

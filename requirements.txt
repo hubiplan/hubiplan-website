@@ -13,6 +13,11 @@ whitenoise==6.12.0 \
     --hash=sha256:fc5e8c572e33ebf24795b47b6a7da8da3c00cff2349f5b04c02f28d0cc5a3cc2
 gunicorn==26.2.0 \
     --hash=sha256:bd249d0b3f7972f7432f0a6b6ff3b3ee2d129f70cd1ff6c09a9dd9e29a2b88e3
+# Bildfassungen (mittel, kleine Logos, AVIF/WebP; seite/bilder.py), gleiche Fassung wie in
+# HUBIplan; Räder für x86_64 und aarch64
+pillow==13.0.0 \
+    --hash=sha256:5f56499c1a74d2b862beb0c33b8016f99d095858455df9d21583bbbc1c15b582 \
+    --hash=sha256:19b66ca0a4d25cc0200b381ce824c7ea090db61427315e73cfb05dbf1b35c369
 # Abhängigkeiten der obigen Pakete, ebenfalls fest (gleicher Bau auch später)
 asgiref==3.13.0 \
     --hash=sha256:f9596a2434512686473d50f96ff6207fbba49ae1a785dfac614df4aeb085674d

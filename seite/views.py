@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
-from . import api, archiv, designpaket
+from . import api, archiv, bilder, designpaket
 from .site import (
     DESIGN_COOKIE,
     DESIGNS,
@@ -1358,6 +1358,8 @@ ALLOWED_MEDIA = re.compile(r"^[A-Za-z0-9_\-/.]{1,300}\.(png|jpe?g|webp)$")
 # (logos/…/<id>-<JJJJMMTThhmmss>.png), Webseitenbilder mit Fassung (images/<key>-v3/)
 LOGO_STAMPED = re.compile(r"^logos/.+-\d{14}\.(png|jpe?g|webp)$")
 IMAGE_VERSIONED = re.compile(r"^images/[A-Za-z0-9_\-]+-v\d+/$")
+# Bilder von Beiträgen aus den eigenen Kanälen: Kennung je Bild, Inhalt ändert sich nie
+POST_IMAGE = re.compile(r"^posts/images/[A-Za-z0-9_\-]{4,40}/$")
 
 
 # Bilder in der Vorschau: Seiten und Daten prüft HUBIplan bei jedem Aufruf (Widerruf
@@ -1368,16 +1370,34 @@ PREVIEW_MEDIA_CACHE = "private, max-age=300"
 
 def _media_cache(private: bool, kind: str, path: str) -> str:
     """Wie lange der Browser ein Bild behalten darf. Vorschau und Wartung: nur der eigene
-    Browser, 10 Minuten (sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu)."""
+    Browser, 10 Minuten (sonst lädt z. B. das Wappen bei jedem Seitenwechsel neu).
+    Danach fragt der Browser mit dem ETag nach und bekommt meist nur „unverändert“ (304)."""
     if private:
         return "private, max-age=600"
     if kind == "m" and LOGO_STAMPED.match(path):
         return "public, max-age=31536000, immutable"
-    if kind == "a" and IMAGE_VERSIONED.match(path):
+    if kind == "a" and (IMAGE_VERSIONED.match(path) or POST_IMAGE.match(path)):
         # Ein Tag: Ein aus der Webseite genommenes Bild verschwindet so bald auch aus
         # fremden Zwischenspeichern
         return "public, max-age=86400"
     return "public, max-age=600"
+
+
+def _media_size(request, kind: str) -> tuple[str, int | None]:
+    """Gewünschte Fassung: ``?size=small`` (800 px aus HUBIplan), ``?size=medium``
+    (1200 px, hier aus der großen Fassung gerechnet), bei Logos ``?w=<Breite>``."""
+    if kind == "a":
+        size = request.GET.get("size")
+        if size == "small":
+            return "?size=small", None
+        if size == "medium":
+            return "", bilder.MEDIUM_WIDTH
+        return "", None
+    try:
+        width = int(request.GET.get("w") or 0)
+    except ValueError:
+        width = 0
+    return "", width if width in bilder.LOGO_WIDTHS else None
 
 
 @require_GET
@@ -1388,12 +1408,12 @@ def media(request, kind: str, path: str):
     if global_maintenance():
         return HttpResponse(status=503)
     preview = preview_session(request)
+    size, width = _media_size(request, kind)
     try:
         key = api.resolve(host_of(request))
         if kind == "a":
             if not ALLOWED_API_FILES.match(path):
                 raise api.NotFound()
-            size = "?size=small" if request.GET.get("size") == "small" else ""
             res = api.fetch_file(f"{api.PREFIX}{key}/{path}{size}", preview=preview)
         else:
             if ".." in path or not ALLOWED_MEDIA.match(path):
@@ -1411,15 +1431,34 @@ def media(request, kind: str, path: str):
         pdf_ok and ctype == "application/pdf"
     ):
         return HttpResponse(status=404)
-    response = HttpResponse(res.body, content_type=ctype)
-    if ctype == "application/pdf":
-        response["Content-Disposition"] = "inline"
+    body = res.body
+    # App-Symbole bleiben PNG (Favicon, Startbildschirm)
+    convertible = ctype in bilder.CONVERTIBLE and not path.startswith("icon-")
+    if convertible:
+        # Kleinere Fassung, AVIF/WebP (Ladezeiten 14.11.); in der Vorschau nichts ablegen
+        body, ctype = bilder.variant(
+            body,
+            ctype,
+            width=width,
+            fmt=bilder.wanted_format(request),
+            store=not preview,
+        )
     # Mit Vorschau oder in der Wartung nur im eigenen Browser; der Zustand steht im
     # Zwischenspeicher der Grunddaten, wenn eine Seite davor geladen wurde
     private = bool(preview) or api.cached_maintenance(key)
-    response["Cache-Control"] = (
-        PREVIEW_MEDIA_CACHE if preview else _media_cache(private, kind, path)
-    )
+    cache_control = PREVIEW_MEDIA_CACHE if preview else _media_cache(private, kind, path)
+    tag = bilder.etag(body)
+    if bilder.matches(request, tag):
+        response = HttpResponse(status=304)
+    else:
+        response = HttpResponse(body, content_type=ctype)
+        if ctype == "application/pdf":
+            response["Content-Disposition"] = "inline"
+    response["ETag"] = tag
+    if convertible:
+        # Je nach Accept JPEG/PNG, WebP oder AVIF unter derselben Adresse
+        response["Vary"] = "Accept"
+    response["Cache-Control"] = cache_control
     response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
 
