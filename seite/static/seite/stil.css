@@ -54,7 +54,7 @@ html main .abschnitt-farbig h2 { border-bottom-color: currentColor; }
 
 /* Größere Überschriften (Webseite #89): Seitentitel und Abschnittstitel */
 html[data-st-heading-size="large"] main h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); }
-html[data-st-heading-size="large"] main h2:not(.aemter h2, .hinweis-kasten h2, .spalte-seite h2) { font-size: 1.55rem; }
+html[data-st-heading-size="large"] main h2:not(.aemter h2, .hinweis-kasten h2, .spalte-seite h2) { font-size: 1.65rem; }
 /* Größe des Seitentitels allein (Webseite #96): geht vor „Größe der Überschriften“ und reicht
    auch nach unten, damit der Titel nicht größer wirkt als der Vereinsname im Kopf. Jede Stufe
    schrumpft in schmalen Fenstern mit; das Band (page_title) wird bei kleinem Titel flacher. */
