@@ -1,0 +1,7 @@
+{% load seite i18n %}<section{% abschnitt "hinweis-kasten-abschnitt" %}>
+  <div class="hinweis-kasten hinweis-{{ abschnitt.style|default:'info' }}" role="note">
+    <span class="nur-vorlesen">{% if abschnitt.style == "warning" %}{% translate "Achtung:" %}{% elif abschnitt.style == "success" %}{% translate "Gut zu wissen:" %}{% else %}{% translate "Hinweis:" %}{% endif %} </span>
+    {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+    {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+  </div>
+</section>

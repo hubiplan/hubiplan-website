@@ -1,0 +1,5 @@
+{% load seite i18n %}<section{% abschnitt "galerie-uebersicht" %}>
+  <h2>{{ abschnitt.title|default:_("Galerie") }}</h2>
+  {% include "seite/album_kacheln.html" with alben=abschnitt.albums darstellung="" %}
+  <p><a class="knopf" href="{% url 'galerie' %}">{% translate "Zur Galerie" %}</a></p>
+</section>

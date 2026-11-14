@@ -1,0 +1,10 @@
+{% load seite i18n %}{% with link=abschnitt.login_url|web_ziel %}{% if link %}<section{% abschnitt "app-abschnitt" %}>
+  <div class="app-inhalt">
+    <div>
+      <h2>{{ abschnitt.title|default:_("Für Mitglieder") }}</h2>
+      {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+      <p class="knoepfe"><a class="knopf" href="{{ link }}" rel="noopener">{% translate "Zum Mitgliederbereich" %}</a>{% with ziel=abschnitt.store_url|web_ziel %}{% if ziel %} <a class="knopf hell" href="{{ ziel }}" target="_blank" rel="noopener noreferrer">{% translate "App bei Google Play" %}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a>{% endif %}{% endwith %}</p>
+    </div>
+    {% if abschnitt.qr_svg %}<figure class="app-qr">{{ abschnitt.qr_svg|safe }}<figcaption class="klein">{% translate "Mit dem Handy scannen und anmelden" %}</figcaption></figure>{% endif %}
+  </div>
+</section>{% endif %}{% endwith %}

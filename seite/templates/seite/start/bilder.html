@@ -1,0 +1,6 @@
+{% load seite i18n %}<section{% abschnitt "bilder-abschnitt" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <ul class="galerie-bilder bilder-spalten-{{ abschnitt.columns|default:3 }}">{% for b in abschnitt.items %}{% lokal site b.image.small_url as klein %}{% lokal site b.image.url as gross %}{% if klein and gross %}
+    <li><figure><a class="galerie-bild" href="{{ gross }}" data-unterschrift="{{ b.caption }}"><img src="{{ klein }}" alt="{{ b.image.alt }}" loading="lazy"{% if b.image.width %} width="{{ b.image.width }}" height="{{ b.image.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>{% if b.caption %}<figcaption class="klein">{{ b.caption }}</figcaption>{% endif %}</figure></li>{% endif %}{% endfor %}
+  </ul>
+</section>

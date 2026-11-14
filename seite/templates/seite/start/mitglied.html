@@ -1,0 +1,5 @@
+{% load seite i18n %}{% ziel site abschnitt.target as z %}{% if z %}<section{% abschnitt "mitglied-werden-abschnitt" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+  <p><a class="knopf" href="{{ z.url }}">{{ abschnitt.label|default:_("Jetzt Mitglied werden") }}</a></p>
+</section>{% endif %}

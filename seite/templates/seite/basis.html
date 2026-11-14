@@ -35,6 +35,8 @@
 {% if site.style.to_top == "on" %}<a class="nach-oben" href="#top" hidden><span aria-hidden="true">↑</span><span class="nur-vorlesen">{% translate "Nach oben" %}</span></a>{% endif %}
 {% seite_texte %}<script src="{% static 'seite/menue.js' %}" defer></script>
 <script src="{% static 'seite/termin.js' %}" defer></script>
+<script src="{% static 'seite/countdown.js' %}" defer></script>
+{% if abschnitte|hat_art:"images" %}{% include "seite/bildfenster.html" %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}
 {% block skripte %}{% endblock %}
 </body>
 </html>
