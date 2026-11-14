@@ -15,9 +15,11 @@
 @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-400.woff2") format("woff2"); }
 @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-600.woff2") format("woff2"); }
 @font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-700.woff2") format("woff2"); }
-@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/crimson-pro-400.woff2") format("woff2"); }
-@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/crimson-pro-600.woff2") format("woff2"); }
-@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/crimson-pro-700.woff2") format("woff2"); }
+/* Crimson Pro läuft deutlich kleiner als Source Sans 3; 115 % bringt die Überschriften auf die
+   Buchstabenhöhe des Fließtexts (Webseite #103) */
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 115%; src: url("schriften/crimson-pro-400.woff2") format("woff2"); }
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 115%; src: url("schriften/crimson-pro-600.woff2") format("woff2"); }
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 700; font-display: swap; size-adjust: 115%; src: url("schriften/crimson-pro-700.woff2") format("woff2"); }
 @font-face { font-family: "Oswald"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/oswald-400.woff2") format("woff2"); }
 @font-face { font-family: "Oswald"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/oswald-600.woff2") format("woff2"); }
 @font-face { font-family: "Oswald"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/oswald-700.woff2") format("woff2"); }
@@ -77,8 +79,9 @@ input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline:
 .fuss :focus-visible { outline-color: var(--auf-fuss); }
 h1, h2, h3 { line-height: 1.25; margin: 1.6em 0 .5em; font-family: var(--schrift-titel); }
 h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); margin-top: .3em; }
-h2 { font-size: 1.35rem; }
-h3 { font-size: 1.1rem; margin-top: 0; }
+/* Kleine Überschriften deutlich über dem Fließtext (17 px): h3 rund das 1,2-Fache (Webseite #103) */
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.25rem; margin-top: 0; }
 /* Tabellen in der Größe des Fließtexts (Webseite #98): Ergebnisse sind Inhalt, keine Nebensache */
 table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: 1em; }
 th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--linie); vertical-align: top; }
@@ -215,7 +218,7 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 .karte > h2:first-child, .karte > section > h2:first-child { margin-top: 0; }
 /* Ämter: ein Block je Amt (Ralf 31.10.) */
 .aemter { grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr)); align-items: start; }
-.aemter h2 { font-size: 1.15rem; }
+.aemter h2 { font-size: 1.25rem; }
 .aemter .zeitliste { margin-bottom: 0; }
 .aemter .zeitliste th:first-child { width: 8.5rem; }
 .titelbild { margin: 0 0 1rem; }
@@ -483,7 +486,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .zeitleiste::before { content: ""; position: absolute; left: .45rem; top: .3rem; bottom: .3rem; width: var(--zl-linie); background: var(--linie); border-radius: 2px; }
 .zeitleiste-abschnitt { scroll-margin-top: 1rem; }
 .zeitleiste-abschnitt + .zeitleiste-abschnitt { margin-top: 1.8rem; }
-.zeitleiste-kapitel { position: relative; font-size: 1.25rem; margin: 0 0 .8rem; }
+.zeitleiste-kapitel { position: relative; font-size: 1.35rem; margin: 0 0 .8rem; }
 .zeitleiste-kapitel::before { content: ""; position: absolute; left: calc(-1 * var(--zl-einzug) + .05rem); top: .25em; width: .9rem; height: .9rem; border-radius: 3px; background: var(--farbe-zier); }
 .zeitleiste-zeitraum { display: block; font-size: .85rem; font-weight: 600; color: var(--text-leise); letter-spacing: .02em; }
 .zeitleiste-kapiteltext { margin: -.3rem 0 1rem; color: var(--text-leise); }
@@ -494,7 +497,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .zeitleiste-eintrag.ist-zeitraum::before { border-radius: 99px; bottom: .35rem; height: auto; background: var(--primaer); opacity: .75; }
 .zeitleiste-jahr { margin: 0 0 .25rem; font-weight: 700; color: var(--primaer); font-variant-numeric: tabular-nums; }
 .zeitleiste-karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .75rem 1rem; display: grid; gap: .4rem; }
-.zeitleiste-karte h3 { margin: 0; font-size: 1.05rem; }
+.zeitleiste-karte h3 { margin: 0; font-size: 1.2rem; }
 .zeitleiste-karte p { margin: 0; }
 .zeitleiste-bilder { justify-self: start; display: flex; flex-wrap: wrap; gap: .4rem; }
 .zeitleiste-bild { display: block; line-height: 0; border-radius: 6px; overflow: hidden; }
@@ -621,7 +624,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .spalte-seite .bildkacheln { grid-template-columns: 1fr; }
 .bildkachel { position: relative; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); overflow: hidden; display: flex; flex-direction: column; }
 .bildkachel img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
-.bildkachel h3 { margin: .8rem 1rem .2rem; font-size: 1.1rem; }
+.bildkachel h3 { margin: .8rem 1rem .2rem; font-size: 1.25rem; }
 .bildkachel p { margin: 0 1rem 1rem; color: var(--text-leise); }
 .bildkachel h3 a { color: var(--link); font-weight: 700; }
 /* Die ganze Kachel ist klickbar, der Link bleibt der Titel (für Screenreader) */
@@ -661,7 +664,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .abschnitt-farbig .zeitstrahl-wann { color: inherit; }
 .zeitstrahl-liste p { margin: .2rem 0 0; }
 .hinweis-kasten { border-left: 5px solid var(--hk-farbe); background: color-mix(in srgb, var(--hk-farbe) 10%, var(--flaeche)); color: var(--text); border-radius: var(--rund); padding: .9rem 1.2rem; }
-.hinweis-kasten h2 { margin-top: 0; font-size: 1.2rem; }
+.hinweis-kasten h2 { margin-top: 0; font-size: 1.25rem; }
 .hinweis-kasten .text > :last-child { margin-bottom: 0; }
 .hinweis-info { --hk-farbe: #2f6690; }
 .hinweis-warning { --hk-farbe: #b5651d; }

@@ -544,5 +544,35 @@ def test_tabellen_und_kleiner_text_lesbar():
     assert 16 * 0.9375 == 15
     quellen = re.findall(r'@font-face \{ font-family: "Source Sans 3";[^}]*\}', css)
     assert len(quellen) == 3 and all("size-adjust: 105%;" in q for q in quellen)
-    # nur diese Schrift wird angeglichen
-    assert css.count("size-adjust:") - css.count("-webkit-text-size-adjust:") == 3
+    # nur diese beiden Schriften werden angeglichen (Crimson Pro: Webseite #103)
+    assert css.count("size-adjust:") - css.count("-webkit-text-size-adjust:") == 6
+
+
+def test_kleine_ueberschriften_groesser_als_fliesstext():
+    """Webseite #103: Crimson Pro auf die Buchstabenhöhe des Fließtexts angehoben, kleine
+    Überschriften rund das 1,2-Fache der Grundschrift, Abschnittstitel bleiben darüber."""
+    css = (STATIC / "seite.css").read_text()
+    stil = (STATIC / "stil.css").read_text()
+    quellen = re.findall(r'@font-face \{ font-family: "Crimson Pro";[^}]*\}', css)
+    assert len(quellen) == 3 and all("size-adjust: 115%;" in q for q in quellen)
+
+    def rem(muster, text=css):
+        return float(re.search(muster, text, re.M).group(1))
+
+    grund = 17 / 16  # Fließtext in rem
+    h2 = rem(r"^h2 \{ font-size: ([\d.]+)rem;")
+    h3 = rem(r"^h3 \{ font-size: ([\d.]+)rem;")
+    assert 1.15 <= h3 / grund <= 1.25
+    assert h2 >= h3 + 0.2
+    for muster in (
+        r"^\.bildkachel h3 \{[^}]*font-size: ([\d.]+)rem;",
+        r"^\.aemter h2 \{ font-size: ([\d.]+)rem;",
+        r"^\.zeitleiste-karte h3 \{[^}]*font-size: ([\d.]+)rem;",
+        r"^\.hinweis-kasten h2 \{[^}]*font-size: ([\d.]+)rem;",
+    ):
+        assert rem(muster) / grund >= 1.12, muster
+    # große Überschriften bleiben über den normalen, der kleinste Seitentitel nicht unter h3
+    gross = rem(r'heading-size="large"\] main h2[^{]*\{ font-size: ([\d.]+)rem;', stil)
+    assert gross >= h2 + 0.2
+    klein = rem(r'title-size="small"\] main h1 \{ font-size: clamp\([\d.]+rem, [\d.]+vw, ([\d.]+)rem\)', stil)
+    assert klein >= h2
