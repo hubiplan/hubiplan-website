@@ -1,5 +1,5 @@
 {% load static seite i18n %}<!doctype html>
-{% get_current_language as sprache %}<html lang="{{ sprache }}"{% if site %}{{ site.style_attrs|safe }}{% endif %}>
+{% get_current_language as sprache %}<html lang="{{ sprache }}"{% if site %}{{ site.style_attrs|safe }}{% if site.is_preview %} data-vorschau{% endif %}{% endif %}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
 {% if site.info.icon %}{# Favicon und Handy-Symbol: Symbol der Einheit oder Wappen, quadratisch aus HUBIplan #}<link rel="icon" type="image/png" sizes="32x32" href="{% url 'medien' 'a' 'icon-32.png' %}">
 <link rel="icon" type="image/png" sizes="192x192" href="{% url 'medien' 'a' 'icon-192.png' %}">
 <link rel="apple-touch-icon" href="{% url 'medien' 'a' 'icon-180.png' %}">{% endif %}
-{% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}}</style>{% endwith %}
+{% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}{% if site.page_title_image %};--st-seitenbild:url("{{ site.page_title_image|safe }}"){% endif %}}</style>{% endwith %}
 {% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}
 {% if site.style %}{# Stilregler aus HUBIplan; Regeln greifen nur bei gesetzten data-st-… #}<link rel="stylesheet" href="{% static 'seite/stil.css' %}">{% endif %}
 {% if site.gradients %}{# Verläufe je Rolle (HUBIplan ab 10.11.2026) #}<link rel="stylesheet" href="{% static 'seite/verlauf.css' %}">{% endif %}{% endif %}

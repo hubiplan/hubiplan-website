@@ -1,5 +1,5 @@
 {% load seite i18n %}{# Kopf für alle Designs; die Designs unterscheiden sich im CSS (design-<name>.css) #}
-<header class="kopf">
+<header class="kopf" id="kopf">
   <div class="breite kopf-innen">
     {% lokal site site.info.header_image.url as kopfbild %}{% if kopfbild and site.header_image_shown %}
     {# Kopfbild aus HUBIplan statt Wappen und Name (Ralf 05.11.2026); der Name steht im Alternativtext #}

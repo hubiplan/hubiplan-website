@@ -40,6 +40,12 @@ html[data-st-script-greeting="on"] .begruessung h1 {
   font-family: "Great Vibes", cursive; font-weight: 400; font-size: clamp(2.3rem, 7vw, 3.4rem); color: var(--link);
 }
 
+/* Schrift der Überschriften unabhängig vom Text (Ralf 14.11.2026); steht nach „font“ und gewinnt */
+html[data-st-heading-font="text"] body { --schrift-titel: inherit; }
+html[data-st-heading-font="modern"] body { --schrift-titel: "Roboto", "Open Sans", system-ui, sans-serif; }
+html[data-st-heading-font="festive"] body { --schrift-titel: Georgia, Cambria, "Times New Roman", serif; }
+html[data-st-heading-font] :is(h1, h2, h3, .marke) { font-family: var(--schrift-titel); }
+
 /* ---------- Seite ---------- */
 html[data-st-width="normal"] { --breite: 64rem; }
 html[data-st-width="wide"] { --breite: 80rem; }
@@ -284,6 +290,15 @@ html[data-st-sticky="off"] .kopf { position: relative; }
   html[data-st-nav-mobile="scroll"] .kopf .menue-breit .untermenue ul { left: 16px; right: 16px; min-width: 0; }
 }
 
+/* Menüschrift am Bildschirm und im Handymenü: Großbuchstaben, größer (Ralf 14.11.2026) */
+html[data-st-nav-case="upper"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary, .menue nav a:not(.menue-knopf)) {
+  text-transform: uppercase; letter-spacing: .06em; font-size: .86rem;
+}
+html[data-st-nav-case="normal"] :is(.menue-breit > ul > li > a, .menue-breit .untermenue summary, .menue nav a) { text-transform: none; letter-spacing: normal; }
+html[data-st-nav-size="normal"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary) { font-size: .95rem; }
+html[data-st-nav-size="large"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary) { font-size: 1.08rem; }
+html[data-st-nav-size="large"] .menue nav a { font-size: 1.1rem; }
+
 /* ---------- Startseite ---------- */
 html[data-st-hero="low"] .karussell { --karussell-hoehe: min(18rem, 45vh); }
 html[data-st-hero="low"] .titelbild img { max-height: 18rem; }
@@ -306,6 +321,76 @@ html[data-st-hero="high"] .buehne .titelbild img { height: min(40rem, 80vh); }
   font-family: var(--schrift-titel); font-size: clamp(1.4rem, 4.2vw, 2.4rem);
   background: linear-gradient(rgb(0 0 0 / .62), transparent); border-radius: var(--rund) var(--rund) 0 0;
   text-shadow: 0 1px 3px rgb(0 0 0 / .45);
+}
+
+/* Titelbild abdunkeln oder halb durchsichtig in Vereinsfarbe färben (Ralf 14.11.2026). Die
+   Schicht liegt im selben Rasterfeld wie das Bild, eine Bildunterschrift bleibt frei. */
+html[data-st-hero-shade] { --st-schleier: #000; }
+html[data-st-hero-tint="primary"] { --st-schleier: var(--primaer); }
+html[data-st-hero-tint="accent"] { --st-schleier: var(--akzent); }
+html[data-st-hero-tint="dark"] { --st-schleier: #000; }
+html[data-st-hero-shade="light"] { --st-deckung: .3; }
+html[data-st-hero-shade="strong"] { --st-deckung: .55; }
+html[data-st-hero-shade="none"] :is(.begruessung-bilder, .buehne) .titelbild::after { content: none; }
+html:is([data-st-hero-shade="light"], [data-st-hero-shade="strong"]) :is(.begruessung-bilder, .buehne) .titelbild { display: grid; }
+html:is([data-st-hero-shade="light"], [data-st-hero-shade="strong"]) :is(.begruessung-bilder, .buehne) .titelbild > img { grid-area: 1 / 1; }
+html:is([data-st-hero-shade="light"], [data-st-hero-shade="strong"]) :is(.begruessung-bilder, .buehne) .titelbild::after {
+  content: ""; grid-area: 1 / 1; background: var(--st-schleier); opacity: var(--st-deckung); pointer-events: none;
+  border-radius: var(--rund);
+}
+html[data-st-images="square"] :is(.begruessung-bilder, .buehne) .titelbild::after,
+html:is([data-st-hero-shade="light"], [data-st-hero-shade="strong"]) :is(.buehne, .karussell-bild) .titelbild::after { border-radius: 0; }
+
+/* Bildausschnitt, wenn das Titelbild beschnitten wird */
+html[data-st-hero-focus="top"] :is(.begruessung-bilder, .buehne) .titelbild img { object-position: center top; }
+html[data-st-hero-focus="center"] :is(.begruessung-bilder, .buehne) .titelbild img { object-position: center; }
+html[data-st-hero-focus="bottom"] :is(.begruessung-bilder, .buehne) .titelbild img { object-position: center bottom; }
+
+/* Lage des Namens auf dem Titelbild (Name auf dem Titelbild, Bühne) */
+html[data-st-hero-text="top"] .buehne:has(img) .buehne-name { top: 0; bottom: auto; background: linear-gradient(rgb(0 0 0 / .62), transparent); }
+html[data-st-hero-text="center"] .titel-name,
+html[data-st-hero-text="center"] .buehne:has(img) .buehne-name {
+  inset: 0 0 1rem; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 1.5rem; background: none; text-shadow: 0 1px 4px rgb(0 0 0 / .6);
+}
+html[data-st-hero-text="center"] .buehne:has(img) .buehne-name { inset: 0; }
+html[data-st-hero-text="band"] .titel-name {
+  top: auto; bottom: 1rem; padding: .8rem 1.4rem; background: rgb(0 0 0 / .55); border-radius: 0 0 var(--rund) var(--rund);
+}
+html[data-st-hero-text="band"] .buehne:has(img) .buehne-name { padding-top: 1rem; padding-bottom: 1rem; background: rgb(0 0 0 / .55); }
+
+/* Abschnitte der Startseite trennen: Linie oder abwechselnd getönt (Bühne: Bänder ein/aus) */
+html[data-st-sections="line"] main.start > section + section:not(.begruessung-bilder) { border-top: 1px solid var(--linie); }
+html[data-st-sections="line"] body:not(.design-stage) main.start > section + section:not(.begruessung-bilder) { padding-top: .4rem; }
+html[data-st-sections="alternate"] body:not(.design-stage) main.start > section:nth-of-type(even):not(.begruessung-bilder, .abschnitt-farbig, [style]) {
+  background: color-mix(in srgb, var(--primaer) 6%, var(--flaeche)); border-radius: var(--rund); padding: .2rem 1.2rem 1.2rem; margin: 1rem 0;
+}
+html:is([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:not([style]) { background: var(--flaeche); color: var(--text); }
+html:is([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:not([style]) .knopf { background: var(--primaer); color: var(--auf-primaer); }
+html:is([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:not([style]) :focus-visible { outline-color: var(--link); }
+
+/* ---------- Unterseiten ---------- */
+/* Überschrift der Unterseiten als farbiges Band oder Band mit dem Titelbild der Startseite
+   (--st-seitenbild aus seite/site.py; ohne Bild bleibt das farbige Band) */
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > h1 {
+  background: var(--farbe-band); color: var(--auf-band); padding: 1.1rem 1.4rem; border-radius: var(--rund); margin: .3em 0 1.1rem;
+}
+html[data-st-page-title="image"] body:not([data-seite="start"]) main > h1 {
+  padding-top: 4rem; color: #fff; text-shadow: 0 1px 3px rgb(0 0 0 / .5);
+  background: linear-gradient(color-mix(in srgb, var(--st-schleier, #000) 50%, transparent), color-mix(in srgb, var(--st-schleier, #000) 50%, transparent)), var(--st-seitenbild, none) center / cover no-repeat, var(--farbe-band);
+}
+html[data-st-page-title="plain"] body:not([data-seite="start"]) main > h1 { background: none; padding: 0; }
+
+/* Tabellen abwechselnd hinterlegt; ohne Farbrolle „Flächen“ leicht getönt */
+html[data-st-stripes="on"] table:not(.monatskalender) > tbody > tr:nth-child(even) > :is(td, th) { background: var(--zeile, color-mix(in srgb, var(--text) 5%, var(--flaeche))); }
+html[data-st-stripes="off"] table:not(.monatskalender) > tbody > tr:nth-child(even) > :is(td, th) { background: transparent; }
+
+/* Sanft einblenden: menue.js setzt .st-ein nur bei Teilen unterhalb des Bildschirms */
+html[data-st-motion="subtle"] .st-ein { opacity: 0; transform: translateY(14px); }
+html[data-st-motion="subtle"] :is(main > section, main .karten > *, main .termine > *, main .kacheln > *) { transition: opacity .6s ease, transform .6s ease; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-st-motion="subtle"] .st-ein { opacity: 1; transform: none; }
+  html[data-st-motion="subtle"] :is(main > section, main .karten > *, main .termine > *, main .kacheln > *) { transition: none; }
 }
 
 /* ---------- Fuß ---------- */

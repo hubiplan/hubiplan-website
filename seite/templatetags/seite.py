@@ -312,6 +312,7 @@ DATE_FORMATS = {
         "kurz": "j.n.Y",
         "tag": "j. F Y",
         "lang": "l, j. F Y",
+        "wkurz": "D., j.n.Y",
         "zeit": r"j. F Y, H:i \U\h\r",
         "uhr": r"H:i \U\h\r",
     },
@@ -319,6 +320,7 @@ DATE_FORMATS = {
         "kurz": "d/m/Y",
         "tag": "j F Y",
         "lang": "l j F Y",
+        "wkurz": "D d/m/Y",
         "zeit": "j F Y, H:i",
         "uhr": "H:i",
     },
@@ -328,7 +330,8 @@ DATE_FORMATS = {
 @register.filter(expects_localtime=True)
 def datum(value, art: str = "kurz"):
     """Datum (ISO-Text, date oder datetime) in der Sprache der Seite: ``kurz`` 1.4.2020,
-    ``tag`` 1. April 2020, ``lang`` mit Wochentag, ``zeit`` mit Uhrzeit, ``uhr`` nur Uhrzeit."""
+    ``tag`` 1. April 2020, ``lang`` mit Wochentag, ``wkurz`` Sa., 1.4.2020, ``zeit`` mit
+    Uhrzeit, ``uhr`` nur Uhrzeit."""
     if not value:
         return ""
     if isinstance(value, str):

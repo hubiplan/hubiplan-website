@@ -27,6 +27,8 @@ HOSTNAME = re.compile(
 # Anderes Design nur in der Vorschau ansehen, ohne es zu übernehmen
 DESIGN_COOKIE = "vorschau-design"
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
+# Bildadresse im CSS (url("…")): nur Pfad- und Abfragezeichen
+SAFE_URL = re.compile(r"^/[A-Za-z0-9/._~%=&?-]*$")
 DEFAULT_THEME = {
     "primary": "#1f4e2c",
     "on_primary": "#ffffff",
@@ -239,6 +241,25 @@ class Site:
     def hero_name(self) -> bool:
         """Name auf dem Titelbild (Bühne zeigt ihn immer)."""
         return self.style.get("hero_name") == "on"
+
+    @property
+    def page_title_image(self) -> str | None:
+        """Bild für das Überschriften-Band der Unterseiten (Stilregler page_title=image):
+        das Titelbild der Startseite oder das erste Bild ihres Karussells, über diese Seite.
+        Nur Adressen ohne Zeichen, die im CSS ``url("…")`` etwas bedeuten."""
+        if self.style.get("page_title") != "image":
+            return None
+        greeting = self.info.get("greeting")
+        if not isinstance(greeting, dict):
+            return None
+        image = greeting.get("image")
+        if not isinstance(image, dict):
+            gallery = greeting.get("gallery")
+            image = gallery[0] if isinstance(gallery, list) and gallery else None
+        if not isinstance(image, dict):
+            return None
+        url = self.local(image.get("small_url") or image.get("url"))
+        return url if url and SAFE_URL.match(url) else None
 
     @property
     def packages(self) -> dict:

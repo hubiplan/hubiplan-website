@@ -50,9 +50,31 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "hero": ("low", "medium", "normal", "high"),
     "hero_name": bool,
     "carousel": ("off", "slow", "normal"),
+    # Ralf 14.11.2026: Titelbild abdunkeln oder in Vereinsfarbe färben (halb durchsichtig),
+    # Bildausschnitt und Lage des Namens auf dem Bild
+    "hero_shade": ("none", "light", "strong"),
+    "hero_tint": ("dark", "primary", "accent"),
+    "hero_focus": ("top", "center", "bottom"),
+    "hero_text": ("top", "center", "band"),
+    # Abschnitte der Startseite trennen
+    "sections": ("none", "line", "alternate"),
     # Fuß
     "footer": ("dark", "light", "color"),
     "footer_align": ("left", "center", "right"),
+    # Ralf 14.11.2026: weitere Regler
+    # Überschrift der Unterseiten: schlicht, farbiges Band, Band mit dem Titelbild der Startseite
+    "page_title": ("plain", "band", "image"),
+    # Schrift der Überschriften unabhängig vom Text
+    "heading_font": ("text", "modern", "festive"),
+    # Menü am Bildschirm: Großbuchstaben, größere Schrift
+    "nav_case": ("normal", "upper"),
+    "nav_size": ("normal", "large"),
+    # Inhalte beim Blättern sanft einblenden (nie bei „weniger Bewegung“ am Gerät)
+    "motion": ("off", "subtle"),
+    # Tabellen abwechselnd hinterlegt
+    "stripes": bool,
+    # Datum in der Terminliste neben dem Datumsfeld: Wochentag, kurz oder lang
+    "date_text": ("weekday", "short", "long"),
 }
 
 # Was ein Design selbst festlegt; HUBIplan zeigt diese Wahl ausgegraut (gleiche Liste dort).
