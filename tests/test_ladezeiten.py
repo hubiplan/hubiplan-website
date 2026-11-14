@@ -202,6 +202,23 @@ def test_schriften_vorladen(client, hubiplan):
     assert 'rel="preload"' not in client.get("/").content.decode()
 
 
+def test_source_sans_und_crimson_vorladen(client, hubiplan):
+    from django.core.cache import cache
+
+    hubiplan.info["style"] = {"font": "elegant"}
+    html = client.get("/").content.decode()
+    assert html.count('rel="preload"') == 4
+    assert "schriften/source-sans-3-400.woff2" in html and "schriften/crimson-pro-700.woff2" in html
+    hubiplan.info["style"] = {"font": "clear"}
+    cache.clear()
+    html = client.get("/").content.decode()
+    assert html.count('rel="preload"') == 3 and "crimson-pro" not in html
+    hubiplan.info["style"] = {"font": "readable"}
+    cache.clear()
+    html = client.get("/").content.decode()
+    assert html.count('rel="preload"') == 2 and "atkinson-hyperlegible-700" in html
+
+
 @pytest.mark.parametrize(
     "css,erwartet",
     [

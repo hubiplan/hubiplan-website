@@ -197,7 +197,16 @@ def test_name_auf_dem_titelbild(client, hubiplan, anzahl):
 def test_schriften_der_regler_liegen_lokal():
     css = (STATIC / "stil.css").read_text()
     assert "url(" not in css and "@import" not in css
-    for family in ('"Open Sans"', '"Roboto"', '"Great Vibes"'):
+    for family in (
+        '"Open Sans"',
+        '"Roboto"',
+        '"Great Vibes"',
+        '"Source Sans 3"',
+        '"Crimson Pro"',
+        '"Oswald"',
+        '"Atkinson Hyperlegible"',
+        '"UnifrakturMaguntia"',
+    ):
         assert family in css
         assert f"font-family: {family}" in (STATIC / "seite.css").read_text()
 
@@ -409,6 +418,33 @@ def test_farbiger_abschnitt_nennt_seine_farbe(client, hubiplan):
     look = _look(S(), {"bg": "p0", "width": "full"})
     assert "abschnitt-farbig" in look["klassen"]
     assert "--abschnitt-farbe:#33503c" in look["stil"]
+
+
+@pytest.mark.parametrize("stufe", ["clear", "elegant"])
+def test_source_sans_und_crimson_pro(client, hubiplan, stufe):
+    """Ralf 14.11.2026: Source Sans 3 und Crimson Pro als Schrift der Webseite wählbar."""
+    hubiplan.info["style"] = {"font": stufe, "heading_font": stufe}
+    tag = html_tag(seite(client))
+    assert f'data-st-font="{stufe}"' in tag and f'data-st-heading-font="{stufe}"' in tag
+    css = (STATIC / "stil.css").read_text()
+    assert f'html[data-st-font="{stufe}"] body' in css
+    assert f'html[data-st-heading-font="{stufe}"] body' in css
+
+
+def test_fraktur_oswald_atkinson(client, hubiplan):
+    """Ralf 14.11.2026: Fraktur und Oswald für Überschriften, Atkinson Hyperlegible als Text."""
+    hubiplan.info["style"] = {"font": "readable", "heading_font": "fraktur"}
+    tag = html_tag(seite(client))
+    assert 'data-st-font="readable"' in tag and 'data-st-heading-font="fraktur"' in tag
+    css = (STATIC / "stil.css").read_text()
+    for regel in (
+        'html[data-st-font="readable"] body',
+        'html[data-st-heading-font="fraktur"] body',
+        'html[data-st-heading-font="strong"] body',
+    ):
+        assert regel in css
+    # Fraktur hat nur einen Schnitt: Überschriften nicht künstlich fett
+    assert 'html[data-st-heading-font="fraktur"] :is(h1, h2, h3, .marke) { font-weight: 400;' in css
 
 
 def test_accent_streifen_gewinnt_gegen_kartenregel():

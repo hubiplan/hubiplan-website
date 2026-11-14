@@ -1,6 +1,7 @@
 /* Vereinswebseite: schlicht, fürs Handy zuerst, Farben aus HUBIplan (--primaer usw.) */
 /* Schriften für Designpakete (Ralf 05.11.2026): Open Sans, Roboto und die
-   Schreibschrift Great Vibes liegen hier, weil Pakete
+   Schreibschrift Great Vibes liegen hier, seit 14.11.2026 auch Source Sans 3, Crimson Pro,
+   Oswald, Atkinson Hyperlegible und die Fraktur UnifrakturMaguntia, weil Pakete
    keine Schriften laden dürfen und die Seite nichts von fremden Servern holt. Der Browser lädt
    eine Schrift erst, wenn ein Design sie benutzt (Lizenz SIL OFL 1.1, schriften/OFL-*.txt). */
 @font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/open-sans-400.woff2") format("woff2"); }
@@ -10,6 +11,18 @@
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/roboto-600.woff2") format("woff2"); }
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/roboto-700.woff2") format("woff2"); }
 @font-face { font-family: "Great Vibes"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/great-vibes-400.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/source-sans-3-400.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/source-sans-3-600.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/source-sans-3-700.woff2") format("woff2"); }
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/crimson-pro-400.woff2") format("woff2"); }
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/crimson-pro-600.woff2") format("woff2"); }
+@font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/crimson-pro-700.woff2") format("woff2"); }
+@font-face { font-family: "Oswald"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/oswald-400.woff2") format("woff2"); }
+@font-face { font-family: "Oswald"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/oswald-600.woff2") format("woff2"); }
+@font-face { font-family: "Oswald"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/oswald-700.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/atkinson-hyperlegible-400.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/atkinson-hyperlegible-700.woff2") format("woff2"); }
+@font-face { font-family: "UnifrakturMaguntia"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/unifraktur-maguntia-400.woff2") format("woff2"); }
 :root {
   --primaer: #1f4e2c;
   --auf-primaer: #fff;

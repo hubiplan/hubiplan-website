@@ -45,8 +45,17 @@ def test_kopfbild_ersetzt_wappen_und_name(client, hubiplan):
 
 def test_schriften_liegen_lokal():
     css = (STATIC / "seite.css").read_text()
-    for name in ("open-sans", "roboto"):
+    for name in ("open-sans", "roboto", "source-sans-3", "crimson-pro"):
         for weight in (400, 600, 700):
+            assert f'url("schriften/{name}-{weight}.woff2")' in css
+            assert (STATIC / "schriften" / f"{name}-{weight}.woff2").stat().st_size > 1000
+        assert "SIL Open Font License" in (STATIC / "schriften" / f"OFL-{name}.txt").read_text()
+    for name, weights in (
+        ("oswald", (400, 600, 700)),
+        ("atkinson-hyperlegible", (400, 700)),
+        ("unifraktur-maguntia", (400,)),
+    ):
+        for weight in weights:
             assert f'url("schriften/{name}-{weight}.woff2")' in css
             assert (STATIC / "schriften" / f"{name}-{weight}.woff2").stat().st_size > 1000
         assert "SIL Open Font License" in (STATIC / "schriften" / f"OFL-{name}.txt").read_text()

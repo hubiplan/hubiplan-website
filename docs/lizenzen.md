@@ -44,7 +44,13 @@ nutzen kann, liegen in `seite/static/seite/schriften/` **Open Sans** und **Robot
 [Fontsource](https://fontsource.org) 5.3.0. Beide stehen unter der **SIL Open Font License 1.1**
 (Lizenztexte daneben als `OFL-open-sans.txt` und `OFL-roboto.txt`). Dazu kommt die
 Schreibschrift **Great Vibes** (Schnitt 400, Latein, ebenfalls Fontsource 5.3.0, SIL OFL 1.1,
-`OFL-great-vibes.txt`) für Begrüßungen. Der Browser lädt eine Schrift nur, wenn das gewählte
+`OFL-great-vibes.txt`) für Begrüßungen. Seit 14.11.2026 kommen **Source Sans 3**
+(Fontsource 5.3.1, `OFL-source-sans-3.txt`; „Source“ ist ein reservierter Schriftname von Adobe,
+die Dateien bleiben deshalb unverändert) und **Crimson Pro** (Fontsource 5.3.0,
+`OFL-crimson-pro.txt`) dazu, jeweils Schnitte 400, 600, 700, Latein, SIL OFL 1.1. Ebenso **Oswald** (400, 600,
+700, `OFL-oswald.txt`), **Atkinson Hyperlegible** (400, 700, `OFL-atkinson-hyperlegible.txt`) und
+die Fraktur **UnifrakturMaguntia** (400, `OFL-unifraktur-maguntia.txt`, reservierter Schriftname),
+alle aus Fontsource 5.3.0, Latein, SIL OFL 1.1. Der Browser lädt eine Schrift nur, wenn das gewählte
 Design sie verwendet.
 
 ## Server
