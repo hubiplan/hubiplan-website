@@ -417,6 +417,14 @@ def test_accent_streifen_gewinnt_gegen_kartenregel():
     Die gemeinsame Kartenregel nutzt :is(… .dokumente a …) und zählt damit 0,2,2; die
     Streifenregeln müssen spezifischer sein, sonst setzt deren border den Streifen zurück."""
     css = (STATIC / "stil.css").read_text()
-    assert 'html[data-st-cards="accent"] ul.termine > .termin { border-left: 3px solid var(--primaer); }' in css
-    assert 'html[data-st-cards="accent"] ul.kacheln a { border-left-width: 1px; border-top: 3px solid var(--primaer); }' in css
+    termine = (
+        'html[data-st-cards="accent"] ul.termine > .termin '
+        "{ border-left: 3px solid var(--primaer); }"
+    )
+    kacheln = (
+        'html[data-st-cards="accent"] ul.kacheln a '
+        "{ border-left-width: 1px; border-top: 3px solid var(--primaer); }"
+    )
+    assert termine in css
+    assert kacheln in css
     assert 'html[data-st-cards="accent"] .termin { border-left' not in css
