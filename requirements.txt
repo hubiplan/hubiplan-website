@@ -18,6 +18,11 @@ gunicorn==26.2.0 \
 pillow==13.0.0 \
     --hash=sha256:5f56499c1a74d2b862beb0c33b8016f99d095858455df9d21583bbbc1c15b582 \
     --hash=sha256:19b66ca0a4d25cc0200b381ce824c7ea090db61427315e73cfb05dbf1b35c369
+# Brotli: whitenoise legt damit beim collectstatic zusätzlich .br-Fassungen der CSS/JS an
+# und liefert sie Browsern aus, die Brotli annehmen (Ladezeiten 14.11.); Räder x86_64/aarch64
+brotli==1.2.1 \
+    --hash=sha256:264fd5b200f6f6170cb551a4b9fcaabf8aa846ddaefe72db4d5f49f9d3743df9 \
+    --hash=sha256:b5b458950312830913f837e179ce9221000ab7a20b4e42d7b48c1fcd79140de1
 # Abhängigkeiten der obigen Pakete, ebenfalls fest (gleicher Bau auch später)
 asgiref==3.13.0 \
     --hash=sha256:f9596a2434512686473d50f96ff6207fbba49ae1a785dfac614df4aeb085674d

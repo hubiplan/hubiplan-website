@@ -243,3 +243,10 @@ def test_auffrischen_im_hintergrund(hubiplan, monkeypatch, settings):
     jetzt[0] += settings.CACHE_SECONDS + api.STALE_SECONDS + 1
     assert api.get(KEY)["name"] == "Noch neuer"
     assert len(gestartet) == 1
+
+
+def test_brotli_fuer_statische_dateien():
+    """collectstatic legt mit dem Paket brotli auch .br-Fassungen an (whitenoise)."""
+    from whitenoise.compress import Compressor
+
+    assert Compressor(quiet=True).use_brotli
