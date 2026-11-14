@@ -109,7 +109,8 @@ def test_inhalte(client, hubiplan):
     assert "<h3>Samstag</h3>" in html and "<dt>14:00</dt>" in html
     assert 'class="hinweis-kasten hinweis-warning"' in html and "Achtung:" in html
     assert "<summary>Schießordnung</summary>" in html
-    assert 'class="galerie-bilder bilder-spalten-4"' in html and "<figcaption" in html
+    assert 'class="galerie-bilder bilder-einzeln"' in html and "<figcaption" in html
+    assert 'src="/medien/a/images/fest1/" srcset=' in html
     assert 'id="bild-fenster"' in html and "seite/bildfenster.js" in html
     assert 'href="/medien/a/files/ordnung12345/"' in html and "50,0" in html
 
@@ -120,3 +121,39 @@ def test_ohne_bilder_kein_bildfenster(client, hubiplan):
     )
     html = text(client.get("/"))
     assert 'id="bild-fenster"' not in html and 'class="hinweis-kasten hinweis-info"' in html
+
+
+def test_text_mit_bild_oben_unten_und_bilder_spalten(client, hubiplan):
+    hubiplan.info["home_layout"] = layout(
+        {
+            "key": "c:o",
+            "kind": "text_image",
+            "title": "Oben",
+            "text": "",
+            "image": bild("o"),
+            "side": "top",
+            "size": "small",
+        },
+        {
+            "key": "c:u",
+            "kind": "text_image",
+            "title": "Unten",
+            "text": "",
+            "image": bild("u"),
+            "side": "bottom",
+            "size": "half",
+        },
+        {
+            "key": "c:b",
+            "kind": "images",
+            "title": "",
+            "columns": 2,
+            "items": [{"image": bild("b1"), "caption": ""}, {"image": bild("b2"), "caption": ""}],
+        },
+    )
+    html = text(client.get("/"))
+    assert 'class="text-bild-raster bild-top bild-small"' in html
+    assert 'class="text-bild-raster bild-bottom bild-half"' in html
+    assert 'sizes="(max-width: 22rem) 100vw, 22rem"' in html
+    assert 'sizes="(max-width: 64rem) 100vw, 64rem"' in html
+    assert 'class="galerie-bilder bilder-spalten-2"' in html
