@@ -27,6 +27,9 @@ def test_anhang_im_fenster_und_ausgeliefert(client, hubiplan, monkeypatch):
     pdf = client.get("/medien/a/events/attachments/7/")
     assert pdf.status_code == 200 and pdf["Content-Type"] == "application/pdf"
     assert pdf["Content-Disposition"] == "inline"
+    # Chrome/Edge blockieren PDFs mit CSP-sandbox (ERR_BLOCKED_BY_CLIENT)
+    assert "sandbox" not in pdf["Content-Security-Policy"]
+    assert "frame-ancestors 'none'" in pdf["Content-Security-Policy"]
 
 
 def test_ohne_anhaenge_kein_abschnitt(client, hubiplan):
