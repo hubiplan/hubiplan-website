@@ -144,6 +144,9 @@ def test_einheiten_ohne_wappen_gleicher_platz(client, hubiplan):
     """Ralf 2026-10-31: Namen beginnen alle auf einer Höhe, auch ohne Wappen."""
     html = text(client.get("/zuege/"))
     assert html.count('class="wappen-platz"') + html.count('width="60" height="60"') >= 1
+    # Webseite #89: Platzhalter zeigt das Vereinszeichen blass statt einer Lücke
+    if 'class="wappen-platz"' in html:
+        assert 'class="wappen-platz" aria-hidden="true"><img' in html
     html = text(client.get("/zuege/jaeger/"))
     assert "<em>der</em>" in html
     assert "Karl Krone" in html

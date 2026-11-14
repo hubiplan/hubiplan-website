@@ -257,6 +257,9 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .kacheln.gross a { gap: .8rem; padding: .8rem 1rem; line-height: 1.3; overflow-wrap: break-word; }
 .kacheln.gross img, .kacheln.gross .wappen-platz { width: 60px; height: 60px; flex-shrink: 0; }
 .kacheln.gross img { object-fit: contain; }
+/* Platzhalter für Einheiten ohne Wappen (Webseite #89): heller Grund, Vereinszeichen blass */
+.wappen-platz { display: grid; place-items: center; width: 48px; height: 48px; flex-shrink: 0; border-radius: calc(var(--rund) * .6); background: color-mix(in srgb, var(--primaer) 6%, var(--flaeche)); }
+.kacheln .wappen-platz img { width: 70%; height: 70%; object-fit: contain; opacity: .22; filter: grayscale(1); }
 .kacheln small { font-weight: 400; color: var(--text-leise); }
 .einheit-kopf { display: flex; gap: 1.2rem; align-items: center; margin: .8rem 0 1.2rem; }
 .einheit-kopf img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
@@ -545,6 +548,10 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .textseite > h1, .seite-text .text { max-width: 44rem; margin-left: auto; margin-right: auto; }
 .seite-text.abschnitt-voll .text { max-width: none; }
 .abschnitt-voll { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); border-radius: 0; }
+/* Titelbild der Startseite in voller Breite von Rand zu Rand (Webseite #89) */
+main.start > .begruessung-bilder.abschnitt-voll { padding-left: 0; padding-right: 0; }
+main.start > .begruessung-bilder.abschnitt-voll :is(.karussell-band, .titelbild img, .titel-name) { border-radius: 0; }
+main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); }
 .spalte-haupt .abschnitt-voll, .spalte-seite .abschnitt-voll { margin-left: 0; margin-right: 0; padding-left: 1.2rem; padding-right: 1.2rem; }
 .abschnitt-farbig h2, .abschnitt-farbig h3, .abschnitt-farbig p, .abschnitt-farbig .klein,
 .abschnitt-farbig .text a, .abschnitt-farbig figcaption { color: inherit; }
@@ -579,7 +586,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .knoepfe { display: flex; flex-wrap: wrap; gap: .6rem; }
 .knoepfe-center { justify-content: center; }
 .knoepfe-right { justify-content: flex-end; }
-.abschnitt-farbig .knopf { background: var(--abschnitt-auf); color: var(--text); }
+.abschnitt-farbig .knopf { background: var(--abschnitt-auf); color: var(--abschnitt-farbe, var(--text)); }
 
 /* Kacheln mit Bild und Ziel */
 .bildkacheln { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: 1fr; }

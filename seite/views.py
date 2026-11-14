@@ -387,7 +387,7 @@ def _look(site: Site, s: dict) -> dict:
         if isinstance(color, str) and isinstance(on, str) and HEX.match(color) and HEX.match(on):
             klassen.append("abschnitt-hg")
             klassen.append("abschnitt-farbig")
-            stil = f"background:{color};color:{on};--abschnitt-auf:{on}"
+            stil = f"background:{color};color:{on};--abschnitt-auf:{on};--abschnitt-farbe:{color}"
     elif isinstance(bg, str) and (m := GRADIENT_BG.match(bg)):
         # Verlauf aus Einstellungen › Erscheinungsbild (HUBIplan ab 10.11.2026)
         gradients = site.info.get("gradients") or []
@@ -404,7 +404,10 @@ def _look(site: Site, s: dict) -> dict:
         if css and isinstance(on, str) and HEX.match(on):
             klassen.append("abschnitt-hg")
             klassen.append("abschnitt-farbig")
-            stil = f"background:{pair[0]};background-image:{css};color:{on};--abschnitt-auf:{on}"
+            stil = (
+                f"background:{pair[0]};background-image:{css};color:{on};--abschnitt-auf:{on};"
+                f"--abschnitt-farbe:{pair[0]}"
+            )
     return {"klassen": klassen, "stil": stil}
 
 
