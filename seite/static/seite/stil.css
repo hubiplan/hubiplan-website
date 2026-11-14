@@ -7,6 +7,9 @@
 html[data-st-font="system"] body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --schrift-titel: inherit; }
 html[data-st-font="modern"] body { font-family: "Open Sans", system-ui, sans-serif; --schrift-titel: "Roboto", "Open Sans", system-ui, sans-serif; }
 html[data-st-font="festive"] body { font-family: "Open Sans", system-ui, sans-serif; --schrift-titel: Georgia, Cambria, "Times New Roman", serif; }
+/* Ralf 14.11.2026: Source Sans 3 allein („klar“) oder mit Crimson Pro in Überschriften („elegant“) */
+html[data-st-font="clear"] body { font-family: "Source Sans 3", system-ui, sans-serif; --schrift-titel: inherit; }
+html[data-st-font="elegant"] body { font-family: "Source Sans 3", system-ui, sans-serif; --schrift-titel: "Crimson Pro", Georgia, Cambria, "Times New Roman", serif; }
 html[data-st-font] .marke { font-family: var(--schrift-titel); }
 
 html[data-st-size="large"] { font-size: 112.5%; }
@@ -60,6 +63,8 @@ html[data-st-script-greeting="on"] .begruessung h1 {
 html[data-st-heading-font="text"] body { --schrift-titel: inherit; }
 html[data-st-heading-font="modern"] body { --schrift-titel: "Roboto", "Open Sans", system-ui, sans-serif; }
 html[data-st-heading-font="festive"] body { --schrift-titel: Georgia, Cambria, "Times New Roman", serif; }
+html[data-st-heading-font="clear"] body { --schrift-titel: "Source Sans 3", system-ui, sans-serif; }
+html[data-st-heading-font="elegant"] body { --schrift-titel: "Crimson Pro", Georgia, Cambria, "Times New Roman", serif; }
 html[data-st-heading-font] :is(h1, h2, h3, .marke) { font-family: var(--schrift-titel); }
 
 /* ---------- Seite ---------- */

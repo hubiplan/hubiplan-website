@@ -11,7 +11,7 @@ from __future__ import annotations
 # Regler → erlaubte Stufen; ``bool`` = Schalter (Ausgabe "on"/"off")
 CATALOG: dict[str, tuple[str, ...] | type] = {
     # Schrift
-    "font": ("system", "modern", "festive"),
+    "font": ("system", "modern", "festive", "clear", "elegant"),
     "size": ("normal", "large", "xlarge"),
     "leading": ("tight", "normal", "airy"),
     "headings": ("plain", "line", "color", "short"),
@@ -69,7 +69,7 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     # Überschrift der Unterseiten: schlicht, farbiges Band, Band mit dem Titelbild der Startseite
     "page_title": ("plain", "band", "image"),
     # Schrift der Überschriften unabhängig vom Text
-    "heading_font": ("text", "modern", "festive"),
+    "heading_font": ("text", "modern", "festive", "clear", "elegant"),
     # Menü am Bildschirm: Großbuchstaben, größere Schrift
     "nav_case": ("normal", "upper"),
     "nav_size": ("normal", "large"),

@@ -336,11 +336,17 @@ class Site:
         """Schriften, die die Seite sicher braucht, gleich im Kopf anfordern: Sonst findet
         der Browser sie erst, wenn das CSS geladen ist (Ladezeiten 14.11.)."""
         font = self.style.get("font")
-        if font not in ("festive", "modern"):
+        if font in ("festive", "modern"):
+            files = ["open-sans-400", "open-sans-600", "open-sans-700"]
+            if font == "modern":
+                files.append("roboto-700")
+        elif font in ("clear", "elegant"):
+            # Source Sans 3 (Ralf 14.11.2026); Crimson Pro nur für die fetten Überschriften
+            files = ["source-sans-3-400", "source-sans-3-600", "source-sans-3-700"]
+            if font == "elegant":
+                files.append("crimson-pro-700")
+        else:
             return []
-        files = ["open-sans-400", "open-sans-600", "open-sans-700"]
-        if font == "modern":
-            files.append("roboto-700")
         return [f"seite/schriften/{name}.woff2" for name in files]
 
     @property
