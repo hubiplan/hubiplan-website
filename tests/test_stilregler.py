@@ -124,6 +124,8 @@ def test_jede_stufe_hat_regeln():
         ("date_text", "weekday"),
         ("date_text", "short"),
         ("date_text", "long"),
+        # Webseite #89: normale Überschriftengröße ist die Grundstellung aus seite.css
+        ("heading_size", "normal"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":
@@ -353,3 +355,57 @@ def test_vorschau_hervorhebung_nur_in_der_vorschau(client, hubiplan):
     assert 'id="kopf"' in html and 'id="fuss"' in html
     css = (STATIC / "seite.css").read_text()
     assert "html[data-vorschau] :is(#kopf, #fuss, #inhalt):target" in css
+
+
+def test_feinschliff_89_neue_stufen(client, hubiplan):
+    """Webseite #89: kurze Zierlinie, weiße Kacheln mit Farbstreifen, Etikett-Knöpfe,
+    größere Überschriften und warme helle Abschnitte als Regler für alle Einheiten."""
+    hubiplan.info["style"] = {
+        "headings": "short",
+        "cards": "accent",
+        "buttons": "label",
+        "heading_size": "large",
+        "section_bg": "warm",
+    }
+    tag = html_tag(seite(client))
+    for merkmal in (
+        'data-st-headings="short"',
+        'data-st-cards="accent"',
+        'data-st-buttons="label"',
+        'data-st-heading-size="large"',
+        'data-st-section-bg="warm"',
+    ):
+        assert merkmal in tag
+
+
+def test_feinschliff_89_regeln():
+    css = (STATIC / "stil.css").read_text()
+    seite_css = (STATIC / "seite.css").read_text()
+    # kurze Linie 48 × 3 px
+    assert "width: 48px; height: 3px;" in css
+    # eckig auch für Initialen, Sozialsymbole und Chronik
+    eckig = css[css.index('html[data-st-corners="square"] :is(.person img') :]
+    for teil in (".ohne-foto", ".sozial-symbole a", ".zeitleiste-sprung a"):
+        assert teil in eckig.split("\n", 1)[0]
+    assert 'html[data-st-corners="square"] .zeitleiste-eintrag::before' in css
+    # farbige Abschnitte: Linie und Knöpfe in der Schriftfarbe des Abschnitts
+    assert "html main .abschnitt-farbig h2::after { background: currentColor; }" in css
+    assert "html[data-st-buttons] .abschnitt-farbig .knopf:not(.hell)" in css
+    # Titelbild in voller Breite ohne Innenpolster
+    voll = "main.start > .begruessung-bilder.abschnitt-voll { padding-left: 0; padding-right: 0; }"
+    assert voll in seite_css
+    # Kacheln weiß, im Dunkelmodus Fläche
+    dunkel = 'html[data-st-dark="auto"][data-st-cards="accent"] { --st-karte: var(--flaeche); }'
+    assert dunkel in css
+
+
+def test_farbiger_abschnitt_nennt_seine_farbe(client, hubiplan):
+    """Knöpfe auf farbigen Abschnitten bekommen die Abschnittsfarbe als Schrift (#89)."""
+    from seite.views import _look
+
+    class S:
+        info = {"palette": [{"color": "#33503c", "on_color": "#ffffff"}]}
+
+    look = _look(S(), {"bg": "p0", "width": "full"})
+    assert "abschnitt-farbig" in look["klassen"]
+    assert "--abschnitt-farbe:#33503c" in look["stil"]

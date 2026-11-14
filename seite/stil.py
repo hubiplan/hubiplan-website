@@ -14,23 +14,27 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "font": ("system", "modern", "festive"),
     "size": ("normal", "large", "xlarge"),
     "leading": ("tight", "normal", "airy"),
-    "headings": ("plain", "line", "color"),
+    "headings": ("plain", "line", "color", "short"),
     "heading_align": ("left", "center"),
+    # Webseite #89: Überschriften etwas größer
+    "heading_size": ("normal", "large"),
     "script_greeting": bool,
     # Seite
     "width": ("narrow", "normal", "wide"),
     "background": ("light", "tinted", "grey"),
     "spacing": ("compact", "normal", "generous"),
     "corners": ("square", "slight", "round"),
+    # Webseite #89: Farbe der hellen Abschnittsflächen (Hintergrund „hell“ eines Abschnitts)
+    "section_bg": ("tinted", "warm", "grey"),
     "dark": ("off", "auto"),
     "contrast": bool,
     "to_top": bool,
     # Karten, Bilder, Knöpfe
-    "cards": ("border", "shadow", "flat"),
+    "cards": ("border", "shadow", "flat", "accent"),
     "images": ("cards", "square"),
     "tile_ratio": ("wide", "classic", "square"),
     "image_frame": bool,
-    "buttons": ("filled", "outline"),
+    "buttons": ("filled", "outline", "label"),
     "date": ("tile", "strip"),
     # Kopf und Menü
     "header_bg": ("white", "color", "image"),
