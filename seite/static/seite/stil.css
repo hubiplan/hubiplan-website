@@ -10,6 +10,8 @@ html[data-st-font="festive"] body { font-family: "Open Sans", system-ui, sans-se
 /* Ralf 14.11.2026: Source Sans 3 allein („klar“) oder mit Crimson Pro in Überschriften („elegant“) */
 html[data-st-font="clear"] body { font-family: "Source Sans 3", system-ui, sans-serif; --schrift-titel: inherit; }
 html[data-st-font="elegant"] body { font-family: "Source Sans 3", system-ui, sans-serif; --schrift-titel: "Crimson Pro", Georgia, Cambria, "Times New Roman", serif; }
+/* Atkinson Hyperlegible: besonders gut unterscheidbare Buchstaben („gut lesbar“) */
+html[data-st-font="readable"] body { font-family: "Atkinson Hyperlegible", system-ui, sans-serif; --schrift-titel: inherit; }
 html[data-st-font] .marke { font-family: var(--schrift-titel); }
 
 html[data-st-size="large"] { font-size: 112.5%; }
@@ -65,7 +67,11 @@ html[data-st-heading-font="modern"] body { --schrift-titel: "Roboto", "Open Sans
 html[data-st-heading-font="festive"] body { --schrift-titel: Georgia, Cambria, "Times New Roman", serif; }
 html[data-st-heading-font="clear"] body { --schrift-titel: "Source Sans 3", system-ui, sans-serif; }
 html[data-st-heading-font="elegant"] body { --schrift-titel: "Crimson Pro", Georgia, Cambria, "Times New Roman", serif; }
+/* Fraktur nur für Überschriften; sie hat nur einen Schnitt, fett gerechnet sähe sie verschmiert aus */
+html[data-st-heading-font="fraktur"] body { --schrift-titel: "UnifrakturMaguntia", Georgia, serif; }
+html[data-st-heading-font="strong"] body { --schrift-titel: "Oswald", "Arial Narrow", system-ui, sans-serif; }
 html[data-st-heading-font] :is(h1, h2, h3, .marke) { font-family: var(--schrift-titel); }
+html[data-st-heading-font="fraktur"] :is(h1, h2, h3, .marke) { font-weight: 400; letter-spacing: 0; text-transform: none; }
 
 /* ---------- Seite ---------- */
 html[data-st-width="normal"] { --breite: 64rem; }

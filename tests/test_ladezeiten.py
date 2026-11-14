@@ -213,6 +213,10 @@ def test_source_sans_und_crimson_vorladen(client, hubiplan):
     cache.clear()
     html = client.get("/").content.decode()
     assert html.count('rel="preload"') == 3 and "crimson-pro" not in html
+    hubiplan.info["style"] = {"font": "readable"}
+    cache.clear()
+    html = client.get("/").content.decode()
+    assert html.count('rel="preload"') == 2 and "atkinson-hyperlegible-700" in html
 
 
 @pytest.mark.parametrize(

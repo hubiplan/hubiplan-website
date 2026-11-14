@@ -345,6 +345,8 @@ class Site:
             files = ["source-sans-3-400", "source-sans-3-600", "source-sans-3-700"]
             if font == "elegant":
                 files.append("crimson-pro-700")
+        elif font == "readable":
+            files = ["atkinson-hyperlegible-400", "atkinson-hyperlegible-700"]
         else:
             return []
         return [f"seite/schriften/{name}.woff2" for name in files]

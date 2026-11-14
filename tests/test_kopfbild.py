@@ -50,6 +50,15 @@ def test_schriften_liegen_lokal():
             assert f'url("schriften/{name}-{weight}.woff2")' in css
             assert (STATIC / "schriften" / f"{name}-{weight}.woff2").stat().st_size > 1000
         assert "SIL Open Font License" in (STATIC / "schriften" / f"OFL-{name}.txt").read_text()
+    for name, weights in (
+        ("oswald", (400, 600, 700)),
+        ("atkinson-hyperlegible", (400, 700)),
+        ("unifraktur-maguntia", (400,)),
+    ):
+        for weight in weights:
+            assert f'url("schriften/{name}-{weight}.woff2")' in css
+            assert (STATIC / "schriften" / f"{name}-{weight}.woff2").stat().st_size > 1000
+        assert "SIL Open Font License" in (STATIC / "schriften" / f"OFL-{name}.txt").read_text()
     # Keine Schrift von fremden Servern
     assert "fonts.googleapis" not in css and "http" not in css.split("@font-face", 1)[1][:2000]
 
