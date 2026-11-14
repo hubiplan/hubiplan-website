@@ -529,3 +529,20 @@ def test_accent_streifen_gewinnt_gegen_kartenregel():
     assert termine in css
     assert kacheln in css
     assert 'html[data-st-cards="accent"] .termin { border-left' not in css
+
+
+def test_tabellen_und_kleiner_text_lesbar():
+    """Webseite #98: Tabellen so groß wie der Fließtext, kleiner Text mindestens 15 px,
+    Source Sans 3 an die Lesegröße der übrigen Schriften angeglichen."""
+    css = (STATIC / "seite.css").read_text()
+    tabelle = re.search(r"^table \{[^}]*\}", css, re.M).group(0)
+    assert "font-size: 1em;" in tabelle
+    # Zellen bringen keine eigene, kleinere Größe mit
+    assert "font-size" not in re.search(r"^th, td \{[^}]*\}", css, re.M).group(0)
+    klein = re.search(r"^\.klein \{[^}]*\}", css, re.M).group(0)
+    assert "font-size: max(.88em, .9375rem);" in klein
+    assert 16 * 0.9375 == 15
+    quellen = re.findall(r'@font-face \{ font-family: "Source Sans 3";[^}]*\}', css)
+    assert len(quellen) == 3 and all("size-adjust: 105%;" in q for q in quellen)
+    # nur diese Schrift wird angeglichen
+    assert css.count("size-adjust:") - css.count("-webkit-text-size-adjust:") == 3

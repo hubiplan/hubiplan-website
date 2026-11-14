@@ -11,9 +11,10 @@
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/roboto-600.woff2") format("woff2"); }
 @font-face { font-family: "Roboto"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/roboto-700.woff2") format("woff2"); }
 @font-face { font-family: "Great Vibes"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/great-vibes-400.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/source-sans-3-400.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/source-sans-3-600.woff2") format("woff2"); }
-@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/source-sans-3-700.woff2") format("woff2"); }
+/* Source Sans 3 hat kleinere Kleinbuchstaben als Open Sans; 105 % gleicht die Lesegröße an (Webseite #98) */
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 400; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-400.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 600; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-600.woff2") format("woff2"); }
+@font-face { font-family: "Source Sans 3"; font-style: normal; font-weight: 700; font-display: swap; size-adjust: 105%; src: url("schriften/source-sans-3-700.woff2") format("woff2"); }
 @font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 400; font-display: swap; src: url("schriften/crimson-pro-400.woff2") format("woff2"); }
 @font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 600; font-display: swap; src: url("schriften/crimson-pro-600.woff2") format("woff2"); }
 @font-face { font-family: "Crimson Pro"; font-style: normal; font-weight: 700; font-display: swap; src: url("schriften/crimson-pro-700.woff2") format("woff2"); }
@@ -78,7 +79,8 @@ h1, h2, h3 { line-height: 1.25; margin: 1.6em 0 .5em; font-family: var(--schrift
 h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); margin-top: .3em; }
 h2 { font-size: 1.35rem; }
 h3 { font-size: 1.1rem; margin-top: 0; }
-table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: .95rem; }
+/* Tabellen in der Größe des Fließtexts (Webseite #98): Ergebnisse sind Inhalt, keine Nebensache */
+table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: 1em; }
 th, td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--linie); vertical-align: top; }
 /* Flächenfarbe der Einheit (Farbrolle „Flächen und Tabellenzeilen“): jede zweite Zeile */
 table:not(.monatskalender) > tbody > tr:nth-child(even) > :is(td, th) { background: var(--zeile, transparent); }
@@ -89,7 +91,8 @@ th { color: var(--text-leise); font-weight: 600; }
 code { word-break: break-all; font-size: .85em; }
 
 .breite { width: 100%; max-width: var(--breite); margin: 0 auto; padding-left: 16px; padding-right: 16px; }
-.klein { font-size: .88rem; color: var(--text-leise); }
+/* Kleiner Text folgt der Schrift seiner Umgebung, bleibt aber mindestens 15 px groß (Webseite #98) */
+.klein { font-size: max(.88em, .9375rem); color: var(--text-leise); }
 /* HUBIplan-Zeichen im Fuß (Akte mit H): bringt den eigenen Hintergrund mit, auf hellem und dunklem Fuß erkennbar */
 .hubiplan-zeichen { vertical-align: -.28em; }
 .gross { font-size: 1.2rem; font-weight: 600; margin: 0; }
