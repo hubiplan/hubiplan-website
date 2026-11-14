@@ -114,8 +114,10 @@ html[data-st-cards="accent"] { --st-karte: #fff; }
 html[data-st-cards="accent"] :is(.karte, .termin, .dokumente a, .kacheln a, .bildkachel, .zeitleiste-karte) {
   background: var(--st-karte); border: 1px solid var(--linie); box-shadow: none;
 }
-html[data-st-cards="accent"] .termin { border-left: 3px solid var(--primaer); }
-html[data-st-cards="accent"] .kacheln a { border-left-width: 1px; border-top: 3px solid var(--primaer); }
+/* Streifen spezifischer als die Kartenregel darüber (:is mit „.dokumente a“ zählt 0,2,2) und als
+   der Kontrastregler, sonst überschreibt deren border den Streifen (Webseite #91) */
+html[data-st-cards="accent"] ul.termine > .termin { border-left: 3px solid var(--primaer); }
+html[data-st-cards="accent"] ul.kacheln a { border-left-width: 1px; border-top: 3px solid var(--primaer); }
 html[data-st-cards="accent"] :is(.termin, .kacheln a):hover { border-color: var(--primaer); }
 /* Aufklappmenü wie die Karten: ohne Schatten nur mit Linie (#66) */
 html[data-st-cards="flat"] body:not(.design-sidebar) .menue-breit .untermenue ul,

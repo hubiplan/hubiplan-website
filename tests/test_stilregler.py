@@ -409,3 +409,14 @@ def test_farbiger_abschnitt_nennt_seine_farbe(client, hubiplan):
     look = _look(S(), {"bg": "p0", "width": "full"})
     assert "abschnitt-farbig" in look["klassen"]
     assert "--abschnitt-farbe:#33503c" in look["stil"]
+
+
+def test_accent_streifen_gewinnt_gegen_kartenregel():
+    """Termine bekommen bei cards=accent links den Streifen, Kacheln oben (Webseite #91).
+
+    Die gemeinsame Kartenregel nutzt :is(… .dokumente a …) und zählt damit 0,2,2; die
+    Streifenregeln müssen spezifischer sein, sonst setzt deren border den Streifen zurück."""
+    css = (STATIC / "stil.css").read_text()
+    assert 'html[data-st-cards="accent"] ul.termine > .termin { border-left: 3px solid var(--primaer); }' in css
+    assert 'html[data-st-cards="accent"] ul.kacheln a { border-left-width: 1px; border-top: 3px solid var(--primaer); }' in css
+    assert 'html[data-st-cards="accent"] .termin { border-left' not in css
