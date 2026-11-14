@@ -52,7 +52,8 @@ Skripte und Vorlagen fürs Ausrollen. Besonders interessant sind:
 - widerrufene oder gelöschte Inhalte, die der Zwischenspeicher für den Ausfall von HUBIplan
   weiter ausliefert, obwohl HUBIplan wieder antwortet,
 - Designpakete, die fremde Inhalte nachladen oder eigenen Vorlagen- oder Skriptcode ausführen,
-- Suche, Galerie oder Belegung, die mehr zeigen als die öffentliche Schnittstelle freigibt,
+- Suche, Galerie, Belegung oder Anhänge an Terminen, die mehr zeigen als die öffentliche
+  Schnittstelle freigibt,
 - Links aus HUBIplan (Menü, Abschnitte, „Mitglied werden“), die andere Ziele als `http(s)`
   ausführen (z. B. `javascript:`),
 - eine Besucheradresse, die sich beim Weiterreichen an HUBIplan fälschen lässt, um dessen
