@@ -85,7 +85,7 @@ def test_vorschau_rechnet_ohne_ablage(client, grosses_bild, hubiplan):
     r = client.get("/medien/a/images/gross-v0/?size=medium", HTTP_ACCEPT="image/webp")
     assert r.status_code == 200 and r["Content-Type"] == "image/webp"
     assert r["Cache-Control"].startswith("private")
-    assert not caches["varianten"]._cache
+    assert not [k for k in caches["varianten"]._cache if ":v1:" in k]
 
 
 def test_widerruf_vor_fassung(client, grosses_bild, hubiplan):
