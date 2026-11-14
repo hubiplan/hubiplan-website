@@ -1,5 +1,5 @@
 # Vereinswebseite auf dem Testserver: hängt sich in das Docker-Netz von HUBIplan
-# (Compose-Projekt „hubiplan“, Netz „web“). Caddy von HUBIplan leitet /webseite/ hierher.
+# (Compose-Projekt „hubiplan“, Netz „web“). Caddy von HUBIplan leitet /vereinsseite/ hierher.
 services:
   website:
     build: .

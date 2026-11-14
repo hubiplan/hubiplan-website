@@ -56,10 +56,10 @@ STALE_IMAGE_MAX_BYTES = int(os.environ.get("STALE_IMAGE_MAX_BYTES", str(2 * 1024
 # Vorschau wird bei jedem Aufruf autorisiert und niemals zwischen Anfragen gecacht.
 # Die frühere Umgebungsvariable PREVIEW_CACHE_SECONDS hat keine Wirkung mehr.
 
-# Feste Einheit statt Hostname (Testserver: alle Aufrufe unter /webseite/ gehören zu
+# Feste Einheit statt Hostname (Testserver: alle Aufrufe unter /vereinsseite/ gehören zu
 # dieser Domain aus HUBIplan)
 SITE_HOST_OVERRIDE = os.environ.get("SITE_HOST_OVERRIDE", "").strip().lower()
-# Pfad, unter dem die Seite läuft (Testserver: /webseite), sonst leer
+# Pfad, unter dem die Seite läuft (Testserver: /vereinsseite), sonst leer
 BASE_PATH = os.environ.get("BASE_PATH", "").rstrip("/")
 FORCE_SCRIPT_NAME = BASE_PATH or None
 # Allgemeiner Wartungsschalter (z. B. beim Ausrollen): Umgebungsvariable oder Datei
