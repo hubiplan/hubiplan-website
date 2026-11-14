@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 from django import template
 from django.urls import NoReverseMatch, reverse
-from django.utils.formats import date_format
+from django.utils.formats import date_format, number_format
 from django.utils.html import format_html, json_script
 from django.utils.translation import get_language, gettext_noop
 from django.utils.translation import gettext as _
@@ -470,3 +470,27 @@ def seite_texte():
     if (get_language() or "de")[:2] == "de":
         return ""
     return json_script({t: _(t) for t in JS_TEXTE}, "seite-texte")
+
+
+@register.filter
+def euro(value) -> str:
+    """Ganzer Euro-Betrag mit Tausenderpunkt in der Sprache der Seite (Spendenaufruf)."""
+    try:
+        amount = int(value)
+    except (TypeError, ValueError):
+        return ""
+    text = number_format(amount, force_grouping=True)
+    return f"€{text}" if (get_language() or "de")[:2] == "en" else f"{text} €"
+
+
+@register.filter
+def iban(value) -> str:
+    """IBAN in Vierergruppen zum Lesen und Abschreiben."""
+    raw = re.sub(r"\s", "", value or "")
+    return " ".join(raw[i : i + 4] for i in range(0, len(raw), 4))
+
+
+@register.filter
+def hat_art(abschnitte, kind: str) -> bool:
+    """Gibt es unter den Abschnitten einen dieser Art? (z. B. Bilder → Bildfenster laden)"""
+    return any(isinstance(s, dict) and s.get("kind") == kind for s in abschnitte or [])

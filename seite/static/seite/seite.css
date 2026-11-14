@@ -600,6 +600,52 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .termin-gross .countdown { font-family: var(--schrift-titel); font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; margin: .2rem 0 .4rem; color: var(--farbe-datum); }
 .abschnitt-farbig.termin-gross .countdown { color: inherit; }
 .termin-gross-titel { font-weight: 600; font-size: 1.15rem; }
+/* Weitere Abschnitte (HUBIplan ab 14.11.2026) */
+.mitglied-werden-abschnitt { text-align: center; }
+.spende-stand { margin: .6rem 0 1rem; }
+.spende-balken { height: .9rem; border-radius: 999px; background: color-mix(in srgb, currentColor 14%, transparent); overflow: hidden; }
+.spende-balken span { display: block; height: 100%; background: var(--primaer); border-radius: inherit; }
+.abschnitt-farbig .spende-balken span { background: currentColor; }
+.spende-konto { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; margin: 0 0 1rem; }
+.spende-konto dt { font-weight: 600; }
+.spende-konto dd { margin: 0; }
+.spende-konto .iban { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.zeiten-liste, .programm-liste { margin: 0 0 .8rem; }
+.zeiten-liste > div, .programm-liste > div { display: grid; grid-template-columns: minmax(6rem, 30%) 1fr; gap: .2rem 1rem; padding: .45rem 0; border-bottom: 1px solid var(--linie); }
+.programm-liste > div { grid-template-columns: 5rem 1fr; }
+.zeiten-liste dt, .programm-liste dt { font-weight: 600; }
+.zeiten-liste dd, .programm-liste dd { margin: 0; }
+.programm-liste dt { font-variant-numeric: tabular-nums; }
+.spalten-paar { display: grid; gap: 1rem 2rem; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); }
+.spalten-paar h3 { margin-top: 0; }
+.tabelle-rahmen { overflow-x: auto; }
+.zeitstrahl-liste { list-style: none; padding: 0 0 0 1.2rem; margin: 0 0 1rem; border-left: 3px solid var(--farbe-zier); display: grid; gap: .9rem; }
+.zeitstrahl-liste li { position: relative; }
+.zeitstrahl-liste li::before { content: ""; position: absolute; left: calc(-1.2rem - 7.5px); top: .35rem; width: 12px; height: 12px; border-radius: 50%; background: var(--farbe-zier); }
+.zeitstrahl-wann { display: block; font-weight: 700; color: var(--farbe-datum); }
+.abschnitt-farbig .zeitstrahl-wann { color: inherit; }
+.zeitstrahl-liste p { margin: .2rem 0 0; }
+.hinweis-kasten { border-left: 5px solid var(--hk-farbe); background: color-mix(in srgb, var(--hk-farbe) 10%, var(--flaeche)); color: var(--text); border-radius: var(--rund); padding: .9rem 1.2rem; }
+.hinweis-kasten h2 { margin-top: 0; font-size: 1.2rem; }
+.hinweis-kasten .text > :last-child { margin-bottom: 0; }
+.hinweis-info { --hk-farbe: #2f6690; }
+.hinweis-warning { --hk-farbe: #b5651d; }
+.hinweis-success { --hk-farbe: #2e7d32; }
+.bilder-abschnitt figure { margin: 0; }
+.bilder-abschnitt figcaption { margin-top: .25rem; }
+@media (min-width: 40rem) {
+  .galerie-bilder.bilder-spalten-2 { grid-template-columns: repeat(2, 1fr); }
+  .galerie-bilder.bilder-spalten-3 { grid-template-columns: repeat(3, 1fr); }
+  .galerie-bilder.bilder-spalten-4 { grid-template-columns: repeat(4, 1fr); }
+}
+.download-liste { list-style: none; padding: 0; margin: 0 0 1rem; }
+.download-liste li { padding: .45rem 0; border-bottom: 1px solid var(--linie); }
+.download-liste a { font-weight: 600; }
+.app-inhalt { display: grid; gap: 1rem 2rem; grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 40rem) { .app-inhalt:has(.app-qr) { grid-template-columns: 1fr auto; } }
+.app-qr { margin: 0; text-align: center; }
+.app-qr svg { width: 9rem; height: 9rem; background: #fff; border-radius: var(--rund); }
+.wettbewerb-abschnitt h2 + .termin-gross-titel { margin-top: -.4rem; }
 /* Countdown (laufender Zähler, countdown.js) */
 .countdown-abschnitt { text-align: center; }
 .countdown-zaehler[hidden], .countdown-abschnitt[hidden] { display: none; }

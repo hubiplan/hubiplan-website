@@ -189,21 +189,20 @@ def _posts(
         items = site.get("posts/?" + "&".join(query)).get("posts", [])
     except api.NotFound:
         return []
-    result = []
-    for p in items:
-        when = parse_datetime(p["published_at"]) if p.get("published_at") else None
-        permalink = p.get("permalink") or ""
-        if not permalink.startswith("https://"):
-            permalink = ""
-        result.append(
-            {
-                **p,
-                "when": timezone.localtime(when) if when else None,
-                "permalink": permalink,
-                "images": [i for i in p.get("images") or [] if i.get("url")],
-            }
-        )
-    return result
+    return [_post(p) for p in items if isinstance(p, dict)]
+
+
+def _post(p: dict) -> dict:
+    when = parse_datetime(p["published_at"]) if p.get("published_at") else None
+    permalink = p.get("permalink") or ""
+    if not permalink.startswith("https://"):
+        permalink = ""
+    return {
+        **p,
+        "when": timezone.localtime(when) if when else None,
+        "permalink": permalink,
+        "images": [i for i in p.get("images") or [] if i.get("url")],
+    }
 
 
 def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:
@@ -335,6 +334,23 @@ CUSTOM_SECTIONS = {
     "facts": "zahlen",
     "divider": "trenner",
     "countdown": "countdown",
+    "join": "mitglied",
+    "donation": "spende",
+    "hours": "zeiten",
+    "columns": "spalten",
+    "table": "tabelle",
+    "timeline": "zeitstrahl",
+    "program": "programm",
+    "callout": "hinweis_kasten",
+    "accordion": "aufklappbar",
+    "images": "bilder",
+    "downloads": "downloads",
+    "unit_honors": "majestaeten_einheit",
+    "competition": "wettbewerb",
+    "albums": "alben",
+    "posts": "neueste_beitraege",
+    "app": "app",
+    "live_facts": "zahlen",
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 PALETTE_BG = re.compile(r"^p([0-9])$")
@@ -451,6 +467,21 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             if countdown is None:
                 continue
             entry.update(countdown)
+        elif kind == "posts":
+            posts = [_post(p) for p in s.get("posts") or [] if isinstance(p, dict)]
+            if not posts:
+                continue
+            entry["posts"] = posts
+        elif kind == "competition":
+            comp = s.get("competition")
+            if not isinstance(comp, dict) or not TOKEN.match(str(comp.get("id", ""))):
+                continue
+            entry["competition"] = _with_date(comp)
+        elif kind == "app":
+            login = s.get("login_url") if isinstance(s.get("login_url"), str) else ""
+            if not login.startswith(("https://", "http://")):
+                continue
+            entry["qr_svg"] = _qr_svg(login) if s.get("qr") else ""
         elif kind == "event_list":
             events = [e for e in map(_event, s.get("events") or []) if e is not None]
             if not events:

@@ -1,0 +1,7 @@
+{% load seite %}<section{% abschnitt "zeiten" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <dl class="zeiten-liste">{% for z in abschnitt.items %}
+    <div><dt>{{ z.day }}</dt><dd>{{ z.time }}{% if z.note %} <span class="klein">{{ z.note }}</span>{% endif %}</dd></div>{% endfor %}
+  </dl>
+  {% if abschnitt.text %}<p class="klein">{{ abschnitt.text }}</p>{% endif %}
+</section>
