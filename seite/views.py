@@ -139,8 +139,11 @@ def site_view(*, maintenance_ok: bool = False):
 # --- Termine ---
 
 
-def _event(e) -> dict | None:
-    """Termin aus HUBIplan mit Beginn und Ende in Ortszeit (None ohne Beginn)."""
+def _event(e, site: Site | None = None) -> dict | None:
+    """Termin aus HUBIplan mit Beginn und Ende in Ortszeit (None ohne Beginn).
+
+    ``anhaenge``: in HUBIplan einzeln für die Webseite freigegebene Anhänge, über diese
+    Seite ausgeliefert (ältere Stände von HUBIplan liefern keine)."""
     if not isinstance(e, dict):
         return None
     start = parse_datetime(e["starts_at"]) if e.get("starts_at") else None
@@ -149,14 +152,19 @@ def _event(e) -> dict | None:
         return None
     start = timezone.localtime(start)
     end = timezone.localtime(end) if end else None
-    return {**e, "start": start, "end": end}
+    files = []
+    for a in (e.get("attachments") or []) if site is not None else []:
+        url = site.local(a.get("url")) if isinstance(a, dict) else None
+        if url:
+            files.append({"name": a.get("name") or "", "kind": a.get("kind") or "", "url": url})
+    return {**e, "start": start, "end": end, "anhaenge": files}
 
 
 def _events(site: Site, unit: str | None = None) -> list[dict]:
     path = "events/" + (f"?einheit={unit}" if unit else "")
     events = []
     for e in site.get(path).get("events", []):
-        event = _event(e)
+        event = _event(e, site)
         if event is not None:
             events.append(event)
     events.sort(key=lambda e: e["start"])
@@ -456,7 +464,7 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             continue
         entry = {**s, "vorlage": f"seite/start/{name}.html", **_look(site, s)}
         if kind == "event":
-            event = _event(s.get("event"))
+            event = _event(s.get("event"), site)
             if event is None:
                 continue
             # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
@@ -483,7 +491,8 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
                 continue
             entry["qr_svg"] = _qr_svg(login) if s.get("qr") else ""
         elif kind == "event_list":
-            events = [e for e in map(_event, s.get("events") or []) if e is not None]
+            events = [_event(e, site) for e in s.get("events") or []]
+            events = [e for e in events if e is not None]
             if not events:
                 continue
             entry["events"] = events
@@ -1404,7 +1413,7 @@ def _host(request) -> str:
 ALLOWED_API_FILES = re.compile(
     r"^(images/[A-Za-z0-9_\-]{4,40}/|photos/[a-f0-9]{20}/|honors/photos/[a-f0-9]{20}/"
     r"|posts/images/[A-Za-z0-9_\-]{4,40}/|statute/preview/|fee-rules/preview/"
-    r"|founding-deed/preview/|files/[A-Za-z0-9_\-]{8,24}/"
+    r"|founding-deed/preview/|files/[A-Za-z0-9_\-]{8,24}/|events/attachments/[0-9]{1,12}/"
     # Favicon und Handy-Symbol (Wappen quadratisch, Ralf 09.11.2026)
     r"|icon-(?:32|180|192|512)\.png)$"
 )
@@ -1461,8 +1470,9 @@ def media(request, kind: str, path: str):
     except api.Unavailable:
         return HttpResponse(status=503)
     ctype = res.content_type.split(";")[0].strip()
-    # PDF nur bei Dokumenten der Webseite (Pressespiegel, Ralf 05.11.)
-    pdf_ok = kind == "a" and path.startswith("files/")
+    # PDF nur bei Dokumenten der Webseite (Pressespiegel, Ralf 05.11.) und freigegebenen
+    # Anhängen öffentlicher Termine (Ralf 14.11.)
+    pdf_ok = kind == "a" and path.startswith(("files/", "events/attachments/"))
     if ctype not in ("image/png", "image/jpeg", "image/webp") and not (
         pdf_ok and ctype == "application/pdf"
     ):

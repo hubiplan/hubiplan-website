@@ -943,3 +943,5 @@ msgstr "App on Google Play"
 
 msgid "Mit dem Handy scannen und anmelden"
 msgstr "Scan with your phone and sign in"
+msgid "Unterlagen:"
+msgstr "Documents:"
