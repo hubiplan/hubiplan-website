@@ -579,3 +579,13 @@ def test_kleine_ueberschriften_groesser_als_fliesstext():
         stil,
     )
     assert klein >= h2
+
+
+def test_eckig_auch_im_menue_105():
+    css = (STATIC / "stil.css").read_text()
+    regel = css[css.index('html[data-st-corners="square"] :is(.menue-breit a') :]
+    kopf, rumpf = regel.split("{", 1)
+    teile = (".menue-breit a", ".menue-breit summary", ".menue a", ".menue summary", ".kopf-suche")
+    for teil in teile:
+        assert teil in kopf
+    assert rumpf.split("}", 1)[0].strip() == "border-radius: 0 !important;"
