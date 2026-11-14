@@ -1,0 +1,8 @@
+{% load seite i18n %}{% with c=abschnitt.competition %}{% if c %}<section{% abschnitt "wettbewerb-abschnitt" %}>
+  <h2>{{ abschnitt.title|default:c.title }}</h2>
+  {% if abschnitt.title %}<p class="termin-gross-titel">{{ c.title }}</p>{% endif %}
+  <p class="klein">{{ c.date|datum }}{% if c.live %} <span class="zustand live">{% translate "live" %}</span>{% elif c.provisional %} <span class="zustand">{% translate "vorläufig" %}</span>{% endif %}</p>
+  {% for s in c.scorings %}{% if s.rows %}<p><strong>{{ s.scoring }}:</strong> {% for r in s.rows %}{{ r.place }}. {{ r.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}{% endfor %}
+  {% for p in c.prizes %}<p><strong>{{ p.name }}:</strong> {{ p.winner|default:p.unit }}</p>{% endfor %}
+  <p><a class="knopf" href="{% url 'ergebnis' c.id %}">{% translate "Alle Ergebnisse dieses Wettbewerbs" %}</a></p>
+</section>{% endif %}{% endwith %}

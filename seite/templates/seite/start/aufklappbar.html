@@ -1,0 +1,7 @@
+{% load seite %}<section{% abschnitt "aufklappbar" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% for a in abschnitt.items %}<details class="frage">
+    <summary>{{ a.title }}</summary>
+    {% if a.text %}<div class="text">{{ a.text|md:site }}</div>{% endif %}
+  </details>{% endfor %}
+</section>

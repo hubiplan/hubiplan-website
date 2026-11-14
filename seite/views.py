@@ -197,21 +197,20 @@ def _posts(
         items = site.get("posts/?" + "&".join(query)).get("posts", [])
     except api.NotFound:
         return []
-    result = []
-    for p in items:
-        when = parse_datetime(p["published_at"]) if p.get("published_at") else None
-        permalink = p.get("permalink") or ""
-        if not permalink.startswith("https://"):
-            permalink = ""
-        result.append(
-            {
-                **p,
-                "when": timezone.localtime(when) if when else None,
-                "permalink": permalink,
-                "images": [i for i in p.get("images") or [] if i.get("url")],
-            }
-        )
-    return result
+    return [_post(p) for p in items if isinstance(p, dict)]
+
+
+def _post(p: dict) -> dict:
+    when = parse_datetime(p["published_at"]) if p.get("published_at") else None
+    permalink = p.get("permalink") or ""
+    if not permalink.startswith("https://"):
+        permalink = ""
+    return {
+        **p,
+        "when": timezone.localtime(when) if when else None,
+        "permalink": permalink,
+        "images": [i for i in p.get("images") or [] if i.get("url")],
+    }
 
 
 def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:
@@ -342,6 +341,24 @@ CUSTOM_SECTIONS = {
     "chronicle": "chronik",
     "facts": "zahlen",
     "divider": "trenner",
+    "countdown": "countdown",
+    "join": "mitglied",
+    "donation": "spende",
+    "hours": "zeiten",
+    "columns": "spalten",
+    "table": "tabelle",
+    "timeline": "zeitstrahl",
+    "program": "programm",
+    "callout": "hinweis_kasten",
+    "accordion": "aufklappbar",
+    "images": "bilder",
+    "downloads": "downloads",
+    "unit_honors": "majestaeten_einheit",
+    "competition": "wettbewerb",
+    "albums": "alben",
+    "posts": "neueste_beitraege",
+    "app": "app",
+    "live_facts": "zahlen",
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 PALETTE_BG = re.compile(r"^p([0-9])$")
@@ -404,6 +421,35 @@ def _layout(site: Site) -> list[dict]:
     return _layout_entries(site, layout)
 
 
+def _countdown(s: dict) -> dict | None:
+    """Countdown (HUBIplan ab 14.11.2026): Ziel mit Zeitzone; der Browser zählt weiter
+    (countdown.js). Ohne Skript steht der Stand beim Laden da. Nach Ablauf verschwindet
+    der Abschnitt, außer HUBIplan schickt einen Text dafür."""
+    after = s.get("after_text") if isinstance(s.get("after_text"), str) else ""
+    target = (
+        parse_datetime(s["target"]) if isinstance(s.get("target"), str) and s["target"] else None
+    )
+    if target is not None and timezone.is_naive(target):
+        target = None
+    texte = {k: s.get(k) if isinstance(s.get(k), str) else "" for k in ("title", "name", "text")}
+    now = timezone.now()
+    if target is None or target <= now:
+        return {**texte, "ziel": None, "danach": after} if after else None
+    left = int((target - now).total_seconds())
+    return {
+        **texte,
+        "ziel": timezone.localtime(target),
+        "ziel_iso": target.isoformat(),
+        "danach": after,
+        "rest": {
+            "tage": left // 86400,
+            "stunden": left % 86400 // 3600,
+            "minuten": left % 3600 // 60,
+            "sekunden": left % 60,
+        },
+    }
+
+
 def _layout_entries(site: Site, layout: list) -> list[dict]:
     result = []
     for s in layout:
@@ -424,6 +470,26 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
             entry["event"] = event
             entry["tage"] = (event["start"].date() - timezone.localdate()).days
+        elif kind == "countdown":
+            countdown = _countdown(s)
+            if countdown is None:
+                continue
+            entry.update(countdown)
+        elif kind == "posts":
+            posts = [_post(p) for p in s.get("posts") or [] if isinstance(p, dict)]
+            if not posts:
+                continue
+            entry["posts"] = posts
+        elif kind == "competition":
+            comp = s.get("competition")
+            if not isinstance(comp, dict) or not TOKEN.match(str(comp.get("id", ""))):
+                continue
+            entry["competition"] = _with_date(comp)
+        elif kind == "app":
+            login = s.get("login_url") if isinstance(s.get("login_url"), str) else ""
+            if not login.startswith(("https://", "http://")):
+                continue
+            entry["qr_svg"] = _qr_svg(login) if s.get("qr") else ""
         elif kind == "event_list":
             events = [_event(e, site) for e in s.get("events") or []]
             events = [e for e in events if e is not None]

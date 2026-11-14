@@ -1,0 +1,8 @@
+{% load seite %}<section{% abschnitt "festprogramm" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% for tag in abschnitt.days %}{% if tag.day %}<h3>{{ tag.day }}</h3>{% endif %}
+  <dl class="programm-liste">{% for p in tag.items %}
+    <div><dt>{{ p.time }}</dt><dd>{{ p.text }}</dd></div>{% endfor %}
+  </dl>{% endfor %}
+  {% if abschnitt.text %}<p class="klein">{{ abschnitt.text }}</p>{% endif %}
+</section>

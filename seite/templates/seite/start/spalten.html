@@ -1,0 +1,6 @@
+{% load seite %}<section{% abschnitt "zwei-spalten" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <div class="spalten-paar">{% for sp in abschnitt.items %}
+    <div>{% if sp.title %}<h3>{{ sp.title }}</h3>{% endif %}{% if sp.text %}<div class="text">{{ sp.text|md:site }}</div>{% endif %}</div>{% endfor %}
+  </div>
+</section>

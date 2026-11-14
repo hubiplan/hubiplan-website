@@ -1,0 +1,5 @@
+{% load seite i18n %}<section{% abschnitt "neueste-beitraege" %}>
+  <h2>{{ abschnitt.title|default:_("Neueste Beiträge") }}</h2>
+  {% include "seite/beitraege.html" with beitraege=abschnitt.posts %}
+  <p><a class="knopf" href="{% url 'aktuelles' %}{% if abschnitt.channel == 'instagram' or abschnitt.channel == 'facebook' %}?kanal={{ abschnitt.channel }}{% endif %}">{% translate "Alle Beiträge" %}</a></p>
+</section>
