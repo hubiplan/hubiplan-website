@@ -104,6 +104,10 @@ def kapelle(hubiplan):
                     "title": "Anfahrt",
                     "text": "Mit dem Bus zum Park.",
                 },
+                {"kind": "home", "key": "c:k1", "title": "", "text": "Picknick im Park"},
+                {"kind": "unit", "slug": "jaegerzug", "title": "Jägerzug", "text": "Parkfest"},
+                {"kind": "intro", "area": "events", "title": "", "text": "Im Park"},
+                {"kind": "intro", "area": "unbekannt", "title": "Fällt weg"},
                 {"kind": "unbekannt", "title": "Fällt weg"},
             ],
         },
@@ -171,7 +175,11 @@ def test_suche(client, kapelle):
     html = text(client.get("/suche/?q=park"))
     assert 'href="/presse/"' in html and 'href="/seite/anfahrt/"' in html
     assert "Fällt weg" not in html
-    assert "2 Treffer" in html
+    assert "5 Treffer" in html
+    # Startseite, Untereinheit und Einleitung eines Bereichs (HUBIplan ab 14.11.2026)
+    assert '<a href="/"><strong>Startseite</strong></a>' in html
+    assert 'href="/zuege/jaegerzug/"' in html or 'href="/einheiten/jaegerzug/"' in html
+    assert '<a href="/termine/"><strong>Termine</strong></a>' in html
     leer = text(client.get("/suche/"))
     assert "Treffer" not in leer and 'name="q"' in leer
 

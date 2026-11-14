@@ -983,7 +983,31 @@ def _search_url(site: Site, hit: dict) -> str | None:
         return reverse("dokumente")
     if kind == "event":
         return reverse("termine")
+    # Startseite, Untereinheiten und Einleitungen der Bereiche (HUBIplan ab 14.11.2026)
+    if kind == "home":
+        return reverse("start")
+    if kind == "unit" and hit.get("slug"):
+        return reverse("einheit", kwargs={"pfad": site.units_path, "slug": hit["slug"]})
+    if kind == "intro":
+        if hit.get("area") == "units":
+            return reverse("einheiten", kwargs={"pfad": site.units_path})
+        name = {"board": "vorstand", "events": "termine", "gallery": "galerie"}.get(hit.get("area"))
+        return reverse(name) if name else None
     return None
+
+
+def _search_title(site: Site, hit: dict) -> str:
+    """Überschrift für Treffer ohne eigene, etwa ein Banner der Startseite."""
+    if hit.get("kind") == "home":
+        return _("Startseite")
+    if hit.get("kind") == "intro":
+        area = hit.get("area")
+        if area == "units":
+            return site.info.get("unit_label_plural") or ""
+        return {"board": _("Vorstand"), "events": _("Termine"), "gallery": _("Galerie")}.get(
+            area, ""
+        )
+    return ""
 
 
 @require_GET
@@ -1000,6 +1024,8 @@ def search(request, site: Site):
             if not url:
                 continue
             start = parse_datetime(h["starts_at"]) if h.get("starts_at") else None
+            if not h.get("title"):
+                h = {**h, "title": _search_title(site, h)}
             hits.append({**h, "url": url, "start": timezone.localtime(start) if start else None})
     return _page(request, "seite/suche.html", site, {"query": query, "treffer": hits})
 

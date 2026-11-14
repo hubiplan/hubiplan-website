@@ -344,6 +344,9 @@ msgstr "(won outright)"
 msgid "Zur Startseite"
 msgstr "To the home page"
 
+msgid "Startseite"
+msgstr "Home page"
+
 msgid "Impressum ·"
 msgstr "Legal notice ·"
 
