@@ -12,9 +12,17 @@ def hubiplan(monkeypatch):
     monkeypatch.setattr(api, "_request", fake)
     cache.clear()
     caches["bilder"].clear()
+    caches["varianten"].clear()
     yield fake
     cache.clear()
     caches["bilder"].clear()
+    caches["varianten"].clear()
+
+
+@pytest.fixture(autouse=True)
+def _neu_holen_im_aufruf(settings):
+    # Hintergrund-Auffrischung (seite/api.py) prüft test_ladezeiten.py eigens
+    settings.REFRESH_IN_BACKGROUND = False
 
 
 @pytest.fixture(autouse=True)

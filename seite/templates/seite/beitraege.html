@@ -4,7 +4,7 @@
   <li class="beitrag karte">
     {% if p.images %}{% with b=p.images.0 %}{% lokal site b.url as bild %}{% if bild %}
     <figure class="beitrag-bild{% if b.is_video %} beitrag-video{% endif %}">
-      <img src="{{ bild }}" alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %} loading="lazy">
+      <img src="{{ bild }}"{% bildsatz site b "(max-width: 40rem) 100vw, 40rem" %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %} loading="lazy">
       {% if b.is_video %}<span class="beitrag-marke">{% translate "Video" %}</span>{% elif p.images|length > 1 %}<span class="beitrag-marke">{{ p.images|length }} Bilder</span>{% endif %}
     </figure>{% endif %}{% endwith %}{% endif %}
     {% if p.images|length > 1 %}<ul class="beitrag-weitere">{% for b in p.images|slice:"1:5" %}{% lokal site b.url as bild %}{% if bild %}<li><img src="{{ bild }}?size=small" alt="{{ b.alt }}" loading="lazy"></li>{% endif %}{% endfor %}</ul>{% endif %}

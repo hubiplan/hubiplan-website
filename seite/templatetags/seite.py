@@ -31,6 +31,39 @@ def lokal(site, url):
     return site.local(url) if site is not None else None
 
 
+def _with_query(url: str, query: str) -> str:
+    return f"{url}{'&' if '?' in url else '?'}{query}"
+
+
+@register.simple_tag
+def bildsatz(site, image, sizes="100vw"):
+    """``srcset``/``sizes`` für ein Webseitenbild aus HUBIplan (Ladezeiten 14.11.): klein
+    (800 px), mittel (1200 px, von der Webseite gerechnet) und groß. Leer, wenn das Bild
+    ohnehin klein ist oder keine kleine Fassung hat."""
+    if site is None or not isinstance(image, dict):
+        return ""
+    url = site.local(image.get("url"))
+    small = site.local(image.get("small_url"))
+    width = image.get("width") or 0
+    if not url or not small or not isinstance(width, int) or width <= 800:
+        return ""
+    parts = [f"{small} 800w"]
+    if width > 1200:
+        parts.append(f"{_with_query(url, 'size=medium')} 1200w")
+    parts.append(f"{url} {width}w")
+    return format_html(' srcset="{}" sizes="{}"', ", ".join(parts), sizes)
+
+
+@register.simple_tag
+def logo_url(site, url, breite=120):
+    """Logo in der Größe für die Anzeige (doppelte Breite für scharfe Handys) statt bis
+    1024 px aus HUBIplan (Ladezeiten 14.11.)."""
+    local = site.local(url) if site is not None else None
+    if not local or "/medien/m/" not in local:
+        return local
+    return _with_query(local, f"w={int(breite)}")
+
+
 @register.simple_tag
 def einheiten_url(site):
     return reverse("einheiten", kwargs={"pfad": site.units_path})

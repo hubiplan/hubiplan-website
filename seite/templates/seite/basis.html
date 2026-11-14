@@ -10,7 +10,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="{% url 'medien' 'a' 'icon-192.png' %}">
 <link rel="apple-touch-icon" href="{% url 'medien' 'a' 'icon-180.png' %}">{% endif %}
 {% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}}</style>{% endwith %}
-{% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}
+{% for schrift in site.preload_fonts %}<link rel="preload" href="{% static schrift %}" as="font" type="font/woff2" crossorigin>
+{% endfor %}{% if site.package %}{% if site.package_has_css %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% endif %}{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}
 {% if site.style %}{# Stilregler aus HUBIplan; Regeln greifen nur bei gesetzten data-st-… #}<link rel="stylesheet" href="{% static 'seite/stil.css' %}">{% endif %}
 {% if site.gradients %}{# Verläufe je Rolle (HUBIplan ab 10.11.2026) #}<link rel="stylesheet" href="{% static 'seite/verlauf.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}

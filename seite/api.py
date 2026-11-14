@@ -144,9 +144,19 @@ def get(
         return _result(*hit[1])
     lock = _lock_for(ck)
     if hit is not None and 0 <= age < ttl + STALE_SECONDS:
-        # Abgelaufen: Ein Thread holt neu, die anderen nehmen so lange den alten Stand,
-        # statt HUBIplan gleichzeitig mit denselben teuren Abrufen zu treffen
+        # Abgelaufen, aber noch recht frisch: Der Besucher bekommt sofort den letzten Stand,
+        # neu geholt wird im Hintergrund (Ladezeiten 14.11., sonst wartet nach einer
+        # Ruhepause der erste Besucher 0,25 bis 0,5 s). Holt schon ein anderer Thread,
+        # bleibt es beim alten Stand, statt HUBIplan doppelt zu fragen.
         if not lock.acquire(blocking=False):
+            return _result(*hit[1])
+        if settings.REFRESH_IN_BACKGROUND:
+            try:
+                threading.Thread(
+                    target=_refresh, args=(ck, full, path, hit, ttl, lock), daemon=True
+                ).start()
+            except RuntimeError:  # kein Thread möglich: Sperre freigeben, Stand bleibt
+                lock.release()
             return _result(*hit[1])
     elif not lock.acquire(timeout=settings.API_TIMEOUT):
         return _result(*_fetch_or_stale(full, path, hit)[0])
@@ -158,6 +168,21 @@ def get(
         if fresh and result[0] in (200, 404, 503):
             cache.set(ck, (_now(), result), settings.STALE_IF_ERROR_SECONDS)
         return _result(*result)
+    finally:
+        lock.release()
+
+
+def _refresh(ck: str, full: str, path: str, hit, ttl: int, lock: threading.Lock) -> None:
+    """Abgelaufenen Stand im Hintergrund neu holen (``lock`` ist schon gehalten)."""
+    try:
+        again = cache.get(ck)
+        if again is not None and 0 <= _now() - again[0] < ttl:
+            return
+        result, fresh = _fetch_or_stale(full, path, again or hit)
+        if fresh and result[0] in (200, 404, 503):
+            cache.set(ck, (_now(), result), settings.STALE_IF_ERROR_SECONDS)
+    except Exception:  # Hintergrund: der nächste Aufruf versucht es wieder
+        log.warning("Neu holen im Hintergrund fehlgeschlagen: %s", path, exc_info=True)
     finally:
         lock.release()
 
@@ -181,8 +206,10 @@ def _now() -> float:
     return time.time()
 
 
-# So lange darf ein abgelaufener Stand noch dienen, während ein anderer Thread neu holt
-STALE_SECONDS = 600
+# So lange nach Ablauf dient der letzte Stand noch, während im Hintergrund neu geholt wird
+# (bis 14.11. 600 s und nur für gleichzeitige Aufrufe). Danach wartet der Aufruf auf HUBIplan.
+# Mit CACHE_SECONDS zusammen höchstens 15 Minuten (Fachfrage 10 zum Gesamtaudit 10.11.).
+STALE_SECONDS = 780
 # Zuordnung Hostname → Webseite so lange ohne Rückfrage
 RESOLVE_SECONDS = 300
 _locks: dict[str, threading.Lock] = {}

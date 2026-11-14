@@ -409,6 +409,8 @@ class FakeHubiplan:
     # HUBIplan nicht erreichbar (z. B. beim Ausrollen): None, "weg" (keine Verbindung)
     # oder ein Statuscode wie 502
     ausfall: object = None
+    # Dateien unter /media/ (Logos), sonst ein 1×1-PNG
+    medien: dict = field(default_factory=dict)
 
     def __call__(self, method, path, *, data=None, preview=None, base=None):
         self.calls.append((method, path, preview))
@@ -425,7 +427,7 @@ class FakeHubiplan:
                 return self.json({"key": self.hosts[host], "version": 1})
             return self.json({"detail": "nicht gefunden"}, 404)
         if path.startswith("/media/"):
-            return api.Response(200, PNG, "image/png")
+            return self.medien.get(path[len("/media/") :]) or api.Response(200, PNG, "image/png")
         if not path.startswith(prefix):
             return self.json({}, 404)
         rest = path[len(prefix) :]

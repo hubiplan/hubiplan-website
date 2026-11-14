@@ -1,5 +1,5 @@
 {% load seite i18n %}{% with link=abschnitt.url|web_ziel %}{% if link %}<section{% abschnitt "video-link" %}>
   {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
-  {% lokal site abschnitt.image.url as bild %}<a class="video-vorschau" href="{{ link }}" target="_blank" rel="noopener noreferrer">{% if bild %}<img src="{{ bild }}" alt="" loading="lazy"{% if abschnitt.image.width %} width="{{ abschnitt.image.width }}" height="{{ abschnitt.image.height }}"{% endif %}>{% endif %}<span class="video-knopf"><span aria-hidden="true">▶</span> {% translate "Video ansehen" %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></span></a>
+  {% lokal site abschnitt.image.url as bild %}<a class="video-vorschau" href="{{ link }}" target="_blank" rel="noopener noreferrer">{% if bild %}<img src="{{ bild }}"{% bildsatz site abschnitt.image "(max-width: 64rem) 100vw, 64rem" %} alt="" loading="lazy"{% if abschnitt.image.width %} width="{{ abschnitt.image.width }}" height="{{ abschnitt.image.height }}"{% endif %}>{% endif %}<span class="video-knopf"><span aria-hidden="true">▶</span> {% translate "Video ansehen" %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></span></a>
   {% if abschnitt.text %}<p>{{ abschnitt.text|linebreaksbr }}</p>{% endif %}
 </section>{% endif %}{% endwith %}

@@ -3,6 +3,6 @@
 <section{% abschnitt "begruessung begruessung-bilder" %}>{% include "seite/karussell.html" with bilder=greeting.gallery takt=greeting.gallery_interval zufall=greeting.gallery_random %}{% if site.hero_name %}<p class="titel-name" aria-hidden="true">{{ site.info.name }}</p>{% endif %}</section>
 {% else %}
 {% lokal site greeting.image.url as bild %}
-{% if bild %}<section{% abschnitt "begruessung begruessung-bilder" %}><figure class="titelbild"><img src="{{ bild }}" alt="{{ greeting.image.alt }}"{% if greeting.image.width %} width="{{ greeting.image.width }}" height="{{ greeting.image.height }}"{% endif %}>{% if greeting.image.caption %}<figcaption>{{ greeting.image.caption }}</figcaption>{% endif %}</figure>{% if site.hero_name %}<p class="titel-name" aria-hidden="true">{{ site.info.name }}</p>{% endif %}</section>{% endif %}
+{% if bild %}<section{% abschnitt "begruessung begruessung-bilder" %}><figure class="titelbild"><img src="{{ bild }}"{% bildsatz site greeting.image %} alt="{{ greeting.image.alt }}" fetchpriority="high"{% if greeting.image.width %} width="{{ greeting.image.width }}" height="{{ greeting.image.height }}"{% endif %}>{% if greeting.image.caption %}<figcaption>{{ greeting.image.caption }}</figcaption>{% endif %}</figure>{% if site.hero_name %}<p class="titel-name" aria-hidden="true">{{ site.info.name }}</p>{% endif %}</section>{% endif %}
 {% endif %}
 {% endif %}

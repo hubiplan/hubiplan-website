@@ -1113,6 +1113,7 @@ def test_bilderkarussell_kleine_fassung(client, hubiplan):
     html = text(client.get("/"))
     assert (
         'srcset="/medien/a/images/festbild1-v2/?size=small 800w, '
+        "/medien/a/images/festbild1-v2/?size=medium 1200w, "
         '/medien/a/images/festbild1-v2/ 2000w"'
     ) in html
 
