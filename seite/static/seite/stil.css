@@ -55,6 +55,15 @@ html main .abschnitt-farbig h2 { border-bottom-color: currentColor; }
 /* Größere Überschriften (Webseite #89): Seitentitel und Abschnittstitel */
 html[data-st-heading-size="large"] main h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); }
 html[data-st-heading-size="large"] main h2:not(.aemter h2, .hinweis-kasten h2, .spalte-seite h2) { font-size: 1.55rem; }
+/* Größe des Seitentitels allein (Webseite #96): geht vor „Größe der Überschriften“ und reicht
+   auch nach unten, damit der Titel nicht größer wirkt als der Vereinsname im Kopf. Jede Stufe
+   schrumpft in schmalen Fenstern mit; das Band (page_title) wird bei kleinem Titel flacher. */
+html[data-st-title-size="small"] main h1 { font-size: clamp(1.2rem, 3.2vw, 1.5rem); }
+html[data-st-title-size="medium"] main h1 { font-size: clamp(1.3rem, 3.7vw, 1.75rem); }
+html[data-st-title-size="normal"] main h1 { font-size: clamp(1.6rem, 4.5vw, 2.3rem); }
+html[data-st-title-size="large"] main h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); }
+html[data-st-title-size="small"] { --st-band-polster: .7rem; }
+html[data-st-title-size="medium"] { --st-band-polster: .85rem; }
 
 /* Schmuckschrift für die Überschrift der Begrüßung (Great Vibes, SIL OFL 1.1) */
 html[data-st-script-greeting="on"] .begruessung h1 {
@@ -432,7 +441,7 @@ html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([dat
 html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {
   background: var(--farbe-band); color: var(--auf-band); border-radius: 0; max-width: none;
   margin: .3em calc(50% - 50vw) 1.1rem;
-  padding: 1.1rem max(16px, calc(50vw - var(--breite) / 2 + 16px));
+  padding: var(--st-band-polster, 1.1rem) max(16px, calc(50vw - var(--breite) / 2 + 16px));
 }
 /* Textseiten: Titel in der Flucht der Textspalte */
 html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {

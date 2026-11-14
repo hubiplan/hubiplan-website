@@ -419,6 +419,39 @@ def test_feinschliff_89_neue_stufen(client, hubiplan):
         assert merkmal in tag
 
 
+def test_seitentitel_eigene_groesse(client, hubiplan):
+    """Webseite #96: Seitentitel eigens einstellbar, auch kleiner; er geht vor der Größe der
+    Überschriften, schrumpft mit dem Fenster und das Band wird bei kleinem Titel flacher."""
+    assert stil.CATALOG["title_size"] == ("small", "medium", "normal", "large")
+    hubiplan.info["style"] = {"title_size": "small", "heading_size": "large"}
+    tag = html_tag(seite(client))
+    assert 'data-st-title-size="small"' in tag and 'data-st-heading-size="large"' in tag
+    hubiplan.info["style"] = {"title_size": "tiny"}
+    assert "data-st-title-size" not in html_tag(seite(client))
+    css = (STATIC / "stil.css").read_text()
+    groessen = {}
+    for stufe in stil.CATALOG["title_size"]:
+        regel = re.search(
+            rf'html\[data-st-title-size="{stufe}"\] main h1 '
+            r"\{ font-size: clamp\(([\d.]+)rem, [\d.]+vw, ([\d.]+)rem\); \}",
+            css,
+        )
+        assert regel, stufe
+        groessen[stufe] = (float(regel.group(1)), float(regel.group(2)))
+    # Stufen steigen an, „klein“ und „mittel“ bleiben unter der Grundstellung (2,3 rem)
+    werte = [groessen[s] for s in stil.CATALOG["title_size"]]
+    assert werte == sorted(werte)
+    assert groessen["small"][1] <= 1.5 and groessen["medium"][1] <= 1.75
+    assert groessen["normal"] == (1.6, 2.3)
+    # eigene Größe steht hinter der Regel für größere Überschriften und gewinnt damit
+    assert css.index('html[data-st-heading-size="large"] main h1') < css.index(
+        'html[data-st-title-size="small"] main h1'
+    )
+    # flacheres Band
+    assert 'html[data-st-title-size="small"] { --st-band-polster: .7rem; }' in css
+    assert "padding: var(--st-band-polster, 1.1rem) max(16px," in css
+
+
 def test_feinschliff_89_regeln():
     css = (STATIC / "stil.css").read_text()
     seite_css = (STATIC / "seite.css").read_text()

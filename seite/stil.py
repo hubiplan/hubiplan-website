@@ -18,6 +18,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "heading_align": ("left", "center"),
     # Webseite #89: Überschriften etwas größer
     "heading_size": ("normal", "large"),
+    # Webseite #96: Seitentitel (h1) eigens einstellbar, auch kleiner als die Grundstellung;
+    # ohne diesen Regler gilt für den Seitentitel weiter ``heading_size``
+    "title_size": ("small", "medium", "normal", "large"),
     "script_greeting": bool,
     # Seite
     "width": ("narrow", "normal", "wide"),
