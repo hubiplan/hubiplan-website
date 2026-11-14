@@ -34,9 +34,10 @@ Veröffentlichen.
 - **Eigene Abschnitte** auf Startseite und Textseiten, mit Hintergrund und Breite: Text, Text
   mit Bild, Banner, Knopfleiste, Kacheln, hervorgehobener Termin mit Countdown, Album-Auszug,
   Zitat, Ansprechpartner, häufige Fragen, Partner und Sponsoren, Anfahrt mit Routenlink,
-  Termine einer Art, Dokument, Video als Link (ohne Einbettung), Chronik-Auszug, Zahlen und
-  Trenner
-- **Hinweisleiste** mit Zeitraum oben auf allen Seiten, **Titelbild** je Textseite
+  Termine einer Art, Dokument, Video als Link (ohne Einbettung), Chronik-Auszug, Zahlen,
+  Trenner und weitere; Bild neben, über oder unter dem Text
+- **Hinweisleiste** mit Zeitraum oben auf allen Seiten, **Titelbild** je Textseite, Seitentitel
+  auf Wunsch als Band über die ganze Breite, eigenes Kopfbild für schmale Bildschirme
 - **Mitglied werden**: Einleitung, Mitgliedsarten mit Beitrag und Link zum
   Online-Mitgliedsantrag in HUBIplan (die Eingaben macht der Besucher dort, nicht auf der
   Webseite)
@@ -46,13 +47,14 @@ Veröffentlichen.
 - **Untereinheiten** (z. B. Abteilungen oder Züge) mit eigenen Unterseiten; der Pfad folgt
   der Bezeichnung in HUBIplan
 - **Terminkalender** als Liste oder Monatskalender, Filter je Untereinheit, Kalender-Abo fürs
-  Smartphone mit QR-Code
+  Smartphone mit QR-Code; freigegebene Anhänge im Termin-Fenster
 - **Würden** mit aktuellen Trägern und Chronik, **Ehrungen**, **Geschichte** mit Chronik als
   Zeitleiste und Ämtern, Satzung, Dokumente und weitere Textseiten
 - **Belegung** von Räumen und Anlagen als Wochenansicht mit Kalender-Abo
 - für Musikvereine und Kapellen: **Mitgliederlisten** je Mitgliedsart (nur mit Einwilligung)
   und **Repertoire** aus dem Notenarchiv
-- **Suche** über Textseiten, Alben, Dokumente und Termine
+- **Suche** über alle öffentlichen Texte (Startseite, Abschnitte, Textseiten, Untereinheiten),
+  Alben, Dokumente und Termine
 - **Ergebnisse** der Wettbewerbe (wenn der Verein das Modul nutzt): Ranglisten, Reihen und
   Wanderpokale; laufende Wettbewerbe aktualisieren sich von selbst
 - **Kontaktformular**: Der Browser schickt direkt an HUBIplan, Spamschutz ohne Fremddienst
@@ -69,9 +71,12 @@ Veröffentlichen.
 - **Designpakete**: mehrere Standardlayouts (z. B. Klassisch, Festlich, Seitenleiste, Bühne,
   Zeitung), eigene Farben mit Verläufen, Kopfbild und CSS aus HUBIplan, exportier- und
   importierbar; **Feinabstimmung** mit festen Stufen statt CSS (Schrift, Breite, Abstände,
-  Ecken, Kopf, Menü, Fuß …); Farben und Wappen des Vereins, Favicon aus dem Wappen; Schriften
-  liegen auf der Seite selbst (keine fremden Server); passt sich an Monitor, Tablet und
-  Smartphone an
+  Ecken, Kopf, Menü, Fuß, dunkle Darstellung, Kontrast …); Farben und Wappen des Vereins,
+  Favicon aus dem Wappen; **Schriften zur Auswahl** (Open Sans, Roboto, Source Sans 3, Crimson
+  Pro, Oswald, Atkinson Hyperlegible, eine Fraktur und eine Schreibschrift), die auf der Seite
+  selbst liegen (keine fremden Server); passt sich an Monitor, Tablet und Smartphone an
+- **Kurze Ladezeiten**: Bilder in passender Größe als AVIF oder WebP, komprimierte Stile und
+  Skripte (Brotli), Schriften werden vorgeladen
 
 Alle Seiten und Adressen: [docs/betrieb.md](docs/betrieb.md#seiten).
 
