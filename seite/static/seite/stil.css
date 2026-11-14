@@ -294,7 +294,7 @@ html[data-st-sticky="off"] .kopf { position: relative; }
 html[data-st-nav-case="upper"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary, .menue nav a:not(.menue-knopf)) {
   text-transform: uppercase; letter-spacing: .06em; font-size: .86rem;
 }
-html[data-st-nav-case="normal"] :is(.menue-breit > ul > li > a, .menue-breit .untermenue summary, .menue nav a) { text-transform: none; letter-spacing: normal; }
+html[data-st-nav-case="normal"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary, .menue nav a:not(.menue-knopf)) { text-transform: none; letter-spacing: normal; }
 html[data-st-nav-size="normal"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary) { font-size: .95rem; }
 html[data-st-nav-size="large"] :is(.menue-breit > ul > li > a:not(.menue-knopf), .menue-breit .untermenue summary) { font-size: 1.08rem; }
 html[data-st-nav-size="large"] .menue nav a { font-size: 1.1rem; }
