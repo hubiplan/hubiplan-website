@@ -574,5 +574,8 @@ def test_kleine_ueberschriften_groesser_als_fliesstext():
     # große Überschriften bleiben über den normalen, der kleinste Seitentitel nicht unter h3
     gross = rem(r'heading-size="large"\] main h2[^{]*\{ font-size: ([\d.]+)rem;', stil)
     assert gross >= h2 + 0.2
-    klein = rem(r'title-size="small"\] main h1 \{ font-size: clamp\([\d.]+rem, [\d.]+vw, ([\d.]+)rem\)', stil)
+    klein = rem(
+        r'title-size="small"\] main h1 \{ font-size: clamp\([\d.]+rem, [\d.]+vw, ([\d.]+)rem\)',
+        stil,
+    )
     assert klein >= h2
