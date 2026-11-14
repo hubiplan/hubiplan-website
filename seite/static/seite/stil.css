@@ -119,6 +119,13 @@ html[data-st-corners] .menue-breit .untermenue ul { border-radius: var(--rund); 
 html[data-st-corners] .menue-breit .untermenue ul a { border-radius: calc(var(--rund) * .6); }
 html[data-st-corners] .menue-breit a.menue-knopf, html[data-st-corners] .menue a.menue-knopf { border-radius: max(var(--rund), 4px); }
 html[data-st-corners="round"] .menue-breit a.menue-knopf, html[data-st-corners="round"] .menue a.menue-knopf { border-radius: 999px; }
+/* Eckig gilt auch im Kopf (Webseite #105): Menülinks, Untermenü-Überschriften, der hervorgehobene
+   Menüknopf und die Suche haben keine Rundung, auch beim Darüberfahren, im Fokus und auf dem
+   Handy. Die Markierung des aktiven Punkts (Schatten unten) wird so eine gerade Linie. Designs
+   und Menüarten setzen eigene Rundungen mit höherer Spezifität, daher !important. */
+html[data-st-corners="square"] :is(.menue-breit a, .menue-breit summary, .menue a, .menue summary, .menue nav, .kopf-suche) {
+  border-radius: 0 !important;
+}
 
 /* ---------- Karten, Bilder, Knöpfe ---------- */
 html[data-st-cards] .karte, html[data-st-cards] .termin, html[data-st-cards] .dokumente a { box-shadow: none; }
