@@ -600,6 +600,17 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .termin-gross .countdown { font-family: var(--schrift-titel); font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; margin: .2rem 0 .4rem; color: var(--farbe-datum); }
 .abschnitt-farbig.termin-gross .countdown { color: inherit; }
 .termin-gross-titel { font-weight: 600; font-size: 1.15rem; }
+/* Countdown (laufender Zähler, countdown.js) */
+.countdown-abschnitt { text-align: center; }
+.countdown-zaehler[hidden], .countdown-abschnitt[hidden] { display: none; }
+.countdown-zaehler { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.25rem; margin: .4rem 0 .6rem; }
+.countdown-teil { display: flex; flex-direction: column; align-items: center; min-width: 4.5rem; }
+.countdown-zahl { font-family: var(--schrift-titel); font-size: clamp(2rem, 7vw, 3.4rem); font-weight: 700; line-height: 1.05; color: var(--farbe-datum); font-variant-numeric: tabular-nums; }
+.abschnitt-farbig.countdown-abschnitt .countdown-zahl { color: inherit; }
+.countdown-einheit { font-size: .95rem; color: var(--text-leise); }
+.abschnitt-farbig.countdown-abschnitt .countdown-einheit { color: inherit; opacity: .85; }
+.countdown-ziel { font-weight: 600; }
+.countdown-danach { font-family: var(--schrift-titel); font-size: clamp(1.4rem, 4.5vw, 2.2rem); font-weight: 700; line-height: 1.2; }
 
 /* Album-Auszug */
 .album-auszug-bilder { list-style: none; padding: 0; display: grid; gap: .5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }

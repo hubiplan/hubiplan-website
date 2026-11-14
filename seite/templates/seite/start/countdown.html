@@ -1,0 +1,14 @@
+{% load seite i18n %}<section{% abschnitt "countdown-abschnitt" %} data-countdown>
+  {% if abschnitt.title or abschnitt.name %}<h2>{{ abschnitt.title|default:abschnitt.name }}</h2>{% endif %}
+  {% if abschnitt.ziel %}{% with r=abschnitt.rest %}
+  <p class="countdown-zaehler" role="timer" aria-live="off" data-ziel="{{ abschnitt.ziel_iso }}">
+    {% translate "Tag" as ein %}{% translate "Tage" as mehr %}{% include "seite/start/countdown_teil.html" with teil="tage" wert=r.tage %}
+    {% translate "Stunde" as ein %}{% translate "Stunden" as mehr %}{% include "seite/start/countdown_teil.html" with teil="stunden" wert=r.stunden %}
+    {% translate "Minute" as ein %}{% translate "Minuten" as mehr %}{% include "seite/start/countdown_teil.html" with teil="minuten" wert=r.minuten %}
+    {% translate "Sekunde" as ein %}{% translate "Sekunden" as mehr %}{% include "seite/start/countdown_teil.html" with teil="sekunden" wert=r.sekunden %}
+  </p>{% endwith %}
+  <p class="countdown-ziel">{% if abschnitt.title and abschnitt.name %}{{ abschnitt.name }} · {% endif %}{{ abschnitt.ziel|datum:"lang" }}, {{ abschnitt.ziel|datum:"uhr" }}</p>
+  {% if abschnitt.text %}<p class="countdown-text">{{ abschnitt.text }}</p>{% endif %}
+  {% if abschnitt.danach %}<p class="countdown-danach" hidden>{{ abschnitt.danach }}</p>{% endif %}
+  {% else %}<p class="countdown-danach">{{ abschnitt.danach }}</p>{% endif %}
+</section>

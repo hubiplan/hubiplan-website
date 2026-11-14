@@ -856,3 +856,27 @@ msgstr ""
 
 msgid "Nach oben"
 msgstr "Back to top"
+
+msgid "Tag"
+msgstr "day"
+
+msgid "Tage"
+msgstr "days"
+
+msgid "Stunde"
+msgstr "hour"
+
+msgid "Stunden"
+msgstr "hours"
+
+msgid "Minute"
+msgstr "minute"
+
+msgid "Minuten"
+msgstr "minutes"
+
+msgid "Sekunde"
+msgstr "second"
+
+msgid "Sekunden"
+msgstr "seconds"

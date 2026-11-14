@@ -334,6 +334,7 @@ CUSTOM_SECTIONS = {
     "chronicle": "chronik",
     "facts": "zahlen",
     "divider": "trenner",
+    "countdown": "countdown",
 }
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 PALETTE_BG = re.compile(r"^p([0-9])$")
@@ -396,6 +397,35 @@ def _layout(site: Site) -> list[dict]:
     return _layout_entries(site, layout)
 
 
+def _countdown(s: dict) -> dict | None:
+    """Countdown (HUBIplan ab 14.11.2026): Ziel mit Zeitzone; der Browser zählt weiter
+    (countdown.js). Ohne Skript steht der Stand beim Laden da. Nach Ablauf verschwindet
+    der Abschnitt, außer HUBIplan schickt einen Text dafür."""
+    after = s.get("after_text") if isinstance(s.get("after_text"), str) else ""
+    target = (
+        parse_datetime(s["target"]) if isinstance(s.get("target"), str) and s["target"] else None
+    )
+    if target is not None and timezone.is_naive(target):
+        target = None
+    texte = {k: s.get(k) if isinstance(s.get(k), str) else "" for k in ("title", "name", "text")}
+    now = timezone.now()
+    if target is None or target <= now:
+        return {**texte, "ziel": None, "danach": after} if after else None
+    left = int((target - now).total_seconds())
+    return {
+        **texte,
+        "ziel": timezone.localtime(target),
+        "ziel_iso": target.isoformat(),
+        "danach": after,
+        "rest": {
+            "tage": left // 86400,
+            "stunden": left % 86400 // 3600,
+            "minuten": left % 3600 // 60,
+            "sekunden": left % 60,
+        },
+    }
+
+
 def _layout_entries(site: Site, layout: list) -> list[dict]:
     result = []
     for s in layout:
@@ -416,6 +446,11 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
             entry["event"] = event
             entry["tage"] = (event["start"].date() - timezone.localdate()).days
+        elif kind == "countdown":
+            countdown = _countdown(s)
+            if countdown is None:
+                continue
+            entry.update(countdown)
         elif kind == "event_list":
             events = [e for e in map(_event, s.get("events") or []) if e is not None]
             if not events:
