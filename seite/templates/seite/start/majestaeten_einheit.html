@@ -1,0 +1,5 @@
+{% load seite i18n %}{% if abschnitt.honors %}<section{% abschnitt "majestaeten-einheit" %}>
+  <h2>{% if abschnitt.title %}{{ abschnitt.title }}{% else %}{% blocktranslate with name=abschnitt.unit.name %}Majestäten: {{ name }}{% endblocktranslate %}{% endif %}</h2>
+  <div class="karten">{% for d in abschnitt.honors %}<div class="karte">{% include "seite/wuerde.html" %}</div>{% endfor %}</div>
+  {% if abschnitt.unit.slug %}<p><a class="knopf" href="{% url 'einheit' site.units_path abschnitt.unit.slug %}">{% blocktranslate with name=abschnitt.unit.name %}Zur Seite „{{ name }}“{% endblocktranslate %}</a></p>{% endif %}
+</section>{% endif %}

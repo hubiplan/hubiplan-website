@@ -1,0 +1,8 @@
+{% load seite %}<section{% abschnitt "tabelle-abschnitt" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <div class="tabelle-rahmen"><table>
+    <thead><tr>{% for h in abschnitt.head %}<th scope="col">{{ h }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for r in abschnitt.rows %}<tr>{% for c in r %}<td>{{ c }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+  {% if abschnitt.text %}<p class="klein">{{ abschnitt.text }}</p>{% endif %}
+</section>

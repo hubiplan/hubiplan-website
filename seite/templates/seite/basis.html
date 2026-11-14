@@ -10,7 +10,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="{% url 'medien' 'a' 'icon-192.png' %}">
 <link rel="apple-touch-icon" href="{% url 'medien' 'a' 'icon-180.png' %}">{% endif %}
 {% if site %}{% with t=site.theme %}<style>:root{--primaer:{{ t.primary }};--auf-primaer:{{ t.on_primary }};--akzent:{{ t.accent }};--auf-akzent:{{ t.on_accent }};--link:{{ t.link }};{{ site.css_vars }}{% if site.page_title_image %};--st-seitenbild:url("{{ site.page_title_image|safe }}"){% endif %}}</style>{% endwith %}
-{% if site.package %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}
+{% for schrift in site.preload_fonts %}<link rel="preload" href="{% static schrift %}" as="font" type="font/woff2" crossorigin>
+{% endfor %}{% if site.package %}{% if site.package_has_css %}<link rel="stylesheet" href="{% url 'design_css' site.design %}?v={{ site.package.hash }}">{% endif %}{% else %}<link rel="stylesheet" href="{% static 'seite/design-'|add:site.design|add:'.css' %}">{% endif %}
 {% if site.style %}{# Stilregler aus HUBIplan; Regeln greifen nur bei gesetzten data-st-… #}<link rel="stylesheet" href="{% static 'seite/stil.css' %}">{% endif %}
 {% if site.gradients %}{# Verläufe je Rolle (HUBIplan ab 10.11.2026) #}<link rel="stylesheet" href="{% static 'seite/verlauf.css' %}">{% endif %}{% endif %}
 {% block kopf %}{% endblock %}
@@ -35,6 +36,8 @@
 {% if site.style.to_top == "on" %}<a class="nach-oben" href="#top" hidden><span aria-hidden="true">↑</span><span class="nur-vorlesen">{% translate "Nach oben" %}</span></a>{% endif %}
 {% seite_texte %}<script src="{% static 'seite/menue.js' %}" defer></script>
 <script src="{% static 'seite/termin.js' %}" defer></script>
+<script src="{% static 'seite/countdown.js' %}" defer></script>
+{% if abschnitte|hat_art:"images" %}{% include "seite/bildfenster.html" %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}
 {% block skripte %}{% endblock %}
 </body>
 </html>

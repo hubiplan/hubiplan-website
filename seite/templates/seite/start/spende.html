@@ -1,0 +1,15 @@
+{% load seite i18n %}<section{% abschnitt "spende" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+  {% if abschnitt.goal %}<div class="spende-stand">
+    <div class="spende-balken" role="progressbar" aria-valuemin="0" aria-valuemax="{{ abschnitt.goal }}" aria-valuenow="{{ abschnitt.raised|default:0 }}" aria-label="{% translate 'Spendenstand' %}"><span style="width:{{ abschnitt.percent|default:0 }}%"></span></div>
+    <p class="klein">{% blocktranslate with a=abschnitt.raised|default:0|euro b=abschnitt.goal|euro %}{{ a }} von {{ b }} gesammelt{% endblocktranslate %}</p>
+  </div>{% endif %}
+  {% if abschnitt.iban %}<dl class="spende-konto">
+    {% if abschnitt.holder %}<dt>{% translate "Kontoinhaber" %}</dt><dd>{{ abschnitt.holder }}</dd>{% endif %}
+    <dt>{% translate "IBAN" %}</dt><dd class="iban">{{ abschnitt.iban|iban }}</dd>
+    {% if abschnitt.bic %}<dt>{% translate "BIC" %}</dt><dd>{{ abschnitt.bic }}</dd>{% endif %}
+    {% if abschnitt.purpose %}<dt>{% translate "Verwendungszweck" %}</dt><dd>{{ abschnitt.purpose }}</dd>{% endif %}
+  </dl>{% endif %}
+  {% with link=abschnitt.url|web_ziel %}{% if link %}<p><a class="knopf" href="{{ link }}" target="_blank" rel="noopener noreferrer">{{ abschnitt.label|default:_("Jetzt spenden") }}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}{% endwith %}
+</section>

@@ -857,5 +857,91 @@ msgstr ""
 msgid "Nach oben"
 msgstr "Back to top"
 
+msgid "Tag"
+msgstr "day"
+
+msgid "Tage"
+msgstr "days"
+
+msgid "Stunde"
+msgstr "hour"
+
+msgid "Stunden"
+msgstr "hours"
+
+msgid "Minute"
+msgstr "minute"
+
+msgid "Minuten"
+msgstr "minutes"
+
+msgid "Sekunde"
+msgstr "second"
+
+msgid "Sekunden"
+msgstr "seconds"
+
+msgid "Jetzt Mitglied werden"
+msgstr "Become a member now"
+
+msgid "Spendenstand"
+msgstr "Donations so far"
+
+#, python-format
+msgid "%(a)s von %(b)s gesammelt"
+msgstr "%(a)s of %(b)s raised"
+
+msgid "Kontoinhaber"
+msgstr "Account holder"
+
+msgid "IBAN"
+msgstr "IBAN"
+
+msgid "BIC"
+msgstr "BIC"
+
+msgid "Verwendungszweck"
+msgstr "Payment reference"
+
+msgid "Jetzt spenden"
+msgstr "Donate now"
+
+msgid "Achtung:"
+msgstr "Caution:"
+
+msgid "Gut zu wissen:"
+msgstr "Good to know:"
+
+msgid "Hinweis:"
+msgstr "Note:"
+
+#, python-format
+msgid "Majestäten: %(name)s"
+msgstr "Majesties: %(name)s"
+
+#, python-format
+msgid "Zur Seite „%(name)s“"
+msgstr "To the page “%(name)s”"
+
+msgid "Alle Ergebnisse dieses Wettbewerbs"
+msgstr "All results of this competition"
+
+msgid "Zur Galerie"
+msgstr "To the gallery"
+
+msgid "Neueste Beiträge"
+msgstr "Latest posts"
+
+msgid "Für Mitglieder"
+msgstr "For members"
+
+msgid "Zum Mitgliederbereich"
+msgstr "To the members' area"
+
+msgid "App bei Google Play"
+msgstr "App on Google Play"
+
+msgid "Mit dem Handy scannen und anmelden"
+msgstr "Scan with your phone and sign in"
 msgid "Unterlagen:"
 msgstr "Documents:"

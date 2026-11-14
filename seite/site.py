@@ -322,6 +322,28 @@ class Site:
         return name
 
     @property
+    def package_has_css(self) -> bool:
+        """Bringt das Designpaket eigenes CSS mit? Ein leeres (nur Kommentar) braucht keinen
+        eigenen, das Zeichnen aufhaltenden Abruf (Ladezeiten 14.11.)."""
+        package = self.package
+        if not package:
+            return False
+        css = re.sub(r"/\*.*?\*/", "", package.get("css") or "", flags=re.S)
+        return bool(css.strip())
+
+    @property
+    def preload_fonts(self) -> list[str]:
+        """Schriften, die die Seite sicher braucht, gleich im Kopf anfordern: Sonst findet
+        der Browser sie erst, wenn das CSS geladen ist (Ladezeiten 14.11.)."""
+        font = self.style.get("font")
+        if font not in ("festive", "modern"):
+            return []
+        files = ["open-sans-400", "open-sans-600", "open-sans-700"]
+        if font == "modern":
+            files.append("roboto-700")
+        return [f"seite/schriften/{name}.woff2" for name in files]
+
+    @property
     def kopf_vorlage(self):
         return self.vorlage("seite/kopf.html")
 

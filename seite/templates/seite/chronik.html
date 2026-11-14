@@ -3,7 +3,7 @@
 {% block inhalt %}
 <h1>{% translate "Chronik" as chronik %}{% baustein site "history" page.title|default:chronik %}</h1>
 {% lokal site page.image.url as bild %}
-{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ page.image.alt }}">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site page.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ page.image.alt }}" fetchpriority="high">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
 {% if page.text %}<div class="text">{{ page.text|md:site }}</div>{% endif %}
 {% if zeitleiste.abschnitte %}
 {% if zeitleiste.sprungmarken %}

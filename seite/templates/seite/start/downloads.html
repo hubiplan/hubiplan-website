@@ -1,0 +1,6 @@
+{% load seite i18n %}<section{% abschnitt "download-liste" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <ul class="download-liste">{% for d in abschnitt.items %}{% lokal site d.url as datei %}{% if datei %}
+    <li><a href="{{ datei }}" target="_blank" rel="noopener">{{ d.label }}<span class="nur-vorlesen"> ({% if d.file_type == "pdf" %}PDF{% else %}{% translate "Bild" %}{% endif %}, {% translate "öffnet in neuem Fenster" %})</span></a> <span class="klein">{% if d.file_type == "pdf" %}PDF{% else %}{% translate "Bild" %}{% endif %}{% if d.size %}, {{ d.size|filesizeformat }}{% endif %}</span></li>{% endif %}{% endfor %}
+  </ul>
+</section>

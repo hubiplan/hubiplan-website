@@ -1,0 +1,6 @@
+{% load seite %}<section{% abschnitt "zeitstrahl" %}>
+  {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
+  <ol class="zeitstrahl-liste">{% for e in abschnitt.items %}
+    <li>{% if e.when %}<span class="zeitstrahl-wann">{{ e.when }}</span>{% endif %} <strong>{{ e.title }}</strong>{% if e.text %}<p>{{ e.text|linebreaksbr }}</p>{% endif %}</li>{% endfor %}
+  </ol>
+</section>

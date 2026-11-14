@@ -3,7 +3,7 @@
 {% block inhalt %}
 <p class="brotkrumen"><a href="{% einheiten_url site %}">{{ site.info.unit_label_plural|default:"Einheiten" }}</a></p>
 <div class="einheit-kopf">
-  {% lokal site unit.logo_url as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="100" height="100">{% endif %}
+  {% logo_url site unit.logo_url 200 as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="100" height="100">{% endif %}
   <div><h1>{{ unit.title|default:unit.name }}</h1>{% if unit.founding_year %}<p class="klein">{% blocktranslate with jahr=unit.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</p>{% endif %}
   </div>
 </div>
@@ -11,7 +11,7 @@
 {% include "seite/karussell.html" with bilder=unit.gallery takt=unit.gallery_interval zufall=unit.gallery_random %}
 {% else %}
 {% lokal site unit.image.url as bild %}
-{% if bild %}<figure class="titelbild"><img src="{{ bild }}" alt="{{ unit.image.alt }}">{% if unit.image.caption %}<figcaption>{{ unit.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% if unit.image.caption %}<figcaption>{{ unit.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
 {% endif %}
 {% if unit.text %}<div class="text">{{ unit.text|md:site }}</div>{% endif %}
 {# Kontakt: Ansprechpartner und daneben die eigene Homepage als Karte (Ralf 31.10.) #}
