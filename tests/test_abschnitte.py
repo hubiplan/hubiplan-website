@@ -3,6 +3,7 @@ Alle Daten erfunden."""
 
 import datetime
 
+from django.core.cache import cache
 from django.utils import timezone
 
 from . import fake
@@ -180,7 +181,7 @@ def test_zeitung_spalte_je_abschnitt(client, hubiplan):
 def test_textseite_ohne_abschnitte_wie_bisher(client, hubiplan):
     html = text(client.get("/seite/anfahrt/"))
     assert "<h1>Anfahrt</h1>" in html and "Mit dem Bus." in html
-    # #77: Titel und Text stehen als Lesespalte mittig (.textseite, .seite-text)
+    # #77/#101: Titel an der Inhaltskante, Text in Lesebreite (.textseite, .seite-text)
     assert '<div class="textseite">' in html and '<div class="seite-text">' in html
     assert "abschnitt-" not in html.split("<h1>", 1)[1].split("</main>", 1)[0]
 
@@ -199,12 +200,41 @@ def test_textseite_volle_breite_ohne_weitere_abschnitte(client, hubiplan):
     assert "Mit dem Bus." in html
 
 
-def test_textseite_lesespalte_mittig_im_stil():
+def test_textseite_titel_und_text_an_der_inhaltskante():
+    """#101: Titel und Text stehen in der Flucht der übrigen Abschnitte; die Breite des
+    Textes der Seite wirkt in allen drei Stufen."""
     from pathlib import Path
 
-    css = (Path(__file__).resolve().parent.parent / "seite/static/seite/seite.css").read_text()
-    assert ".textseite > h1, .seite-text .text { max-width: 44rem; margin-left: auto;" in css
-    assert ".seite-text.abschnitt-voll .text { max-width: none; }" in css
+    static = Path(__file__).resolve().parent.parent / "seite/static/seite"
+    css = (static / "seite.css").read_text()
+    # Lesebreite ja, aber nicht mehr mittig; der Titel hat keine eigene Spalte mehr
+    assert "\n.seite-text .text { max-width: 44rem; }\n" in css
+    assert ".textseite > h1" not in css
+    # „Textbreite“ = Lesespalte mittig, „volle Breite“ = ohne Lesebreite
+    assert ".abschnitt-text { max-width: 44rem; margin-left: auto; margin-right: auto; }" in css
+    assert ".seite-text:is(.abschnitt-text, .abschnitt-voll) .text { max-width: none; }" in css
+    # Band: kein eigener Einzug für Textseiten, es gilt der Einzug aller Seiten
+    stil = (static / "stil.css").read_text()
+    assert "22rem" not in stil and "19.5rem))" not in stil
+
+
+def test_textseite_breite_des_textes_wirkt(client, hubiplan):
+    """#101: „content“ (Standard) ohne Klasse, „text“ und „full“ je mit eigener Klasse."""
+    for width, erwartet in (
+        ("content", '<div class="seite-text">'),
+        ("text", '<section class="seite-text abschnitt-text">'),
+        ("full", '<section class="seite-text abschnitt-voll">'),
+    ):
+        hubiplan.antworten["pages/anfahrt/"] = {
+            "slug": "anfahrt",
+            "title": "Anfahrt",
+            "text": "Mit dem Bus.",
+            "image": None,
+            "sections": layout({"key": "body", "kind": "body", "width": width}),
+        }
+        cache.clear()
+        html = text(client.get("/seite/anfahrt/"))
+        assert erwartet in html, width
 
 
 def test_textseite_aus_abschnitten(client, hubiplan):

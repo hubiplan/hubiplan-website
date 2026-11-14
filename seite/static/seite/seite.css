@@ -559,10 +559,11 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .abschnitt-text .text { max-width: none; }
 .abschnitt-hg { padding: .4rem 1.2rem 1.2rem; border-radius: var(--rund); margin: 1.5rem 0; }
 .abschnitt-hg.abschnitt-text { margin-left: auto; margin-right: auto; }
-/* Textseiten (#77): Titel und Text als Lesespalte mittig, damit die Seite neben der breiten
-   Menüleiste ausgewogen wirkt. „Volle Breite“ beim Text der Seite hebt die Lesebreite auf. */
-.textseite > h1, .seite-text .text { max-width: 44rem; margin-left: auto; margin-right: auto; }
-.seite-text.abschnitt-voll .text { max-width: none; }
+/* Textseiten (#77, #101): Der Titel steht wie auf allen Seiten an der Inhaltskante, der Text
+   darunter in Lesebreite in derselben Flucht. Breite beim Text der Seite: „Textbreite“ stellt
+   die Lesespalte mittig (.abschnitt-text), „volle Breite“ hebt die Lesebreite auf. */
+.seite-text .text { max-width: 44rem; }
+.seite-text:is(.abschnitt-text, .abschnitt-voll) .text { max-width: none; }
 .abschnitt-voll { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); border-radius: 0; }
 /* Titelbild der Startseite in voller Breite von Rand zu Rand (Webseite #89) */
 main.start > .begruessung-bilder.abschnitt-voll { padding-left: 0; padding-right: 0; }
