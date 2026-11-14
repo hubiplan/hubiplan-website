@@ -1459,7 +1459,12 @@ def media(request, kind: str, path: str):
         # Je nach Accept JPEG/PNG, WebP oder AVIF unter derselben Adresse
         response["Vary"] = "Accept"
     response["Cache-Control"] = cache_control
-    response["Content-Security-Policy"] = "default-src 'none'; sandbox"
+    if ctype == "application/pdf":
+        # Ohne sandbox: Chrome und Edge zeigen PDFs in einer Sandbox nicht an
+        # (ERR_BLOCKED_BY_CLIENT); wie HUBIplan selbst. Fremdes Einbetten bleibt verboten.
+        response["Content-Security-Policy"] = "frame-ancestors 'none'"
+    else:
+        response["Content-Security-Policy"] = "default-src 'none'; sandbox"
     return response
 
 
