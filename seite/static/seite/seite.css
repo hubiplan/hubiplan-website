@@ -368,9 +368,15 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .presse a { display: flex; flex-direction: column; gap: .35rem; color: var(--text); }
 .presse img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; border: 1px solid var(--linie); border-radius: 4px; background: #fff; }
 .presse .klein { color: var(--text-leise); }
-.suche { display: flex; flex-wrap: wrap; gap: .5rem; align-items: end; margin-bottom: 1rem; }
+/* Suchformular: Feld und Knopf gleich hoch, auf einer Linie, gleiche Ecken (Ralf 14.11.2026).
+   align-items: stretch zieht beide auf die Zeilenhöhe; der Außenabstand von .knopf entfällt,
+   sonst sitzt der Knopf versetzt. Der Fokusrahmen liegt innen, damit das (per autofocus
+   fokussierte) Feld nicht größer wirkt als der Knopf. */
+.suche { display: flex; flex-wrap: wrap; gap: .5rem; align-items: stretch; margin-bottom: 1rem; }
 .suche label { flex-basis: 100%; font-weight: 600; }
-.suche input { flex: 1 1 14rem; min-width: 0; padding: .5rem .6rem; font: inherit; border: 1px solid var(--linie); border-radius: 6px; }
+.suche input { flex: 1 1 8rem; min-width: 0; margin: 0; padding: .5rem .6rem; font: inherit; color: var(--text); background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); }
+.suche .knopf { flex: 0 0 auto; margin: 0; padding-top: 0; padding-bottom: 0; line-height: 1.2; border-radius: var(--rund); }
+.suche input:focus-visible, .suche .knopf:focus-visible { outline-offset: -3px; }
 .suchtreffer { list-style: none; padding: 0; }
 .suchtreffer li { padding: .6rem 0; border-bottom: 1px solid var(--linie); }
 /* Lupe so hoch wie die Textpunkte (Webseite #75): ein unsichtbares Zeichen gibt dem Link
