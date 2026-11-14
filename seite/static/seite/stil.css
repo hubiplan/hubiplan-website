@@ -422,11 +422,56 @@ html:is([data-st-sections="none"], [data-st-sections="line"]) body.design-stage 
 
 /* ---------- Unterseiten ---------- */
 /* Überschrift der Unterseiten als farbiges Band oder Band mit dem Titelbild der Startseite
-   (--st-seitenbild aus seite/site.py; ohne Bild bleibt das farbige Band) */
-html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > h1 {
-  background: var(--farbe-band); color: var(--auf-band); padding: 1.1rem 1.4rem; border-radius: var(--rund); margin: .3em 0 1.1rem;
+   (--st-seitenbild aus seite/site.py; ohne Bild bleibt das farbige Band).
+   Das Band reicht von Rand zu Rand (wie .abschnitt-voll), der Text bleibt in der Inhaltsflucht.
+   Es gilt auch für Textseiten (h1 in .textseite) und die Seite einer Einheit (.einheit-kopf). */
+html[data-st-spacing="compact"] { --st-main-oben: 1rem; }
+html[data-st-spacing="generous"] { --st-main-oben: 2.2rem; }
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) { overflow-x: clip; }
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > :is(h1, .einheit-kopf),
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {
+  background: var(--farbe-band); color: var(--auf-band); border-radius: 0; max-width: none;
+  margin: .3em calc(50% - 50vw) 1.1rem;
+  padding: 1.1rem max(16px, calc(50vw - var(--breite) / 2 + 16px));
 }
-html[data-st-page-title="image"] body:not([data-seite="start"]) main > h1 {
+/* Textseiten: Titel in der Flucht der Textspalte */
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {
+  padding-left: max(16px, calc(50vw - 22rem)); padding-right: max(16px, calc(50vw - 22rem));
+}
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf :is(h1, .klein) { color: inherit; }
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf h1 { margin: 0; }
+/* Schmale Seite (Kasten): Band nur bis zum Rand des Kastens */
+html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > :is(h1, .einheit-kopf),
+html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {
+  margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px;
+}
+html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 {
+  padding-left: max(16px, calc(50% - 22rem + 16px)); padding-right: max(16px, calc(50% - 22rem + 16px));
+}
+@media (min-width: 64rem) {
+  /* Seitenleiste: Inhalt steht links neben der Leiste, das Band reicht von der Leiste bis zum rechten Rand */
+  html:is([data-st-page-title="band"], [data-st-page-title="image"]) body.design-sidebar:not([data-seite="start"]) main > :is(h1, .einheit-kopf),
+  html:is([data-st-page-title="band"], [data-st-page-title="image"]) body.design-sidebar:not([data-seite="start"]) main > .textseite > h1 {
+    margin-left: -2.5rem; margin-right: calc(100% + 19.5rem - 100vw); padding-left: 2.5rem; padding-right: 2.5rem;
+  }
+  html:is([data-st-page-title="band"], [data-st-page-title="image"]) body.design-sidebar:not([data-seite="start"]) main > .textseite > h1 {
+    padding-left: max(2.5rem, calc(50% - 19.5rem));
+  }
+  html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body.design-sidebar:not([data-seite="start"]) main > :is(h1, .einheit-kopf),
+  html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body.design-sidebar:not([data-seite="start"]) main > .textseite > h1 {
+    margin-right: -2.5rem;
+  }
+}
+/* Band schließt ohne Lücke an den Kopf an, wenn nichts davor steht … */
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > h1:first-child,
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite:first-child > h1:first-child {
+  margin-top: calc(-1 * var(--st-main-oben, 1.5rem));
+}
+/* … und an einen farbigen Abschnitt in voller Breite direkt darunter */
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1:has(+ .abschnitt-voll.abschnitt-farbig) { margin-bottom: 0; }
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite > h1 + .abschnitt-voll.abschnitt-farbig { margin-top: 0; }
+html[data-st-page-title="image"] body:not([data-seite="start"]) main > :is(h1, .einheit-kopf),
+html[data-st-page-title="image"] body:not([data-seite="start"]) main > .textseite > h1 {
   padding-top: 4rem; color: #fff; text-shadow: 0 1px 3px rgb(0 0 0 / .5);
   background: linear-gradient(color-mix(in srgb, var(--st-schleier, #000) 50%, transparent), color-mix(in srgb, var(--st-schleier, #000) 50%, transparent)), var(--st-seitenbild, none) center / cover no-repeat, var(--farbe-band);
 }
