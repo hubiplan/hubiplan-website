@@ -754,3 +754,15 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .trenner hr { border: 0; border-top: 1px solid var(--linie); margin: 0; }
 .trenner-small { padding: .5rem 0; }
 .trenner-large { padding: 2rem 0; }
+
+/* Vorschau in HUBIplan: die Stelle, die ein Stilregler gerade geändert hat, leuchtet kurz auf
+   (Adresse mit #kopf, #fuss oder #inhalt; Ralf 14.11.2026). Nur in der Vorschau. */
+html[data-vorschau] :is(#kopf, #fuss, #inhalt) { scroll-margin-top: 5rem; }
+html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: vorschau-zeigen 2s ease-out 1; }
+@keyframes vorschau-zeigen {
+  0%, 40% { outline: 4px solid var(--akzent); outline-offset: -4px; }
+  100% { outline: 4px solid transparent; outline-offset: -4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: none; outline: 4px solid var(--akzent); outline-offset: -4px; }
+}

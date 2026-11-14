@@ -1375,10 +1375,18 @@ def _set_design_cookie(response, design: str) -> None:
         response.delete_cookie(DESIGN_COOKIE, path=path, samesite="Lax")
 
 
+# Unterseiten, die die Vorschau in HUBIplan direkt zeigen kann (Stilregler mit Wirkung dort)
+PREVIEW_TARGETS = {"unterseite": "impressum", "termine": "termine"}
+
+
 @require_GET
 def preview_design(request):
-    """In der Vorschau ein anderes Design zeigen (?design=…) oder zurück zum gewählten."""
-    response = HttpResponseRedirect(reverse("start"))
+    """In der Vorschau ein anderes Design zeigen (?design=…) oder zurück zum gewählten.
+
+    ``?ziel=`` führt danach auf eine feste Unterseite statt auf die Startseite (HUBIplan zeigt
+    so die Stelle, die ein Stilregler ändert, Ralf 14.11.2026); nur Namen aus PREVIEW_TARGETS."""
+    target = PREVIEW_TARGETS.get(request.GET.get("ziel", ""), "start")
+    response = HttpResponseRedirect(reverse(target))
     _set_design_cookie(response, request.GET.get("design", ""))
     response["Cache-Control"] = "private, no-store"
     return response

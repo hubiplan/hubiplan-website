@@ -119,6 +119,11 @@ def test_jede_stufe_hat_regeln():
         ("search", "nav"),
         ("search", "header"),
         ("search", "footer"),
+        # Ralf 14.11.2026: Einblenden im Skript, Datum in der Vorlage termin_zeit.html
+        ("motion", "off"),
+        ("date_text", "weekday"),
+        ("date_text", "short"),
+        ("date_text", "long"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":
@@ -250,3 +255,101 @@ def test_kopfhoehe_mittel(client, hubiplan):
         ).group(1)
     )
     assert heights["low"] < heights["medium"] < normal < heights["high"]
+
+
+# --- Weitere Regler (Ralf 14.11.2026) ---
+
+
+def test_titelbild_abdunkeln_und_faerben(client, hubiplan):
+    hubiplan.info["style"] = {"hero_shade": "strong", "hero_tint": "primary", "hero_focus": "top"}
+    tag = html_tag(seite(client))
+    assert 'data-st-hero-shade="strong"' in tag
+    assert 'data-st-hero-tint="primary"' in tag
+    assert 'data-st-hero-focus="top"' in tag
+    css = (STATIC / "stil.css").read_text()
+    # halb durchsichtige Schicht in der gewählten Farbe, Bildunterschrift bleibt frei
+    assert 'html[data-st-hero-tint="primary"] { --st-schleier: var(--primaer); }' in css
+    assert 'html[data-st-hero-tint="accent"] { --st-schleier: var(--akzent); }' in css
+    assert "opacity: var(--st-deckung)" in css and "grid-area: 1 / 1" in css
+
+
+def test_neue_regler_als_merkmale(client, hubiplan):
+    hubiplan.info["style"] = {
+        "hero_text": "band",
+        "sections": "alternate",
+        "page_title": "band",
+        "heading_font": "festive",
+        "nav_case": "upper",
+        "nav_size": "large",
+        "motion": "subtle",
+        "stripes": True,
+        "date_text": "long",
+    }
+    tag = html_tag(seite(client))
+    for attr in (
+        'data-st-hero-text="band"',
+        'data-st-sections="alternate"',
+        'data-st-page-title="band"',
+        'data-st-heading-font="festive"',
+        'data-st-nav-case="upper"',
+        'data-st-nav-size="large"',
+        'data-st-motion="subtle"',
+        'data-st-stripes="on"',
+        'data-st-date-text="long"',
+    ):
+        assert attr in tag, attr
+
+
+def test_einblenden_nur_mit_skript_und_ohne_weniger_bewegung():
+    js = (STATIC / "menue.js").read_text()
+    assert 'getAttribute("data-st-motion") !== "subtle"' in js
+    assert "prefers-reduced-motion: reduce" in js
+    css = (STATIC / "stil.css").read_text()
+    # ohne Skript gibt es .st-ein nie: nichts bleibt unsichtbar
+    assert 'html[data-st-motion="subtle"] .st-ein { opacity: 0;' in css
+
+
+def test_seitenkopf_mit_titelbild_der_startseite(client, hubiplan):
+    hubiplan.info["style"] = {"page_title": "image"}
+    hubiplan.info["greeting"] = {
+        "title": "Willkommen",
+        "text": "",
+        "image": {
+            "url": f"{fake.BASE}images/titel-v1/",
+            "small_url": f"{fake.BASE}images/titel-v1/?size=small",
+            "alt": "",
+        },
+        "gallery": [],
+    }
+    cache.clear()
+    html = text(client.get("/impressum/"))
+    assert 'data-st-page-title="image"' in html_tag(html)
+    assert '--st-seitenbild:url("/' in html
+
+
+def test_seitenbild_nur_mit_sicherer_adresse(client, hubiplan):
+    from seite.site import SAFE_URL
+
+    assert SAFE_URL.match("/medien/a/bild.jpg?v=3")
+    assert not SAFE_URL.match('/medien/a/bild.jpg");}body{x:url("')
+    assert not SAFE_URL.match("/medien/a/bild (1).jpg")
+
+
+def test_datum_neben_dem_datumsfeld():
+    vorlage = (STATIC.parents[1] / "templates" / "seite" / "termin_zeit.html").read_text()
+    assert 'art == "long"' in vorlage and 'datum:"wkurz"' in vorlage
+
+
+def test_vorschau_springt_auf_unterseite(client):
+    r = client.get("/vorschau/design/?ziel=unterseite")
+    assert r.status_code == 302 and r["Location"].endswith("/impressum/")
+    r = client.get("/vorschau/design/?ziel=http://boese.example/")
+    assert r["Location"].endswith("/") and "boese" not in r["Location"]
+
+
+def test_vorschau_hervorhebung_nur_in_der_vorschau(client, hubiplan):
+    html = seite(client)
+    assert "data-vorschau" not in html_tag(html)
+    assert 'id="kopf"' in html and 'id="fuss"' in html
+    css = (STATIC / "seite.css").read_text()
+    assert "html[data-vorschau] :is(#kopf, #fuss, #inhalt):target" in css

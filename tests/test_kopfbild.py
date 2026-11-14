@@ -1,5 +1,6 @@
 """Kopfbild statt Wappen und Name, Schriften für Designpakete (Ralf 05.11.2026, erfunden)."""
 
+import re
 from pathlib import Path
 
 from . import fake
@@ -28,7 +29,7 @@ def test_kopfbild_ersetzt_wappen_und_name(client, hubiplan):
         "alt": "Schützenverein Musterdorf 1900",
     }
     html = text(client.get("/"))
-    kopf = html.split('<header class="kopf">', 1)[1].split("</header>", 1)[0]
+    kopf = re.search(r'<header class="kopf"[^>]*>(.*?)</header>', html, re.S).group(1)
     assert '<a class="marke marke-bild" href="/">' in kopf
     assert 'src="/medien/a/images/banner-v2/"' in kopf
     assert 'alt="Schützenverein Musterdorf 1900"' in kopf
@@ -72,7 +73,7 @@ def test_kopfbild_fuer_schmale_bildschirme(client, hubiplan):
         "alt": "",
     }
     html = text(client.get("/"))
-    kopf = html.split('<header class="kopf">', 1)[1].split("</header>", 1)[0]
+    kopf = re.search(r'<header class="kopf"[^>]*>(.*?)</header>', html, re.S).group(1)
     assert (
         '<picture><source media="(max-width: 600px)" srcset="/medien/a/images/banner-schmal-v1/"'
         ' width="800" height="400">'

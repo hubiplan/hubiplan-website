@@ -1,5 +1,5 @@
 {% load seite i18n %}{# Fuß für alle Designs. Ein Design im Repo darf ihn ersetzen (seite/designs/<design>/fuss.html), muss aber den Quellcode-Link behalten (AGPL § 13, tests/test_designs.py); eingespielte Pakete bringen keine Vorlagen mit. #}
-<footer class="fuss">
+<footer class="fuss" id="fuss">
   <div class="breite fuss-innen">
     {% if site %}
     {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% with ziel=site.info.member_of.website|web_ziel %}{% if ziel %}<a href="{{ ziel }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}{% endwith %}</p>{% endif %}

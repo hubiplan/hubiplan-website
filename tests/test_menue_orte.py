@@ -23,7 +23,7 @@ def handy(html: str) -> str:
 
 
 def fuss(html: str) -> str:
-    return re.search(r'<footer class="fuss">.*?</footer>', html, re.S).group(0)
+    return re.search(r'<footer class="fuss"[^>]*>.*?</footer>', html, re.S).group(0)
 
 
 def _menue(hubiplan, kontakt_platz=None):

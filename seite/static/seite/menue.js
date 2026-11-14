@@ -65,3 +65,29 @@
     if (sprung) sprung.focus({ preventScroll: true });
   });
 })();
+
+// Sanftes Einblenden beim Blättern (Stilregler motion=subtle, Ralf 14.11.2026). Nur mit
+// Skript und nie bei „weniger Bewegung“ am Gerät; was schon sichtbar ist, bleibt sichtbar.
+(function () {
+  "use strict";
+  var html = document.documentElement;
+  if (html.getAttribute("data-st-motion") !== "subtle") return;
+  if (!("IntersectionObserver" in window)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var teile = document.querySelectorAll(
+    "main > section, main .karten > *, main .termine > *, main .kacheln > *"
+  );
+  var unten = window.innerHeight;
+  var beobachter = new IntersectionObserver(function (eintraege) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.remove("st-ein");
+      beobachter.unobserve(e.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  Array.prototype.forEach.call(teile, function (el) {
+    if (el.getBoundingClientRect().top < unten) return;
+    el.classList.add("st-ein");
+    beobachter.observe(el);
+  });
+})();
