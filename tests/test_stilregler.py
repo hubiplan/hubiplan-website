@@ -338,6 +338,38 @@ def test_seitenkopf_mit_titelbild_der_startseite(client, hubiplan):
     assert '--st-seitenbild:url("/' in html
 
 
+def test_seitentitel_band_randlos_und_auf_textseiten(client, hubiplan):
+    """#94: Das Band reicht von Rand zu Rand, schließt an den Kopf an und gilt auch für
+    Textseiten und die Seite einer Einheit."""
+    hubiplan.info["style"] = {"page_title": "band"}
+    cache.clear()
+    html = text(client.get("/seite/anfahrt/"))
+    assert 'data-st-page-title="band"' in html_tag(html)
+    # die Überschrift der Textseite steht als erstes Kind in .textseite direkt im main
+    assert '<div class="textseite">\n<h1>Anfahrt</h1>' in html
+    css = (STATIC / "stil.css").read_text()
+    band = (
+        'html:is([data-st-page-title="band"], [data-st-page-title="image"])'
+        ' body:not([data-seite="start"])'
+    )
+    assert f"{band} main > :is(h1, .einheit-kopf),\n{band} main > .textseite > h1 {{" in css
+    regel = css.split(f"{band} main > .textseite > h1 {{", 1)[1].split("}", 1)[0]
+    assert "margin: .3em calc(50% - 50vw) 1.1rem" in regel and "border-radius: 0" in regel
+    assert "max-width: none" in regel
+    # ohne Lücke unter dem Kopf, auch bei engem und großzügigem Abstand
+    oben = f"{band} main > .textseite:first-child > h1:first-child {{"
+    assert oben in css
+    assert "margin-top: calc(-1 * var(--st-main-oben, 1.5rem))" in css
+    assert 'html[data-st-spacing="compact"] { --st-main-oben: 1rem; }' in css
+    assert 'html[data-st-spacing="generous"] { --st-main-oben: 2.2rem; }' in css
+    # das Bild-Band gilt für dieselben Stellen
+    bild = 'html[data-st-page-title="image"] body:not([data-seite="start"])'
+    assert f"{bild} main > .textseite > h1 {{" in css
+    # schmale Seite: nur bis zum Rand des Kastens; kein waagerechtes Rollen
+    assert "margin-left: -16px; margin-right: -16px" in css
+    assert f"{band} {{ overflow-x: clip; }}" in css
+
+
 def test_seitenbild_nur_mit_sicherer_adresse(client, hubiplan):
     from seite.site import SAFE_URL
 
