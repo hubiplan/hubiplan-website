@@ -54,6 +54,19 @@ def bildsatz(site, image, sizes="100vw"):
     return format_html(' srcset="{}" sizes="{}"', ", ".join(parts), sizes)
 
 
+@register.filter
+def bildbreite(side, size) -> str:
+    """``sizes`` für das Bild in „Text mit Bild“: neben dem Text höchstens halbe Breite,
+    über oder unter dem Text die ganze Breite (klein: höchstens 22rem)."""
+    if side in ("top", "bottom"):
+        return (
+            "(max-width: 22rem) 100vw, 22rem"
+            if size == "small"
+            else "(max-width: 64rem) 100vw, 64rem"
+        )
+    return "(max-width: 40rem) 100vw, 32rem"
+
+
 @register.simple_tag
 def logo_url(site, url, breite=120):
     """Logo in der Größe für die Anzeige (doppelte Breite für scharfe Handys) statt bis
