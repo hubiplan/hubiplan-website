@@ -559,6 +559,11 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   .text-bild-raster.bild-right .text-bild-bild { order: 2; }
 }
 .text-bild-text > h2:first-child { margin-top: 0; }
+/* Bild über oder unter dem Text: ganze Breite oder klein und mittig, auch auf dem Handy */
+.text-bild-raster.bild-top, .text-bild-raster.bild-bottom { grid-template-columns: minmax(0, 1fr); }
+.text-bild-raster.bild-bottom .text-bild-bild { order: 2; }
+.text-bild-raster.bild-top.bild-small .text-bild-bild,
+.text-bild-raster.bild-bottom.bild-small .text-bild-bild { justify-self: center; width: min(100%, 22rem); }
 
 /* Banner: breites Bild, auf Wunsch mit einer Zeile darauf */
 .banner-bild { position: relative; margin: 0; }
@@ -633,6 +638,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .hinweis-success { --hk-farbe: #2e7d32; }
 .bilder-abschnitt figure { margin: 0; }
 .bilder-abschnitt figcaption { margin-top: .25rem; }
+.galerie-bilder.bilder-einzeln { grid-template-columns: 1fr; }
+.bilder-einzeln .galerie-bild img { width: 100%; height: auto; aspect-ratio: auto; object-fit: contain; }
 @media (min-width: 40rem) {
   .galerie-bilder.bilder-spalten-2 { grid-template-columns: repeat(2, 1fr); }
   .galerie-bilder.bilder-spalten-3 { grid-template-columns: repeat(3, 1fr); }
