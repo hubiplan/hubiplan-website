@@ -5,5 +5,7 @@
     {% if e.note %}<p>{{ e.note }}</p>{% endif %}
     {% if e.location or e.address %}<p><strong>{% translate "Ort:" %}</strong> {{ e.location }}{% if e.location and e.address %}, {% endif %}{% if e.address %}<a href="https://www.openstreetmap.org/search?query={{ e.address|urlencode }}" rel="noopener">{{ e.address }}</a>{% endif %}</p>{% endif %}
     {% if e.description %}<p>{{ e.description|linebreaksbr }}</p>{% endif %}
+    {% if e.anhaenge %}<p><strong>{% translate "Unterlagen:" %}</strong></p>
+    <ul class="termin-anhaenge">{% for a in e.anhaenge %}<li><a href="{{ a.url }}" rel="noopener" target="_blank">{{ a.name }}</a><span class="nur-vorlesen"> ({% if a.kind == "pdf" %}PDF, {% endif %}{% translate "öffnet in neuem Fenster" %})</span></li>{% endfor %}</ul>{% endif %}
     <form method="dialog"><button class="knopf" type="submit">{% translate "Schließen" %}</button></form>
   </dialog>
