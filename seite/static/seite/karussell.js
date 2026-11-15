@@ -4,6 +4,8 @@
 // startet es angehalten. Die Knöpfe liegen im Bild und erscheinen bei Maus,
 // Tastaturfokus oder nach Antippen. Ohne Skript lässt sich das Band seitlich
 // wischen bzw. scrollen. Auf Wunsch beginnt es mit einem zufälligen Bild (data-zufall).
+// Titelfoto als Bühne (Webseite #122): Mehrere Titelzeilen wechseln mit den Bildern; gibt es
+// mehr Bilder als Zeilen, beginnt die Reihe von vorn. Hält das Karussell, bleibt die Zeile.
 // Texte in der Sprache der Seite (basis.html, Element seite-texte)
 const t = (s) => {
   const e = document.getElementById('seite-texte')
@@ -43,8 +45,15 @@ document.querySelectorAll('[data-karussell]').forEach((box) => {
     const ziel = (i + bilder.length) % bilder.length
     band.scrollTo({ left: ziel * band.clientWidth, behavior: ruhig ? 'auto' : 'smooth' })
   }
+  const zeilen = Array.from(
+    box.closest('section')?.querySelectorAll('[data-buehne-zeilen] .buehne-zeile') || [],
+  )
   const auffrischen = () => {
     zaehler.textContent = `${aktuell() + 1} / ${bilder.length}`
+    if (zeilen.length > 1) {
+      const z = aktuell() % zeilen.length
+      zeilen.forEach((e, i) => e.classList.toggle('aktiv', i === z))
+    }
   }
   const planen = () => {
     clearTimeout(uhr)

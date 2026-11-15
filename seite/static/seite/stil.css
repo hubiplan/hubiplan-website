@@ -565,3 +565,114 @@ html[data-st-contrast="on"] :focus-visible { outline-width: 3px; }
   html[data-st-dark="auto"][data-st-cards="shadow"] :is(.karte, .termin, .dokumente a) { box-shadow: 0 0 0 1px var(--linie); }
   html[data-st-dark="auto"][data-st-cards="accent"] { --st-karte: var(--flaeche); }
 }
+
+/* ---------- Titelfoto als Bühne (Webseite #122) ----------
+   Randlos über die ganze Breite direkt unter dem Kopf, Höhe begrenzt, unten ein Verlauf in der
+   abgedunkelten Vereinsfarbe; darauf links in Inhaltsbreite Oberzeile und Titelzeilen. Die
+   Klasse setzt nur die Vorlage (hero_width=full); das Merkmal macht die Regeln stärker als
+   ein Designpaket. */
+html[data-st-hero-width="full"] main.start:has(> .titel-buehne:first-of-type) { padding-top: 0; }
+html[data-st-hero-width="full"] main.start > .titel-buehne {
+  --buehne-hoehe: min(62vh, 600px);
+  --buehne-farbe: color-mix(in srgb, var(--primaer) 70%, #000);
+  --buehne-rand: calc((100vw - min(100vw, var(--breite))) / 2 + 16px);
+  position: relative; margin: 0 calc(50% - 50vw); padding: 0; border-radius: 0; background: none;
+}
+@media (max-width: 40rem) { html[data-st-hero-width="full"] main.start > .titel-buehne { --buehne-hoehe: 420px; } }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell { --karussell-hoehe: var(--buehne-hoehe); margin: 0; }
+html[data-st-hero-width="full"] main.start > .titel-buehne :is(.karussell-band, .titelbild, .titelbild img) { border-radius: 0; }
+html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild::after { border-radius: 0; }
+html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild { margin: 0; }
+html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild img {
+  display: block; width: 100%; height: var(--buehne-hoehe); max-height: none; object-fit: cover;
+}
+html[data-st-hero-width="full"] main.start > .titel-buehne::after {
+  content: ""; position: absolute; inset: 0 0 auto; height: var(--buehne-hoehe); pointer-events: none;
+  background: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--buehne-farbe) 55%, transparent) 70%, color-mix(in srgb, var(--buehne-farbe) 94%, transparent) 100%);
+}
+html[data-st-hero-width="full"] main.start > .titel-buehne .buehne-titel {
+  position: absolute; z-index: 1; inset: 0 0 auto; height: var(--buehne-hoehe); pointer-events: none;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: .7rem;
+  padding: 1.5rem var(--buehne-rand) clamp(1.6rem, 4vw, 2.8rem); color: #fff;
+}
+.buehne-oberzeile {
+  display: flex; align-items: center; gap: .75rem; margin: 0; font-size: .8rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase; text-shadow: 0 1px 3px rgb(0 0 0 / .35);
+}
+.buehne-oberzeile::before { content: ""; flex: none; width: 2.2rem; height: 2px; background: var(--akzent); }
+/* Alle Zeilen liegen übereinander: die Höhe richtet sich nach der längsten */
+.buehne-zeilen { display: grid; max-width: 44rem; }
+.buehne-zeile {
+  grid-area: 1 / 1; margin: 0; font-family: var(--schrift-titel); font-weight: 700; line-height: 1.08;
+  font-size: clamp(2.1rem, 4.6vw, 3.75rem); text-wrap: balance; text-shadow: 0 2px 8px rgb(0 0 0 / .3);
+  opacity: 0; transition: opacity .8s ease;
+}
+.buehne-zeile.aktiv { opacity: 1; }
+html[data-st-motion="off"] .buehne-zeile { transition: none; }
+@media (prefers-reduced-motion: reduce) { .buehne-zeile { transition: none; } }
+/* Steuerknöpfe unauffällig oben rechts, damit der Text frei bleibt */
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung { z-index: 2; }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung :is([data-zurueck], [data-weiter], [data-pause]) { top: .9rem; bottom: auto; transform: none; }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-zurueck] { left: auto; right: calc(var(--buehne-rand) + 5.6rem); }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-pause] { right: var(--buehne-rand); }
+html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-zaehler { top: 1.3rem; bottom: auto; right: calc(var(--buehne-rand) + 8.6rem); }
+/* Der folgende Abschnitt schließt an; ein farbiger in voller Breite ohne Abstand */
+html[data-st-hero-width="full"] main.start > .titel-buehne + section { margin-top: 1.5rem; }
+html[data-st-hero-width="full"] main.start > .titel-buehne + section.abschnitt-voll.abschnitt-hg { margin-top: 0; }
+
+/* ---------- Wasserzeichen hinter Abschnitten (Webseite #123) ----------
+   Groß, rechts an der Inhaltskante, oben und unten angeschnitten, sehr zart; rein
+   dekorativ (Hintergrund, nie vorgelesen). Der Text bleibt links in Lesebreite. */
+.abschnitt-hg.mit-zeichen { position: relative; overflow: hidden; isolation: isolate; }
+.abschnitt-hg.mit-zeichen::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: 50%; transform: translateY(-50%); height: calc(100% + 5rem); min-height: 21rem; aspect-ratio: 1;
+  right: -3rem; background: var(--zeichen) center / contain no-repeat; opacity: .09;
+}
+.abschnitt-voll.mit-zeichen::after { right: calc((100% - min(100%, var(--breite))) / 2 - 3rem); }
+.abschnitt-hg.mit-zeichen > :is(h2, h3, p, .text, blockquote) { max-width: 40rem; }
+@media (max-width: 40rem) {
+  .abschnitt-hg.mit-zeichen::after, .abschnitt-voll.mit-zeichen::after { min-height: 0; height: 15rem; right: -5rem; opacity: .07; }
+}
+@media print { .abschnitt-hg.mit-zeichen::after { content: none; } }
+
+/* ---------- Nächste Termine als Karten (Webseite #124) ----------
+   Bis zu drei nebeneinander; oben ein Balken mit großem Tag, der nächste Termin in der
+   Vereinsfarbe. Nur Startseite, Seiten der Untereinheiten und „Termine einer Art“. */
+html[data-st-date="card"] .termine-vorschau { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1.25rem; }
+html[data-st-date="card"] .termine-vorschau > .termin { display: flex; flex-direction: column; gap: 0; padding: 0; overflow: hidden; margin: 0; }
+html[data-st-date="card"] .termine-vorschau .termin-datum {
+  display: flex; flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: .3rem .65rem; width: auto; align-self: stretch;
+  padding: .85rem 1.25rem; border-radius: 0; text-align: left; line-height: 1;
+  background: var(--farbe-datum); color: var(--auf-datum);
+}
+html[data-st-date="card"] .termine-vorschau > .termin:first-child .termin-datum { background: var(--primaer); color: var(--auf-primaer); }
+html[data-st-date="card"] .termine-vorschau .termin-datum span { display: inline; font: 700 2.75rem/1 var(--schrift-titel); }
+html[data-st-date="card"] .termine-vorschau .termin-datum :is(small, .termin-jahr) { display: inline; font-size: .85rem; letter-spacing: .16em; text-transform: uppercase; }
+html[data-st-date="card"] .termine-vorschau .termin-text { padding: 1.1rem 1.25rem 1.25rem; }
+html[data-st-date="card"] .spalte-seite .termine-vorschau { grid-template-columns: 1fr; }
+
+/* ---------- Fuß mit Wappen und Name (Webseite #125) und Linie darüber ---------- */
+.fuss.fuss-voll { border-top: 3px solid var(--akzent); }
+.fuss-voll .fuss-innen {
+  display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 2.25rem; align-items: start;
+  padding-top: 2.75rem; padding-bottom: 1.6rem;
+}
+.fuss-voll .fuss-marke { display: flex; gap: 1.5rem; align-items: center; min-width: 0; }
+.fuss-voll .fuss-bild { flex: none; width: auto; height: 118px; max-width: 12rem; object-fit: contain; }
+.fuss-voll .fuss-name { margin: 0; font: 700 1.55rem/1.15 var(--schrift-titel); }
+.fuss-voll .fuss-unterzeile { margin: .35rem 0 .5rem; font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; opacity: .85; }
+.fuss-voll .fuss-spalte { display: flex; flex-direction: column; gap: .9rem; align-items: flex-start; }
+.fuss-voll .recht { flex-direction: column; gap: .35rem; }
+.fuss-voll .fuss-suche { flex: none; width: 16rem; max-width: 100%; }
+.fuss-voll .klein { grid-column: 1 / -1; border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent); padding-top: 1rem; }
+@media (max-width: 44rem) {
+  .fuss-voll .fuss-innen { grid-template-columns: 1fr; padding-top: 2rem; }
+  .fuss-voll .fuss-marke { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .fuss-voll .fuss-bild { height: 84px; }
+}
+html[data-st-footer-line="none"] .fuss { border-top: 0; }
+html[data-st-footer-line="ornament"] .fuss { border-top: 3px solid var(--farbe-zier); }
+html[data-st-footer-line="accent"] .fuss { border-top: 3px solid var(--akzent); }
+html[data-st-footer-line="primary"] .fuss { border-top: 3px solid var(--primaer); }

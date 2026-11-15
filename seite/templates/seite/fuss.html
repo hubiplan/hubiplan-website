@@ -1,4 +1,24 @@
 {% load seite i18n %}{# Fuß für alle Designs. Ein Design im Repo darf ihn ersetzen (seite/designs/<design>/fuss.html), muss aber den Quellcode-Link behalten (AGPL § 13, tests/test_designs.py); eingespielte Pakete bringen keine Vorlagen mit. #}
+{% if site and site.style.footer_layout == "full" %}{# Webseite #125: Fuß mit Wappen, Vereinsname und Links untereinander #}
+<footer class="fuss fuss-voll" id="fuss">
+  <div class="breite fuss-innen">
+    <div class="fuss-marke">
+      {% logo_url site site.info.logo_url 256 as fussbild %}{% if fussbild %}<img class="fuss-bild" src="{{ fussbild }}" alt="" width="118" height="118" loading="lazy">{% endif %}
+      <div>
+        <p class="fuss-name">{{ site.info.name }}</p>
+        {% if site.info.founding_year or site.info.address.city %}<p class="fuss-unterzeile">{% if site.info.founding_year %}{% blocktranslate with jahr=site.info.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}{% endif %}{% if site.info.founding_year and site.info.address.city %} · {% endif %}{{ site.info.address.city }}</p>{% endif %}
+        {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% with ziel=site.info.member_of.website|web_ziel %}{% if ziel %}<a href="{{ ziel }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}{% endwith %}</p>{% endif %}
+      </div>
+    </div>
+    <div class="fuss-spalte">
+      {% if site.info.blocks.search and site.style.search == "footer" %}{# kleines Suchfeld im Fuß (Webseite #75) #}<form class="fuss-suche" action="{% url 'suche' %}" method="get" role="search"><label class="nur-vorlesen" for="fuss-suche-q">{% translate "Suchbegriff" %}</label><input id="fuss-suche-q" type="search" name="q" maxlength="100" minlength="2" placeholder="{% translate "Suche" %}"><button type="submit">{% translate "Suchen" %}</button></form>{% endif %}
+      {% include "seite/fuss_links.html" %}
+      {% include "seite/sozial.html" with kanaele=site.info.social titel=_("Social Media") %}
+    </div>
+    {% include "seite/fuss_zeile.html" %}
+  </div>
+</footer>
+{% else %}
 <footer class="fuss" id="fuss">
   <div class="breite fuss-innen">
     {% if site %}
@@ -7,13 +27,8 @@
     {% if not punkte %}{% include "seite/sozial.html" with kanaele=site.info.social titel=_("Social Media") %}{% endif %}
     {% endif %}
     {% if site.info.blocks.search and site.style.search == "footer" %}{# kleines Suchfeld im Fuß (Webseite #75) #}<form class="fuss-suche" action="{% url 'suche' %}" method="get" role="search"><label class="nur-vorlesen" for="fuss-suche-q">{% translate "Suchbegriff" %}</label><input id="fuss-suche-q" type="search" name="q" maxlength="100" minlength="2" placeholder="{% translate "Suche" %}"><button type="submit">{% translate "Suchen" %}</button></form>{% endif %}
-    <ul class="recht">
-      {% if punkte %}{% menue_teile punkte as teile %}{# Menüpunkte „im Fuß“ neben Impressum und Datenschutz (Webseite #75) #}{% for p in teile.fuss %}<li><a href="{{ p.url }}"{% if p.active %} aria-current="page"{% endif %}{% if p.extern %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ p.label }}{% if p.extern %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span>{% endif %}</a></li>{% endfor %}{% endif %}
-      <li><a href="{% url 'impressum' %}">{% translate "Impressum" %}</a></li>
-      <li><a href="{% url 'datenschutz' %}">{% translate "Datenschutz" %}</a></li>
-      <li><a href="{% url 'barrierefreiheit' %}">{% translate "Barrierefreiheit" %}</a></li>
-      <li><a href="{% quellcode %}" rel="noopener noreferrer">{% translate "Quellcode" %}</a></li>
-    </ul>
-    <p class="klein">© {% jahr %} · <svg class="hubiplan-zeichen" viewBox="2 3.5 60 60" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 20V15a8 8 0 0 1 8-8h9c2.5 0 4.2 1 5.6 2.6L30 14h22a8 8 0 0 1 8 8Z" fill="#f2b33d"/><rect x="4" y="18" width="56" height="42" rx="10" fill="#0e7c66"/><path d="M22 28V52M42 28V52" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M22 44L42 35" stroke="#f2b33d" stroke-width="7" stroke-linecap="round"/></svg> {% translate "Daten aus" %} <a href="https://github.com/hubiplan" target="_blank" rel="noopener noreferrer">HUBIplan<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>
+    {% include "seite/fuss_links.html" %}
+    {% include "seite/fuss_zeile.html" %}
   </div>
 </footer>
+{% endif %}

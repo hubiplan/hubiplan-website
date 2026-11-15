@@ -1,8 +1,17 @@
-{% load seite %}{% if greeting %}
+{% load seite %}{% if greeting %}{# Webseite #122: „Titelfoto als Bühne“ (hero_width=full) randlos mit Verlauf und Titelzeilen #}
+{% if site.style.hero_width == "full" %}
+{% if greeting.gallery|length > 1 %}
+<section{% abschnitt "begruessung begruessung-bilder titel-buehne" %}>{% include "seite/karussell.html" with bilder=greeting.gallery takt=greeting.gallery_interval zufall=greeting.gallery_random %}{% include "seite/start/buehne_titel.html" %}</section>
+{% else %}
+{% lokal site greeting.image.url as bild %}
+{% if bild %}<section{% abschnitt "begruessung begruessung-bilder titel-buehne" %}><figure class="titelbild"><img src="{{ bild }}"{% bildsatz site greeting.image %} alt="{{ greeting.image.alt }}" fetchpriority="high"{% if greeting.image.width %} width="{{ greeting.image.width }}" height="{{ greeting.image.height }}"{% endif %}>{% bildunterschrift greeting.image.caption greeting.image %}</figure>{% include "seite/start/buehne_titel.html" %}</section>{% endif %}
+{% endif %}
+{% else %}
 {% if greeting.gallery|length > 1 %}
 <section{% abschnitt "begruessung begruessung-bilder" %}>{% include "seite/karussell.html" with bilder=greeting.gallery takt=greeting.gallery_interval zufall=greeting.gallery_random %}{% if site.hero_name %}<p class="titel-name" aria-hidden="true">{{ site.info.name }}</p>{% endif %}</section>
 {% else %}
 {% lokal site greeting.image.url as bild %}
 {% if bild %}<section{% abschnitt "begruessung begruessung-bilder" %}><figure class="titelbild"><img src="{{ bild }}"{% bildsatz site greeting.image %} alt="{{ greeting.image.alt }}" fetchpriority="high"{% if greeting.image.width %} width="{{ greeting.image.width }}" height="{{ greeting.image.height }}"{% endif %}>{% bildunterschrift greeting.image.caption greeting.image %}</figure>{% if site.hero_name %}<p class="titel-name" aria-hidden="true">{{ site.info.name }}</p>{% endif %}</section>{% endif %}
+{% endif %}
 {% endif %}
 {% endif %}

@@ -127,6 +127,10 @@ def test_jede_stufe_hat_regeln():
         ("date_text", "long"),
         # Webseite #89: normale Überschriftengröße ist die Grundstellung aus seite.css
         ("heading_size", "normal"),
+        # Webseite #122/#125: Grundstellung ohne Regel; Bühne und voller Fuß über Klassen
+        ("hero_width", "content"),
+        ("footer_layout", "simple"),
+        ("footer_layout", "full"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":
