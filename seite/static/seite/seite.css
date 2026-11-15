@@ -822,3 +822,8 @@ html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: vorschau-zeig
 @media (prefers-reduced-motion: reduce) {
   html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: none; outline: 4px solid var(--akzent); outline-offset: -4px; }
 }
+
+/* Urheber/in am Bild (Ralf 15.11.): „Foto: …“ klein und leise, auch ohne Bildunterschrift */
+.bildnachweis { font-size: .8rem; color: var(--text-leise); white-space: normal; }
+.abschnitt-farbig .bildnachweis { color: inherit; opacity: .85; }
+figcaption .bildnachweis:not(:first-child) { margin-left: .35rem; }

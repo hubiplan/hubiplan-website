@@ -9,8 +9,9 @@ def text(response) -> str:
     return response.content.decode()
 
 
-def _bild(key: str, caption: str = "", alt: str = "") -> dict:
+def _bild(key: str, caption: str = "", alt: str = "", credit: str = "") -> dict:
     return {
+        "credit": credit,
         "key": key,
         "url": f"{fake.BASE}images/{key}-v1/",
         "small_url": f"{fake.BASE}images/{key}-v1/?size=small",
@@ -64,7 +65,10 @@ def galerie(hubiplan):
             "date": "2024-06-01",
             "parent": {"slug": "2024", "title": "2024"},
             "albums": [],
-            "images": [_bild("umzug", "Der Umzug"), _bild("parade", "", "Parade am Markt")],
+            "images": [
+                _bild("umzug", "Der Umzug", credit="Erika Muster"),
+                _bild("parade", "", "Parade am Markt"),
+            ],
         },
     }
     return hubiplan
@@ -100,7 +104,7 @@ def test_album_mit_bildern(client, galerie):
     assert 'href="/galerie/"' in html and 'href="/galerie/2024/"' in html
     assert 'class="galerie-bild" href="/medien/a/images/umzug-v1/"' in html
     assert 'src="/medien/a/images/parade-v1/?size=small"' in html
-    assert 'data-unterschrift="Der Umzug"' in html
+    assert 'data-unterschrift="Der Umzug · Foto: Erika Muster"' in html
     assert 'alt="Parade am Markt"' in html
     assert 'id="bild-fenster"' in html and "bildfenster.js" in html
 
@@ -120,3 +124,10 @@ def test_englisch(client, galerie):
     html = text(client.get("/galerie/"))
     assert "<h1>Gallery</h1>" in html
     assert "2 images · 1 album" in html
+
+
+def test_urheber_im_bildfenster(client, galerie):
+    """Urheber/in (Ralf 15.11.): „Foto: …“ im Text unter dem großen Bild."""
+    html = text(client.get("/galerie/schuetzenfest/"))
+    assert 'data-unterschrift="Der Umzug · Foto: Erika Muster"' in html
+    assert 'data-unterschrift=""' in html  # ohne Unterschrift und Urheber: leer

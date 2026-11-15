@@ -54,6 +54,41 @@ def bildsatz(site, image, sizes="100vw"):
     return format_html(' srcset="{}" sizes="{}"', ", ".join(parts), sizes)
 
 
+def _urheber(image) -> str:
+    credit = image.get("credit") if isinstance(image, dict) else None
+    return " ".join(credit.split()) if isinstance(credit, str) else ""
+
+
+@register.simple_tag
+def bildunterschrift(caption, image, klasse=""):
+    """``<figcaption>`` mit Bildunterschrift und Urheber/in (Ralf 15.11.): „Foto: …“
+    steht auch dann, wenn die Bildunterschrift leer oder ausgeschaltet ist
+    (Namensnennung, § 13 UrhG). Ohne beides: nichts."""
+    caption = caption if isinstance(caption, str) else ""
+    credit = _urheber(image)
+    if not caption and not credit:
+        return ""
+    attrs = format_html(' class="{}"', klasse) if klasse else ""
+    nachweis = (
+        format_html('<span class="bildnachweis">{}</span>', _("Foto: {name}").format(name=credit))
+        if credit
+        else ""
+    )
+    trenner = " " if caption and credit else ""
+    return format_html("<figcaption{}>{}{}{}</figcaption>", attrs, caption, trenner, nachweis)
+
+
+@register.filter
+def mit_nachweis(caption, image) -> str:
+    """Text unter dem großen Bild im Fenster: Bildunterschrift und „Foto: …“."""
+    caption = caption if isinstance(caption, str) else ""
+    credit = _urheber(image)
+    if not credit:
+        return caption
+    nachweis = _("Foto: {name}").format(name=credit)
+    return f"{caption} · {nachweis}" if caption else nachweis
+
+
 @register.filter
 def bildbreite(side, size) -> str:
     """``sizes`` für das Bild in „Text mit Bild“: neben dem Text höchstens halbe Breite,
