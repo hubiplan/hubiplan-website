@@ -210,8 +210,10 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 }
 .knopf:hover { filter: brightness(1.1); }
 .knopf:disabled { opacity: .6; cursor: wait; }
-.knopf.hell { background: var(--flaeche); color: var(--link); border: 2px solid var(--link); }
+.knopf.hell { background: var(--flaeche); color: var(--link); border: 2px solid var(--link); padding: calc(.65rem - 2px) calc(1.1rem - 2px); }
 .klein-knopf { padding: .35rem .8rem; font-size: .9rem; }
+/* Der Rahmen des hellen Knopfs geht vom Polster ab, sonst ist er höher als ein gefüllter daneben (Webseite #118) */
+.knopf.hell.klein-knopf { padding: calc(.35rem - 2px) calc(.8rem - 2px); }
 .karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: 1rem 1.2rem; margin-bottom: 1rem; }
 .karten { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
 .karten .karte { margin: 0; }

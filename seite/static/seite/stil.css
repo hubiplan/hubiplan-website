@@ -185,6 +185,11 @@ html[data-st-buttons="label"] .knopf:not(.hell) {
   text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; padding: .8rem 1.4rem;
 }
 html[data-st-buttons="label"] .knopf.klein-knopf:not(.hell) { font-size: .78rem; padding: .45rem 1rem; }
+/* Heller Knopf als Etikett: gleiche Schrift, Polster um den Rahmen gekürzt (Webseite #118) */
+html[data-st-buttons="label"] .knopf.hell {
+  text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; padding: calc(.8rem - 2px) calc(1.4rem - 2px);
+}
+html[data-st-buttons="label"] .knopf.hell.klein-knopf { font-size: .78rem; padding: calc(.45rem - 2px) calc(1rem - 2px); }
 html[data-st-buttons="label"] .suche .knopf { padding-top: 0; padding-bottom: 0; }
 /* Auf farbigen Abschnitten: Knopf in der Schriftfarbe des Abschnitts, Schrift in seiner Farbe */
 html[data-st-buttons] .abschnitt-farbig .knopf:not(.hell) { background: var(--abschnitt-auf); color: var(--abschnitt-farbe, var(--text)); border: 0; }
