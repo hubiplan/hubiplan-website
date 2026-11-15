@@ -1,7 +1,8 @@
 {% extends "seite/basis.html" %}{% load static seite i18n %}
 {% block titel %}{{ album.title }} · {% endblock %}
 {% block inhalt %}
-<p class="brotkrumen"><a href="{% url 'galerie' %}">{% translate "Galerie" as std %}{% baustein site "gallery" std %}</a>{% if album.parent %} › <a href="{% url 'album' album.parent.slug %}">{{ album.parent.title }}</a>{% endif %}</p>
+{# Oberalbum immer zeigen, „Galerie“ allein nur, wenn kein Menüpunkt die Seite markiert (Ralf 15.11.) #}
+{% if album.parent or not punkte|menue_markiert %}<p class="brotkrumen"><a href="{% url 'galerie' %}">{% translate "Galerie" as std %}{% baustein site "gallery" std %}</a>{% if album.parent %} › <a href="{% url 'album' album.parent.slug %}">{{ album.parent.title }}</a>{% endif %}</p>{% endif %}
 <h1>{{ album.title }}</h1>
 {% if album.year %}<p class="klein">{{ album.year }}</p>{% endif %}
 {% if album.description %}<p>{{ album.description|linebreaksbr }}</p>{% endif %}
