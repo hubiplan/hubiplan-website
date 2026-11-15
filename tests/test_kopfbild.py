@@ -3,6 +3,8 @@
 import re
 from pathlib import Path
 
+from django.core.cache import cache
+
 from . import fake
 
 STATIC = Path(__file__).resolve().parents[1] / "seite" / "static" / "seite"
@@ -91,3 +93,42 @@ def test_kopfbild_fuer_schmale_bildschirme(client, hubiplan):
     assert 'alt="Schützenverein Musterdorf 1900"' in kopf
     assert kopf.count("</picture>") == 1
     assert "hubiplan.example" not in html
+
+
+def test_mehrere_kopfbilder_zufaellig_auf_jeder_seite(client, hubiplan, monkeypatch):
+    """hubiplan #480: mit mehreren Kopfbildern wählt die Webseite bei jedem Aufruf eines,
+    auf allen Seiten und ohne Skript; die Fassungen für Handys gehören bei gleicher Zahl
+    dazu. Die Antwort wird dann nicht zwischengespeichert."""
+    import random
+
+    def bild(n, schmal=False):
+        key = f"kopf{'schmal' if schmal else ''}{n}"
+        return {
+            "key": key,
+            "url": f"{fake.BASE}images/{key}/",
+            "small_url": "",
+            "width": 1200 if not schmal else 600,
+            "height": 300,
+            "alt": f"Banner {n}",
+        }
+
+    hubiplan.info["header_image"] = bild(1)
+    hubiplan.info["header_images"] = [bild(1), bild(2), bild(3)]
+    hubiplan.info["header_image_narrow"] = bild(1, True)
+    hubiplan.info["header_images_narrow"] = [bild(1, True), bild(2, True), bild(3, True)]
+    monkeypatch.setattr(random, "randrange", lambda n: 2)
+    for pfad in ("/", "/kontakt/"):
+        cache.clear()
+        r = client.get(pfad)
+        html = r.content.decode()
+        assert 'src="/medien/a/images/kopf3/"' in html, pfad
+        assert 'srcset="/medien/a/images/kopfschmal3/"' in html
+        assert "kopf1/" not in html and "kopf2/" not in html
+        assert r["Cache-Control"] == "no-cache"
+    # nur ein Kopfbild: wie bisher, ohne Vorgabe zum Zwischenspeichern
+    hubiplan.info["header_images"] = [bild(1)]
+    hubiplan.info["header_images_narrow"] = [bild(1, True)]
+    cache.clear()
+    r = client.get("/")
+    assert 'src="/medien/a/images/kopf1/"' in r.content.decode()
+    assert "Cache-Control" not in r
