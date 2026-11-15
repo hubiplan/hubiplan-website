@@ -34,6 +34,7 @@ from .site import (
     DESIGN_COOKIE,
     DESIGNS,
     PREVIEW_COOKIE,
+    SAFE_URL,
     SITE_COOKIE,
     Site,
     chosen_host,
@@ -412,7 +413,23 @@ def _look(site: Site, s: dict) -> dict:
                 f"background:{pair[0]};background-image:{css};color:{on};--abschnitt-auf:{on};"
                 f"--abschnitt-farbe:{pair[0]}"
             )
+    if "abschnitt-hg" in klassen and (zeichen := _mark_url(site, s.get("mark"))):
+        # Webseite #123: Wasserzeichen groß, zart und angeschnitten hinter dem Abschnitt
+        klassen.append("mit-zeichen")
+        stil = f'{stil};--zeichen:url("{zeichen}")'
     return {"klassen": klassen, "stil": stil}
+
+
+def _mark_url(site: Site, mark) -> str | None:
+    """Wasserzeichen eines Abschnitts: ``"logo"`` (Wappen) oder ein Bild aus HUBIplan; nur
+    Adressen über diese Seite ohne Zeichen, die im CSS ``url("…")`` etwas bedeuten."""
+    if mark == "logo":
+        url = site.local(site.info.get("logo_url"))
+    elif isinstance(mark, dict):
+        url = site.local(mark.get("url"))
+    else:
+        return None
+    return url if url and SAFE_URL.match(url) else None
 
 
 def _layout(site: Site) -> list[dict]:

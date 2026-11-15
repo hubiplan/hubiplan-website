@@ -1,0 +1,5 @@
+{% load seite %}{# Text auf dem randlosen Titelfoto (Webseite #122). Mehrere Titelzeilen wechseln mit den Bildern (karussell.js); alle liegen übereinander, damit beim Wechsel nichts springt. Vorgelesen wird nur die erste. Ohne Titelzeilen zeigt die Bühne auf Wunsch den Namen. #}
+{% with zeilen=abschnitt.hero_titles kicker=abschnitt.hero_kicker %}{% if zeilen or kicker %}<div class="buehne-titel">
+  {% if kicker %}<p class="buehne-oberzeile">{{ kicker }}</p>{% endif %}
+  {% if zeilen %}<div class="buehne-zeilen"{% if zeilen|length > 1 %} data-buehne-zeilen{% endif %}>{% for z in zeilen %}<p class="buehne-zeile{% if forloop.first %} aktiv{% endif %}"{% if not forloop.first %} aria-hidden="true"{% endif %}>{{ z }}</p>{% endfor %}</div>{% endif %}
+</div>{% elif site.hero_name %}<div class="buehne-titel"><p class="buehne-zeile aktiv" aria-hidden="true">{{ site.info.name }}</p></div>{% endif %}{% endwith %}

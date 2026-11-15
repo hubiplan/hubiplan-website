@@ -38,7 +38,8 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "tile_ratio": ("wide", "classic", "square"),
     "image_frame": bool,
     "buttons": ("filled", "outline", "label"),
-    "date": ("tile", "strip"),
+    # Webseite #124: nächste Termine als Karten nebeneinander mit großem Datum
+    "date": ("tile", "strip", "card"),
     # Kopf und Menü
     "header_bg": ("white", "color", "image"),
     "logo": bool,
@@ -64,11 +65,16 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "hero_tint": ("dark", "primary", "accent"),
     "hero_focus": ("top", "center", "bottom"),
     "hero_text": ("top", "center", "band"),
+    # Webseite #122: Titelfoto randlos als Bühne unter dem Kopf, mit Verlauf und Titelzeilen
+    "hero_width": ("content", "full"),
     # Abschnitte der Startseite trennen
     "sections": ("none", "line", "alternate"),
     # Fuß
     "footer": ("dark", "light", "color"),
     "footer_align": ("left", "center", "right"),
+    # Webseite #125: Fuß mit Wappen, Vereinsname und Links untereinander; Linie darüber
+    "footer_layout": ("simple", "full"),
+    "footer_line": ("none", "ornament", "accent", "primary"),
     # Ralf 14.11.2026: weitere Regler
     # Überschrift der Unterseiten: schlicht, farbiges Band, Band mit dem Titelbild der Startseite
     "page_title": ("plain", "band", "image"),
@@ -97,8 +103,9 @@ LOCKS: dict[str, dict[str, tuple[str, ...] | None]] = {
         "sticky": None,
         "nav_mobile": None,
     },
-    "stage": {"width": ("narrow",), "hero_name": None},
-    "newspaper": {"nav": None},
+    # Bühne zeigt ihr Titelbild ohnehin randlos; in der Zeitung steht es in der Hauptspalte
+    "stage": {"width": ("narrow",), "hero_name": None, "hero_width": None},
+    "newspaper": {"nav": None, "hero_width": None},
 }
 
 # Hintergrund der Seite (--grund); getönt wird aus der Vereinsfarbe gemischt

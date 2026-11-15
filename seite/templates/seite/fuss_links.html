@@ -1,0 +1,8 @@
+{% load seite i18n %}{# Pflichtlinks im Fuß (beide Aufbauten, Webseite #125) #}
+<ul class="recht">
+      {% if punkte %}{% menue_teile punkte as teile %}{# Menüpunkte „im Fuß“ neben Impressum und Datenschutz (Webseite #75) #}{% for p in teile.fuss %}<li><a href="{{ p.url }}"{% if p.active %} aria-current="page"{% endif %}{% if p.extern %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ p.label }}{% if p.extern %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span>{% endif %}</a></li>{% endfor %}{% endif %}
+      <li><a href="{% url 'impressum' %}">{% translate "Impressum" %}</a></li>
+      <li><a href="{% url 'datenschutz' %}">{% translate "Datenschutz" %}</a></li>
+      <li><a href="{% url 'barrierefreiheit' %}">{% translate "Barrierefreiheit" %}</a></li>
+      <li><a href="{% quellcode %}" rel="noopener noreferrer">{% translate "Quellcode" %}</a></li>
+    </ul>
