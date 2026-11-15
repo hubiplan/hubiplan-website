@@ -560,7 +560,14 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 :root { --abschnitt-hell: color-mix(in srgb, var(--primaer) 7%, var(--flaeche)); }
 .abschnitt-text { max-width: 44rem; margin-left: auto; margin-right: auto; }
 .abschnitt-text .text { max-width: none; }
-.abschnitt-hg { padding: .4rem 1.2rem 1.2rem; border-radius: var(--rund); margin: 1.5rem 0; }
+.abschnitt-hg { padding: var(--abschnitt-innen) 1.2rem; border-radius: var(--rund); margin-block: var(--abschnitt-aussen); }
+/* Farbige Abschnitte (#108): oben und unten gleich viel Innenabstand, egal ob sie mit einer
+   Überschrift oder mit Text beginnen. Die Ränder des ersten und letzten Inhalts (auch eine Ebene
+   tiefer, z. B. der letzte Absatz in .text) fallen im Kasten weg; Innen- und Außenabstand folgen
+   der Stufe „Abstände“ (stil.css). */
+:root { --abschnitt-innen: 1.4rem; --abschnitt-aussen: 2.2rem; }
+.abschnitt-hg > :first-child, .abschnitt-hg > :first-child > :first-child { margin-top: 0; }
+.abschnitt-hg > :last-child, .abschnitt-hg > :last-child > :last-child { margin-bottom: 0; }
 .abschnitt-hg.abschnitt-text { margin-left: auto; margin-right: auto; }
 /* Textseiten (#77, #101): Der Titel steht wie auf allen Seiten an der Inhaltskante, der Text
    darunter in Lesebreite in derselben Flucht. Breite beim Text der Seite: „Textbreite“ stellt

@@ -262,3 +262,29 @@ def test_textseite_aus_abschnitten(client, hubiplan):
     assert main.index("Mit dem Bus.") < main.index("Schreiben Sie uns")
     assert '<section class="seite-text abschnitt-text">' in main
     assert '<a class="knopf" href="/kontakt/">Schreiben Sie uns</a>' in main
+
+
+def test_farbige_abschnitte_oben_und_unten_gleich():
+    """#108: Farbige Abschnitte haben oben und unten denselben Innenabstand, egal ob sie mit
+    einer Überschrift oder mit Text beginnen; Innen- und Außenabstand folgen der Stufe."""
+    from pathlib import Path
+
+    static = Path(__file__).resolve().parents[1] / "seite" / "static" / "seite"
+    css = (static / "seite.css").read_text()
+    regel = css.split(".abschnitt-hg {", 1)[1].split("}", 1)[0]
+    assert "padding: var(--abschnitt-innen) 1.2rem" in regel
+    assert "margin-block: var(--abschnitt-aussen)" in regel
+    assert ":root { --abschnitt-innen: 1.4rem; --abschnitt-aussen: 2.2rem; }" in css
+    assert (
+        ".abschnitt-hg > :first-child, .abschnitt-hg > :first-child > :first-child"
+        " { margin-top: 0; }" in css
+    )
+    assert (
+        ".abschnitt-hg > :last-child, .abschnitt-hg > :last-child > :last-child"
+        " { margin-bottom: 0; }" in css
+    )
+    stil = (static / "stil.css").read_text()
+    for stufe in ("compact", "generous"):
+        assert f'html[data-st-spacing="{stufe}"] {{ --abschnitt-innen:' in stil
+    # die Linie zwischen Abschnitten verkleinert farbige Kästen nicht mehr oben
+    assert "section:not(.begruessung-bilder, .abschnitt-hg) { padding-top: .4rem; }" in stil

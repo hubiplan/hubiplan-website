@@ -103,6 +103,9 @@ html[data-st-spacing="generous"] main { padding-top: 2.2rem; padding-bottom: 4re
 html[data-st-spacing="generous"] main h2 { margin-top: 2.4em; }
 html[data-st-spacing="generous"] body.design-stage main.start > section { padding-top: 2.5rem; padding-bottom: 3rem; }
 html[data-st-spacing="generous"] .karten, html[data-st-spacing="generous"] .termine { gap: 1.4rem; }
+/* Farbige Abschnitte (#108): Innen- und Außenabstand je Stufe, oben und unten gleich */
+html[data-st-spacing="compact"] { --abschnitt-innen: 1rem; --abschnitt-aussen: 1.4rem; }
+html[data-st-spacing="generous"] { --abschnitt-innen: 2rem; --abschnitt-aussen: 3.4rem; }
 
 html[data-st-corners="square"] { --rund: 0px; }
 html[data-st-corners="slight"] { --rund: 4px; }
@@ -428,7 +431,7 @@ html[data-st-hero-text="band"] .buehne:has(img) .buehne-name { padding-top: 1rem
 
 /* Abschnitte der Startseite trennen: Linie oder abwechselnd getönt (Bühne: Bänder ein/aus) */
 html[data-st-sections="line"] main.start > section + section:not(.begruessung-bilder) { border-top: 1px solid var(--linie); }
-html[data-st-sections="line"] body:not(.design-stage) main.start > section + section:not(.begruessung-bilder) { padding-top: .4rem; }
+html[data-st-sections="line"] body:not(.design-stage) main.start > section + section:not(.begruessung-bilder, .abschnitt-hg) { padding-top: .4rem; }
 html[data-st-sections="alternate"] body:not(.design-stage) main.start > section:nth-of-type(even):not(.begruessung-bilder, .abschnitt-farbig, [style]) {
   background: color-mix(in srgb, var(--primaer) 6%, var(--flaeche)); border-radius: var(--rund); padding: .2rem 1.2rem 1.2rem; margin: 1rem 0;
 }
