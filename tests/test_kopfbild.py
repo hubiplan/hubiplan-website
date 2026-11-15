@@ -124,7 +124,10 @@ def test_mehrere_kopfbilder_zufaellig_auf_jeder_seite(client, hubiplan, monkeypa
         assert 'src="/medien/a/images/kopf3/"' in html, pfad
         assert 'srcset="/medien/a/images/kopfschmal3/"' in html
         assert "kopf1/" not in html and "kopf2/" not in html
-        assert r["Cache-Control"] == "no-cache"
+        # Kontaktseite bleibt bei ihrem strengeren „private, no-store“
+        assert r["Cache-Control"] in ("no-cache", "private, no-store"), pfad
+        if pfad == "/":
+            assert r["Cache-Control"] == "no-cache"
     # nur ein Kopfbild: wie bisher, ohne Vorgabe zum Zwischenspeichern
     hubiplan.info["header_images"] = [bild(1)]
     hubiplan.info["header_images_narrow"] = [bild(1, True)]
