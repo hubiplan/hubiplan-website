@@ -1,0 +1,1 @@
+{% load seite i18n %}{% if unit.social %}<section{% abschnitt "folgen" %}><h2>{% blocktranslate with name=unit.short_name|default:unit.name %}Folgt {{ name }}{% endblocktranslate %}</h2>{% include "seite/sozial.html" with kanaele=unit.social stil="gross" %}</section>{% endif %}
