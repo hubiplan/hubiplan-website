@@ -3,7 +3,7 @@
 {% block inhalt %}
 <h1>{% translate "Chronik" as chronik %}{% baustein site "history" page.title|default:chronik %}</h1>
 {% lokal site page.image.url as bild %}
-{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site page.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ page.image.alt }}" fetchpriority="high">{% if page.image.caption %}<figcaption>{{ page.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site page.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ page.image.alt }}" fetchpriority="high">{% bildunterschrift page.image.caption page.image %}</figure>{% endif %}
 {% if page.text %}<div class="text">{{ page.text|md:site }}</div>{% endif %}
 {% if zeitleiste.abschnitte %}
 {% if zeitleiste.sprungmarken %}
@@ -29,7 +29,7 @@
           {% if e.bilder %}
           <div class="zeitleiste-bilder{% if e.bilder|length > 1 %} mehrere{% endif %}">
             {% for b in e.bilder %}{% lokal site b.small_url as klein %}{% lokal site b.url as gross %}
-            <a class="zeitleiste-bild" href="{{ gross }}" data-unterschrift="{{ b.caption }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>
+            <a class="zeitleiste-bild" href="{{ gross }}" data-unterschrift="{{ b.caption|mit_nachweis:b }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>
             {% endfor %}
           </div>
           {% endif %}

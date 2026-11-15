@@ -29,4 +29,10 @@
 <p>{% translate "Für diese Seite ist noch kein Impressum hinterlegt." %}</p>
 {% endif %}
 {% endwith %}
+{% if imprint.image_credits %}
+<section class="text bildnachweise">
+  <h2>{% translate "Bildnachweis" %}</h2>
+  <p>{% translate "Fotos und Bilder auf dieser Webseite:" %} {{ imprint.image_credits|join:", " }}</p>
+</section>
+{% endif %}
 {% endblock %}

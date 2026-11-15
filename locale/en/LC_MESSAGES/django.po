@@ -948,3 +948,12 @@ msgstr "Documents:"
 
 msgid "Bild folgt"
 msgstr "Picture to follow"
+
+msgid "Foto: {name}"
+msgstr "Photo: {name}"
+
+msgid "Bildnachweis"
+msgstr "Image credits"
+
+msgid "Fotos und Bilder auf dieser Webseite:"
+msgstr "Photos and images on this website:"

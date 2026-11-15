@@ -1148,3 +1148,31 @@ def test_linkedin_eigenes_symbol(client, hubiplan):
     assert 'href="https://linkedin.example/company/sv"' in html
     # eigenes Symbol, nicht die Weltkugel für unbekannte Kanäle
     assert ICONS["linkedin"] in html
+
+
+def test_bildnachweis_im_impressum(client, hubiplan):
+    """Urheber/innen der sichtbaren Bilder gesammelt im Impressum (Ralf 15.11.)."""
+    assert "Bildnachweis" not in text(client.get("/impressum/"))
+    cache.clear()
+    hubiplan.info["imprint_extra"] = {"image_credits": ["Erika Muster", "Max Mustermann"]}
+    html = text(client.get("/impressum/"))
+    assert "<h2>Bildnachweis</h2>" in html
+    assert "Erika Muster, Max Mustermann" in html
+
+
+def test_bildunterschrift_mit_urheber():
+    from seite.templatetags.seite import bildunterschrift, mit_nachweis
+
+    bild = {"credit": "Erika  Muster"}
+    assert str(bildunterschrift("Fest", bild)) == (
+        '<figcaption>Fest <span class="bildnachweis">Foto: Erika Muster</span></figcaption>'
+    )
+    # auch ohne (oder bei ausgeschalteter) Bildunterschrift
+    assert str(bildunterschrift("", bild, "klein")) == (
+        '<figcaption class="klein"><span class="bildnachweis">Foto: Erika Muster</span>'
+        "</figcaption>"
+    )
+    assert bildunterschrift("", {"credit": ""}) == ""
+    assert str(bildunterschrift("Nur <Text>", None)) == "<figcaption>Nur &lt;Text&gt;</figcaption>"
+    assert mit_nachweis("", bild) == "Foto: Erika Muster"
+    assert mit_nachweis("Fest", {}) == "Fest"

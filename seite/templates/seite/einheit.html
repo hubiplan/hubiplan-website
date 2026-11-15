@@ -14,7 +14,7 @@
 {% include "seite/karussell.html" with bilder=unit.gallery takt=unit.gallery_interval zufall=unit.gallery_random %}
 {% else %}
 {% lokal site unit.image.url as bild %}
-{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% if unit.image.caption %}<figcaption>{{ unit.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% bildunterschrift unit.image.caption unit.image %}</figure>{% endif %}
 {% endif %}
 {% if unit.text %}<div class="text">{{ unit.text|md:site }}</div>{% endif %}
 {# Kontakt: Ansprechpartner und daneben die eigene Homepage als Karte (Ralf 31.10.) #}
