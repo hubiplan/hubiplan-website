@@ -360,6 +360,8 @@ def test_seitentitel_band_randlos_und_auf_textseiten(client, hubiplan):
     # ohne Lücke unter dem Kopf, auch bei engem und großzügigem Abstand
     oben = f"{band} main > .textseite:first-child > h1:first-child {{"
     assert oben in css
+    # auch der Kopf einer Einheit ohne Brotkrumen-Streifen davor (#113)
+    assert f"{band} main > :is(h1, .einheit-kopf):first-child,\n" in css
     assert "margin-top: calc(-1 * var(--st-main-oben, 1.5rem))" in css
     assert 'html[data-st-spacing="compact"] { --st-main-oben: 1rem; }' in css
     assert 'html[data-st-spacing="generous"] { --st-main-oben: 2.2rem; }' in css
