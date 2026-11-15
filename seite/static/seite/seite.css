@@ -236,8 +236,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 /* Personen */
 .personen { list-style: none; padding: 0; margin: 0 0 .5rem; display: grid; gap: .8rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
 .person { display: flex; gap: .8rem; align-items: center; }
-.person img, .ohne-foto { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: none; }
-.ohne-foto { display: grid; place-items: center; background: var(--primaer); color: var(--auf-primaer); font-size: 1.6rem; font-weight: 700; opacity: .85; }
+.person img, .ohne-foto { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; flex: none; }
+.ohne-foto { display: grid; place-items: center; background: var(--primaer); color: var(--auf-primaer); font-size: 2.4rem; font-weight: 700; opacity: .85; }
 
 /* Termine */
 .termine { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
@@ -383,7 +383,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .mitgliederliste { list-style: none; padding: 0; margin: 0; display: grid; gap: .3rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
 .mitglied { display: flex; align-items: center; gap: .7rem; padding: .35rem 0; border-bottom: 1px solid var(--linie); }
 .mitglied > span { display: flex; flex-direction: column; }
-.mitglied img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; }
+.mitglied img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex: none; }
 .gedenken .mitglied img { filter: grayscale(1); }
 .repertoire { list-style: none; padding: 0; margin: 0; columns: 3 14rem; column-gap: 2rem; }
 .repertoire li { break-inside: avoid; padding: .2rem 0; }

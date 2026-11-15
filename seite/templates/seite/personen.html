@@ -2,7 +2,7 @@
 {% for p in personen %}
   <li class="person">
     {% lokal site p.photo_url as foto %}
-    {% if foto %}<img src="{{ foto }}" alt="Foto von {{ p.name }}" loading="lazy" width="96" height="96">{% else %}<span class="ohne-foto" aria-hidden="true">{{ p.name|slice:":1" }}</span>{% endif %}
+    {% if foto %}<img src="{{ foto }}" alt="Foto von {{ p.name }}" loading="lazy" width="112" height="112">{% else %}<span class="ohne-foto" aria-hidden="true">{{ p.name|slice:":1" }}</span>{% endif %}
     <span>
       <strong>{{ p.name }}</strong>
       {% if p.instrument %}<br><span class="instrument">{{ p.instrument }}</span>{% endif %}
