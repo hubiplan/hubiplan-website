@@ -2,6 +2,7 @@
 Alle Daten erfunden."""
 
 import datetime
+import re
 
 from django.core.cache import cache
 from django.utils import timezone
@@ -288,3 +289,60 @@ def test_farbige_abschnitte_oben_und_unten_gleich():
         assert f'html[data-st-spacing="{stufe}"] {{ --abschnitt-innen:' in stil
     # die Linie zwischen Abschnitten verkleinert farbige Kästen nicht mehr oben
     assert "section:not(.begruessung-bilder, .abschnitt-hg) { padding-top: .4rem; }" in stil
+
+
+def test_ziel_untereinheit_und_eigene_adresse(client, hubiplan):
+    """Webseite #111: Kacheln und Knöpfe führen zur Seite einer Untereinheit; eine volle
+    Adresse auf die eigene Webseite öffnet im selben Fenster, ohne „↗“."""
+    hubiplan.info["home_layout"] = layout(
+        {
+            "key": "c:x1",
+            "kind": "tiles",
+            "title": "Mitmachen",
+            "columns": 3,
+            "tiles": [
+                {
+                    "title": "Im Jägerzug",
+                    "text": "",
+                    "image": None,
+                    "target": {"key": "unit", "slug": "jaeger"},
+                },
+                {
+                    "title": "Nachwuchs",
+                    "text": "",
+                    "image": None,
+                    "target": {"key": "link", "url": "https://testserver/seite/nachwuchs/"},
+                },
+                {
+                    "title": "Mit www",
+                    "text": "",
+                    "image": None,
+                    "target": {"key": "link", "url": "https://www.testserver/kontakt/"},
+                },
+                {"title": "Ohne Slug", "text": "", "image": None, "target": {"key": "unit"}},
+            ],
+        },
+        {
+            "key": "c:k1",
+            "kind": "buttons",
+            "title": "",
+            "align": "left",
+            "buttons": [
+                {"label": "Zum Zug", "target": {"key": "unit", "slug": "jaeger"}},
+                {"label": "Dachverband", "target": {"key": "link", "url": "https://example.org/"}},
+            ],
+        },
+    )
+    cache.clear()
+    html = text(client.get("/"))
+    zug = re.search(r'<a href="(/[^"]*/jaeger/)">Im Jägerzug</a>', html)
+    assert zug, html
+    assert f'<a class="knopf" href="{zug.group(1)}">Zum Zug</a>' in html
+    assert '<a href="https://testserver/seite/nachwuchs/">Nachwuchs</a>' in html
+    assert '<a href="https://www.testserver/kontakt/">Mit www</a>' in html
+    assert "<h3>Ohne Slug</h3>" in html
+    # fremde Adresse bleibt ein Link nach außen
+    assert (
+        '<a class="knopf" href="https://example.org/" target="_blank" rel="noopener noreferrer">'
+        "Dachverband" in html
+    )

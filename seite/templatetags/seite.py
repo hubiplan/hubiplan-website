@@ -150,6 +150,9 @@ def _nav_url(site, node: dict) -> str | None:
         return reverse("wuerde", args=[node["id"]]) if node.get("id") else None
     if key == "units":
         return einheiten_url(site)
+    if key == "unit":
+        # Seite einer Untereinheit als Ziel eines Knopfs oder einer Kachel (Webseite #111)
+        return einheit_url(site, node["slug"]) if node.get("slug") else None
     if key == "membertype":
         return reverse("mitglieder", args=[node["id"]]) if node.get("id") else None
     if key == "link":
@@ -290,9 +293,21 @@ def baustein(site, key, standard=""):
     return name.strip() if isinstance(name, str) and name.strip() else standard
 
 
-@register.simple_tag
-def ziel(site, target) -> dict | None:
-    """Ziel eines Knopfs oder einer Kachel der Startseite (G3): ``url`` und ``extern``."""
+def _eigene_hosts(request) -> set[str]:
+    """Namen, unter denen diese Webseite gerade aufgerufen wird (mit und ohne „www.“)."""
+    if request is None:
+        return set()
+    from ..site import host_of
+
+    hosts = {request.get_host().split(":")[0].lower(), host_of(request)}
+    return {h for x in hosts if x for h in (x, x.removeprefix("www."), "www." + x)}
+
+
+@register.simple_tag(takes_context=True)
+def ziel(context, site, target) -> dict | None:
+    """Ziel eines Knopfs oder einer Kachel der Startseite (G3): ``url`` und ``extern``.
+    Eine volle Adresse auf diese Webseite selbst gilt nicht als Link nach außen (Webseite
+    #111): sie öffnet im selben Fenster, ohne „↗“."""
     if not isinstance(target, dict):
         return None
     try:
@@ -301,7 +316,11 @@ def ziel(site, target) -> dict | None:
         return None
     if not url:
         return None
-    return {"url": url, "extern": target.get("key") == "link"}
+    extern = target.get("key") == "link"
+    if extern:
+        host = (urlsplit(url).hostname or "").lower()
+        extern = host not in _eigene_hosts(context.get("request"))
+    return {"url": url, "extern": extern}
 
 
 @register.simple_tag(takes_context=True)
