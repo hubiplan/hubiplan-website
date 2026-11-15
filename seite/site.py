@@ -146,6 +146,36 @@ class Site:
     design_preview: str | None = None
     cache: dict = field(default_factory=dict)
 
+    def __post_init__(self):
+        # hubiplan #480: mehrere Kopfbilder – bei jedem Aufruf eines wählen. Die Wahl steht in
+        # einer eigenen Kopie von ``info`` (nie im Zwischenspeicher), so dass Vorlagen und
+        # Designpakete wie bisher ``site.info.header_image`` nehmen, ohne Skript.
+        if isinstance(self.info, dict) and self.several_header_images:
+            images = [b for b in self.info["header_images"] if isinstance(b, dict)]
+            i = random.randrange(len(images))  # noqa: S311 – keine Sicherheitsfrage
+            narrow = [b for b in self.info.get("header_images_narrow") or [] if isinstance(b, dict)]
+            if len(narrow) == len(images):
+                chosen_narrow = narrow[i]  # gleich viele: als Paare
+            elif narrow:
+                chosen_narrow = random.choice(narrow)  # noqa: S311
+            else:
+                chosen_narrow = self.info.get("header_image_narrow")
+            self.info = {
+                **self.info,
+                "header_image": images[i],
+                "header_image_narrow": chosen_narrow,
+            }
+
+    @property
+    def several_header_images(self) -> bool:
+        """Mehr als ein Kopfbild oder mehr als eine Fassung für Handys (hubiplan #480)."""
+        info = self.info if isinstance(self.info, dict) else {}
+        wide = info.get("header_images")
+        narrow = info.get("header_images_narrow")
+        wide = len(wide) if isinstance(wide, list) else 0
+        narrow = len(narrow) if isinstance(narrow, list) else 0
+        return wide > 1 or (wide == 1 and narrow > 1)
+
     # --- Daten ---
 
     def get(self, path: str, *, cached: bool = True, seconds: int | None = None):
