@@ -65,9 +65,10 @@ zeigt die Seite wie bei einem Ausfall den letzten guten Stand.
 
 Die Webseite läuft auf `test.example.org` in `/opt/hubiplan-website` als Container
 `website` im Docker-Netz `hubiplan_web` von HUBIplan. Caddy (aus HUBIplan) leitet
-`https://test.example.org/webseite/` dorthin weiter und entfernt dabei `/webseite`.
+`https://test.example.org/vereinsseite/` dorthin weiter und entfernt dabei `/vereinsseite`.
+(Nicht `/webseite/`: Diesen Pfad nutzt die Verwaltung von HUBIplan.)
 
-- `BASE_PATH=/webseite`: Adressen der Seite beginnen mit `/webseite/`.
+- `BASE_PATH=/vereinsseite`: Adressen der Seite beginnen mit `/vereinsseite/`.
 - `SITE_HOST_OVERRIDE=www.sv-musterstadt.test`: Alle Aufrufe gehören zur
   Demo-Webseite aus `seed_demoverein` (statt Zuordnung über den Hostnamen). Ein
   Vorschau-Link mit `?seite=<hostname>` (HUBIplan hängt ihn auf dem Testserver an) zeigt
@@ -94,7 +95,7 @@ Aufruf geht wieder vor): `cd /opt/hubiplan-website && sh deploy/zurueck.sh`
 (bei eingeschränkten Benutzerrechten mit `sudo`).
 
 Ansehen: In HUBIplan unter Webseite › Einstellungen „Vorschau öffnen“. Die Demo-Webseite
-steht im Wartungsmodus; ohne Vorschau zeigt `/webseite/` nur die Wartungsseite.
+steht im Wartungsmodus; ohne Vorschau zeigt `/vereinsseite/` nur die Wartungsseite.
 
 ## Releases und Rollout-Protokoll
 
