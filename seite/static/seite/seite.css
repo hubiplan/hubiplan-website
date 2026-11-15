@@ -639,6 +639,11 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .bildkachel:has(a):hover { border-color: var(--primaer); }
 .bildkachel:has(a:focus-visible) { outline: 3px solid var(--link); outline-offset: 2px; }
 .bildkachel h3 a:focus-visible { outline: none; }
+/* Knopf unten in der Kachel (Webseite #115): bündig über eine Reihe; in der hellen Kachel
+   auch auf farbigem Abschnitt in den Farben der Webseite, damit er genug Kontrast hat */
+.bildkachel .kachel-knopf { margin: auto 1rem 1rem; padding-top: .4rem; }
+.bildkachel .kachel-knopf .knopf { margin: 0; }
+.abschnitt-farbig .bildkachel .knopf:not(.hell) { background: var(--primaer); color: var(--auf-primaer); }
 
 /* Hervorgehobener Termin mit Countdown */
 .termin-gross { text-align: center; }
