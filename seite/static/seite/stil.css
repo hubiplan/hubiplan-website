@@ -189,6 +189,9 @@ html[data-st-buttons="label"] .suche .knopf { padding-top: 0; padding-bottom: 0;
 /* Auf farbigen Abschnitten: Knopf in der Schriftfarbe des Abschnitts, Schrift in seiner Farbe */
 html[data-st-buttons] .abschnitt-farbig .knopf:not(.hell) { background: var(--abschnitt-auf); color: var(--abschnitt-farbe, var(--text)); border: 0; }
 html[data-st-buttons="outline"] .abschnitt-farbig .knopf:not(.hell) { background: transparent; color: var(--abschnitt-auf); border: 2px solid currentColor; }
+/* Knopf in einer Kachel (Webseite #115): die Kachel ist hell, also wie außerhalb farbiger Abschnitte */
+html[data-st-buttons] .abschnitt-farbig .bildkachel .knopf:not(.hell) { background: var(--primaer); color: var(--auf-primaer); border: 0; }
+html[data-st-buttons="outline"] .abschnitt-farbig .bildkachel .knopf:not(.hell) { background: transparent; color: var(--link); border: 2px solid currentColor; }
 
 /* Datumsfeld als Streifen über dem Termin */
 html[data-st-date="strip"] .termin { flex-direction: column; gap: .5rem; }

@@ -346,3 +346,75 @@ def test_ziel_untereinheit_und_eigene_adresse(client, hubiplan):
         '<a class="knopf" href="https://example.org/" target="_blank" rel="noopener noreferrer">'
         "Dachverband" in html
     )
+
+
+def test_kachel_mit_knopf(client, hubiplan):
+    """Webseite #115: Eine Kachel bekommt auf Wunsch einen Knopf unten; die Überschrift
+    bleibt dann ohne Link. Ohne Knopftext oder ohne Ziel bleibt alles wie bisher."""
+    hubiplan.info["home_layout"] = layout(
+        {
+            "key": "c:x1",
+            "kind": "tiles",
+            "title": "So geht's",
+            "columns": 3,
+            "bg": "p1",
+            "tiles": [
+                {
+                    "title": "1. Melde dich bei uns",
+                    "text": "Wir rufen zurück.",
+                    "image": None,
+                    "target": {"key": "contact"},
+                    "button": "Kontakt aufnehmen",
+                },
+                {
+                    "title": "2. Komm vorbei",
+                    "text": "",
+                    "image": None,
+                    "target": {"key": "link", "url": "https://example.org/anfahrt"},
+                    "button": "Anfahrt",
+                },
+                {
+                    "title": "3. Mach mit",
+                    "text": "",
+                    "image": None,
+                    "target": {"key": "events"},
+                    "button": "",
+                },
+                {"title": "Ohne Ziel", "text": "", "image": None, "target": None, "button": "Los"},
+            ],
+        },
+    )
+    cache.clear()
+    html = text(client.get("/"))
+    assert "<h3>1. Melde dich bei uns</h3>" in html
+    assert (
+        '<p class="kachel-knopf"><a class="knopf" href="/kontakt/">Kontakt aufnehmen</a></p>'
+        in html
+    )
+    assert (
+        '<a class="knopf" href="https://example.org/anfahrt" target="_blank" '
+        'rel="noopener noreferrer">Anfahrt<span aria-hidden="true"> ↗</span>' in html
+    )
+    assert "<h3>2. Komm vorbei</h3>" in html
+    # ohne Knopftext: Überschrift als Link wie bisher
+    assert '<a href="/termine/">3. Mach mit</a>' in html
+    # ohne Ziel kein Knopf
+    assert "<h3>Ohne Ziel</h3>" in html and ">Los<" not in html
+
+
+def test_kachel_knopf_kontrast_auf_farbigem_abschnitt():
+    """Webseite #115: In der hellen Kachel bekommt der Knopf auch auf farbigem Abschnitt die
+    Farben der Webseite, nicht die Schriftfarbe des Abschnitts."""
+    from pathlib import Path
+
+    static = Path(__file__).resolve().parents[1] / "seite" / "static" / "seite"
+    css = (static / "seite.css").read_text()
+    assert (
+        ".abschnitt-farbig .bildkachel .knopf:not(.hell) "
+        "{ background: var(--primaer); color: var(--auf-primaer); }" in css
+    )
+    assert ".bildkachel .kachel-knopf { margin: auto 1rem 1rem;" in css
+    stil = (static / "stil.css").read_text()
+    assert "html[data-st-buttons] .abschnitt-farbig .bildkachel .knopf:not(.hell)" in stil
+    outline = 'html[data-st-buttons="outline"] .abschnitt-farbig .bildkachel .knopf:not(.hell)'
+    assert outline in stil
