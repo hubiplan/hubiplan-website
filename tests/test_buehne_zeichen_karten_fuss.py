@@ -214,3 +214,20 @@ def test_fuss_ohne_wappen_behaelt_den_namen(client, hubiplan):
     fuss = html[html.index('<footer class="fuss fuss-voll"') :]
     assert 'class="fuss-bild"' not in fuss
     assert '<p class="fuss-name">Schützenverein Musterdorf 1900</p>' in fuss
+
+
+def test_buehne_knoepfe_immer_sichtbar_und_ueber_bild_und_verlauf():
+    """Webseite #130: Auf der Bühne (full und stage) stehen Anhalten, zurück und weiter immer
+    sichtbar und klickbar über Bild, Verlauf und Titelzeilen; eine Abschnittsbreite „Text“
+    drückt die Bühne nicht zusammen."""
+    css = (STATIC / "stil.css").read_text()
+    buehne = (
+        'html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) '
+        "main.start > .titel-buehne"
+    )
+    assert f"{buehne} .karussell-steuerung {{ z-index: 3; opacity: 1; }}" in css
+    assert f"{buehne} .karussell-steuerung > * {{ pointer-events: auto; }}" in css
+    regel = css.split(f"{buehne} {{", 1)[1].split("}", 1)[0]
+    assert "max-width: none" in regel and "isolation: isolate" in regel
+    # Titelzeilen (z-index 1) bleiben unter den Knöpfen
+    assert "position: absolute; z-index: 1; inset: 0 0 auto; height: var(--buehne-hoehe)" in css

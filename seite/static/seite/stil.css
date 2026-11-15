@@ -577,6 +577,7 @@ html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > 
   --buehne-farbe: color-mix(in srgb, var(--primaer) 70%, #000);
   --buehne-rand: calc((100vw - min(100vw, var(--breite))) / 2 + 16px);
   position: relative; margin: 0 calc(50% - 50vw); padding: 0; border-radius: 0; background: none;
+  max-width: none; isolation: isolate; /* auch bei Abschnittsbreite „Text“ (Webseite #130) */
 }
 @media (max-width: 40rem) { html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne { --buehne-hoehe: 420px; } }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell { --karussell-hoehe: var(--buehne-hoehe); margin: 0; }
@@ -610,8 +611,12 @@ html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > 
 .buehne-zeile.aktiv { opacity: 1; }
 html[data-st-motion="off"] .buehne-zeile { transition: none; }
 @media (prefers-reduced-motion: reduce) { .buehne-zeile { transition: none; } }
-/* Steuerknöpfe unauffällig oben rechts, damit der Text frei bleibt */
-html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung { z-index: 2; }
+/* Steuerknöpfe unauffällig oben rechts, damit der Text frei bleibt. Auf der Bühne stehen sie
+   immer sichtbar und klickbar über Bild, Verlauf und Titelzeilen (Webseite #130): wechseln Bilder
+   und Zeilen von selbst, muss „Anhalten“ ohne Suchen zu finden sein (WCAG 2.2.2). Die Bühne
+   ist eine eigene Ebene: Bild unten, darüber Verlauf und Titelzeilen, ganz oben die Knöpfe. */
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung { z-index: 3; opacity: 1; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung > * { pointer-events: auto; }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung :is([data-zurueck], [data-weiter], [data-pause]) { top: .9rem; bottom: auto; transform: none; }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-zurueck] { left: auto; right: calc(var(--buehne-rand) + 5.6rem); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
