@@ -7,6 +7,7 @@ die Seite lädt nichts von fremden Adressen.
 
 from __future__ import annotations
 
+import random
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -253,9 +254,13 @@ class Site:
         if not isinstance(greeting, dict):
             return None
         image = greeting.get("image")
-        if not isinstance(image, dict):
-            gallery = greeting.get("gallery")
-            image = gallery[0] if isinstance(gallery, list) and gallery else None
+        gallery = greeting.get("gallery")
+        gallery = [b for b in gallery if isinstance(b, dict)] if isinstance(gallery, list) else []
+        if len(gallery) > 1 and self.style.get("carousel") == "random":
+            # hubiplan #477: wie auf der Startseite ein zufälliges Bild des Karussells
+            image = random.choice(gallery)  # noqa: S311 – keine Sicherheitsfrage
+        elif not isinstance(image, dict):
+            image = gallery[0] if gallery else None
         if not isinstance(image, dict):
             return None
         url = self.local(image.get("small_url") or image.get("url"))

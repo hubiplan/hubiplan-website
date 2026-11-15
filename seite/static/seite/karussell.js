@@ -32,7 +32,9 @@ document.querySelectorAll('[data-karussell]').forEach((box) => {
   const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   box.querySelector('.karussell-steuerung').hidden = false
 
-  let angehalten = ruhig || art === 'off' // vom Besucher angehalten
+  // „zufällig“ (hubiplan #477): die Startseite zeigt schon vom Server nur ein Bild; andere
+  // Karussells (z. B. einer Einheit) beginnen dann zufällig und blättern nicht von selbst
+  let angehalten = ruhig || art === 'off' || art === 'random' // vom Besucher angehalten
   let verweilt = false // Maus oder Fokus im Karussell
   let uhr
 
@@ -107,7 +109,8 @@ document.querySelectorAll('[data-karussell]').forEach((box) => {
     warte = setTimeout(auffrischen, 80)
   })
   // Auf Wunsch (HUBIplan: „Beginnt mit einem zufälligen Bild“) zufällig beginnen
-  const start = 'zufall' in box.dataset ? Math.floor(Math.random() * bilder.length) : 0
+  const zufaellig = 'zufall' in box.dataset || art === 'random'
+  const start = zufaellig ? Math.floor(Math.random() * bilder.length) : 0
   if (start > 0) {
     bilder[start].querySelector('img')?.removeAttribute('loading')
     band.scrollTo({ left: start * band.clientWidth, behavior: 'auto' })
