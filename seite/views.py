@@ -690,8 +690,55 @@ def unit(request, site: Site, pfad: str, slug: str):
         request,
         "seite/einheit.html",
         site,
-        {"unit": data, "events": events, "webcal_url": _webcal(ics), "posts": posts},
+        {
+            "unit": data,
+            "events": events,
+            "webcal_url": _webcal(ics),
+            "posts": posts,
+            "abschnitte": _unit_layout(site, data),
+        },
     )
+
+
+# Feste Blöcke der Seite einer Untereinheit (HUBIplan ab #491) → Vorlage unter seite/einheit/
+UNIT_BLOCKS = {
+    "body": "text",
+    "contact": "kontakt",
+    "homepage": "homepage",
+    "honors": "majestaeten",
+    "events": "termine",
+    "news": "beitraege",
+    "follow": "folgen",
+}
+
+
+def _unit_layout(site: Site, data: dict) -> list[dict] | None:
+    """Abschnitte der Seite einer Untereinheit: feste Blöcke und eigene Abschnitte in der
+    Reihenfolge aus HUBIplan. ``None`` bei älteren Ständen ohne Abschnitte (Seite wie bisher)."""
+    sections = data.get("sections") if isinstance(data, dict) else None
+    if not isinstance(sections, list):
+        return None
+    result = []
+    for s in sections:
+        if not isinstance(s, dict):
+            continue
+        kind = s.get("kind")
+        if kind in UNIT_BLOCKS:
+            result.append(
+                {**s, "vorlage": f"seite/einheit/{UNIT_BLOCKS[kind]}.html", **_look(site, s)}
+            )
+        elif kind in CUSTOM_SECTIONS:
+            result.extend(_layout_entries(site, [s]))
+    # Steht die Homepage direkt hinter dem Kontakt, erscheint sie wie bisher als Karte daneben
+    for first, second in zip(result, result[1:], strict=False):
+        if (
+            first["kind"] == "contact"
+            and second["kind"] == "homepage"
+            and not (first["klassen"] or first["stil"] or second["klassen"] or second["stil"])
+        ):
+            first["mit_homepage"] = True
+            second["bei_kontakt"] = True
+    return result
 
 
 @require_GET

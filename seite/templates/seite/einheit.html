@@ -8,6 +8,8 @@
   <div><h1>{{ unit.title|default:unit.name }}</h1>{% if unit.founding_year %}<p class="klein">{% blocktranslate with jahr=unit.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</p>{% endif %}
   </div>
 </div>
+{# Abschnitte der Seite (#491); ältere HUBIplan-Stände ohne Abschnitte wie bisher #}
+{% if abschnitte is not None %}{% for s in abschnitte %}{% include s.vorlage with abschnitt=s %}{% endfor %}{% else %}
 {% if unit.gallery|length > 1 %}
 {% include "seite/karussell.html" with bilder=unit.gallery takt=unit.gallery_interval zufall=unit.gallery_random %}
 {% else %}
@@ -26,5 +28,6 @@
 {% endif %}
 {% if posts %}<section><h2>{% translate "Aktuelles" %}</h2>{% include "seite/beitraege.html" with beitraege=posts %}</section>{% endif %}
 {% if unit.social %}<section class="folgen"><h2>{% blocktranslate with name=unit.short_name|default:unit.name %}Folgt {{ name }}{% endblocktranslate %}</h2>{% include "seite/sozial.html" with kanaele=unit.social stil="gross" %}</section>{% endif %}
+{% endif %}
 {% endblock %}
 {% block skripte %}{% if unit.gallery|length > 1 %}<script src="{% static 'seite/karussell.js' %}" defer></script>{% endif %}{% endblock %}

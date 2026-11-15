@@ -1,0 +1,3 @@
+{% load seite %}{% if unit.honors %}{% if abschnitt.klassen or abschnitt.stil %}<section{% abschnitt "einheit-block" %}>{% endif %}
+{% for d in unit.honors %}{% include "seite/wuerde.html" with voll=True %}{% endfor %}
+{% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}{% endif %}

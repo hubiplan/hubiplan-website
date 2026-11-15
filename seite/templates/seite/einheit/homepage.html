@@ -1,0 +1,3 @@
+{% load seite %}{# Eigene Homepage allein (steht sie direkt hinter dem Kontakt, zeigt sie der Kontakt) #}{% if not abschnitt.bei_kontakt %}{% with ziel=unit.homepage|web_ziel %}{% if ziel %}{% if abschnitt.klassen or abschnitt.stil %}<section{% abschnitt "einheit-block" %}>{% endif %}
+{% include "seite/rollen.html" with rollen=None homepage=ziel homepage_bild=unit.homepage_image %}
+{% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}{% endif %}{% endwith %}{% endif %}

@@ -1,0 +1,9 @@
+{% load seite %}{# Text der Seite einer Untereinheit (#491): Bilderkarussell oder Bild, dann Text #}{% if abschnitt.klassen or abschnitt.stil %}<section{% abschnitt "einheit-block" %}>{% endif %}
+{% if unit.gallery|length > 1 %}
+{% include "seite/karussell.html" with bilder=unit.gallery takt=unit.gallery_interval zufall=unit.gallery_random %}
+{% else %}
+{% lokal site unit.image.url as bild %}
+{% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% if unit.image.caption %}<figcaption>{{ unit.image.caption }}</figcaption>{% endif %}</figure>{% endif %}
+{% endif %}
+{% if unit.text %}<div class="text">{{ unit.text|md:site }}</div>{% endif %}
+{% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}

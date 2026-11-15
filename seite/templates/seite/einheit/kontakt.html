@@ -1,0 +1,4 @@
+{% load seite i18n %}{# Kontakt: Ansprechpartner, direkt danach die Homepage als Karte daneben (Ralf 31.10.) #}{% if abschnitt.klassen or abschnitt.stil %}<section{% abschnitt "einheit-block" %}>{% endif %}
+{% if abschnitt.mit_homepage %}{% with ziel=unit.homepage|web_ziel %}{% if unit.roles or ziel %}<h2>{% translate "Kontakt" %}</h2>{% include "seite/rollen.html" with rollen=unit.roles homepage=ziel homepage_bild=unit.homepage_image %}{% endif %}{% endwith %}
+{% elif unit.roles %}<h2>{% translate "Kontakt" %}</h2>{% include "seite/rollen.html" with rollen=unit.roles homepage="" %}{% endif %}
+{% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}

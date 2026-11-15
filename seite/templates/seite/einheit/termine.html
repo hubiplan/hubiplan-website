@@ -1,0 +1,5 @@
+{% load seite i18n %}{# Ohne kommende Termine kein Terminblock (Ralf 31.10.) #}{% if events %}{% if abschnitt.klassen or abschnitt.stil %}<section{% abschnitt "einheit-block" %}>{% endif %}
+<h2>{% translate "Nächste Termine" %}</h2>
+<ul class="termine">{% for e in events %}{% include "seite/termin.html" %}{% endfor %}</ul>
+<p><a class="knopf" href="{% url 'termine' %}?einheit={{ unit.slug }}">{% translate "Alle Termine" %}</a>{% if webcal_url %} <a class="knopf hell" href="{{ webcal_url }}">{% translate "Kalender abonnieren" %}</a>{% endif %}</p>
+{% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}{% endif %}

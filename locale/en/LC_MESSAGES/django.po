@@ -945,3 +945,6 @@ msgid "Mit dem Handy scannen und anmelden"
 msgstr "Scan with your phone and sign in"
 msgid "Unterlagen:"
 msgstr "Documents:"
+
+msgid "Bild folgt"
+msgstr "Picture to follow"
