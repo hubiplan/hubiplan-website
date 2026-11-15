@@ -472,8 +472,9 @@ html[data-st-width="narrow"]:is([data-st-page-title="band"], [data-st-page-title
     margin-right: -2.5rem;
   }
 }
-/* Band schließt ohne Lücke an den Kopf an, wenn nichts davor steht … */
-html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > h1:first-child,
+/* Band schließt ohne Lücke an den Kopf an, wenn nichts davor steht (auch der Kopf einer
+   Einheit, seit der Brotkrumen-Streifen bei markiertem Menüpunkt entfällt, #113) … */
+html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > :is(h1, .einheit-kopf):first-child,
 html:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .textseite:first-child > h1:first-child {
   margin-top: calc(-1 * var(--st-main-oben, 1.5rem));
 }
