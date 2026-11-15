@@ -7,7 +7,7 @@
 <ul class="mitgliederliste gedenken">
 {% for p in personen %}
   <li class="mitglied">
-    {% lokal site p.photo_url as foto %}{% if foto %}<img src="{{ foto }}" alt="" loading="lazy" width="96" height="96">{% endif %}
+    {% lokal site p.photo_url as foto %}{% if foto %}<img src="{{ foto }}" alt="" loading="lazy" width="64" height="64">{% endif %}
     <span><strong>{{ p.name }}</strong>{% if p.instrument %}<span class="instrument">{{ p.instrument }}</span>{% endif %}{% if p.died %}<span class="klein seit">{% if p.since %}{{ p.since }} – {% endif %}† {{ p.died }}</span>{% endif %}</span>
   </li>
 {% endfor %}
