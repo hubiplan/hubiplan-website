@@ -141,6 +141,16 @@ def menue_teile(context, punkte):
     return {"breit": breit, "handy": handy, "fuss": fuss}
 
 
+@register.filter
+def menue_markiert(punkte) -> bool:
+    """Ist im Hauptmenü ein Punkt als aktuelle Seite markiert (unterstrichen)? Dann braucht
+    eine Unterseite keinen eigenen Brotkrumen-Streifen darüber (Ralf 15.11.). Punkte nur im
+    Fuß und „Start“ zählen nicht."""
+    return any(
+        p.get("active") and not p.get("start") and p.get("place") != "footer" for p in punkte or ()
+    )
+
+
 def _nav_url(site, node: dict) -> str | None:
     """Adresse eines Menüpunkts aus HUBIplan (None: unbekannt oder unvollständig)."""
     key = node.get("key")

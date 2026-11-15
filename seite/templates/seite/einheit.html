@@ -1,7 +1,8 @@
 {% extends "seite/basis.html" %}{% load seite static i18n %}
 {% block titel %}{{ unit.name }} · {% endblock %}
 {% block inhalt %}
-<p class="brotkrumen"><a href="{% einheiten_url site %}">{{ site.info.unit_label_plural|default:"Einheiten" }}</a></p>
+{# Brotkrumen nur, wenn kein Menüpunkt die Seite schon markiert (Ralf 15.11.) #}
+{% if not punkte|menue_markiert %}<p class="brotkrumen"><a href="{% einheiten_url site %}">{{ site.info.unit_label_plural|default:"Einheiten" }}</a></p>{% endif %}
 <div class="einheit-kopf">
   {% logo_url site unit.logo_url 200 as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="100" height="100">{% endif %}
   <div><h1>{{ unit.title|default:unit.name }}</h1>{% if unit.founding_year %}<p class="klein">{% blocktranslate with jahr=unit.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</p>{% endif %}
