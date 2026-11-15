@@ -62,6 +62,9 @@ def _page(request, template: str, site: Site | None, context: dict, status: int 
         response["X-Robots-Tag"] = "noindex"
     elif site is not None and not site.info.get("allow_indexing"):
         response["X-Robots-Tag"] = "noindex"
+    if site is not None and site.several_header_images and "Cache-Control" not in response:
+        # hubiplan #480: jedes Mal ein anderes Kopfbild, auch hinter einem Zwischenspeicher
+        response["Cache-Control"] = "no-cache"
     return response
 
 
