@@ -571,26 +571,26 @@ html[data-st-contrast="on"] :focus-visible { outline-width: 3px; }
    abgedunkelten Vereinsfarbe; darauf links in Inhaltsbreite Oberzeile und Titelzeilen. Die
    Klasse setzt nur die Vorlage (hero_width=full); das Merkmal macht die Regeln stärker als
    ein Designpaket. */
-html[data-st-hero-width="full"] main.start:has(> .titel-buehne:first-of-type) { padding-top: 0; }
-html[data-st-hero-width="full"] main.start > .titel-buehne {
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start:has(> .titel-buehne:first-of-type) { padding-top: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne {
   --buehne-hoehe: min(62vh, 600px);
   --buehne-farbe: color-mix(in srgb, var(--primaer) 70%, #000);
   --buehne-rand: calc((100vw - min(100vw, var(--breite))) / 2 + 16px);
   position: relative; margin: 0 calc(50% - 50vw); padding: 0; border-radius: 0; background: none;
 }
-@media (max-width: 40rem) { html[data-st-hero-width="full"] main.start > .titel-buehne { --buehne-hoehe: 420px; } }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell { --karussell-hoehe: var(--buehne-hoehe); margin: 0; }
-html[data-st-hero-width="full"] main.start > .titel-buehne :is(.karussell-band, .titelbild, .titelbild img) { border-radius: 0; }
-html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild::after { border-radius: 0; }
-html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild { margin: 0; }
-html[data-st-hero-width="full"] main.start > .titel-buehne .titelbild img {
+@media (max-width: 40rem) { html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne { --buehne-hoehe: 420px; } }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell { --karussell-hoehe: var(--buehne-hoehe); margin: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne :is(.karussell-band, .titelbild, .titelbild img) { border-radius: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .titelbild::after { border-radius: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .titelbild { margin: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .titelbild img {
   display: block; width: 100%; height: var(--buehne-hoehe); max-height: none; object-fit: cover;
 }
-html[data-st-hero-width="full"] main.start > .titel-buehne::after {
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne::after {
   content: ""; position: absolute; inset: 0 0 auto; height: var(--buehne-hoehe); pointer-events: none;
   background: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--buehne-farbe) 55%, transparent) 70%, color-mix(in srgb, var(--buehne-farbe) 94%, transparent) 100%);
 }
-html[data-st-hero-width="full"] main.start > .titel-buehne .buehne-titel {
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .buehne-titel {
   position: absolute; z-index: 1; inset: 0 0 auto; height: var(--buehne-hoehe); pointer-events: none;
   display: flex; flex-direction: column; justify-content: flex-end; gap: .7rem;
   padding: 1.5rem var(--buehne-rand) clamp(1.6rem, 4vw, 2.8rem); color: #fff;
@@ -611,15 +611,31 @@ html[data-st-hero-width="full"] main.start > .titel-buehne .buehne-titel {
 html[data-st-motion="off"] .buehne-zeile { transition: none; }
 @media (prefers-reduced-motion: reduce) { .buehne-zeile { transition: none; } }
 /* Steuerknöpfe unauffällig oben rechts, damit der Text frei bleibt */
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung { z-index: 2; }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung :is([data-zurueck], [data-weiter], [data-pause]) { top: .9rem; bottom: auto; transform: none; }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-zurueck] { left: auto; right: calc(var(--buehne-rand) + 5.6rem); }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-steuerung [data-pause] { right: var(--buehne-rand); }
-html[data-st-hero-width="full"] main.start > .titel-buehne .karussell-zaehler { top: 1.3rem; bottom: auto; right: calc(var(--buehne-rand) + 8.6rem); }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung { z-index: 2; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung :is([data-zurueck], [data-weiter], [data-pause]) { top: .9rem; bottom: auto; transform: none; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-zurueck] { left: auto; right: calc(var(--buehne-rand) + 5.6rem); }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-pause] { right: var(--buehne-rand); }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-zaehler { top: 1.3rem; bottom: auto; right: calc(var(--buehne-rand) + 8.6rem); }
 /* Der folgende Abschnitt schließt an; ein farbiger in voller Breite ohne Abstand */
-html[data-st-hero-width="full"] main.start > .titel-buehne + section { margin-top: 1.5rem; }
-html[data-st-hero-width="full"] main.start > .titel-buehne + section.abschnitt-voll.abschnitt-hg { margin-top: 0; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne + section { margin-top: 1.5rem; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne + section.abschnitt-voll.abschnitt-hg { margin-top: 0; }
+
+/* Webseite #128: dieselbe Bühne in Inhaltsbreite (hero_width=stage), wahlweise etwas breiter;
+   die Fläche daneben zeigt den Seitenhintergrund oder die dunkle Vereinsfarbe. Schmaler als
+   die Bühne ist sie randlos wie „full“. */
+html[data-st-hero-width="stage"] main.start > .titel-buehne {
+  --buehne-breite: min(100vw, var(--breite));
+  --buehne-seite: calc((100vw - var(--buehne-breite)) / 2);
+  --buehne-rand: 2rem;
+  padding: 0 var(--buehne-seite);
+}
+html[data-st-hero-width="stage"][data-st-hero-stage-width="wider"] main.start > .titel-buehne { --buehne-breite: min(100vw, var(--breite) + 8rem); }
+html[data-st-hero-width="stage"][data-st-hero-stage-width="wide"] main.start > .titel-buehne { --buehne-breite: min(100vw, var(--breite) + 16rem); }
+@media (max-width: 40rem) { html[data-st-hero-width="stage"] main.start > .titel-buehne { --buehne-rand: 16px; } }
+html[data-st-hero-width="stage"] main.start > .titel-buehne::after,
+html[data-st-hero-width="stage"] main.start > .titel-buehne .buehne-titel { left: var(--buehne-seite); right: var(--buehne-seite); }
+html[data-st-hero-width="stage"][data-st-hero-side="color"] main.start > .titel-buehne { background: var(--buehne-farbe); }
 
 /* ---------- Wasserzeichen hinter Abschnitten (Webseite #123) ----------
    Groß, rechts an der Inhaltskante, oben und unten angeschnitten, sehr zart; rein

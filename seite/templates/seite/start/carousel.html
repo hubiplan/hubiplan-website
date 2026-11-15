@@ -1,5 +1,5 @@
-{% load seite %}{% if greeting %}{# Webseite #122: „Titelfoto als Bühne“ (hero_width=full) randlos mit Verlauf und Titelzeilen #}
-{% if site.style.hero_width == "full" %}
+{% load seite %}{% if greeting %}{# Webseite #122: „Titelfoto als Bühne“ (hero_width=full randlos, stage in Inhaltsbreite #128) mit Verlauf und Titelzeilen #}
+{% if site.style.hero_width == "full" or site.style.hero_width == "stage" %}
 {% if greeting.gallery|length > 1 %}
 <section{% abschnitt "begruessung begruessung-bilder titel-buehne" %}>{% include "seite/karussell.html" with bilder=greeting.gallery takt=greeting.gallery_interval zufall=greeting.gallery_random %}{% include "seite/start/buehne_titel.html" %}</section>
 {% else %}

@@ -3,10 +3,11 @@
 <footer class="fuss fuss-voll" id="fuss">
   <div class="breite fuss-innen">
     <div class="fuss-marke">
-      {% logo_url site site.info.logo_url 256 as fussbild %}{% if fussbild %}<img class="fuss-bild" src="{{ fussbild }}" alt="" width="118" height="118" loading="lazy">{% endif %}
+      {# Webseite #127: Name und Gründungszeile einzeln ausblendbar; ohne Namen nennt das Wappen die Einheit #}
+      {% logo_url site site.info.logo_url 256 as fussbild %}{% if fussbild %}<img class="fuss-bild" src="{{ fussbild }}" alt="{% if site.style.footer_name == "off" %}{{ site.info.name }}{% endif %}" width="118" height="118" loading="lazy">{% endif %}
       <div>
-        <p class="fuss-name">{{ site.info.name }}</p>
-        {% if site.info.founding_year or site.info.address.city %}<p class="fuss-unterzeile">{% if site.info.founding_year %}{% blocktranslate with jahr=site.info.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}{% endif %}{% if site.info.founding_year and site.info.address.city %} · {% endif %}{{ site.info.address.city }}</p>{% endif %}
+        {% if site.style.footer_name != "off" or not fussbild %}<p class="fuss-name">{{ site.info.name }}</p>{% endif %}
+        {% if site.style.footer_founded != "off" and site.info.founding_year or site.style.footer_founded != "off" and site.info.address.city %}<p class="fuss-unterzeile">{% if site.info.founding_year %}{% blocktranslate with jahr=site.info.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}{% endif %}{% if site.info.founding_year and site.info.address.city %} · {% endif %}{{ site.info.address.city }}</p>{% endif %}
         {% if site.info.member_of %}<p class="mitglied">{% translate "Mitglied im" %} {% with ziel=site.info.member_of.website|web_ziel %}{% if ziel %}<a href="{{ ziel }}" rel="noopener noreferrer">{{ site.info.member_of.name }}</a>{% else %}{{ site.info.member_of.name }}{% endif %}{% endwith %}</p>{% endif %}
       </div>
     </div>

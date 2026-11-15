@@ -84,6 +84,27 @@ def test_buehne_ohne_text_zeigt_nur_das_foto(client, hubiplan):
     assert "titel-buehne" in html and "buehne-titel" not in html
 
 
+def test_buehne_in_inhaltsbreite(client, hubiplan):
+    """Webseite #128: dieselbe Bühne mit Titelzeilen, nur so breit wie der Inhalt."""
+    _buehne(hubiplan, hero_titles=["Willkommen"], hero_kicker="Schützenverein")
+    hubiplan.info["style"] = {
+        "hero_width": "stage",
+        "hero_stage_width": "wider",
+        "hero_side": "color",
+    }
+    html = seite(client)
+    tag = re.search(r"<html[^>]*>", html).group(0)
+    assert 'data-st-hero-width="stage"' in tag
+    assert 'data-st-hero-stage-width="wider"' in tag and 'data-st-hero-side="color"' in tag
+    assert "titel-buehne" in html and '<p class="buehne-zeile aktiv">Willkommen</p>' in html
+    css = (STATIC / "stil.css").read_text()
+    assert '[data-st-hero-width="stage"] main.start > .titel-buehne {' in css
+    assert "var(--breite) + 8rem" in css and "var(--breite) + 16rem" in css
+    hubiplan.info["design"] = "stage"
+    tag = re.search(r"<html[^>]*>", seite(client)).group(0)
+    assert "data-st-hero-side" not in tag and "data-st-hero-stage-width" not in tag
+
+
 def test_buehne_in_buehne_und_zeitung_gesperrt(client, hubiplan):
     _buehne(hubiplan, hero_titles=["Willkommen"])
     hubiplan.info["style"] = {"hero_width": "full"}
@@ -168,3 +189,28 @@ def test_fuss_mit_wappen_und_name(client, hubiplan):
         assert link in fuss
     assert "Daten aus" in fuss
     assert 'data-st-footer-line="primary"' in html
+
+
+def test_fuss_ohne_name_und_gruendung(client, hubiplan):
+    """Webseite #127: Name und Gründungszeile ausblendbar; das Wappen nennt dann die Einheit."""
+    hubiplan.info["style"] = {"footer_layout": "full", "footer_name": False}
+    html = seite(client)
+    fuss = html[html.index('<footer class="fuss fuss-voll"') :]
+    assert 'class="fuss-name"' not in fuss
+    assert 'alt="Schützenverein Musterdorf 1900"' in fuss
+    assert "gegründet 1900 · Musterdorf" in fuss
+    assert "Bürgerverein Musterdorf" in fuss
+    hubiplan.info["style"] = {"footer_layout": "full", "footer_founded": False}
+    fuss = seite(client)
+    fuss = fuss[fuss.index('<footer class="fuss fuss-voll"') :]
+    assert '<p class="fuss-name">Schützenverein Musterdorf 1900</p>' in fuss
+    assert "gegründet 1900" not in fuss and 'alt=""' in fuss
+
+
+def test_fuss_ohne_wappen_behaelt_den_namen(client, hubiplan):
+    hubiplan.info["logo_url"] = None
+    hubiplan.info["style"] = {"footer_layout": "full", "footer_name": False}
+    html = seite(client)
+    fuss = html[html.index('<footer class="fuss fuss-voll"') :]
+    assert 'class="fuss-bild"' not in fuss
+    assert '<p class="fuss-name">Schützenverein Musterdorf 1900</p>' in fuss
