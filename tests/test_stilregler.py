@@ -113,6 +113,7 @@ def test_jede_stufe_hat_regeln():
         ("carousel", "off"),
         ("carousel", "slow"),
         ("carousel", "normal"),
+        ("carousel", "random"),
         # Webseite #75: Start und Suche löst die Vorlage (kopf.html, fuss.html)
         ("nav_start", "on"),
         ("nav_start", "off"),
@@ -589,3 +590,74 @@ def test_eckig_auch_im_menue_105():
     for teil in teile:
         assert teil in kopf
     assert rumpf.split("}", 1)[0].strip() == "border-radius: 0 !important;"
+
+
+def _drei_bilder(hubiplan):
+    bilder = [
+        {
+            "key": f"festbild{i}",
+            "url": f"{fake.BASE}images/festbild{i}/",
+            "small_url": "",
+            "width": 800,
+            "height": 400,
+            "caption": "",
+            "alt": f"Festzug {i}",
+        }
+        for i in (1, 2, 3)
+    ]
+    hubiplan.info["home"] = ["carousel", "greeting"]
+    hubiplan.info["greeting"] = {"title": "Willkommen", "text": "Hallo", "gallery": bilder}
+    return bilder
+
+
+def test_karussell_zufaellig_zeigt_ein_festes_bild(client, hubiplan, monkeypatch):
+    """hubiplan #477: „zufällig“ wählt auf dem Server ein Bild des Karussells, das fest
+    stehen bleibt (kein Karussell, kein Skript), und jeder Aufruf wählt neu."""
+    import random
+
+    _drei_bilder(hubiplan)
+    html = seite(client)
+    assert "data-karussell" in html and "karussell.js" in html
+    hubiplan.info["style"] = {"carousel": "random"}
+    gewaehlt = []
+    for nummer in (1, 2):
+        monkeypatch.setattr(random, "choice", lambda folge, n=nummer: folge[n])
+        cache.clear()
+        r = client.get("/")
+        html = text(r)
+        assert 'data-st-carousel="random"' in html_tag(html)
+        assert "data-karussell" not in html and "karussell.js" not in html
+        assert '<figure class="titelbild">' in html
+        alle = re.findall(r'alt="(Festzug \d)"', html)
+        assert len(alle) == 1
+        gewaehlt.append(alle[0])
+        assert r["Cache-Control"] == "no-cache"
+    assert gewaehlt == ["Festzug 2", "Festzug 3"]
+
+
+def test_karussell_zufaellig_mit_einem_bild_und_im_skript(client, hubiplan):
+    """Mit nur einem Bild bleibt alles wie bisher; andere Karussells (z. B. einer Einheit)
+    blättern bei „zufällig“ nicht von selbst und beginnen mit einem zufälligen Bild."""
+    _galerie(hubiplan, 1)
+    hubiplan.info["style"] = {"carousel": "random"}
+    r = client.get("/")
+    assert '<figure class="titelbild">' in text(r)
+    skript = (STATIC / "karussell.js").read_text()
+    assert "art === 'off' || art === 'random'" in skript
+    assert "const zufaellig = 'zufall' in box.dataset || art === 'random'" in skript
+
+
+def test_seitenband_bild_zufaellig(hubiplan, monkeypatch):
+    """Das Bild im Überschriften-Band der Unterseiten folgt derselben Wahl."""
+    import random
+
+    from seite.site import Site
+
+    _drei_bilder(hubiplan)
+    monkeypatch.setattr(random, "choice", lambda folge: folge[2])
+    info = {**hubiplan.info, "style": {"page_title": "image", "carousel": "random"}}
+    site = Site(key=KEY, info=info)
+    assert site.page_title_image and "festbild3" in site.page_title_image
+    info["style"] = {"page_title": "image"}
+    site = Site(key=KEY, info=info)
+    assert "festbild1" in site.page_title_image

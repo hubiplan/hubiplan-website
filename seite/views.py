@@ -12,6 +12,7 @@ import datetime
 import functools
 import io
 import logging
+import random
 import re
 from collections import OrderedDict
 from urllib.parse import quote
@@ -537,7 +538,7 @@ def _with_date(comp: dict) -> dict:
 def start(request, site: Site):
     layout = _layout(site)
     home = [s["kind"] for s in layout if s["kind"] in HOME_SECTIONS]
-    greeting = site.info.get("greeting") or None
+    greeting = _random_title_image(site, site.info.get("greeting") or None)
     events = _upcoming(_events(site), 3) if "events" in home and site.block("events") else []
     honors = (
         site.get("honors/").get("dignities", [])
@@ -545,7 +546,7 @@ def start(request, site: Site):
         else []
     )
     results = _home_results(site) if "results" in home and _results_on(site) else []
-    return _page(
+    response = _page(
         request,
         "seite/start.html",
         site,
@@ -578,6 +579,23 @@ def start(request, site: Site):
             },
         },
     )
+    if site.style.get("carousel") == "random" and not site.is_preview:
+        # jedes Mal neu wählen, auch hinter einem Zwischenspeicher
+        response["Cache-Control"] = "no-cache"
+    return response
+
+
+def _random_title_image(site: Site, greeting: dict | None) -> dict | None:
+    """hubiplan #477: Stilregler „Bilderkarussell“ auf „zufällig“: Bei jedem Aufruf wird ein
+    Bild des Karussells gewählt und steht dann fest wie ein einzelnes Titelbild. Die Wahl
+    geschieht hier auf dem Server, daher gilt sie auch für Designpakete (ohne Skript)."""
+    if not isinstance(greeting, dict) or site.style.get("carousel") != "random":
+        return greeting
+    gallery = [b for b in greeting.get("gallery") or [] if isinstance(b, dict)]
+    if len(gallery) < 2:
+        return greeting
+    chosen = random.choice(gallery)  # noqa: S311 – keine Sicherheitsfrage
+    return {**greeting, "image": chosen, "gallery": [chosen]}
 
 
 @require_GET

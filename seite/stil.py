@@ -56,7 +56,8 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     # Startseite
     "hero": ("low", "medium", "normal", "high"),
     "hero_name": bool,
-    "carousel": ("off", "slow", "normal"),
+    # hubiplan #477: „zufällig“ zeigt bei jedem Aufruf ein Bild des Karussells, fest stehend
+    "carousel": ("off", "slow", "normal", "random"),
     # Ralf 14.11.2026: Titelbild abdunkeln oder in Vereinsfarbe färben (halb durchsichtig),
     # Bildausschnitt und Lage des Namens auf dem Bild
     "hero_shade": ("none", "light", "strong"),
