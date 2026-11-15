@@ -104,7 +104,7 @@ def test_album_mit_bildern(client, galerie):
     assert 'href="/galerie/"' in html and 'href="/galerie/2024/"' in html
     assert 'class="galerie-bild" href="/medien/a/images/umzug-v1/"' in html
     assert 'src="/medien/a/images/parade-v1/?size=small"' in html
-    assert 'data-unterschrift="Der Umzug"' in html
+    assert 'data-unterschrift="Der Umzug · Foto: Erika Muster"' in html
     assert 'alt="Parade am Markt"' in html
     assert 'id="bild-fenster"' in html and "bildfenster.js" in html
 
