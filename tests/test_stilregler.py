@@ -131,6 +131,13 @@ def test_jede_stufe_hat_regeln():
         ("hero_width", "content"),
         ("footer_layout", "simple"),
         ("footer_layout", "full"),
+        # Webseite #127/#128: Fuß-Schalter in der Vorlage; Grundstellungen ohne Regel
+        ("footer_name", "on"),
+        ("footer_name", "off"),
+        ("footer_founded", "on"),
+        ("footer_founded", "off"),
+        ("hero_stage_width", "content"),
+        ("hero_side", "page"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":

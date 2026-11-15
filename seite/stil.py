@@ -66,7 +66,10 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "hero_focus": ("top", "center", "bottom"),
     "hero_text": ("top", "center", "band"),
     # Webseite #122: Titelfoto randlos als Bühne unter dem Kopf, mit Verlauf und Titelzeilen
-    "hero_width": ("content", "full"),
+    "hero_width": ("content", "stage", "full"),
+    # Webseite #128: Bühne in Inhaltsbreite (hero_width=stage), Breite und Fläche daneben
+    "hero_stage_width": ("content", "wider", "wide"),
+    "hero_side": ("page", "color"),
     # Abschnitte der Startseite trennen
     "sections": ("none", "line", "alternate"),
     # Fuß
@@ -75,6 +78,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     # Webseite #125: Fuß mit Wappen, Vereinsname und Links untereinander; Linie darüber
     "footer_layout": ("simple", "full"),
     "footer_line": ("none", "ornament", "accent", "primary"),
+    # Webseite #127: im vollen Fuß Vereinsname und Gründungszeile einzeln ausblenden
+    "footer_name": bool,
+    "footer_founded": bool,
     # Ralf 14.11.2026: weitere Regler
     # Überschrift der Unterseiten: schlicht, farbiges Band, Band mit dem Titelbild der Startseite
     "page_title": ("plain", "band", "image"),
@@ -104,8 +110,14 @@ LOCKS: dict[str, dict[str, tuple[str, ...] | None]] = {
         "nav_mobile": None,
     },
     # Bühne zeigt ihr Titelbild ohnehin randlos; in der Zeitung steht es in der Hauptspalte
-    "stage": {"width": ("narrow",), "hero_name": None, "hero_width": None},
-    "newspaper": {"nav": None, "hero_width": None},
+    "stage": {
+        "width": ("narrow",),
+        "hero_name": None,
+        "hero_width": None,
+        "hero_side": None,
+        "hero_stage_width": None,
+    },
+    "newspaper": {"nav": None, "hero_width": None, "hero_side": None, "hero_stage_width": None},
 }
 
 # Hintergrund der Seite (--grund); getönt wird aus der Vereinsfarbe gemischt
