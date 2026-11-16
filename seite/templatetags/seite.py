@@ -186,13 +186,40 @@ def menue_markiert(punkte) -> bool:
     )
 
 
+_ADRESSE = re.compile(r"^[a-z0-9-]{1,80}$")
+
+
+def _lesbar(slug) -> bool:
+    return isinstance(slug, str) and bool(_ADRESSE.match(slug))
+
+
+def dignity_address(site, kennung: str) -> str:
+    """Lesbare Adresse einer Würde aus dem Menü von HUBIplan, sonst die Kennung (#149)."""
+    menu = (site.info.get("honors_menu") or {}) if site is not None else {}
+    for d in menu.get("dignities") or []:
+        if isinstance(d, dict) and d.get("id") == kennung and _lesbar(d.get("slug")):
+            return d["slug"]
+    return kennung
+
+
+@register.filter
+def adresse(item) -> str:
+    """Lesbare Adresse eines Wettbewerbs oder einer Reihe, sonst die Kennung (#149)."""
+    if not isinstance(item, dict):
+        return ""
+    slug = item.get("slug")
+    return slug if _lesbar(slug) else str(item.get("id", ""))
+
+
 def _nav_url(site, node: dict) -> str | None:
     """Adresse eines Menüpunkts aus HUBIplan (None: unbekannt oder unvollständig)."""
     key = node.get("key")
     if key == "page":
         return reverse("seite", args=[node["slug"]]) if node.get("slug") else None
     if key == "dignity":
-        return reverse("wuerde", args=[node["id"]]) if node.get("id") else None
+        if not node.get("id"):
+            return None
+        return reverse("wuerde", args=[dignity_address(site, node["id"])])
     if key == "units":
         return einheiten_url(site)
     if key == "unit":
@@ -296,7 +323,7 @@ def _legacy_items(site) -> list:
     if grouped:
         # Menüpunkt „Würdenträger“ mit Unterpunkten je Würde und „Ehrungen“ (Ralf 2026-10-31)
         children = [
-            (d["label"], reverse("wuerde", args=[d["id"]]))
+            (d["label"], reverse("wuerde", args=[d["slug"] if _lesbar(d.get("slug")) else d["id"]]))
             for d in grouped.get("dignities") or []
             if d.get("id") and d.get("label")
         ]

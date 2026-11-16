@@ -20,7 +20,12 @@ from urllib.parse import quote
 import qrcode
 import qrcode.image.svg
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (
+    HttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import formats, timezone, translation
@@ -529,6 +534,17 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
 LIVE_SECONDS = 5
 OVERVIEW_SECONDS = 30
 TOKEN = re.compile(r"^[a-f0-9]{20}$")
+# Webseite #149: lesbare Adresse oder Kennung
+ADRESSE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+
+def _readable(data: dict, kennung: str, name: str, *extra) -> HttpResponsePermanentRedirect | None:
+    """Dauerhafte Weiterleitung auf die lesbare Adresse, wenn die Seite über ihre Kennung oder
+    eine frühere Adresse aufgerufen wurde (Webseite #149)."""
+    slug = data.get("slug")
+    if isinstance(slug, str) and ADRESSE.match(slug) and slug != kennung:
+        return HttpResponsePermanentRedirect(reverse(name, args=[slug, *extra]))
+    return None
 
 
 def _results_on(site: Site) -> bool:
@@ -774,10 +790,19 @@ def dignity(request, site: Site, kennung: str):
     """Eine Würde als eigene Seite (Unterpunkt von „Würdenträger“)."""
     if not site.block("honors"):
         raise api.NotFound()
-    found = [d for d in site.get("honors/")["dignities"] if d.get("id") == kennung]
+    dignities = site.get("honors/")["dignities"]
+    # Aktuelle lesbare Adresse, dann Kennung, dann frühere Adresse (Webseite #149)
+    found = (
+        [d for d in dignities if d.get("slug") == kennung]
+        or [d for d in dignities if d.get("id") == kennung]
+        or [d for d in dignities if kennung in (d.get("aliases") or [])]
+    )
     if not found:
         raise api.NotFound()
-    return _page(request, "seite/majestaeten.html", site, {"dignities": found})
+    redirect = _readable(found[0], kennung, "wuerde")
+    if redirect is not None:
+        return redirect
+    return _page(request, "seite/majestaeten.html", site, {"dignities": found[:1]})
 
 
 @require_GET
@@ -836,7 +861,7 @@ def _by_year(comps: list[dict]) -> list[tuple[int, list[dict]]]:
 def _result(site: Site, kennung: str) -> dict:
     """Rangliste eines Wettbewerbs; zuerst den kleinen Stand, dann die Rangliste zu genau
     diesem Stand (neues Ergebnis → neuer Stand → sofort neue Tabelle)."""
-    if not _results_on(site) or not TOKEN.match(kennung):
+    if not _results_on(site) or not ADRESSE.match(kennung):
         raise api.NotFound()
     stand = site.get(f"results/{kennung}/version/", seconds=LIVE_SECONDS)
     version = re.sub(r"[^A-Za-z0-9]", "", str(stand.get("version", "")))[:64]
@@ -847,6 +872,9 @@ def _result(site: Site, kennung: str) -> dict:
 @site_view()
 def result(request, site: Site, kennung: str):
     data = _result(site, kennung)
+    redirect = _readable(data, kennung, "ergebnis")
+    if redirect is not None:
+        return redirect
     response = _page(request, "seite/ergebnis.html", site, {"c": data})
     if not data.get("final"):
         response["Cache-Control"] = "no-cache"
@@ -872,7 +900,7 @@ def result_table(request, site: Site, kennung: str):
 @site_view()
 def result_version(request, site: Site, kennung: str):
     """Kleiner Stand für den Browser: Er fragt ihn während „live“ alle 15 Sekunden ab."""
-    if not _results_on(site) or not TOKEN.match(kennung):
+    if not _results_on(site) or not ADRESSE.match(kennung):
         raise api.NotFound()
     stand = site.get(f"results/{kennung}/version/", seconds=LIVE_SECONDS)
     response = JsonResponse(
@@ -886,11 +914,16 @@ def result_version(request, site: Site, kennung: str):
 @site_view()
 def result_series(request, site: Site, kennung: str):
     """Archiv einer Reihe: Sieger je Jahr und Titel über alle Jahre."""
-    if not _results_on(site) or not TOKEN.match(kennung):
+    if not _results_on(site) or not ADRESSE.match(kennung):
         raise api.NotFound()
     data = site.get(f"results/series/{kennung}/")
+    redirect = _readable(data, kennung, "reihe")
+    if redirect is not None:
+        return redirect
     for y in data.get("years", []):
-        y["kennung"] = _token_of(y.get("url"))
+        slug = y.get("slug")
+        readable = isinstance(slug, str) and ADRESSE.match(slug)
+        y["kennung"] = slug if readable else _token_of(y.get("url"))
     return _page(request, "seite/ergebnis_reihe.html", site, {"s": data})
 
 

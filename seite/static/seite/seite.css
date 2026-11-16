@@ -52,6 +52,10 @@
   color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; }
+/* hubiplan #526: eigene Schriftfolge (nur lokal installierte Schriften, Variablen aus
+   seite/site.py font_vars). Doppeltes Merkmal: geht den Stufen der Schriftregler vor. */
+html[data-st-font-own][data-st-font-own] body { font-family: var(--st-schrift); }
+html[data-st-heading-font-own][data-st-heading-font-own] :is(h1, h2, h3, .marke) { font-family: var(--st-schrift-titel); }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -312,6 +316,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 /* Formular */
 .formular { display: grid; gap: .35rem; max-width: 36rem; }
 .formular label { font-weight: 600; margin-top: .5rem; }
+/* hubiplan #539: Felder immer weiß (dunkel: stil.css), auch wenn die Farbrolle „Flächen“ getönt ist */
 .formular input, .formular select, .formular textarea, .filter select {
   font: inherit; padding: .6rem .7rem; border: 1px solid #767c78; border-radius: 8px; background: #fff; color: var(--text); width: 100%;
 }
@@ -404,7 +409,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
    fokussierte) Feld nicht größer wirkt als der Knopf. */
 .suche { display: flex; flex-wrap: wrap; gap: .5rem; align-items: stretch; margin-bottom: 1rem; }
 .suche label { flex-basis: 100%; font-weight: 600; }
-.suche input { flex: 1 1 8rem; min-width: 0; margin: 0; padding: .5rem .6rem; font: inherit; color: var(--text); background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); }
+.suche input { flex: 1 1 8rem; min-width: 0; margin: 0; padding: .5rem .6rem; font: inherit; color: var(--text); background: #fff; border: 1px solid var(--linie); border-radius: var(--rund); }
 .suche .knopf { flex: 0 0 auto; margin: 0; padding-top: 0; padding-bottom: 0; line-height: 1.2; border-radius: var(--rund); }
 .suche input:focus-visible, .suche .knopf:focus-visible { outline-offset: -3px; }
 .suchtreffer { list-style: none; padding: 0; }
@@ -422,7 +427,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 @media (min-width: 64rem) { .kopf-sozial:has(.kopf-suche) { display: flex; align-items: center; gap: .4rem; } }
 /* kleines Suchfeld im Fuß (Stilregler search=footer) */
 .fuss-suche { display: flex; gap: .3rem; flex: 0 1 18rem; min-width: 0; }
-.fuss-suche input { flex: 1 1 auto; min-width: 0; padding: .3rem .5rem; font: inherit; color: var(--text); background: var(--flaeche); border: 1px solid var(--linie); border-radius: 6px; }
+.fuss-suche input { flex: 1 1 auto; min-width: 0; padding: .3rem .5rem; font: inherit; color: var(--text); background: #fff; border: 1px solid var(--linie); border-radius: 6px; }
 .fuss-suche button { font: inherit; font-weight: 600; padding: .3rem .7rem; border-radius: 6px; cursor: pointer; color: var(--auf-fuss); background: color-mix(in srgb, var(--auf-fuss) 14%, transparent); border: 1px solid color-mix(in srgb, var(--auf-fuss) 35%, transparent); }
 .fuss-suche button:hover { background: color-mix(in srgb, var(--auf-fuss) 24%, transparent); }
 

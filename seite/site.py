@@ -255,7 +255,28 @@ class Site:
 
     @property
     def style_attrs(self) -> str:
-        return stil.attrs(self.style)
+        attrs = stil.attrs(self.style)
+        fonts = self.font_stacks
+        if "text" in fonts:
+            attrs += ' data-st-font-own="on"'
+        if "heading" in fonts:
+            attrs += ' data-st-heading-font-own="on"'
+        return attrs
+
+    @property
+    def font_stacks(self) -> dict[str, str]:
+        """Eigene Schriftfolgen (hubiplan #526); nicht bei Designpaketen mit eigenem CSS."""
+        if "_fonts" not in self.cache:
+            fonts = {} if self.package is not None else stil.font_stacks(self.info.get("style"))
+            self.cache["_fonts"] = fonts
+        return self.cache["_fonts"]
+
+    @property
+    def font_vars(self) -> str:
+        """CSS-Variablen der eigenen Schriftfolgen; nur geprüfte Namen (stil.font_stack), daher
+        sicher ungeschützt im <style>."""
+        names = {"text": "--st-schrift", "heading": "--st-schrift-titel"}
+        return "".join(f";{names[k]}:{v}" for k, v in self.font_stacks.items())
 
     def background_for(self, primary: str) -> str | None:
         # Rolle „Seitenhintergrund“ aus HUBIplan geht dem Stilregler vor

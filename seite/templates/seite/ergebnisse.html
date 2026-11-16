@@ -23,7 +23,7 @@
 {% if series %}
 <section>
   <h2>{% translate "Wettbewerbe über die Jahre" %}</h2>
-  <ul class="ergebnisliste">{% for s in series %}<li><a href="{% url 'reihe' s.id %}">{{ s.name }}</a></li>{% endfor %}</ul>
+  <ul class="ergebnisliste">{% for s in series %}<li><a href="{% url 'reihe' s|adresse %}">{{ s.name }}</a></li>{% endfor %}</ul>
 </section>
 {% endif %}
 {% for t in trophies %}
