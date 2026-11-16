@@ -4,7 +4,11 @@
 <h1>{% translate "Vorstand" as std %}{% baustein site "board" std %}</h1>
 {% include "seite/einleitung.html" %}
 {% if roles %}{% if darstellung == "list" %}{% include "seite/rollen_liste.html" with rollen=roles %}{% else %}{% include "seite/rollen.html" with rollen=roles %}{% endif %}{% else %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endif %}
-{% if honorary|length == 1 %}
+{% if site.style.honorary_layout == "cards" and honorary %}
+{# Webseite #143: alle Geehrten als Karten in einem Raster #}
+<h2>{% if honorary|length == 1 %}{{ honorary.0.heading|default:honorary.0.title }}{% else %}{% translate "Ehrungen" as std %}{% baustein site "honorary" std %}{% endif %}</h2>
+{% include "seite/ehrungen_karten.html" %}
+{% elif honorary|length == 1 %}
 {# Nur eine Ehrung: sein Name ist die Überschrift, kein Sammelbegriff (Ralf 2026-10-30) #}
 {% with t=honorary.0 %}<h2>{{ t.heading|default:t.title }}</h2>
 <section class="karte personenkarte ehrung">{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endwith %}

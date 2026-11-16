@@ -1,0 +1,9 @@
+{% load seite i18n %}{# Webseite #143: eine Karte je Person in einem gemeinsamen Raster; Etikett = eigener Titel des Trägers (hubiplan #518) oder Name der Ehrung #}
+<ul class="ehrungen-karten">
+{% for t in honorary %}{% for p in t.holders %}
+  <li class="ehrung-karte">
+    {% lokal site p.photo_url as foto %}{% if foto %}<img src="{{ foto }}" alt="Foto von {{ p.name }}" loading="lazy" width="112" height="112">{% endif %}
+    <span><small>{{ p.title|default:t.title }}</small><strong>{{ p.name }}</strong></span>
+  </li>
+{% endfor %}{% endfor %}
+</ul>
