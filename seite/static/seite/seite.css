@@ -912,6 +912,12 @@ html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: vorschau-zeig
   html[data-vorschau] :is(#kopf, #fuss, #inhalt):target { animation: none; outline: 4px solid var(--akzent); outline-offset: -4px; }
 }
 
+/* „Zeigen“ in der Vorschau (Ralf 16.11.2026, zeigen.js): HUBIplan schaltet ihn ein; der Teil unter
+   dem Mauszeiger bekommt einen Rahmen und ein Schild mit dem Bereich der Feinabstimmung. */
+html[data-zeigen], html[data-zeigen] * { cursor: pointer; }
+html[data-zeigen] .zeigen-rahmen { outline: 3px solid #f59e0b; outline-offset: -3px; }
+.zeigen-schild { position: absolute; z-index: 1000; pointer-events: none; background: #111827; color: #fff; font: 600 .8rem/1.3 system-ui, sans-serif; padding: .3rem .55rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+
 /* Urheber/in am Bild (Ralf 15.11.): „Foto: …“ klein und leise, auch ohne Bildunterschrift */
 .bildnachweis { font-size: .8rem; color: var(--text-leise); white-space: normal; }
 .abschnitt-farbig .bildnachweis { color: inherit; opacity: .85; }

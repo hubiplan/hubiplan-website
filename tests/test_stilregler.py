@@ -694,3 +694,19 @@ def test_seitenband_bild_zufaellig(hubiplan, monkeypatch):
     info["style"] = {"page_title": "image"}
     site = Site(key=KEY, info=info)
     assert "festbild1" in site.page_title_image
+
+
+def test_zeigen_nur_in_der_vorschau(client, hubiplan):
+    """Feinabstimmung (Ralf 16.11.2026): Klick in die Vorschau öffnet die Regler in HUBIplan."""
+    assert "zeigen.js" not in seite(client)
+    r = client.get("/vorschau/?schluessel=gut")
+    assert r.status_code == 302
+    html = text(client.get("/"))
+    assert "zeigen.js" in html and "data-vorschau" in html_tag(html)
+    js = (STATIC / "zeigen.js").read_text()
+    # Nur Nachrichten vom einbettenden HUBIplan; meldet nur den Namen eines Bereichs
+    assert "e.source !== window.parent" in js
+    for bereich in ("kopf", "fuss", "startseite", "bereiche", "unterseiten", "grundstil"):
+        assert f"'{bereich}'" in js
+    css = (STATIC / "seite.css").read_text()
+    assert "html[data-zeigen] .zeigen-rahmen" in css
