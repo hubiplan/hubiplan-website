@@ -577,7 +577,10 @@ def sm_symbol(kind: str, size: int = 22):
 # Nur bekannte Werte; ältere HUBIplan-Fassungen ohne diese Angaben bekommen die Vorgabe.
 HINWEIS_STILE = ("accent", "alert", "festive", "quiet")
 HINWEIS_PLAETZE = ("top", "below", "float")
-_HS = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'
+_HS = (
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    'stroke-linejoin="round"'
+)
 HINWEIS_SYMBOLE = {
     "megaphone": f'<path {_HS} d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z"/>'
     f'<path {_HS} d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
