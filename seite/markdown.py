@@ -96,3 +96,16 @@ def render(text: str | None, units_path: str = "einheiten") -> str:
 
     env = {"units_path": units_path}
     return mark_safe(_md.render(IMAGE_REF.sub(image, text), env))  # noqa: S308
+
+
+# Webseite #137: steht am Ende eines Textes ein Absatz nur mit einem Link, wird er zum Knopf
+_LAST_LINK = re.compile(r'<p><a href="([^"<>]*)"([^<>]*)>([^<]+)</a></p>\s*\Z')
+
+
+def last_link_as_button(html: str) -> str:
+    """Letzten Absatz aus genau einem Link als Knopf zeigen (Kasten neben dem Formular)."""
+    if not html:
+        return html
+    button = r'<p class="kasten-knopf"><a class="knopf" href="\1"\2>\3</a></p>\n'
+    replaced = _LAST_LINK.sub(button, html)
+    return mark_safe(replaced)  # noqa: S308 (Eingabe ist schon sicheres HTML aus render)

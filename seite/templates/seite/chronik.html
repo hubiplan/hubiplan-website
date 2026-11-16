@@ -14,10 +14,10 @@
 <div class="zeitleiste">
 {% for a in zeitleiste.abschnitte %}
   <section class="zeitleiste-abschnitt"{% if a.kapitel %} id="{{ a.id }}" aria-labelledby="{{ a.id }}-titel"{% endif %}>
-    {% if a.kapitel %}
+    {% if a.kapitel %}<div class="zeitleiste-kapitelkopf">
     <h2 class="zeitleiste-kapitel" id="{{ a.id }}-titel"><span class="zeitleiste-zeitraum">{{ a.kapitel.zeitraum }}</span> {{ a.kapitel.title }}</h2>
     {% if a.kapitel.text %}<p class="zeitleiste-kapiteltext">{{ a.kapitel.text|linebreaksbr }}</p>{% endif %}
-    {% endif %}
+    </div>{% endif %}
     {% if a.ereignisse %}
     <ol class="zeitleiste-liste">
       {% for e in a.ereignisse %}

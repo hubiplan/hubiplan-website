@@ -29,7 +29,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
-from . import api, archiv, bilder, designpaket
+from . import api, archiv, bilder, designpaket, markdown
 from .site import (
     DESIGN_COOKIE,
     DESIGNS,
@@ -1243,6 +1243,20 @@ def _contact_recipient(recipients: list, wanted: str) -> dict | None:
     return {"id": r["id"], "name": name}
 
 
+def _contact_box(site: Site) -> dict | None:
+    """Kasten neben dem Kontaktformular (Webseite #137): Einleitung des Bereichs „Kontakt“
+    aus HUBIplan (Überschrift, Text; ein Link allein im letzten Absatz wird zum Knopf).
+    Ohne Inhalt bleibt die Seite einspaltig."""
+    intro = site.intro("contact")
+    if not intro:
+        return None
+    title = intro.get("title") if isinstance(intro.get("title"), str) else ""
+    body = markdown.render(intro.get("text") or "", site.units_path)
+    if not (title.strip() or body):
+        return None
+    return {"title": title.strip(), "html": markdown.last_link_as_button(body)}
+
+
 @require_GET
 @site_view()
 def contact(request, site: Site):
@@ -1260,6 +1274,7 @@ def contact(request, site: Site):
             "challenge": data.get("challenge", {}),
             "post_url": f"{settings.HUBIPLAN_PUBLIC_URL}{api.PREFIX}{site.key}/contact/",
             "preview_session": site.preview if site.is_preview else "",
+            "kasten": _contact_box(site),
         },
     )
     response["Cache-Control"] = "private, no-store"

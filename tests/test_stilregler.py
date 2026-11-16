@@ -138,6 +138,18 @@ def test_jede_stufe_hat_regeln():
         ("footer_founded", "off"),
         ("hero_stage_width", "content"),
         ("hero_side", "page"),
+        # Webseite #135–#139: Grundstellungen ohne Regel; Würdenträger-Band, Platzhalter,
+        # Anrede und Podium wirken über die Vorlagen (Klassen dort in stil.css)
+        ("honors_layout", "list"),
+        ("honors_layout", "band"),
+        ("portrait_placeholder", "initial"),
+        ("portrait_placeholder", "none"),
+        ("person_cards", "normal"),
+        ("address", "formal"),
+        ("address", "informal"),
+        ("timeline_chapter", "plain"),
+        ("ranking", "table"),
+        ("ranking", "podium"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":

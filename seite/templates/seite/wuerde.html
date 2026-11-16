@@ -1,6 +1,35 @@
-{% load seite i18n %}<section class="wuerde{% if voll %} voll{% endif %}">
+{% load seite i18n %}<section class="wuerde{% if voll %} voll{% endif %}{% if band == "band" %} mit-band{% endif %}">
   {% if not ohne_titel %}<h2>{{ d.name }}</h2>{% endif %}
   {# Ohne Träger im laufenden Jahr gleich alle zeigen (Ralf 31.10.) #}
+  {% if band == "band" and d.current and d.current_year is not False %}
+  {# Webseite #135 (honors_layout=band): amtierende Würdenträger als Band, Vorgänger als Karten #}
+  {% for r in d.current %}{% lokal site r.photo_url as foto %}
+  <div class="majestaet-band{% if not foto %} ohne-bild{% endif %}">
+    <div class="majestaet-band-innen">
+      {% if foto %}<img src="{{ foto }}" alt="{{ d.name }} {{ r.holder.name }}" width="520" height="390">{% endif %}
+      <div class="majestaet-band-text">
+        <p class="majestaet-oberzeile">{{ d.name }}</p>
+        <p class="majestaet-name">{{ r.holder.name }}{% if r.times > 1 %} <span class="majestaet-mal">({% blocktranslate with n=r.times %}{{ n }}. Mal{% endblocktranslate %})</span>{% endif %}</p>
+        <p class="majestaet-zeit">{{ r.period|default:r.year }}</p>
+        {% for c in r.companions %}<p>{{ c.label }}: {{ c.name }}</p>{% endfor %}
+        {% if r.note %}<p class="klein">{{ r.note }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% with vorher=d|vorgaenger %}{% if vorher %}
+  <h2 class="vorgaenger-titel">{% translate "Vorgänger" %}</h2>
+  <ul class="vorgaenger">
+    {% for r in vorher %}<li><span class="vorgaenger-jahr">{{ r.period|default:r.year }}</span> <strong>{{ r.holder.name }}</strong></li>{% endfor %}
+  </ul>
+  {% endif %}{% endwith %}
+  {% if d.reigns|length > d.current|length %}
+  <details class="chronik alle-vorgaenger">
+    <summary class="knopf">{% blocktranslate with name=d.name_plural|default:d.name n=d.reigns|length %}Alle {{ n }} Einträge ({{ name }}){% endblocktranslate %}</summary>
+    {% include "seite/wuerde_tabelle.html" %}
+  </details>
+  {% endif %}
+  {% else %}
   {% if not voll or d.current_year is not False %}
   {% for r in d.current %}
   <div class="majestaet">
@@ -21,5 +50,6 @@
     <summary>{% blocktranslate with name=d.name count n=d.reigns|length %}Chronik {{ name }} ({{ n }} Eintrag){% plural %}Chronik {{ name }} ({{ n }} Einträge){% endblocktranslate %}</summary>
     {% include "seite/wuerde_tabelle.html" %}
   </details>
+  {% endif %}
   {% endif %}
 </section>

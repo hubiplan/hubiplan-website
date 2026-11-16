@@ -2,13 +2,26 @@
 // HUBIplan schicken (dort gelten Drosselung und Prüfung).
 (function () {
   "use strict";
+  var form = document.getElementById("kontakt");
+  // Webseite #137: Du-Anrede (Stilregler address=informal) auf deutschen Seiten
+  var DU = {
+    "Bitte Ihren Namen eingeben.": "Bitte deinen Namen eingeben.",
+    "Danke! Ihre Nachricht ist angekommen.": "Danke! Deine Nachricht ist angekommen.",
+    "Sicherheitsprüfung erneuert. Ihre Nachricht bleibt erhalten. Bitte senden Sie erneut.":
+      "Sicherheitsprüfung erneuert. Deine Nachricht bleibt erhalten. Bitte sende sie erneut.",
+    "Das Formular ist abgelaufen. Bitte kopieren Sie Ihre Nachricht und laden Sie die Seite neu.":
+      "Das Formular ist abgelaufen. Bitte kopiere deine Nachricht und lade die Seite neu.",
+    "Diese Nachricht ist bereits bei uns angekommen. Sie müssen sie nicht erneut senden.":
+      "Diese Nachricht ist bereits bei uns angekommen. Du musst sie nicht erneut senden.",
+    "An diese Stelle kann gerade keine Nachricht gehen. Bitte schreiben Sie über den Menüpunkt „Kontakt“ an den Verein.":
+      "An diese Stelle kann gerade keine Nachricht gehen. Bitte schreib über den Menüpunkt „Kontakt“ an den Verein."
+  };
   // Texte in der Sprache der Seite (basis.html, Element seite-texte)
   function t(s) {
     var e = document.getElementById("seite-texte");
-    if (!e) return s;
+    if (!e) return (form && form.dataset.anrede === "du" && DU[s]) || s;
     try { return JSON.parse(e.textContent)[s] || s; } catch (x) { return s; }
   }
-  var form = document.getElementById("kontakt");
   if (!form || !window.crypto || !window.crypto.subtle || !window.fetch) return;
   var meldung = form.querySelector(".meldung");
   var knopf = form.querySelector("button[type=submit]");

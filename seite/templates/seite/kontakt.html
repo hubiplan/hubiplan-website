@@ -2,20 +2,24 @@
 {% block titel %}{% translate "Kontakt" as std %}{% baustein site "contact" std %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Kontakt" as std %}{% baustein site "contact" std %}</h1>
+{# Webseite #137: Anrede wählbar (address=informal duzt), Kasten neben dem Formular aus HUBIplan #}
+{% if site.style.address == "informal" %}{% firstof "du" as anrede %}{% else %}{% firstof "sie" as anrede %}{% endif %}
+{% if kasten %}<div class="kontakt-spalten"><div class="kontakt-haupt">{% endif %}
 {% if recipient %}
 <form id="kontakt" class="formular" method="post" action="{{ post_url }}" novalidate
       data-ziel="{{ post_url }}" data-token="{{ challenge.token }}" data-salz="{{ challenge.salt }}"
       data-schwierigkeit="{{ challenge.difficulty }}" data-vorschau="{{ preview_session }}"
-      data-neu="{% url 'kontakt_pruefung' %}">
-  <p>{% blocktranslate with name=recipient.name %}Schreiben Sie uns. Die Nachricht geht per E-Mail an {{ name }}; die Antwort kommt an Ihre E-Mail-Adresse.{% endblocktranslate %}</p>
+      data-neu="{% url 'kontakt_pruefung' %}" data-anrede="{{ anrede }}">
+  {% if anrede == "du" %}<p>{% blocktranslate with name=recipient.name %}Schreib uns. Die Nachricht geht per E-Mail an {{ name }}, die Antwort kommt an deine E-Mail-Adresse.{% endblocktranslate %}</p>
+  {% else %}<p>{% blocktranslate with name=recipient.name %}Schreiben Sie uns. Die Nachricht geht per E-Mail an {{ name }}; die Antwort kommt an Ihre E-Mail-Adresse.{% endblocktranslate %}</p>{% endif %}
   <p class="klein" id="k-pflicht">{% translate "Alle Felder sind Pflicht, nur „Bestätigung an mich senden“ ist freiwillig." %}</p>
   {# Fester Empfänger je nach Herkunft, keine Auswahl (Ralf 31.10.) #}
   <p class="empfaenger"><span class="empfaenger-titel">{% translate "An" %}</span> <strong id="k-an">{{ recipient.name }}</strong></p>
   <input type="hidden" name="recipient" value="{{ recipient.id }}">
-  <label for="k-name">{% translate "Ihr Name" %}</label>
+  <label for="k-name">{% if anrede == "du" %}{% translate "Dein Name" %}{% else %}{% translate "Ihr Name" %}{% endif %}</label>
   <input id="k-name" aria-describedby="k-name-fehler" name="name" required maxlength="100" autocomplete="name">
   <p class="feld-fehler" id="k-name-fehler" hidden></p>
-  <label for="k-mail">{% translate "Ihre E-Mail-Adresse" %}</label>
+  <label for="k-mail">{% if anrede == "du" %}{% translate "Deine E-Mail-Adresse" %}{% else %}{% translate "Ihre E-Mail-Adresse" %}{% endif %}</label>
   <input id="k-mail" aria-describedby="k-mail-fehler" name="email" type="email" required maxlength="200" autocomplete="email">
   <p class="feld-fehler" id="k-mail-fehler" hidden></p>
   <label for="k-betreff">{% translate "Betreff" %}</label>
@@ -26,14 +30,25 @@
   <p class="feld-fehler" id="k-text-fehler" hidden></p>
   <div class="honig" aria-hidden="true"><label for="k-hp">{% translate "Bitte leer lassen" %}</label><input id="k-hp" name="homepage" tabindex="-1" autocomplete="off"></div>
   <label class="haken"><input type="checkbox" name="copy" value="1"> {% translate "Bestätigung an mich senden" %}</label>
-  <p class="klein">{% translate "Hinweise zur Verarbeitung Ihrer Angaben stehen in den" %} <a href="{% url 'datenschutz' %}">{% translate "Datenschutzhinweisen" %}</a>.</p>
+  <p class="klein">{% if anrede == "du" %}{% translate "Hinweise zur Verarbeitung deiner Angaben stehen in den" %}{% else %}{% translate "Hinweise zur Verarbeitung Ihrer Angaben stehen in den" %}{% endif %} <a href="{% url 'datenschutz' %}">{% translate "Datenschutzhinweisen" %}</a>.</p>
   {# Erst aktiv, wenn kontakt.js bereit ist (UX-Audit 31.10. S09) #}
   <button class="knopf" type="submit" disabled>{% translate "Nachricht senden" %}</button>
   <p class="meldung" role="status" aria-live="polite"></p>
 </form>
-<p id="k-ohne-js">{% translate "Zum Senden braucht das Formular JavaScript (Schutz vor Spam); in diesem Browser ist es gerade nicht verfügbar." %}{% if site.info.email %} {% translate "Schreiben Sie uns stattdessen gern per E-Mail an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>.{% else %} {% translate "Bitte versuchen Sie es mit einem anderen Browser." %}{% endif %}</p>
+{% if anrede == "du" %}
+<p id="k-ohne-js">{% translate "Zum Senden braucht das Formular JavaScript (Schutz vor Spam); in diesem Browser ist es gerade nicht verfügbar." %}{% if site.info.email %} {% translate "Schreib uns stattdessen gern per E-Mail an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>.{% else %} {% translate "Bitte versuch es mit einem anderen Browser." %}{% endif %}</p>
 {% else %}
-<p>{% translate "Das Kontaktformular ist gerade nicht verfügbar." %}{% if site.info.email %} {% translate "Schreiben Sie uns gern an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>.{% endif %}</p>
+<p id="k-ohne-js">{% translate "Zum Senden braucht das Formular JavaScript (Schutz vor Spam); in diesem Browser ist es gerade nicht verfügbar." %}{% if site.info.email %} {% translate "Schreiben Sie uns stattdessen gern per E-Mail an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>.{% else %} {% translate "Bitte versuchen Sie es mit einem anderen Browser." %}{% endif %}</p>
+{% endif %}
+{% else %}
+<p>{% translate "Das Kontaktformular ist gerade nicht verfügbar." %}{% if site.info.email %} {% if anrede == "du" %}{% translate "Schreib uns gern an" %}{% else %}{% translate "Schreiben Sie uns gern an" %}{% endif %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>.{% endif %}</p>
+{% endif %}
+{% if kasten %}</div>
+<aside class="kontakt-kasten"{% if kasten.title %} aria-labelledby="kontakt-kasten-titel"{% endif %}>
+  {% if kasten.title %}<h2 id="kontakt-kasten-titel">{{ kasten.title }}</h2>{% endif %}
+  {{ kasten.html }}
+</aside>
+</div>
 {% endif %}
 {% endblock %}
 {% block skripte %}<script src="{% static 'seite/kontakt.js' %}" defer></script>{% endblock %}
