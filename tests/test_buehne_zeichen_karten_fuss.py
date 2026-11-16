@@ -6,6 +6,8 @@ from pathlib import Path
 
 from django.core.cache import cache
 
+from seite import stil
+
 from . import fake
 
 STATIC = Path(__file__).resolve().parents[1] / "seite" / "static" / "seite"
@@ -255,3 +257,20 @@ def test_voller_fuss_kompakt():
     # „Mitglied im …“ im Fuß erbt nicht Linie und Abstand der Personenzeilen (.mitglied)
     seite_css = (STATIC / "seite.css").read_text()
     assert "border-bottom: 0" in _regel(seite_css, ".fuss .mitglied")
+
+
+def test_knoepfe_am_karussell_einstellbar():
+    """Ralf 16.11.2026: Knöpfe am Karussell „immer sichtbar“ für alle Karussells oder „bei
+    Mauszeiger“, dann auch auf der Bühne nur bei Maus/Fokus; ohne Maus bleiben sie sichtbar."""
+    css = (STATIC / "stil.css").read_text()
+    assert 'html[data-st-carousel-controls="always"] .karussell-steuerung { opacity: 1; }' in css
+    mit_maus = css.split("@media (hover: hover) {", 1)[1].split("\n}", 1)[0]
+    assert (
+        'html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], '
+        '[data-st-hero-width="stage"]) main.start > .titel-buehne '
+        ".karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung { opacity: 0; }"
+    ) in mit_maus
+    ohne_maus = css.split("@media (hover: none) {", 1)[1].split("\n}", 1)[0]
+    hover = 'html[data-st-carousel-controls="hover"]'
+    assert f"{hover} .karussell-steuerung {{ opacity: 1; }}" in ohne_maus
+    assert stil.CATALOG["carousel_controls"] == ("always", "hover")
