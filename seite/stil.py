@@ -87,6 +87,8 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     # Ralf 14.11.2026: weitere Regler
     # Überschrift der Unterseiten: schlicht, farbiges Band, Band mit dem Titelbild der Startseite
     "page_title": ("plain", "band", "image"),
+    # Webseite #148: Band der Einheiten in Vereinsfarbe, Kastenfarbe, hell oder schlicht mit Linie
+    "unit_title": ("primary", "box", "light", "plain"),
     # Schrift der Überschriften unabhängig vom Text
     "heading_font": ("text", "modern", "festive", "clear", "elegant", "fraktur", "strong"),
     # Menü am Bildschirm: Großbuchstaben, größere Schrift

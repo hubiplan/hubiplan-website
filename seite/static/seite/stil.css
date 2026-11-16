@@ -495,6 +495,24 @@ html[data-st-page-title="image"] body:not([data-seite="start"]) main > .textseit
   background: linear-gradient(color-mix(in srgb, var(--st-schleier, #000) 50%, transparent), color-mix(in srgb, var(--st-schleier, #000) 50%, transparent)), var(--st-seitenbild, none) center / cover no-repeat, var(--farbe-band);
 }
 html[data-st-page-title="plain"] body:not([data-seite="start"]) main > h1 { background: none; padding: 0; }
+/* Webseite #148: Band der Einheiten (/zuege/<kurz>/) in eigener Farbe, damit es nicht wie ein
+   zweiter Seitenkopf wirkt (unit_title). Ohne Regler bzw. „primary“ wie die übrigen Bänder;
+   Aufbau, Größen und Abstände bleiben, das Band bleibt randlos unter dem Kopf. */
+html:is([data-st-unit-title="box"], [data-st-unit-title="light"], [data-st-unit-title="plain"]):is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf {
+  padding-top: var(--st-band-polster, 1.1rem); text-shadow: none;
+}
+html[data-st-unit-title="box"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf {
+  background: var(--farbe-datum); color: var(--auf-datum);
+}
+html[data-st-unit-title="light"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf {
+  background: var(--abschnitt-hell); color: var(--text); border-bottom: 1px solid var(--linie);
+}
+html[data-st-unit-title="plain"]:is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf {
+  background: var(--grund); color: var(--text); border-bottom: 3px solid var(--primaer);
+}
+/* Name in der dunklen Vereinsfarbe (Linkfarbe, mind. 4,5 : 1), Zeile darunter leise */
+html:is([data-st-unit-title="light"], [data-st-unit-title="plain"]):is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf h1 { color: var(--link); }
+html:is([data-st-unit-title="light"], [data-st-unit-title="plain"]):is([data-st-page-title="band"], [data-st-page-title="image"]) body:not([data-seite="start"]) main > .einheit-kopf .klein { color: var(--text-leise); }
 
 /* Tabellen abwechselnd hinterlegt; ohne Farbrolle „Flächen“ leicht getönt */
 html[data-st-stripes="on"] table:not(.monatskalender) > tbody > tr:nth-child(even) > :is(td, th) { background: var(--zeile, color-mix(in srgb, var(--text) 5%, var(--flaeche))); }
