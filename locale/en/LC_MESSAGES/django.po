@@ -991,3 +991,9 @@ msgstr "Please try a different browser."
 
 msgid "Schreib uns gern an"
 msgstr "Feel free to write to us at"
+
+msgid "Mehr erfahren"
+msgstr "Learn more"
+
+msgid "Hinweis schließen"
+msgstr "Close notice"

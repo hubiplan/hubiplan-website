@@ -27,8 +27,10 @@
 {% elif request.GET.vorschau == "beendet" %}
 <div class="vorschau-hinweis" role="status">{% translate "Vorschau beendet. Sie sehen die Webseite jetzt wie alle Besucher." %}</div>
 {% endif %}
-{% if site.info.notice and not site.maintenance %}{% include "seite/hinweisleiste.html" with hinweis=site.info.notice %}{% endif %}
-{% menue as punkte %}{% if site %}{% include site.kopf_vorlage %}{% else %}{% include "seite/kopf.html" %}{% endif %}
+{% menue as punkte %}{% if site.info.notice and not site.maintenance %}{% hinweis_ansicht site.info.notice as hinweis_a %}{% endif %}
+{% if hinweis_a.platz == "top" %}{% include "seite/hinweisleiste.html" with hinweis=site.info.notice %}{% endif %}
+{% if site %}{% include site.kopf_vorlage %}{% else %}{% include "seite/kopf.html" %}{% endif %}
+{% if hinweis_a and hinweis_a.platz != "top" %}{% include "seite/hinweisleiste.html" with hinweis=site.info.notice %}{% endif %}
 <main id="inhalt" class="breite{% block main_klasse %}{% endblock %}">
 {% block inhalt %}{% endblock %}
 </main>
@@ -37,6 +39,7 @@
 {% seite_texte %}<script src="{% static 'seite/menue.js' %}" defer></script>
 <script src="{% static 'seite/termin.js' %}" defer></script>
 <script src="{% static 'seite/countdown.js' %}" defer></script>
+{% if site.info.notice.place == "float" and not site.maintenance %}<script src="{% static 'seite/hinweis.js' %}" defer></script>{% endif %}
 {% if abschnitte|hat_art:"images" %}{% include "seite/bildfenster.html" %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}
 {% block skripte %}{% endblock %}
 </body>

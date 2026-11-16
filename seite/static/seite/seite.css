@@ -113,11 +113,73 @@ code { word-break: break-all; font-size: .85em; }
 }
 .vorschau-hinweis a { color: inherit; font-weight: 600; margin-left: .5rem; }
 /* Hinweisleiste aus HUBIplan (G6): oben auf allen Seiten, Link an der Schriftstärke erkennbar */
-.hinweisleiste { background: var(--primaer); color: var(--auf-primaer); text-align: center; font-size: .95rem; }
-.hinweisleiste p { margin: 0 auto; padding: .5rem 1rem; }
-.hinweisleiste a { color: inherit; font-weight: 700; text-decoration: none; }
-.hinweisleiste a:hover { text-decoration: none; opacity: .85; }
-.hinweisleiste :focus-visible { outline-color: var(--auf-primaer); }
+/* Hinweisleiste (hubiplan, Ralf 16.11.2026): auffällig in eigener Farbe mit Symbol, Countdown
+   und Knopf. Stile: accent (Akzentfarbe), alert (Signalfarbe), festive (Akzent mit Muster),
+   quiet (wie früher in Kopffarbe). Plätze: über oder unter dem Kopf, schwebend unten. */
+.hinweisleiste {
+  --hl-grund: var(--akzent); --hl-text: var(--auf-akzent);
+  background: var(--hl-grund); color: var(--hl-text); position: relative; z-index: 2;
+  box-shadow: 0 2px 10px rgb(0 0 0 / .18);
+}
+.hinweisleiste[hidden] { display: none; }
+.hinweis-innen {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: .6rem 1.1rem; padding: .85rem 1rem; text-align: center;
+}
+.hinweis-symbol {
+  flex: none; display: inline-grid; place-items: center; width: 2.6rem; height: 2.6rem;
+  border-radius: 50%; background: color-mix(in srgb, var(--hl-text) 16%, transparent);
+}
+.hinweis-symbol svg { display: block; }
+.hinweis-text { margin: 0; font-size: 1.15rem; line-height: 1.35; }
+.hinweis-text strong { font-weight: 700; }
+.hinweis-countdown {
+  display: inline-block; margin-left: .4rem; padding: .15rem .65rem; border-radius: 999px;
+  background: var(--hl-text); color: var(--hl-grund); font-size: .85em; font-weight: 700;
+  white-space: nowrap; vertical-align: .08em;
+}
+.hinweisleiste a.hinweis-knopf {
+  display: inline-flex; align-items: center; gap: .1rem; padding: .5rem 1.1rem;
+  border-radius: var(--rund); border: 2px solid var(--hl-text); background: var(--hl-text);
+  color: var(--hl-grund); font-weight: 700; text-decoration: none; white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.hinweisleiste a.hinweis-knopf:hover, .hinweisleiste a.hinweis-knopf:focus-visible {
+  background: transparent; color: var(--hl-text); text-decoration: none;
+}
+.hinweisleiste :focus-visible { outline: 3px solid var(--hl-text); outline-offset: 2px; }
+.hinweis-alert { --hl-grund: #b3261e; --hl-text: #fff; }
+.hinweis-festive {
+  background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / .16) 0 14px, transparent 14px 28px);
+  border-block: 3px solid var(--primaer);
+}
+.hinweis-quiet { --hl-grund: var(--primaer); --hl-text: var(--auf-primaer); box-shadow: none; }
+.hinweis-quiet .hinweis-innen { padding-block: .55rem; }
+.hinweis-quiet .hinweis-text { font-size: 1rem; }
+/* Symbol winkt beim Laden kurz (nicht bei „weniger Bewegung“) */
+@media (prefers-reduced-motion: no-preference) {
+  .hinweisleiste:not(.hinweis-quiet) .hinweis-symbol svg { animation: hinweis-winken 1.2s ease-in-out .4s 2; }
+}
+@keyframes hinweis-winken { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+/* Schwebend unten: Kasten über dem Inhalt, schließbar (hinweis.js) */
+.hinweis-platz-float {
+  position: fixed; z-index: 60; left: 50%; bottom: 1rem; transform: translateX(-50%);
+  width: min(42rem, calc(100% - 2rem)); border-radius: var(--rund); overflow: hidden;
+  box-shadow: 0 8px 28px rgb(0 0 0 / .3);
+}
+.hinweis-platz-float .hinweis-innen { justify-content: flex-start; text-align: left; padding-right: 3rem; flex-wrap: wrap; }
+.hinweis-platz-float .hinweis-text { flex: 1 1 12rem; }
+.hinweis-zu {
+  position: absolute; top: .35rem; right: .35rem; width: 2.2rem; height: 2.2rem; border: 0;
+  border-radius: 50%; background: transparent; color: inherit; font-size: 1.5rem; line-height: 1;
+  cursor: pointer;
+}
+.hinweis-zu:hover { background: color-mix(in srgb, var(--hl-text) 16%, transparent); }
+@media (max-width: 40rem) {
+  .hinweis-innen { gap: .5rem .8rem; }
+  .hinweis-text { font-size: 1.02rem; }
+  .hinweis-symbol { width: 2.2rem; height: 2.2rem; }
+}
 .kopf { background: var(--farbe-kopf); color: var(--auf-kopf); }
 .kopf-innen { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; position: relative; }
 .marke { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: .75rem; color: inherit; text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.25; padding: .5rem 0; }
