@@ -200,7 +200,7 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 .fuss .klein { color: inherit; opacity: .85; margin: 0; }
 .sozial, .recht { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; }
 .fuss .klein { flex-basis: 100%; font-size: .8rem; }
-.fuss .mitglied { margin: 0; }
+.fuss .mitglied { margin: 0; display: block; padding: 0; border-bottom: 0; }  /* nicht die Personenzeile .mitglied der Mitgliederlisten (Webseite #132) */
 
 /* Bausteine */
 .knopf {

@@ -231,3 +231,27 @@ def test_buehne_knoepfe_immer_sichtbar_und_ueber_bild_und_verlauf():
     assert "max-width: none" in regel and "isolation: isolate" in regel
     # Titelzeilen (z-index 1) bleiben unter den Knöpfen
     assert "position: absolute; z-index: 1; inset: 0 0 auto; height: var(--buehne-hoehe)" in css
+
+
+def _regel(css: str, auswahl: str) -> str:
+    treffer = re.search(re.escape(auswahl) + r"\s*\{([^}]*)\}", css)
+    assert treffer, auswahl
+    return treffer.group(1)
+
+
+def test_voller_fuss_kompakt():
+    """Webseite #132: Der volle Fuß stellt die Rechtslinks nebeneinander, das Wappen ist
+    kleiner und der Innenabstand knapper; auf dem Handy bleibt das Wappen neben dem Text."""
+    css = (STATIC / "stil.css").read_text()
+    recht = _regel(css, ".fuss-voll .recht")
+    assert "flex-direction: row" in recht and "flex-wrap: wrap" in recht
+    assert "height: 76px" in _regel(css, ".fuss-voll .fuss-bild")
+    innen = _regel(css, ".fuss-voll .fuss-innen")
+    assert "padding-top: 1.25rem" in innen and "padding-bottom: .9rem" in innen
+    handy = css[css.index(".fuss-voll .fuss-innen { grid-template-columns: 1fr;") :]
+    handy = handy[: handy.index("\n}")]
+    assert ".fuss-voll .fuss-marke { flex-direction: row;" in handy
+    assert ".fuss-voll .fuss-bild { height: 64px; }" in handy
+    # „Mitglied im …“ im Fuß erbt nicht Linie und Abstand der Personenzeilen (.mitglied)
+    seite_css = (STATIC / "seite.css").read_text()
+    assert "border-bottom: 0" in _regel(seite_css, ".fuss .mitglied")
