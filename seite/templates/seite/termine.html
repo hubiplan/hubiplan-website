@@ -17,7 +17,8 @@
 {% for monat, liste in months %}
 <section>
   <h2>{{ monat }}</h2>
-  <ul class="termine">{% for e in liste %}{% include "seite/termin.html" with voll=True %}{% endfor %}</ul>
+  {# Webseite #156: der nächste Termin in der Hauptfarbe wie bei den Terminkarten (#124) #}
+  <ul class="termine">{% for e in liste %}{% if forloop.parentloop.first and forloop.first %}{% include "seite/termin.html" with voll=True naechster=True %}{% else %}{% include "seite/termin.html" with voll=True %}{% endif %}{% endfor %}</ul>
 </section>
 {% empty %}
 <p>{% translate "Zurzeit stehen keine Termine an." %}</p>
@@ -25,9 +26,11 @@
 {% if ics_url %}
 <section class="abo karte">
   <h2>{% translate "Termine im eigenen Kalender" %}</h2>
-  <p>{% translate "Mit dem Kalender-Abo erscheinen alle Termine automatisch in Ihrem Kalender (Handy, Outlook, Google, Apple) und bleiben aktuell." %}</p>
+  {# Webseite #156: Anrede folgt dem Regler address; Adresse in der Textschrift, kopierbar #}
+  <p>{% if site.style.address == "informal" %}{% translate "Mit dem Kalender-Abo erscheinen alle Termine automatisch in deinem Kalender (Handy, Outlook, Google, Apple) und bleiben aktuell." %}{% else %}{% translate "Mit dem Kalender-Abo erscheinen alle Termine automatisch in Ihrem Kalender (Handy, Outlook, Google, Apple) und bleiben aktuell." %}{% endif %}</p>
   <p><a class="knopf" href="{{ webcal_url }}">{% translate "Kalender abonnieren" %}</a></p>
-  <p class="klein">{% translate "Oder diese Adresse im Kalender als Abo hinzufügen:" %}<br><code>{{ ics_url }}</code></p>
+  <p class="klein">{% translate "Oder diese Adresse im Kalender als Abo hinzufügen:" %}<br><span class="abo-adresse" id="abo-adresse">{{ ics_url }}</span></p>
+  <p class="abo-kopieren" hidden><button type="button" class="knopf hell klein-knopf" data-kopieren="abo-adresse" data-kopiert="{% translate "Adresse kopiert" %}">{% translate "Adresse kopieren" %}</button></p>
   <div class="qr" aria-label="{% translate "QR-Code für das Kalender-Abo" %}">{{ qr }}</div>
 </section>
 {% endif %}

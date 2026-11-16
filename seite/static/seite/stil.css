@@ -117,6 +117,9 @@ html[data-st-corners] .termin-datum { border-radius: calc(var(--rund) * .7); }
 /* Eckig heißt überall eckig (Webseite #89): Personen, Sozialsymbole, Sprungmarken und Punkte der Chronik */
 html[data-st-corners="square"] :is(.person img, .ohne-foto, .mitglied img, .sozial-symbole a, .zeitleiste-sprung a) { border-radius: 0; }
 html[data-st-corners="square"] .zeitleiste-eintrag::before, html[data-st-corners="square"] .zeitstrahl-liste li::before { border-radius: 0; }
+/* Webseite #156: auch Marken und Vorschaubilder unter Aktuelles, Auswahlfelder, Dokumentvorschauen
+   und die Steuerung des Bilderkarussells */
+html[data-st-corners="square"] :is(.beitrag-marke, .beitrag-weitere img, .formular :is(input, select, textarea), .filter select, .dok-vorschau, .presse img, .knopf-rund, .karussell-zaehler) { border-radius: 0; }
 /* Aufklappmenü folgt den Ecken, auch wenn ein Design eigene Rundungen setzt (#66) */
 html[data-st-corners] .menue-breit .untermenue ul { border-radius: var(--rund); }
 html[data-st-corners] .menue-breit .untermenue ul a { border-radius: calc(var(--rund) * .6); }
@@ -769,7 +772,8 @@ details.alle-vorgaenger[open] > summary.knopf { margin-bottom: 1rem; }
   .vorgaenger { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* #136 Personenkarten: Amt als Etikett, Name groß, „Nachricht schreiben“ als Textlink */
+/* #136 Personenkarten: Amt als Etikett, Name groß, „Nachricht schreiben“ als Textlink;
+   „Zur Homepage“ daneben genauso (Webseite #156) */
 html[data-st-person-cards="label"] .karte.personenkarte { padding: 20px 22px 22px; border-top: 3px solid var(--primaer); }
 html[data-st-person-cards="label"][data-st-cards="accent"] .karte.personenkarte { border-left-width: 1px; }
 html[data-st-person-cards="label"] main .personenkarte :is(h2, h3) {
@@ -781,12 +785,12 @@ html[data-st-person-cards="label"] .personenkarte .personen { grid-template-colu
 html[data-st-person-cards="label"] .personenkarte .person > span { min-width: 0; overflow-wrap: anywhere; }
 html[data-st-person-cards="label"] .personenkarte .person strong { font-family: var(--schrift-titel); font-size: 24px; font-weight: 700; line-height: 1.15; }
 html[data-st-person-cards="label"] .personenkarte .nachricht { margin: .9rem 0 0; }
-html[data-st-person-cards="label"] .personenkarte .nachricht a.knopf:not(.hell) {
+html[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) .nachricht a.knopf:not(.hell) {
   display: inline-block; margin: 0; padding: 0 0 4px; background: none; color: var(--primaer); border: 0;
   border-bottom: 2px solid var(--primaer); border-radius: 0; box-shadow: none;
   font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
 }
-html[data-st-person-cards="label"] .personenkarte .nachricht a.knopf:not(.hell):hover { filter: none; color: var(--text); border-color: var(--text); }
+html[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) .nachricht a.knopf:not(.hell):hover { filter: none; color: var(--text); border-color: var(--text); }
 /* Ehrenmitglieder: Namen im Raster, Strich links */
 html[data-st-person-cards="label"] .personenkarte.ehrung .personen { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem 1.5rem; }
 html[data-st-person-cards="label"] .personenkarte.ehrung .person { padding-left: .8rem; border-left: 3px solid var(--st-kasten); }
@@ -890,3 +894,9 @@ table.zweispaltig > thead > tr.kopf-rechts { display: none; }
   table.zweispaltig > thead > tr.kopf-rechts { display: grid; }
   table.zweispaltig :is(th, td) { display: block; width: auto; min-width: 0; overflow-wrap: anywhere; }
 }
+
+/* ---------- Webseite #156 ---------- */
+/* Namen der Einheiten in der Übersicht in der Überschriftenschrift wie alle übrigen Kartentitel */
+.kacheln .einheit-name { font-family: var(--schrift-titel); }
+/* Liste unter /termine/: der nächste Termin in der Hauptfarbe wie bei den Terminkarten (#124) */
+html[data-st-date="card"] .termine > .termin-naechster .termin-datum { background: var(--primaer); color: var(--auf-primaer); }

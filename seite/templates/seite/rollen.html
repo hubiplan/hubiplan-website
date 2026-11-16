@@ -12,7 +12,7 @@
   <section class="karte homepage">
     <h3>{% translate "Homepage" %}</h3>
     {% lokal site homepage_bild as bild %}{% if bild %}<a class="homepage-bild" href="{{ homepage }}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="{{ bild }}" alt="" loading="lazy"></a>{% else %}<p class="klein">{{ homepage|web_anzeige }}</p>{% endif %}
-    <p><a class="knopf klein-knopf" href="{{ homepage }}" target="_blank" rel="noopener noreferrer">{% translate "Zur Homepage" %}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>
+    <p class="nachricht"><a class="knopf klein-knopf" href="{{ homepage }}" target="_blank" rel="noopener noreferrer">{% translate "Zur Homepage" %}<span aria-hidden="true"> ↗</span><span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>
   </section>
 {% endif %}
 </div>
