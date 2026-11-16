@@ -54,17 +54,20 @@ def test_hinweisleiste_aussehen_aus_hubiplan(client, hubiplan):
     assert ">Zum Programm<" in leiste
     # Über dem Kopf
     assert html.index("hinweisleiste") < html.index('class="kopf')
-    # Heute, morgen, vorbei
-    hubiplan.info["notice"]["date"] = timezone.localdate().isoformat()
-    assert '<span class="hinweis-countdown">heute</span>' in text(client.get("/"))
-    hubiplan.info["notice"]["date"] = (tag - datetime.timedelta(days=4)).isoformat()
-    assert '<span class="hinweis-countdown">morgen</span>' in text(client.get("/"))
-    hubiplan.info["notice"]["date"] = (tag - datetime.timedelta(days=9)).isoformat()
-    assert "hinweis-countdown" not in text(client.get("/"))
+    # Heute, morgen, vorbei (direkt am Baustein, die Seiteninfo ist zwischengespeichert)
+    from seite.templatetags.seite import hinweis_ansicht
+
+    heute = timezone.localdate()
+    assert hinweis_ansicht({"date": heute.isoformat()})["tage"] == 0
+    assert hinweis_ansicht({"date": (heute + datetime.timedelta(days=1)).isoformat()})["tage"] == 1
+    assert (
+        hinweis_ansicht({"date": (heute - datetime.timedelta(days=1)).isoformat()})["tage"] is None
+    )
+    assert hinweis_ansicht({"date": "kaputt"})["tage"] is None
+    assert hinweis_ansicht(None) == {"stil": "accent", "platz": "below", "symbol": "", "tage": None}
     # Unbekannte Werte fallen auf die Vorgabe zurück, kein Symbol ohne bekanntes
-    hubiplan.info["notice"].update(style='x" onclick="y', place="links", icon="bombe")
-    leiste = leiste_von(text(client.get("/")))
-    assert leiste.startswith(' hinweis-accent hinweis-platz-below"') and "<svg" not in leiste
+    a = hinweis_ansicht({"style": 'x" onclick="y', "place": "links", "icon": "bombe"})
+    assert (a["stil"], a["platz"], a["symbol"]) == ("accent", "below", "")
 
 
 def test_hinweisleiste_schwebend_schliessbar(client, hubiplan):
