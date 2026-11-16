@@ -334,6 +334,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .marke-abgesagt { text-decoration: none; display: inline-block; background: #a4262c; color: #fff; font-size: .75rem; padding: .1rem .5rem; border-radius: 99px; vertical-align: middle; }
 .filter { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }
 .abo { margin-top: 2rem; }
+/* Webseite #156: Abo-Adresse in der Textschrift der Seite, klein, mit Umbruch */
+.abo-adresse { overflow-wrap: anywhere; word-break: break-all; }
 .qr svg { width: 160px; height: 160px; background: #fff; }
 
 /* Kacheln (Züge) */
@@ -514,9 +516,9 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .karussell-steuerung [data-zurueck] { left: .75rem; top: 50%; transform: translateY(-50%); }
 .karussell-steuerung [data-weiter] { right: .75rem; top: 50%; transform: translateY(-50%); }
 .karussell-steuerung [data-pause] { right: .75rem; bottom: .75rem; }
-.karussell-zaehler { position: absolute; right: 3.7rem; bottom: 1.1rem; background: rgb(0 0 0 / .55); color: #fff; padding: .1rem .5rem; border-radius: 99px; }
+.karussell-zaehler { position: absolute; right: 3.7rem; bottom: 1.1rem; background: rgb(0 0 0 / .55); color: #fff; padding: .1rem .5rem; border-radius: 99px; font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .karussell-steuerung { transition: none; } }
-.knopf-rund { width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1px solid var(--linie); background: var(--flaeche); color: var(--text); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+.knopf-rund { width: 2.4rem; height: 2.4rem; border-radius: 50%; font-family: inherit; border: 1px solid var(--linie); background: var(--flaeche); color: var(--text); font-size: 1.4rem; line-height: 1; cursor: pointer; }
 .knopf-rund:hover:not(:disabled) { border-color: var(--primaer); }
 .knopf-rund:disabled { opacity: .35; cursor: default; }
 .knopf-pause { font-size: .8rem; letter-spacing: -.1em; }

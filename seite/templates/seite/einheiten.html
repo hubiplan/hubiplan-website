@@ -14,7 +14,7 @@
 {% for u in units %}
   <li><a href="{% einheit_url site u.slug %}">
     {% logo_url site u.logo_url 120 as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="60" height="60" loading="lazy">{% else %}<span class="wappen-platz" aria-hidden="true">{% if vereinszeichen %}<img src="{{ vereinszeichen }}" alt="" width="42" height="42" loading="lazy">{% endif %}</span>{% endif %}
-    <span>{{ u.name }}{% if u.founding_year %}<br><small>{% blocktranslate with jahr=u.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</small>{% endif %}</span>
+    <span><span class="einheit-name">{{ u.name }}</span>{% if u.founding_year %}<br><small>{% blocktranslate with jahr=u.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</small>{% endif %}</span>
   </a></li>
 {% endfor %}
 </ul>

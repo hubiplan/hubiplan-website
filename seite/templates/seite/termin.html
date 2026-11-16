@@ -1,4 +1,4 @@
-{% load i18n %}{% now "Y" as dieses_jahr %}{% with ts=e.start|date:"U" %}{% with tid="termin-"|add:e.id|add:"-"|add:ts %}<li class="termin{% if e.is_cancelled %} abgesagt{% endif %}">
+{% load i18n %}{% now "Y" as dieses_jahr %}{% with ts=e.start|date:"U" %}{% with tid="termin-"|add:e.id|add:"-"|add:ts %}<li class="termin{% if e.is_cancelled %} abgesagt{% endif %}{% if naechster %} termin-naechster{% endif %}">
   <div class="termin-datum" aria-hidden="true"><span>{{ e.start|date:"j" }}</span><small>{{ e.start|date:"M" }}</small>{% if e.start|date:"Y" != dieses_jahr %}<small class="termin-jahr">{{ e.start|date:"Y" }}</small>{% endif %}</div>
   <div class="termin-text">
     {# Die ganze Karte öffnet ein Fenster mit allen Angaben (Ralf 2026-10-31) #}
