@@ -4,9 +4,9 @@
 {% if dignities|length == 1 %}{% with d=dignities.0 %}
 {# Nur eine Würde: ihr Name ist die Überschrift, bei mehreren Regentschaften in der Mehrzahl, kein „Majestäten“ darüber (Ralf 2026-10-30) #}
 <h1>{% if d.reigns|length > 1 %}{{ d.name_plural|default:d.name }}{% else %}{{ d.name }}{% endif %}</h1>
-{% include "seite/wuerde.html" with voll=True ohne_titel=True %}
+{% include "seite/wuerde.html" with voll=True ohne_titel=True band=site.style.honors_layout %}
 {% endwith %}{% else %}
 <h1>{% translate "Majestäten" as std %}{% baustein site "honors" std %}</h1>
-{% for d in dignities %}{% include "seite/wuerde.html" with voll=True %}{% empty %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endfor %}
+{% for d in dignities %}{% include "seite/wuerde.html" with voll=True band=site.style.honors_layout %}{% empty %}<p>{% translate "Hier stehen noch keine Angaben." %}</p>{% endfor %}
 {% endif %}
 {% endblock %}

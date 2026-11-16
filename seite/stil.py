@@ -98,6 +98,17 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "stripes": bool,
     # Datum in der Terminliste neben dem Datumsfeld: Wochentag, kurz oder lang
     "date_text": ("weekday", "short", "long"),
+    # Webseite #135: amtierende Würdenträger als Band unter dem Titel, Vorgänger als Karten
+    "honors_layout": ("list", "band"),
+    # Webseite #136: Personen ohne Foto ohne Platzhalter; Personenkarten mit Amt als Etikett
+    "portrait_placeholder": ("initial", "none"),
+    "person_cards": ("normal", "label"),
+    # Webseite #137: Anrede auf der Webseite (Kontaktformular): Sie oder du
+    "address": ("formal", "informal"),
+    # Webseite #138: Epochen der Chronik als Band, Sprungmarken als Links
+    "timeline_chapter": ("plain", "band"),
+    # Webseite #139: Plätze 1 bis 3 einer Wertung als Karten über der Rangliste
+    "ranking": ("table", "podium"),
 }
 
 # Was ein Design selbst festlegt; HUBIplan zeigt diese Wahl ausgegraut (gleiche Liste dort).

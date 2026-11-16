@@ -957,3 +957,34 @@ msgstr "Image credits"
 
 msgid "Fotos und Bilder auf dieser Webseite:"
 msgstr "Photos and images on this website:"
+
+msgid "Vorgänger"
+msgstr "Predecessors"
+
+msgid "Alle %(n)s Einträge (%(name)s)"
+msgstr "All %(n)s entries (%(name)s)"
+
+msgid ""
+"Schreib uns. Die Nachricht geht per E-Mail an %(name)s, die Antwort kommt an "
+"deine E-Mail-Adresse."
+msgstr ""
+"Write to us. Your message is emailed to %(name)s; the reply goes to your "
+"email address."
+
+msgid "Dein Name"
+msgstr "Your name"
+
+msgid "Deine E-Mail-Adresse"
+msgstr "Your email address"
+
+msgid "Hinweise zur Verarbeitung deiner Angaben stehen in den"
+msgstr "Information on how your details are processed is in the"
+
+msgid "Schreib uns stattdessen gern per E-Mail an"
+msgstr "Feel free to email us instead at"
+
+msgid "Bitte versuch es mit einem anderen Browser."
+msgstr "Please try a different browser."
+
+msgid "Schreib uns gern an"
+msgstr "Feel free to write to us at"

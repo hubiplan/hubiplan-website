@@ -714,3 +714,119 @@ html[data-st-footer-line="none"] .fuss { border-top: 0; }
 html[data-st-footer-line="ornament"] .fuss { border-top: 3px solid var(--farbe-zier); }
 html[data-st-footer-line="accent"] .fuss { border-top: 3px solid var(--akzent); }
 html[data-st-footer-line="primary"] .fuss { border-top: 3px solid var(--primaer); }
+
+/* ---------- Webseite #135–#139 (Ralf 16.11.2026) ---------- */
+/* Gemeinsam: dunkle Vereinsfarbe für Bänder; Farbe der Etiketten und Kästen folgt der Farbrolle
+   „Datumsfeld“ (beim Hubertus Loden), Schrift darauf wie dort. */
+html { --st-dunkel: color-mix(in srgb, var(--primaer) 72%, #000); --st-kasten: var(--farbe-datum); --st-auf-kasten: var(--auf-datum); }
+html:is([data-st-honors-layout="band"], [data-st-timeline-chapter="band"]) body { overflow-x: clip; }
+
+/* #135 Würdenträger: amtierende Majestät als Band unter dem Titel, Vorgänger als Karten */
+.majestaet-band {
+  background: var(--st-dunkel); color: #fff; margin: 0 calc(50% - 50vw) 2rem;
+  padding: 2.5rem max(16px, calc(50vw - var(--breite) / 2 + 16px));
+}
+html[data-st-page-title]:is([data-st-page-title="band"], [data-st-page-title="image"]) main > h1 + .wuerde.mit-band > .majestaet-band:first-of-type { margin-top: -1.1rem; }
+.majestaet-band-innen { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.majestaet-band.ohne-bild .majestaet-band-innen { grid-template-columns: minmax(0, 1fr); }
+.majestaet-band img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--rund); }
+.majestaet-band-text p { margin: 0 0 .4rem; color: inherit; }
+.majestaet-band .majestaet-oberzeile { display: flex; align-items: center; gap: .8rem; margin-bottom: .9rem; font-size: .8rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+.majestaet-oberzeile::before { content: ""; flex: none; width: 2.5rem; height: 3px; background: var(--akzent); }
+.majestaet-band .majestaet-name { margin-bottom: .6rem; font-family: var(--schrift-titel); font-size: clamp(2.2rem, 6vw, 54px); font-weight: 700; line-height: 1.05; }
+.majestaet-mal { font-size: .4em; font-weight: 400; }
+.majestaet-band .majestaet-zeit { font-size: 1.15rem; opacity: .9; }
+.vorgaenger-titel { margin-top: 0; }
+.vorgaenger { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.vorgaenger li { display: grid; gap: .3rem; align-content: start; padding: .9rem 1rem; background: var(--flaeche); border: 1px solid var(--linie); border-top: 3px solid var(--st-kasten); border-radius: var(--rund); }
+.vorgaenger-jahr { font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text-leise); }
+.vorgaenger strong { font-family: var(--schrift-titel); font-size: 1.25rem; line-height: 1.2; }
+details.alle-vorgaenger { border: 0; padding: 0; background: none; }
+details.alle-vorgaenger > summary.knopf { display: inline-block; list-style: none; cursor: pointer; }
+details.alle-vorgaenger > summary.knopf::-webkit-details-marker { display: none; }
+details.alle-vorgaenger[open] > summary.knopf { margin-bottom: 1rem; }
+@media (max-width: 47.99rem) {
+  .majestaet-band { padding-top: 1.5rem; padding-bottom: 1.8rem; }
+  .majestaet-band-innen { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+  .vorgaenger { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* #136 Personenkarten: Amt als Etikett, Name groß, „Nachricht schreiben“ als Textlink */
+html[data-st-person-cards="label"] .karte.personenkarte { padding: 20px 22px 22px; border-top: 3px solid var(--primaer); }
+html[data-st-person-cards="label"][data-st-cards="accent"] .karte.personenkarte { border-left-width: 1px; }
+html[data-st-person-cards="label"] main .personenkarte :is(h2, h3) {
+  margin: 0 0 10px; padding: 0; border: 0; font-family: inherit; font-size: 12.5px; font-weight: 600;
+  line-height: 1.2; letter-spacing: .18em; text-transform: uppercase; color: var(--st-kasten); text-align: left;
+}
+html[data-st-person-cards="label"] main .personenkarte :is(h2, h3)::after { content: none; }
+html[data-st-person-cards="label"] .personenkarte .personen { grid-template-columns: minmax(0, 1fr); gap: .8rem; }
+html[data-st-person-cards="label"] .personenkarte .person > span { min-width: 0; overflow-wrap: anywhere; }
+html[data-st-person-cards="label"] .personenkarte .person strong { font-family: var(--schrift-titel); font-size: 24px; font-weight: 700; line-height: 1.15; }
+html[data-st-person-cards="label"] .personenkarte .nachricht { margin: .9rem 0 0; }
+html[data-st-person-cards="label"] .personenkarte .nachricht a.knopf:not(.hell) {
+  display: inline-block; margin: 0; padding: 0 0 4px; background: none; color: var(--primaer); border: 0;
+  border-bottom: 2px solid var(--primaer); border-radius: 0; box-shadow: none;
+  font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+html[data-st-person-cards="label"] .personenkarte .nachricht a.knopf:not(.hell):hover { filter: none; color: var(--text); border-color: var(--text); }
+/* Ehrenmitglieder: Namen im Raster, Strich links */
+html[data-st-person-cards="label"] .personenkarte.ehrung .personen { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem 1.5rem; }
+html[data-st-person-cards="label"] .personenkarte.ehrung .person { padding-left: .8rem; border-left: 3px solid var(--st-kasten); }
+html[data-st-person-cards="label"] .personenkarte.ehrung .person strong { font-size: 1.2rem; }
+@media (max-width: 47.99rem) {
+  html[data-st-person-cards="label"] .personenkarte.ehrung .personen { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* #137 Kontakt: Kasten neben dem Formular, Felder folgen den Ecken */
+html[data-st-corners] .formular :is(input, select, textarea) { border-radius: calc(var(--rund) * .6); }
+html[data-st-corners="square"] .formular :is(input, select, textarea) { border-radius: 0; }
+.kontakt-spalten { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 2.5rem; align-items: start; }
+.kontakt-kasten { padding: 1.6rem 1.5rem; background: var(--st-kasten); color: var(--st-auf-kasten); border-radius: var(--rund); }
+html main .kontakt-kasten :is(h2, p, a) { color: inherit; }
+html main .kontakt-kasten h2 { margin-top: 0; text-align: left; }
+html main .kontakt-kasten h2::after { background: currentColor; }
+.kontakt-kasten > :last-child { margin-bottom: 0; }
+html:root .kontakt-kasten .kasten-knopf a.knopf:not(.hell) { margin: .4rem 0 0; background: #fff; color: #1d2421; border: 0; }
+@media (max-width: 52rem) { .kontakt-spalten { grid-template-columns: minmax(0, 1fr); } }
+
+/* #138 Chronik: eckig mit corners=square; Epochen als Band, Sprungmarken als Links */
+html[data-st-corners="square"] :is(.zeitleiste-bild, .zeitleiste-karte, .zeitleiste-bild img), html[data-st-corners="square"] .zeitleiste-kapitel::before { border-radius: 0; }
+html[data-st-timeline-chapter="band"] .zeitleiste-sprung ul { gap: .5rem 1.6rem; }
+html[data-st-timeline-chapter="band"] .zeitleiste-sprung a {
+  padding: 0 0 3px; background: none; border: 0; border-bottom: 2px solid var(--farbe-zier); border-radius: 0;
+}
+html[data-st-timeline-chapter="band"] .zeitleiste-sprung a:hover { border-color: var(--primaer); }
+/* Band randlos: .zeitleiste ist um --zl-einzug eingerückt, das gleicht der Rand aus */
+html[data-st-timeline-chapter="band"] .zeitleiste-kapitelkopf {
+  position: relative; z-index: 1; background: var(--st-dunkel); color: #fff;
+  margin: 2.2rem calc(50% - 50vw + var(--zl-einzug) / 2) 1.6rem calc(50% - 50vw - var(--zl-einzug) / 2);
+  padding: 2.2rem max(16px, calc(50vw - var(--breite) / 2 + 16px));
+}
+html[data-st-timeline-chapter="band"] .zeitleiste-abschnitt:first-child .zeitleiste-kapitelkopf { margin-top: 0; }
+html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel { margin: 0; font-size: 30px; line-height: 1.15; color: #fff; text-align: left; }
+html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel::before,
+html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel::after { content: none; }
+html[data-st-timeline-chapter="band"] .zeitleiste-zeitraum {
+  display: block; position: static; width: auto; margin: 0 0 .4rem; text-align: left;
+  font-family: var(--schrift-titel); font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: 0; color: var(--akzent);
+}
+html[data-st-timeline-chapter="band"] .zeitleiste-kapiteltext { max-width: 46rem; margin: .9rem 0 0; font-size: 19px; color: color-mix(in srgb, #fff 80%, var(--primaer)); }
+html[data-st-timeline-chapter="band"] .zeitleiste-jahr { font-family: var(--schrift-titel); font-size: 1.2rem; }
+@media (max-width: 47.99rem) {
+  html[data-st-timeline-chapter="band"] .zeitleiste-kapitelkopf { padding-top: 1.6rem; padding-bottom: 1.6rem; }
+  html[data-st-timeline-chapter="band"] .zeitleiste-zeitraum { font-size: 44px; }
+  html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel { font-size: 24px; }
+}
+
+/* #139 Ergebnisse: Plätze 1 bis 3 als Karten über der Rangliste */
+.podest { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.podest-karte { display: flex; min-width: 0; overflow: hidden; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); }
+.podest-ziffer {
+  flex: none; width: 88px; display: grid; place-items: center; background: var(--st-kasten); color: var(--st-auf-kasten);
+  font-family: var(--schrift-titel); font-size: 52px; font-weight: 700; line-height: 1;
+}
+.podest-karte.platz-1 .podest-ziffer { background: var(--primaer); color: var(--auf-primaer); }
+.podest-text { display: grid; gap: .15rem; align-content: center; min-width: 0; padding: .8rem 1rem; }
+.podest-name { font-family: var(--schrift-titel); font-size: 1.35rem; line-height: 1.15; overflow-wrap: anywhere; }
+.podest-angaben { font-size: .9rem; color: var(--text-leise); }
+@media (max-width: 47.99rem) { .podest { grid-template-columns: minmax(0, 1fr); } }

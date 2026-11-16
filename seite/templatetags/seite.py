@@ -416,6 +416,42 @@ def mit_begleitung(reigns) -> bool:
     return any(r.get("companions") for r in reigns or [])
 
 
+# Webseite #135: so viele Vorgänger stehen als Karten unter dem Band
+VORGAENGER_KARTEN = 8
+
+
+@register.filter
+def vorgaenger(d) -> list:
+    """Regentschaften einer Würde ohne die amtierenden, die neuesten zuerst, höchstens acht
+    (Webseite #135); die vollständige Liste steht weiter aufklappbar darunter."""
+    if not isinstance(d, dict):
+        return []
+    current = {
+        (r.get("period") or r.get("year"), (r.get("holder") or {}).get("name"))
+        for r in d.get("current") or []
+        if isinstance(r, dict)
+    }
+    rest = [
+        r
+        for r in d.get("reigns") or []
+        if isinstance(r, dict)
+        and (r.get("period") or r.get("year"), (r.get("holder") or {}).get("name")) not in current
+    ]
+    return rest[:VORGAENGER_KARTEN]
+
+
+@register.filter
+def podest(rows) -> list:
+    """Plätze 1 bis 3 einer Wertung (Webseite #139), bei Platzgleichheit alle Gleichplatzierten."""
+    return [r for r in rows or [] if isinstance(r, dict) and r.get("place") in (1, 2, 3)]
+
+
+@register.filter
+def ohne_podest(rows) -> list:
+    """Übrige Zeilen der Rangliste unter den Karten: ab Platz 4 und ohne Platz."""
+    return [r for r in rows or [] if not (isinstance(r, dict) and r.get("place") in (1, 2, 3))]
+
+
 # Datumsformate je Sprache (Englisch nach britischer Schreibweise, Konzept F4)
 DATE_FORMATS = {
     "de": {

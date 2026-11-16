@@ -1,11 +1,11 @@
 {% load seite i18n %}
 <div class="karten">
 {% for r in rollen %}
-  <section class="karte">
+  <section class="karte personenkarte">
     <h3>{{ r.name }}</h3>
     {% if r.vacant %}<p class="klein">{% translate "Zurzeit nicht besetzt." %}</p>{% else %}{% include "seite/personen.html" with personen=r.holders %}{% endif %}
     {% if r.email %}<p><a href="mailto:{{ r.email }}">{{ r.email }}</a></p>{% endif %}
-    {% if r.contact_form %}<p><a class="knopf klein-knopf" href="{% url 'kontakt' %}?an={{ r.id }}">{% translate "Nachricht schreiben" %}</a></p>{% endif %}
+    {% if r.contact_form %}<p class="nachricht"><a class="knopf klein-knopf" href="{% url 'kontakt' %}?an={{ r.id }}">{% translate "Nachricht schreiben" %}</a></p>{% endif %}
   </section>
 {% endfor %}
 {% if homepage %}

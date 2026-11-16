@@ -7,9 +7,9 @@
 {% if honorary|length == 1 %}
 {# Nur eine Ehrung: sein Name ist die Überschrift, kein Sammelbegriff (Ralf 2026-10-30) #}
 {% with t=honorary.0 %}<h2>{{ t.heading|default:t.title }}</h2>
-<section class="karte">{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endwith %}
+<section class="karte personenkarte ehrung">{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endwith %}
 {% elif honorary %}
 <h2>{% translate "Ehrungen" as std %}{% baustein site "honorary" std %}</h2>
-{% for t in honorary %}<section class="karte"><h3>{{ t.heading|default:t.title }}</h3>{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endfor %}
+{% for t in honorary %}<section class="karte personenkarte ehrung"><h3>{{ t.heading|default:t.title }}</h3>{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endfor %}
 {% endif %}
 {% endblock %}
