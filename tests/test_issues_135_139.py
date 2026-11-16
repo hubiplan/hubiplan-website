@@ -197,7 +197,8 @@ def test_chronik_flaches_band_regeln():
     slim = 'html[data-st-timeline-chapter="slim"]'
     assert slim + " .zeitleiste-kapitelkopf { padding-top: 18px; padding-bottom: 16px; }" in css
     assert "display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 18px;" in css
-    assert slim + " .zeitleiste-kapiteltext { max-width: 46rem; margin: 4px 0 0; font-size: 17px;" in css
+    text = " .zeitleiste-kapiteltext { max-width: 46rem; margin: 4px 0 0; font-size: 17px;"
+    assert slim + text in css
     # band bleibt, wie es war
     assert "font-family: var(--schrift-titel); font-size: 64px;" in css
 
