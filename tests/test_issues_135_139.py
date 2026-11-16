@@ -27,7 +27,7 @@ def test_neue_regler_im_katalog():
     assert stil.CATALOG["portrait_placeholder"] == ("initial", "none")
     assert stil.CATALOG["person_cards"] == ("normal", "label")
     assert stil.CATALOG["address"] == ("formal", "informal")
-    assert stil.CATALOG["timeline_chapter"] == ("plain", "band")
+    assert stil.CATALOG["timeline_chapter"] == ("plain", "band", "slim")
     assert stil.CATALOG["ranking"] == ("table", "podium")
 
 
@@ -151,7 +151,8 @@ def test_kontakt_felder_eckig():
 
 def test_chronik_band_regeln():
     css = (STATIC / "stil.css").read_text()
-    assert 'html[data-st-timeline-chapter="band"] .zeitleiste-kapitelkopf {' in css
+    band = 'html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"])'
+    assert band + ' .zeitleiste-kapitelkopf {' in css
     assert "font-family: var(--schrift-titel); font-size: 64px;" in css
     assert "border-bottom: 2px solid var(--farbe-zier); border-radius: 0;" in css
     eckig = ":is(.zeitleiste-bild, .zeitleiste-karte, .zeitleiste-bild img)"
@@ -186,3 +187,21 @@ def test_suche_findet_kontakt_einleitung():
 
     site = Site.__new__(Site)
     assert _search_url(site, {"kind": "intro", "area": "contact"}) == "/kontakt/"
+
+
+# --- #141 flaches Epochen-Band ---
+
+
+def test_chronik_flaches_band_regeln():
+    css = (STATIC / "stil.css").read_text()
+    slim = 'html[data-st-timeline-chapter="slim"]'
+    assert slim + " .zeitleiste-kapitelkopf { padding-top: 18px; padding-bottom: 16px; }" in css
+    assert "display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 18px;" in css
+    assert slim + " .zeitleiste-kapiteltext { max-width: 46rem; margin: 4px 0 0; font-size: 17px;" in css
+    # band bleibt, wie es war
+    assert "font-family: var(--schrift-titel); font-size: 64px;" in css
+
+
+def test_chronik_flaches_band_attribut(client, hubiplan):
+    hubiplan.info["style"] = {"timeline_chapter": "slim"}
+    assert 'data-st-timeline-chapter="slim"' in hole(client, "/")
