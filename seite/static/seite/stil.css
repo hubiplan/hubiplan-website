@@ -789,34 +789,46 @@ html main .kontakt-kasten h2::after { background: currentColor; }
 html:root .kontakt-kasten .kasten-knopf a.knopf:not(.hell) { margin: .4rem 0 0; background: #fff; color: #1d2421; border: 0; }
 @media (max-width: 52rem) { .kontakt-spalten { grid-template-columns: minmax(0, 1fr); } }
 
-/* #138 Chronik: eckig mit corners=square; Epochen als Band, Sprungmarken als Links */
+/* #138 Chronik: eckig mit corners=square; Epochen als Band, Sprungmarken als Links.
+   #141: „slim“ ist dasselbe Band, flach: Zeitraum und Titel in einer Zeile */
 html[data-st-corners="square"] :is(.zeitleiste-bild, .zeitleiste-karte, .zeitleiste-bild img), html[data-st-corners="square"] .zeitleiste-kapitel::before { border-radius: 0; }
-html[data-st-timeline-chapter="band"] .zeitleiste-sprung ul { gap: .5rem 1.6rem; }
-html[data-st-timeline-chapter="band"] .zeitleiste-sprung a {
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-sprung ul { gap: .5rem 1.6rem; }
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-sprung a {
   padding: 0 0 3px; background: none; border: 0; border-bottom: 2px solid var(--farbe-zier); border-radius: 0;
 }
-html[data-st-timeline-chapter="band"] .zeitleiste-sprung a:hover { border-color: var(--primaer); }
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-sprung a:hover { border-color: var(--primaer); }
 /* Band randlos: .zeitleiste ist um --zl-einzug eingerückt, das gleicht der Rand aus */
-html[data-st-timeline-chapter="band"] .zeitleiste-kapitelkopf {
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-kapitelkopf {
   position: relative; z-index: 1; background: var(--st-dunkel); color: #fff;
   margin: 2.2rem calc(50% - 50vw + var(--zl-einzug) / 2) 1.6rem calc(50% - 50vw - var(--zl-einzug) / 2);
   padding: 2.2rem max(16px, calc(50vw - var(--breite) / 2 + 16px));
 }
-html[data-st-timeline-chapter="band"] .zeitleiste-abschnitt:first-child .zeitleiste-kapitelkopf { margin-top: 0; }
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-abschnitt:first-child .zeitleiste-kapitelkopf { margin-top: 0; }
 html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel { margin: 0; font-size: 30px; line-height: 1.15; color: #fff; text-align: left; }
-html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel::before,
-html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel::after { content: none; }
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) main .zeitleiste-kapitel::before,
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) main .zeitleiste-kapitel::after { content: none; }
 html[data-st-timeline-chapter="band"] .zeitleiste-zeitraum {
   display: block; position: static; width: auto; margin: 0 0 .4rem; text-align: left;
   font-family: var(--schrift-titel); font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: 0; color: var(--akzent);
 }
 html[data-st-timeline-chapter="band"] .zeitleiste-kapiteltext { max-width: 46rem; margin: .9rem 0 0; font-size: 19px; color: color-mix(in srgb, #fff 80%, var(--primaer)); }
-html[data-st-timeline-chapter="band"] .zeitleiste-jahr { font-family: var(--schrift-titel); font-size: 1.2rem; }
+html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"]) .zeitleiste-jahr { font-family: var(--schrift-titel); font-size: 1.2rem; }
 @media (max-width: 47.99rem) {
   html[data-st-timeline-chapter="band"] .zeitleiste-kapitelkopf { padding-top: 1.6rem; padding-bottom: 1.6rem; }
   html[data-st-timeline-chapter="band"] .zeitleiste-zeitraum { font-size: 44px; }
   html[data-st-timeline-chapter="band"] main .zeitleiste-kapitel { font-size: 24px; }
 }
+/* #141 flaches Band: rund 96 px statt 230 px; reicht die Breite nicht, bricht der Titel unter den Zeitraum */
+html[data-st-timeline-chapter="slim"] .zeitleiste-kapitelkopf { padding-top: 18px; padding-bottom: 16px; }
+html[data-st-timeline-chapter="slim"] main .zeitleiste-kapitel {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 18px;
+  margin: 0; font-size: 26px; line-height: 1.2; color: #fff; text-align: left;
+}
+html[data-st-timeline-chapter="slim"] .zeitleiste-zeitraum {
+  display: inline; position: static; width: auto; margin: 0; text-align: left;
+  font-family: var(--schrift-titel); font-size: 26px; font-weight: 700; line-height: 1.2; letter-spacing: 0; color: var(--akzent);
+}
+html[data-st-timeline-chapter="slim"] .zeitleiste-kapiteltext { max-width: 46rem; margin: 4px 0 0; font-size: 17px; color: color-mix(in srgb, #fff 80%, var(--primaer)); }
 
 /* #139 Ergebnisse: Plätze 1 bis 3 als Karten über der Rangliste */
 .podest { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
