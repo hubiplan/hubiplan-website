@@ -777,6 +777,18 @@ html[data-st-person-cards="label"] .personenkarte.ehrung .person strong { font-s
   html[data-st-person-cards="label"] .personenkarte.ehrung .personen { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* #143 Ehrungen: eine Karte je Person, Ehrung oder eigener Titel als Etikett */
+.ehrungen-karten { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.ehrung-karte { display: flex; gap: 1rem; align-items: center; min-width: 0; padding: 22px 24px 26px; background: var(--flaeche); border: 1px solid var(--linie); border-top: 3px solid var(--st-kasten); border-radius: var(--rund); }
+.ehrung-karte img { flex: none; width: 72px; height: 72px; object-fit: cover; border-radius: 50%; }
+.ehrung-karte > span { min-width: 0; overflow-wrap: anywhere; }
+.ehrung-karte small { display: block; font-family: inherit; font-size: 12.5px; font-weight: 600; line-height: 1.2; letter-spacing: .18em; text-transform: uppercase; color: var(--st-kasten); }
+.ehrung-karte strong { display: block; margin-top: 12px; font-family: var(--schrift-titel); font-size: 28px; font-weight: 700; line-height: 1.15; }
+html[data-st-corners="square"] .ehrung-karte { border-radius: 0; }
+@media (max-width: 37.5rem) {
+  .ehrungen-karten { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+}
+
 /* #137 Kontakt: Kasten neben dem Formular, Felder folgen den Ecken */
 html[data-st-corners] .formular :is(input, select, textarea) { border-radius: calc(var(--rund) * .6); }
 html[data-st-corners="square"] .formular :is(input, select, textarea) { border-radius: 0; }

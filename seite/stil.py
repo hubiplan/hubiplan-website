@@ -109,6 +109,8 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "timeline_chapter": ("plain", "band"),
     # Webseite #139: Plätze 1 bis 3 einer Wertung als Karten über der Rangliste
     "ranking": ("table", "podium"),
+    # Webseite #143: Ehrungen als eigene Karte je Person, Ehrung oder Titel als Etikett
+    "honorary_layout": ("list", "cards"),
 }
 
 # Was ein Design selbst festlegt; HUBIplan zeigt diese Wahl ausgegraut (gleiche Liste dort).

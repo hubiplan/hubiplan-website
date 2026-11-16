@@ -1,7 +1,11 @@
 {% extends "seite/basis.html" %}{% load seite i18n %}
 {% block titel %}{% if honorary|length == 1 %}{% baustein site "honorary" honorary.0.heading|default:honorary.0.title %}{% else %}{% translate "Ehrungen" as std %}{% baustein site "honorary" std %}{% endif %} · {% endblock %}
 {% block inhalt %}
-{% if honorary|length == 1 %}
+{% if site.style.honorary_layout == "cards" and honorary %}
+{# Webseite #143: alle Geehrten als Karten in einem Raster, ohne Zwischenüberschriften #}
+<h1>{% if honorary|length == 1 %}{% baustein site "honorary" honorary.0.heading|default:honorary.0.title %}{% else %}{% translate "Ehrungen" as std %}{% baustein site "honorary" std %}{% endif %}</h1>
+{% include "seite/ehrungen_karten.html" %}
+{% elif honorary|length == 1 %}
 {# Nur eine Ehrung: ihr Name ist die Überschrift (wie auf der Vorstandsseite) #}
 {% with t=honorary.0 %}<h1>{% baustein site "honorary" t.heading|default:t.title %}</h1>
 <section class="karte personenkarte ehrung">{% include "seite/personen.html" with personen=t.holders ohne_datum=True %}</section>{% endwith %}
