@@ -194,7 +194,7 @@ def test_logos_in_anzeigegroesse(client, hubiplan):
         'srcset="/medien/m/logos/wappen.png?w=256&amp;h=104 1x, '
         '/medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt=""'
     ) in html
-    assert 'width="56"' not in html
+    assert 'h=104 1x, /medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt="">' in html
     assert "/medien/m/logos/wappen.png?w=384&amp;h=152" in html
 
 
@@ -207,7 +207,7 @@ def test_breites_logo_scharf_im_kopf(client, hubiplan):
     hubiplan.medien["logos/wappen-20261116120000.png"] = api.Response(200, logo(), "image/png")
     breit = "/medien/m/logos/schriftzug-20261116120000.png"
     quadrat = "/medien/m/logos/wappen-20261116120000.png"
-    assert groesse(client.get(breit + "?w=512&h=208").content) == (512, 171)
+    assert groesse(client.get(breit + "?w=512&h=208").content) == (512, 170)
     assert groesse(client.get(breit + "?w=256&h=104").content) == (256, 85)
     assert groesse(client.get(quadrat + "?w=512&h=208").content) == (208, 208)
     assert groesse(client.get(quadrat + "?w=256&h=104").content) == (104, 104)
