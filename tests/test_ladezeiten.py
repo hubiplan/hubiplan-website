@@ -26,10 +26,11 @@ def foto(width=2000, height=1333, fmt="JPEG") -> bytes:
     return buf.getvalue()
 
 
-def logo(side=1024) -> bytes:
-    img = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+def logo(side=1024, height=None) -> bytes:
+    height = height or side
+    img = Image.new("RGBA", (side, height), (0, 0, 0, 0))
     for x in range(side // 4, side * 3 // 4):
-        for y in range(side // 4, side * 3 // 4, 3):
+        for y in range(height // 4, height * 3 // 4, 3):
             img.putpixel((x, y), (20, 120, 60, 255))
     buf = io.BytesIO()
     img.save(buf, "PNG")
@@ -187,7 +188,47 @@ def test_karussell_erstes_bild_bevorzugt(client, hubiplan):
 
 def test_logos_in_anzeigegroesse(client, hubiplan):
     html = client.get("/").content.decode()
-    assert "/medien/m/logos/wappen.png?w=112" in html
+    # hubiplan #557: Kopf 1x/2x nach Höhe und Breite, ohne quadratische Maße
+    assert (
+        'src="/medien/m/logos/wappen.png?w=256&amp;h=104" '
+        'srcset="/medien/m/logos/wappen.png?w=256&amp;h=104 1x, '
+        '/medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt=""'
+    ) in html
+    assert 'h=104 1x, /medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt="">' in html
+
+
+def test_breites_logo_scharf_im_kopf(client, hubiplan):
+    """hubiplan #557: Ein Schriftzug 3:1 kommt so breit, wie der hohe Kopf ihn zeigt
+    (bis 16 rem, doppelt für scharfe Bildschirme); ein Wappen bleibt klein."""
+    hubiplan.medien["logos/schriftzug-20261116120000.png"] = api.Response(
+        200, logo(1024, 341), "image/png"
+    )
+    hubiplan.medien["logos/wappen-20261116120000.png"] = api.Response(200, logo(), "image/png")
+    breit = "/medien/m/logos/schriftzug-20261116120000.png"
+    quadrat = "/medien/m/logos/wappen-20261116120000.png"
+    assert groesse(client.get(breit + "?w=512&h=208").content) == (512, 170)
+    assert groesse(client.get(breit + "?w=256&h=104").content) == (256, 85)
+    assert groesse(client.get(quadrat + "?w=512&h=208").content) == (208, 208)
+    assert groesse(client.get(quadrat + "?w=256&h=104").content) == (104, 104)
+    assert groesse(client.get(quadrat + "?w=384&h=152").content) == (152, 152)
+    # Nur erlaubte Höhen; andere werden nicht gerechnet
+    assert groesse(client.get(quadrat + "?h=333").content) == (1024, 1024)
+    # Kleinere Logos werden nicht vergrößert
+    hubiplan.medien["logos/klein-20261116120000.png"] = api.Response(200, logo(80, 40), "image/png")
+    assert groesse(client.get("/medien/m/logos/klein-20261116120000.png?w=512&h=208").content) == (
+        80,
+        40,
+    )
+
+
+def test_fassungen_je_feld_getrennt_abgelegt():
+    body = logo(1024, 341)
+    nur_breite, _ = bilder.variant(body, "image/png", width=256)
+    feld, _ = bilder.variant(body, "image/png", width=256, height=104)
+    assert groesse(nur_breite) == (256, 85) and groesse(feld) == (256, 85)
+    hoch = logo(341, 1024)
+    assert groesse(bilder.variant(hoch, "image/png", width=256)[0]) == (256, 769)
+    assert groesse(bilder.variant(hoch, "image/png", width=256, height=104)[0]) == (35, 104)
 
 
 def test_schriften_vorladen(client, hubiplan):

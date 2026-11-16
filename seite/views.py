@@ -1601,21 +1601,26 @@ def _media_cache(private: bool, kind: str, path: str) -> str:
     return "public, max-age=600"
 
 
-def _media_size(request, kind: str) -> tuple[str, int | None]:
+def _media_size(request, kind: str) -> tuple[str, int | None, int | None]:
     """Gewünschte Fassung: ``?size=small`` (800 px aus HUBIplan), ``?size=medium``
-    (1200 px, hier aus der großen Fassung gerechnet), bei Logos ``?w=<Breite>``."""
+    (1200 px, hier aus der großen Fassung gerechnet), bei Logos ``?w=<Breite>`` und
+    ``?h=<Höhe>`` (passt in beide, hubiplan #557)."""
     if kind == "a":
         size = request.GET.get("size")
         if size == "small":
-            return "?size=small", None
+            return "?size=small", None, None
         if size == "medium":
-            return "", bilder.MEDIUM_WIDTH
-        return "", None
-    try:
-        width = int(request.GET.get("w") or 0)
-    except ValueError:
-        width = 0
-    return "", width if width in bilder.LOGO_WIDTHS else None
+            return "", bilder.MEDIUM_WIDTH, None
+        return "", None, None
+
+    def zahl(name: str, erlaubt: tuple[int, ...]) -> int | None:
+        try:
+            value = int(request.GET.get(name) or 0)
+        except ValueError:
+            return None
+        return value if value in erlaubt else None
+
+    return "", zahl("w", bilder.LOGO_WIDTHS), zahl("h", bilder.LOGO_HEIGHTS)
 
 
 @require_GET
@@ -1626,7 +1631,7 @@ def media(request, kind: str, path: str):
     if global_maintenance():
         return HttpResponse(status=503)
     preview = preview_session(request)
-    size, width = _media_size(request, kind)
+    size, width, height = _media_size(request, kind)
     try:
         key = api.resolve(host_of(request))
         if kind == "a":
@@ -1658,6 +1663,7 @@ def media(request, kind: str, path: str):
             body,
             ctype,
             width=width,
+            height=height,
             fmt=bilder.wanted_format(request),
             store=not preview,
         )

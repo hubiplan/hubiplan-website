@@ -8,7 +8,8 @@
     <a class="marke marke-bild" href="{% url 'start' %}">{% if kopfbild_schmal %}<picture><source media="(max-width: 600px)" srcset="{{ kopfbild_schmal }}"{% if site.info.header_image_narrow.width and site.info.header_image_narrow.height %} width="{{ site.info.header_image_narrow.width }}" height="{{ site.info.header_image_narrow.height }}"{% endif %}>{% endif %}<img src="{{ kopfbild }}"{% bildsatz site site.info.header_image %} alt="{{ site.info.header_image.alt|default:site.info.name }}" fetchpriority="high"{% if site.info.header_image.width and site.info.header_image.height %} width="{{ site.info.header_image.width }}" height="{{ site.info.header_image.height }}"{% endif %}>{% if kopfbild_schmal %}</picture>{% endif %}<span class="nur-vorlesen"> – {% translate "zur Startseite" %}</span></a>
     {% else %}
     <a class="marke" href="{% url 'start' %}">
-      {% logo_url site site.info.logo_url 112 as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="56" height="56">{% endif %}
+      {# hubiplan #557: Größe nach Höhe und Breite der Anzeige, ohne feste Maße (breite Logos) #}
+      {% kopflogo site site.info.logo_url as logo %}{% if logo %}<img{{ logo }} alt="">{% endif %}
       <span>{% if site %}{{ site.info.name }}{% else %}{% translate "Vereinswebseite" %}{% endif %}<span class="nur-vorlesen"> – {% translate "zur Startseite" %}</span></span>
     </a>
     {% endif %}
