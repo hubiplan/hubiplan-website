@@ -1154,7 +1154,12 @@ def _search_url(site: Site, hit: dict) -> str | None:
     if kind == "intro":
         if hit.get("area") == "units":
             return reverse("einheiten", kwargs={"pfad": site.units_path})
-        name = {"board": "vorstand", "events": "termine", "gallery": "galerie"}.get(hit.get("area"))
+        name = {
+            "board": "vorstand",
+            "events": "termine",
+            "gallery": "galerie",
+            "contact": "kontakt",
+        }.get(hit.get("area"))
         return reverse(name) if name else None
     return None
 
@@ -1167,9 +1172,12 @@ def _search_title(site: Site, hit: dict) -> str:
         area = hit.get("area")
         if area == "units":
             return site.info.get("unit_label_plural") or ""
-        return {"board": _("Vorstand"), "events": _("Termine"), "gallery": _("Galerie")}.get(
-            area, ""
-        )
+        return {
+            "board": _("Vorstand"),
+            "events": _("Termine"),
+            "gallery": _("Galerie"),
+            "contact": _("Kontakt"),
+        }.get(area, "")
     return ""
 
 

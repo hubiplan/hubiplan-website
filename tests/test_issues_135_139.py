@@ -178,3 +178,11 @@ def test_podest_filter_gleichstand():
     rows = [{"place": 1}, {"place": 1}, {"place": 3}, {"place": 4}, {"place": None}]
     assert len(podest(rows)) == 3
     assert ohne_podest(rows) == [{"place": 4}, {"place": None}]
+
+
+def test_suche_findet_kontakt_einleitung():
+    from seite.site import Site
+    from seite.views import _search_url
+
+    site = Site.__new__(Site)
+    assert _search_url(site, {"kind": "intro", "area": "contact"}) == "/kontakt/"
