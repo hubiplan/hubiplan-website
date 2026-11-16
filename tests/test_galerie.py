@@ -154,3 +154,5 @@ def test_bildfenster_blaettern_auf_dem_handy(client, galerie):
     assert ".bild-zaehler { white-space: nowrap; }" in css
     handy = css.split("@media (max-width: 40rem) {\n  .bild-fenster .bild-knopftext", 1)
     assert len(handy) == 2 and "clip: rect(0 0 0 0)" in handy[1].split("}", 1)[0]
+    # Zähler mittig zwischen den Pfeilen (Ralf 16.11.2026)
+    assert "justify-content: space-between" in handy[1].split("\n}", 1)[0]
