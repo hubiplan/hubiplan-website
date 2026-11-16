@@ -32,7 +32,8 @@
 {% if imprint.image_credits %}
 <section class="text bildnachweise">
   <h2>{% translate "Bildnachweis" %}</h2>
-  <p>{% translate "Fotos und Bilder auf dieser Webseite:" %} {{ imprint.image_credits|join:", " }}</p>
+  <p>{% translate "Für einzelne Bilder auf dieser Webseite sind die Urheberinnen und Urheber genannt:" %} {{ imprint.image_credits|join:", " }}</p>
+  <p>{% translate "Die Angabe steht jeweils auch direkt am Bild („Foto: …“)." %}</p>
 </section>
 {% endif %}
 {% endblock %}

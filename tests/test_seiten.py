@@ -1158,6 +1158,9 @@ def test_bildnachweis_im_impressum(client, hubiplan):
     html = text(client.get("/impressum/"))
     assert "<h2>Bildnachweis</h2>" in html
     assert "Erika Muster, Max Mustermann" in html
+    # nicht so, als stammten alle Bilder von diesen Urhebern (Ralf 16.11.)
+    assert "Für einzelne Bilder auf dieser Webseite" in html
+    assert "Fotos und Bilder auf dieser Webseite:" not in html
 
 
 def test_bildunterschrift_mit_urheber():
