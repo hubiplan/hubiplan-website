@@ -577,6 +577,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
   .bild-fenster .bild-knopftext { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   .bild-fenster .bild-pfeil { margin: 0; }
   .bild-fenster .bild-zurueck, .bild-fenster .bild-weiter { min-width: 2.75rem; padding-left: .6rem; padding-right: .6rem; }
+  /* Zähler mittig, Pfeile an den Rändern (Ralf 16.11.2026); „Schließen“ in eigener Zeile darunter. */
+  .bild-fenster .bild-blaettern:not([hidden]) { display: flex; flex: 1 1 100%; justify-content: space-between; margin-right: 0; }
 }
 @media print { .zeitleiste-sprung, .bild-fenster { display: none; } .galerie-bilder { grid-template-columns: repeat(4, 1fr); } }
 
