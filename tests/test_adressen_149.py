@@ -29,8 +29,10 @@ def test_wuerde_unter_lesbarer_adresse(client, hubiplan, monkeypatch):
     r = client.get("/majestaeten/koenige/")
     assert r.status_code == 200
     assert "Karl Krone" in text(r)
-    assert 'href="/majestaeten/koenige/">Könige</a>' in text(r)
+    # Auf der eigenen Seite trägt der Menüpunkt aria-current
+    assert 'href="/majestaeten/koenige/" aria-current="page">Könige</a>' in text(r)
     assert f"/majestaeten/{WUERDE}/" not in text(r)
+    assert 'href="/majestaeten/koenige/">Könige</a>' in text(client.get("/"))
 
 
 def test_alte_adressen_leiten_dauerhaft_weiter(client, hubiplan, monkeypatch):
