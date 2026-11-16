@@ -37,7 +37,10 @@ def test_naechster_termin_markiert(client, hubiplan):
     html = hole(client, "/termine/")
     assert html.count("termin-naechster") == 1
     css = (STATIC / "stil.css").read_text()
-    assert '[data-st-date="card"] .termine > .termin-naechster .termin-datum { background: var(--primaer);' in css
+    assert (
+        '[data-st-date="card"] .termine > .termin-naechster .termin-datum '
+        "{ background: var(--primaer);"
+    ) in css
 
 
 def test_einheitsnamen_in_ueberschriftenschrift(client, hubiplan):
@@ -52,7 +55,15 @@ def test_eckig_ueberall():
     css = (STATIC / "stil.css").read_text()
     regel = css[css.index("Webseite #156: auch Marken") :]
     regel = regel[: regel.index("}")]
-    for teil in (".beitrag-marke", ".beitrag-weitere img", ".filter select", ".dok-vorschau", ".knopf-rund", ".karussell-zaehler"):
+    teile = (
+        ".beitrag-marke",
+        ".beitrag-weitere img",
+        ".filter select",
+        ".dok-vorschau",
+        ".knopf-rund",
+        ".karussell-zaehler",
+    )
+    for teil in teile:
         assert teil in regel
     assert "border-radius: 0" in css[css.index("Webseite #156: auch Marken") :][:600]
     seite = (STATIC / "seite.css").read_text()
@@ -65,6 +76,11 @@ def test_homepage_knopf_wie_nachricht(client, hubiplan):
     unit = hubiplan.info["units"][0]
     unit["homepage"] = "https://www.jaegerzug.example/"
     html = hole(client, "/zuege/jaeger/")
-    assert '<p class="nachricht"><a class="knopf klein-knopf" href="https://www.jaegerzug.example/"' in html
+    assert (
+        '<p class="nachricht"><a class="knopf klein-knopf" href="https://www.jaegerzug.example/"'
+    ) in html
     css = (STATIC / "stil.css").read_text()
-    assert '[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) .nachricht a.knopf:not(.hell) {' in css
+    assert (
+        '[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) '
+        ".nachricht a.knopf:not(.hell) {"
+    ) in css
