@@ -150,6 +150,9 @@ def test_jede_stufe_hat_regeln():
         ("timeline_chapter", "plain"),
         ("ranking", "table"),
         ("ranking", "podium"),
+        # Webseite #145: Lange Listen wirken über die Klasse .zweispaltig aus der Vorlage
+        ("long_tables", "rows"),
+        ("long_tables", "columns"),
         # Webseite #143: Ehrungen als Liste oder Karten wirken über die Vorlage
         ("honorary_layout", "list"),
         ("honorary_layout", "cards"),

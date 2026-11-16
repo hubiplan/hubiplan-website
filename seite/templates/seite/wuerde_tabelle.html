@@ -1,10 +1,12 @@
-{% load seite i18n %}{% with begleitung=d.reigns|mit_begleitung %}
-<table class="zeitliste">
-  <thead><tr><th scope="col">{% translate "Jahr" %}</th><th scope="col">{{ d.name }}</th>{% if begleitung %}<th scope="col">{% translate "Begleitung" %}</th>{% endif %}</tr></thead>
-  <tbody>
+{% load seite i18n %}{% with begleitung=d.reigns|mit_begleitung %}{% if begleitung %}{% zweispaltig site d.reigns 3 as halbe %}{% else %}{% zweispaltig site d.reigns as halbe %}{% endif %}
+{% if halbe %}<div class="zeitliste-spalten">{% endif %}
+<table class="zeitliste{% if halbe %} zweispaltig{% endif %}"{% rolle halbe "table" %}{% if halbe %} style="--zeilen: {{ halbe }}"{% endif %}>
+  <thead{% rolle halbe "rowgroup" %}><tr{% rolle halbe "row" %}><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Jahr" %}</th><th scope="col"{% rolle halbe "columnheader" %}>{{ d.name }}</th>{% if begleitung %}<th scope="col">{% translate "Begleitung" %}</th>{% endif %}</tr>{% if halbe %}<tr class="kopf-rechts" aria-hidden="true"><th>{% translate "Jahr" %}</th><th>{{ d.name }}</th></tr>{% endif %}</thead>
+  <tbody{% rolle halbe "rowgroup" %}>
   {% for r in d.reigns %}
-    <tr><td>{{ r.period|default:r.year }}</td><td>{{ r.holder.name }}{% if r.times > 1 %} ({{ r.times }}.){% endif %}</td>{% if begleitung %}<td>{% for c in r.companions %}{{ c.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>{% endif %}</tr>
+    <tr{% rolle halbe "row" %}><td{% rolle halbe "cell" %}>{{ r.period|default:r.year }}</td><td{% rolle halbe "cell" %}>{{ r.holder.name }}{% if r.times > 1 %} ({{ r.times }}.){% endif %}</td>{% if begleitung %}<td>{% for c in r.companions %}{{ c.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>{% endif %}</tr>
   {% endfor %}
   </tbody>
 </table>
+{% if halbe %}</div>{% endif %}
 {% endwith %}

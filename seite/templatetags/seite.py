@@ -643,3 +643,27 @@ def iban(value) -> str:
 def hat_art(abschnitte, kind: str) -> bool:
     """Gibt es unter den Abschnitten einen dieser Art? (z. B. Bilder → Bildfenster laden)"""
     return any(isinstance(s, dict) and s.get("kind") == kind for s in abschnitte or [])
+
+
+# Webseite #145 (long_tables=columns): ab so vielen Zeilen lohnen zwei Spalten nebeneinander
+ZWEISPALTIG_AB = 20
+
+
+@register.simple_tag
+def zweispaltig(site, zeilen, spalten=2) -> int:
+    """Zeilen der linken Spalte, wenn eine lange, schmale Tabelle zweispaltig stehen soll, sonst 0.
+
+    Nur mit dem Regler, nur bis zwei Spalten und ab ``ZWEISPALTIG_AB`` Zeilen; bei ungerader
+    Zahl bekommt die linke Spalte eine Zeile mehr. Ob es am Bildschirm wirklich zwei Spalten
+    werden, entscheidet die Breite (stil.css, ab 800 px Inhaltsbreite)."""
+    if site is None or site.style.get("long_tables") != "columns" or int(spalten) > 2:
+        return 0
+    n = len(zeilen or ())
+    return (n + 1) // 2 if n >= ZWEISPALTIG_AB else 0
+
+
+@register.simple_tag
+def rolle(aktiv, name):
+    """``role="…"`` nur für zweispaltige Tabellen: Sie werden am Bildschirm als Raster gesetzt,
+    die Rollen halten sie für Vorleseprogramme sicher als eine Tabelle zusammen."""
+    return format_html(' role="{}"', name) if aktiv else ""
