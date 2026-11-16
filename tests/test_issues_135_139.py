@@ -152,7 +152,7 @@ def test_kontakt_felder_eckig():
 def test_chronik_band_regeln():
     css = (STATIC / "stil.css").read_text()
     band = 'html:is([data-st-timeline-chapter="band"], [data-st-timeline-chapter="slim"])'
-    assert band + ' .zeitleiste-kapitelkopf {' in css
+    assert band + " .zeitleiste-kapitelkopf {" in css
     assert "font-family: var(--schrift-titel); font-size: 64px;" in css
     assert "border-bottom: 2px solid var(--farbe-zier); border-radius: 0;" in css
     eckig = ":is(.zeitleiste-bild, .zeitleiste-karte, .zeitleiste-bild img)"
