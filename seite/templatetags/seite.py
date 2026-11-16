@@ -573,6 +573,59 @@ def sm_symbol(kind: str, size: int = 22):
     )
 
 
+# Hinweisleiste auffälliger (hubiplan, Ralf 16.11.2026): Stil, Platz, Symbol und Countdown.
+# Nur bekannte Werte; ältere HUBIplan-Fassungen ohne diese Angaben bekommen die Vorgabe.
+HINWEIS_STILE = ("accent", "alert", "festive", "quiet")
+HINWEIS_PLAETZE = ("top", "below", "float")
+_HS = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'
+HINWEIS_SYMBOLE = {
+    "megaphone": f'<path {_HS} d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z"/>'
+    f'<path {_HS} d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+    "calendar": f'<rect x="3.5" y="5" width="17" height="15.5" rx="2" {_HS}/>'
+    f'<path {_HS} d="M3.5 10h17M8 3v4M16 3v4"/><path fill="currentColor" d="M7 13h3v3H7z"/>',
+    "star": '<path fill="currentColor" d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 '
+    '1.1-6.3-4.6-4.4 6.3-.9z"/>',
+    "info": f'<circle cx="12" cy="12" r="9" {_HS}/><path {_HS} d="M12 11v6"/>'
+    '<circle cx="12" cy="7.6" r="1.3" fill="currentColor"/>',
+    "alert": f'<path {_HS} d="M12 3.5 2.5 20h19z"/><path {_HS} d="M12 10v4.5"/>'
+    '<circle cx="12" cy="17.2" r="1.2" fill="currentColor"/>',
+}
+
+
+@register.simple_tag
+def hinweis_ansicht(hinweis) -> dict:
+    """Aussehen der Hinweisleiste: Stil, Platz, Symbol (SVG) und Tage bis zum Datum."""
+    from django.utils import timezone
+    from django.utils.safestring import mark_safe
+
+    hinweis = hinweis if isinstance(hinweis, dict) else {}
+    stil = hinweis.get("style")
+    platz = hinweis.get("place")
+    body = HINWEIS_SYMBOLE.get(hinweis.get("icon") or "")
+    symbol = (
+        mark_safe(  # noqa: S308 - feste Symbole aus diesem Modul
+            f'<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" '
+            f'focusable="false">{body}</svg>'
+        )
+        if body
+        else ""
+    )
+    tage = None
+    try:
+        tag = datetime.date.fromisoformat(str(hinweis.get("date") or ""))
+    except ValueError:
+        tag = None
+    if tag is not None:
+        rest = (tag - timezone.localdate()).days
+        tage = rest if rest >= 0 else None
+    return {
+        "stil": stil if stil in HINWEIS_STILE else "accent",
+        "platz": platz if platz in HINWEIS_PLAETZE else "below",
+        "symbol": symbol,
+        "tage": tage,
+    }
+
+
 @register.filter
 def web_ziel(url: str) -> str:
     """Nur http(s)-Adressen als Linkziel; alles andere wird leer (kein javascript: o. Ä.)."""

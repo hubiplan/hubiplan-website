@@ -4,22 +4,77 @@ Ralf 10.11.2026). Alle Daten erfunden."""
 from .test_abschnitte import bild, layout, text
 
 
+def leiste_von(html):
+    return html.split('<div class="hinweisleiste', 1)[1].split("</div></div>", 1)[0]
+
+
 def test_ohne_hinweis_keine_leiste(client, hubiplan):
     hubiplan.info.pop("notice", None)
-    assert "hinweisleiste" not in text(client.get("/"))
+    html = text(client.get("/"))
+    assert "hinweisleiste" not in html and "hinweis.js" not in html
 
 
 def test_hinweisleiste_mit_ziel_auf_allen_seiten(client, hubiplan):
     hubiplan.info["notice"] = {
-        "text": "Schützenfest 22.–25.8.: Programm",
+        "text": "Sommerfest 22.–25.8.: Programm",
         "target": {"key": "contact"},
     }
     for path in ("/", "/seite/anfahrt/"):
         html = text(client.get(path))
-        leiste = html.split('<div class="hinweisleiste" role="note">', 1)[1].split("</div>", 1)[0]
-        assert '<a href="/kontakt/">Schützenfest 22.–25.8.: Programm</a>' in leiste
-    # Die Leiste steht über dem Kopf
-    assert html.index("hinweisleiste") < html.index('<main id="inhalt"')
+        leiste = leiste_von(html)
+        assert "<strong>Sommerfest 22.–25.8.: Programm</strong>" in leiste
+        # Ältere HUBIplan-Fassung ohne Aussehen: Akzentfarbe unter dem Kopf, Knopf „Mehr erfahren“
+        assert leiste.startswith(' hinweis-accent hinweis-platz-below" role="note"')
+        assert '<a class="hinweis-knopf" href="/kontakt/">Mehr erfahren' in leiste
+    # Die Leiste steht unter dem Kopf, vor dem Inhalt
+    assert html.index('class="kopf') < html.index("hinweisleiste") < html.index('<main id="inhalt"')
+
+
+def test_hinweisleiste_aussehen_aus_hubiplan(client, hubiplan):
+    """Ralf 16.11.2026: Stil, Platz, Symbol, Knopf und Countdown."""
+    import datetime
+
+    from django.utils import timezone
+
+    tag = timezone.localdate() + datetime.timedelta(days=5)
+    hubiplan.info["notice"] = {
+        "text": "Sommerfest",
+        "target": {"key": "contact"},
+        "style": "festive",
+        "place": "top",
+        "icon": "star",
+        "button": "Zum Programm",
+        "date": tag.isoformat(),
+    }
+    html = text(client.get("/"))
+    leiste = leiste_von(html)
+    assert leiste.startswith(' hinweis-festive hinweis-platz-top" role="note"')
+    assert '<span class="hinweis-symbol"><svg' in leiste
+    assert '<span class="hinweis-countdown">noch 5 Tage</span>' in leiste
+    assert ">Zum Programm<" in leiste
+    # Über dem Kopf
+    assert html.index("hinweisleiste") < html.index('class="kopf')
+    # Heute, morgen, vorbei
+    hubiplan.info["notice"]["date"] = timezone.localdate().isoformat()
+    assert '<span class="hinweis-countdown">heute</span>' in text(client.get("/"))
+    hubiplan.info["notice"]["date"] = (tag - datetime.timedelta(days=4)).isoformat()
+    assert '<span class="hinweis-countdown">morgen</span>' in text(client.get("/"))
+    hubiplan.info["notice"]["date"] = (tag - datetime.timedelta(days=9)).isoformat()
+    assert "hinweis-countdown" not in text(client.get("/"))
+    # Unbekannte Werte fallen auf die Vorgabe zurück, kein Symbol ohne bekanntes
+    hubiplan.info["notice"].update(style='x" onclick="y', place="links", icon="bombe")
+    leiste = leiste_von(text(client.get("/")))
+    assert leiste.startswith(' hinweis-accent hinweis-platz-below"') and "<svg" not in leiste
+
+
+def test_hinweisleiste_schwebend_schliessbar(client, hubiplan):
+    hubiplan.info["notice"] = {"text": "Sommerfest", "target": None, "place": "float"}
+    html = text(client.get("/"))
+    leiste = leiste_von(html)
+    assert "data-hinweis-schwebend" in leiste
+    assert '<button type="button" class="hinweis-zu" hidden>' in leiste
+    assert "Hinweis schließen" in leiste
+    assert "seite/hinweis.js" in html
 
 
 def test_hinweisleiste_nach_aussen_und_ohne_ziel(client, hubiplan):
@@ -34,8 +89,9 @@ def test_hinweisleiste_nach_aussen_und_ohne_ziel(client, hubiplan):
 def test_hinweisleiste_nur_text(client, hubiplan):
     hubiplan.info["notice"] = {"text": "Heute <b>geschlossen</b>", "target": None}
     html = text(client.get("/"))
-    leiste = html.split('<div class="hinweisleiste" role="note">', 1)[1].split("</div>", 1)[0]
+    leiste = leiste_von(html)
     assert "Heute &lt;b&gt;geschlossen&lt;/b&gt;" in leiste and "<a " not in leiste
+    assert "hinweis-zu" not in leiste and "hinweis.js" not in html
 
 
 def test_titelbild_ueber_der_ueberschrift(client, hubiplan):
