@@ -955,8 +955,11 @@ msgstr "Photo: {name}"
 msgid "Bildnachweis"
 msgstr "Image credits"
 
-msgid "Fotos und Bilder auf dieser Webseite:"
-msgstr "Photos and images on this website:"
+msgid "Für einzelne Bilder auf dieser Webseite sind die Urheberinnen und Urheber genannt:"
+msgstr "Creators are credited for individual images on this website:"
+
+msgid "Die Angabe steht jeweils auch direkt am Bild („Foto: …“)."
+msgstr "The credit is also shown directly on each image (“Photo: …”)."
 
 msgid "Vorgänger"
 msgstr "Predecessors"
