@@ -140,9 +140,17 @@ def test_bildfenster_blaettern_auf_dem_handy(client, galerie):
     from pathlib import Path
 
     html = text(client.get("/galerie/schuetzenfest/"))
-    assert '<span class="bild-pfeil" aria-hidden="true">‹</span><span class="bild-knopftext">Vorheriges Bild</span>' in html
-    assert '<span class="bild-knopftext">Nächstes Bild</span><span class="bild-pfeil" aria-hidden="true">›</span>' in html
-    css = (Path(__file__).resolve().parent.parent / "seite/static/seite/seite.css").read_text(encoding="utf-8")
+    zurueck = (
+        '<span class="bild-pfeil" aria-hidden="true">‹</span>'
+        '<span class="bild-knopftext">Vorheriges Bild</span>'
+    )
+    weiter = (
+        '<span class="bild-knopftext">Nächstes Bild</span>'
+        '<span class="bild-pfeil" aria-hidden="true">›</span>'
+    )
+    assert zurueck in html and weiter in html
+    wurzel = Path(__file__).resolve().parent.parent
+    css = (wurzel / "seite/static/seite/seite.css").read_text(encoding="utf-8")
     assert ".bild-zaehler { white-space: nowrap; }" in css
     handy = css.split("@media (max-width: 40rem) {\n  .bild-fenster .bild-knopftext", 1)
     assert len(handy) == 2 and "clip: rect(0 0 0 0)" in handy[1].split("}", 1)[0]
