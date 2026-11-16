@@ -1,4 +1,4 @@
-{% extends "seite/basis.html" %}{% load i18n %}
+{% extends "seite/basis.html" %}{% load seite i18n %}
 {% block titel %}{{ s.name }} · {% endblock %}
 {% block inhalt %}
 <p class="klein"><a href="{% url 'ergebnisse' %}">{% translate "Alle Ergebnisse" %}</a></p>
@@ -7,19 +7,23 @@
 {% if s.titles %}
 <section>
   <h2>{% translate "Titelträger" %}</h2>
-  <table class="zeitliste">
-    <thead><tr><th scope="col">{% translate "Jahr" %}</th><th scope="col">{% translate "Titel" %}</th></tr></thead>
-    <tbody>{% for t in s.titles %}<tr><td>{{ t.year }}</td><td>{{ t.title }}: {{ t.name }}</td></tr>{% endfor %}</tbody>
+  {% zweispaltig site s.titles as halbe %}{% if halbe %}<div class="zeitliste-spalten">{% endif %}
+  <table class="zeitliste{% if halbe %} zweispaltig{% endif %}"{% rolle halbe "table" %}{% if halbe %} style="--zeilen: {{ halbe }}"{% endif %}>
+    <thead{% rolle halbe "rowgroup" %}><tr{% rolle halbe "row" %}><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Jahr" %}</th><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Titel" %}</th></tr>{% if halbe %}<tr class="kopf-rechts" aria-hidden="true"><th>{% translate "Jahr" %}</th><th>{% translate "Titel" %}</th></tr>{% endif %}</thead>
+    <tbody{% rolle halbe "rowgroup" %}>{% for t in s.titles %}<tr{% rolle halbe "row" %}><td{% rolle halbe "cell" %}>{{ t.year }}</td><td{% rolle halbe "cell" %}>{{ t.title }}: {{ t.name }}</td></tr>{% endfor %}</tbody>
   </table>
+  {% if halbe %}</div>{% endif %}
 </section>
 {% endif %}
 {% if s.years %}
 <section>
   <h2>{% translate "Sieger je Jahr" %}</h2>
-  <table class="zeitliste">
-    <thead><tr><th scope="col">{% translate "Jahr" %}</th><th scope="col">{% translate "Sieger" %}</th></tr></thead>
-    <tbody>{% for y in s.years %}<tr><td>{% if y.kennung %}<a href="{% url 'ergebnis' y.kennung %}">{{ y.year }}</a>{% else %}{{ y.year }}{% endif %}</td><td>{% for w in y.winners %}{{ w.scoring }}: {{ w.names|join:", " }}{% if w.value %} <span class="klein">({{ w.value }})</span>{% endif %}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="klein">{{ y.title }}</span>{% endfor %}</td></tr>{% endfor %}</tbody>
+  {% zweispaltig site s.years as halbe %}{% if halbe %}<div class="zeitliste-spalten">{% endif %}
+  <table class="zeitliste{% if halbe %} zweispaltig{% endif %}"{% rolle halbe "table" %}{% if halbe %} style="--zeilen: {{ halbe }}"{% endif %}>
+    <thead{% rolle halbe "rowgroup" %}><tr{% rolle halbe "row" %}><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Jahr" %}</th><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Sieger" %}</th></tr>{% if halbe %}<tr class="kopf-rechts" aria-hidden="true"><th>{% translate "Jahr" %}</th><th>{% translate "Sieger" %}</th></tr>{% endif %}</thead>
+    <tbody{% rolle halbe "rowgroup" %}>{% for y in s.years %}<tr{% rolle halbe "row" %}><td{% rolle halbe "cell" %}>{% if y.kennung %}<a href="{% url 'ergebnis' y.kennung %}">{{ y.year }}</a>{% else %}{{ y.year }}{% endif %}</td><td{% rolle halbe "cell" %}>{% for w in y.winners %}{{ w.scoring }}: {{ w.names|join:", " }}{% if w.value %} <span class="klein">({{ w.value }})</span>{% endif %}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="klein">{{ y.title }}</span>{% endfor %}</td></tr>{% endfor %}</tbody>
   </table>
+  {% if halbe %}</div>{% endif %}
 </section>
 {% endif %}
 {% if not s.titles and not s.years %}<p>{% translate "Hier stehen noch keine Ergebnisse." %}</p>{% endif %}

@@ -109,6 +109,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "timeline_chapter": ("plain", "band"),
     # Webseite #139: Plätze 1 bis 3 einer Wertung als Karten über der Rangliste
     "ranking": ("table", "podium"),
+    # Webseite #145: lange, schmale Tabellen (ab 20 Zeilen, bis zwei Spalten) am Bildschirm
+    # zweispaltig; ohne Regler untereinander wie bisher
+    "long_tables": ("rows", "columns"),
 }
 
 # Was ein Design selbst festlegt; HUBIplan zeigt diese Wahl ausgegraut (gleiche Liste dort).

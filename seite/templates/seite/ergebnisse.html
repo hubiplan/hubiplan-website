@@ -30,10 +30,12 @@
 <section>
   <h2>{{ t.name }}</h2>
   {% if t.description %}<p>{{ t.description }}</p>{% endif %}
-  <table class="zeitliste">
-    <thead><tr><th scope="col">{% translate "Jahr" %}</th><th scope="col">{% translate "Gewonnen von" %}</th></tr></thead>
-    <tbody>{% for h in t.holders %}<tr><td>{{ h.year }}</td><td>{{ h.name }}{% if h.kept %} <span class="klein">{% translate "(endgültig gewonnen)" %}</span>{% endif %}</td></tr>{% endfor %}</tbody>
+  {% zweispaltig site t.holders as halbe %}{% if halbe %}<div class="zeitliste-spalten">{% endif %}
+  <table class="zeitliste{% if halbe %} zweispaltig{% endif %}"{% rolle halbe "table" %}{% if halbe %} style="--zeilen: {{ halbe }}"{% endif %}>
+    <thead{% rolle halbe "rowgroup" %}><tr{% rolle halbe "row" %}><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Jahr" %}</th><th scope="col"{% rolle halbe "columnheader" %}>{% translate "Gewonnen von" %}</th></tr>{% if halbe %}<tr class="kopf-rechts" aria-hidden="true"><th>{% translate "Jahr" %}</th><th>{% translate "Gewonnen von" %}</th></tr>{% endif %}</thead>
+    <tbody{% rolle halbe "rowgroup" %}>{% for h in t.holders %}<tr{% rolle halbe "row" %}><td{% rolle halbe "cell" %}>{{ h.year }}</td><td{% rolle halbe "cell" %}>{{ h.name }}{% if h.kept %} <span class="klein">{% translate "(endgültig gewonnen)" %}</span>{% endif %}</td></tr>{% endfor %}</tbody>
   </table>
+  {% if halbe %}</div>{% endif %}
 </section>
 {% endfor %}
 {% if not latest and not live and not years and not series and not trophies %}<p>{% translate "Hier stehen noch keine Ergebnisse." %}</p>{% endif %}

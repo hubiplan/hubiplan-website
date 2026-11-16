@@ -830,3 +830,21 @@ html[data-st-timeline-chapter="band"] .zeitleiste-jahr { font-family: var(--schr
 .podest-name { font-family: var(--schrift-titel); font-size: 1.35rem; line-height: 1.15; overflow-wrap: anywhere; }
 .podest-angaben { font-size: .9rem; color: var(--text-leise); }
 @media (max-width: 47.99rem) { .podest { grid-template-columns: minmax(0, 1fr); } }
+
+/* #145 Lange Listen zweispaltig (long_tables=columns): Die Seite markiert nur lange, schmale
+   Tabellen (ab 20 Zeilen, bis zwei Spalten) mit .zweispaltig und --zeilen = Zeilen links.
+   Ab 800 px Inhaltsbreite zwei Spalten nebeneinander: erst links von oben nach unten, dann
+   rechts; die zweite Kopfzeile ist nur fürs Auge (aria-hidden). Es bleibt eine Tabelle, die
+   Rollen im HTML halten sie für Vorleseprogramme zusammen. Schmal: eine Spalte wie bisher. */
+.zeitliste-spalten { container-type: inline-size; }
+table.zweispaltig > thead > tr.kopf-rechts { display: none; }
+@container (min-width: 800px) {
+  table.zweispaltig { display: block; table-layout: auto; }
+  table.zweispaltig > thead,
+  table.zweispaltig > tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
+  table.zweispaltig > tbody { grid-template-rows: repeat(var(--zeilen), auto); grid-auto-flow: column; }
+  table.zweispaltig > thead > tr,
+  table.zweispaltig > tbody > tr { display: grid; grid-template-columns: 10rem minmax(0, 1fr); }
+  table.zweispaltig > thead > tr.kopf-rechts { display: grid; }
+  table.zweispaltig :is(th, td) { display: block; width: auto; min-width: 0; overflow-wrap: anywhere; }
+}
