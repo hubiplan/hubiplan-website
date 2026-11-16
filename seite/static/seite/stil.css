@@ -622,6 +622,19 @@ html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > 
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-pause] { right: var(--buehne-rand); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-zaehler { top: 1.3rem; bottom: auto; right: calc(var(--buehne-rand) + 8.6rem); }
+/* Knöpfe am Karussell einstellbar (Ralf 16.11.2026): „immer sichtbar“ für alle Karussells;
+   „bei Mauszeiger“ auch auf der Bühne nur bei Maus darüber oder Tastaturfokus. Ohne Maus
+   (Handy, Tablet) bleiben sie dann sichtbar, damit „Anhalten“ ohne Suchen erreichbar ist. */
+html[data-st-carousel-controls="always"] .karussell-steuerung { opacity: 1; }
+html[data-st-carousel-controls="always"] .karussell-steuerung > * { pointer-events: auto; }
+@media (hover: hover) {
+  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung { opacity: 0; }
+  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung > * { pointer-events: none; }
+}
+@media (hover: none) {
+  html[data-st-carousel-controls="hover"] .karussell-steuerung { opacity: 1; }
+  html[data-st-carousel-controls="hover"] .karussell-steuerung > * { pointer-events: auto; }
+}
 /* Der folgende Abschnitt schließt an; ein farbiger in voller Breite ohne Abstand */
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne + section { margin-top: 1.5rem; }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne + section.abschnitt-voll.abschnitt-hg { margin-top: 0; }

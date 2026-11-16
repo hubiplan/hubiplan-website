@@ -59,6 +59,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "hero_name": bool,
     # hubiplan #477: „zufällig“ zeigt bei jedem Aufruf ein Bild des Karussells, fest stehend
     "carousel": ("off", "slow", "normal", "random"),
+    # Ralf 16.11.2026: Knöpfe am Karussell immer sichtbar oder nur bei Mauszeiger (auf
+    # Touch-Geräten immer); ohne Regler auf der Bühne immer (#130), sonst bei Mauszeiger
+    "carousel_controls": ("always", "hover"),
     # Ralf 14.11.2026: Titelbild abdunkeln oder in Vereinsfarbe färben (halb durchsichtig),
     # Bildausschnitt und Lage des Namens auf dem Bild
     "hero_shade": ("none", "light", "strong"),
