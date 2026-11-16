@@ -8,6 +8,8 @@ Design (und jedes Paket) genau wie bisher.
 
 from __future__ import annotations
 
+import re
+
 # Regler → erlaubte Stufen; ``bool`` = Schalter (Ausgabe "on"/"off")
 CATALOG: dict[str, tuple[str, ...] | type] = {
     # Schrift
@@ -194,3 +196,49 @@ def background(style: dict[str, str], primary: str) -> str | None:
     if value == "tinted":
         return mix(primary, "#ffffff", TINT)
     return BACKGROUNDS.get(value) if value else None
+
+
+# hubiplan #526: eigene Schriftfolge aus Schriften, die auf dem Gerät installiert sind (Text mit
+# Komma, in HUBIplan schon geprüft). Hier noch einmal streng geprüft, weil der Wert ungeschützt
+# im <style> steht: nur Buchstaben, Ziffern, Leerzeichen und Bindestrich, höchstens sechs Namen.
+FONT_STACKS = ("font_family", "heading_font_family")
+FONT_NAME = re.compile(r"^[^\W_][\w -]{0,39}$")
+GENERIC_FAMILIES = ("sans-serif", "serif")
+MAX_FONTS = 6
+
+
+def font_stack(value) -> str | None:
+    """CSS ``font-family`` aus der Schriftfolge oder None (leer oder ungültig)."""
+    if not isinstance(value, str) or len(value) > 400:
+        return None
+    names: list[str] = []
+    generic = "sans-serif"
+    for raw in value.split(","):
+        name = " ".join(raw.split())
+        if not name:
+            continue
+        if name.lower() in GENERIC_FAMILIES:
+            generic = name.lower()
+            continue
+        if not FONT_NAME.match(name):
+            return None
+        names.append(name)
+    if not names or len(names) > MAX_FONTS:
+        return None
+    return ", ".join([f'"{n}"' for n in names] + [generic])
+
+
+def font_stacks(given) -> dict[str, str]:
+    """Schriftfolgen für Text und Überschriften. Ohne eigene Folge der Überschriften gilt die des
+    Textes auch dort, solange keine Schrift der Überschriften (``heading_font``) gewählt ist."""
+    if not isinstance(given, dict):
+        return {}
+    text = font_stack(given.get("font_family"))
+    heading = font_stack(given.get("heading_font_family"))
+    if (
+        heading is None
+        and text is not None
+        and given.get("heading_font") not in CATALOG.get("heading_font", ())
+    ):
+        heading = text
+    return {k: v for k, v in (("text", text), ("heading", heading)) if v is not None}
