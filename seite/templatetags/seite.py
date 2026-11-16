@@ -103,13 +103,30 @@ def bildbreite(side, size) -> str:
 
 
 @register.simple_tag
-def logo_url(site, url, breite=120):
+def logo_url(site, url, breite=120, hoehe=None):
     """Logo in der Größe für die Anzeige (doppelte Breite für scharfe Handys) statt bis
-    1024 px aus HUBIplan (Ladezeiten 14.11.)."""
+    1024 px aus HUBIplan (Ladezeiten 14.11.). Mit ``hoehe`` passt es in Breite × Höhe:
+    Wo die Höhe die Anzeige begrenzt (Kopf, Fuß), bekommen breite Schriftzüge so genug
+    Pixel (hubiplan #557)."""
     local = site.local(url) if site is not None else None
     if not local or "/medien/m/" not in local:
         return local
-    return _with_query(local, f"w={int(breite)}")
+    query = f"w={int(breite)}" + (f"&h={int(hoehe)}" if hoehe else "")
+    return _with_query(local, query)
+
+
+@register.simple_tag
+def kopflogo(site, url):
+    """``src`` und ``srcset`` für das Logo im Kopf (hubiplan #557). Angezeigt wird es
+    höchstens 104 px hoch (hoher Kopf) und 16 rem breit; 1x und 2x für scharfe Bildschirme.
+    Leer ohne Logo."""
+    einfach = logo_url(site, url, 256, 104)
+    if not einfach:
+        return ""
+    if "/medien/m/" not in einfach:
+        return format_html(' src="{}"', einfach)
+    doppelt = logo_url(site, url, 512, 208)
+    return format_html(' src="{}" srcset="{} 1x, {} 2x"', einfach, einfach, doppelt)
 
 
 @register.simple_tag

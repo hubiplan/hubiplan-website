@@ -4,7 +4,8 @@
   <div class="breite fuss-innen">
     <div class="fuss-marke">
       {# Webseite #127: Name und Gründungszeile einzeln ausblendbar; ohne Namen nennt das Wappen die Einheit #}
-      {% logo_url site site.info.logo_url 256 as fussbild %}{% if fussbild %}<img class="fuss-bild" src="{{ fussbild }}" alt="{% if site.style.footer_name == "off" %}{{ site.info.name }}{% endif %}" width="118" height="118" loading="lazy">{% endif %}
+      {# hubiplan #557: höchstens 76 px hoch und 12 rem breit, doppelt für scharfe Bildschirme #}
+      {% logo_url site site.info.logo_url 384 152 as fussbild %}{% if fussbild %}<img class="fuss-bild" src="{{ fussbild }}" alt="{% if site.style.footer_name == "off" %}{{ site.info.name }}{% endif %}" loading="lazy">{% endif %}
       <div>
         {% if site.style.footer_name != "off" or not fussbild %}<p class="fuss-name">{{ site.info.name }}</p>{% endif %}
         {% if site.style.footer_founded != "off" and site.info.founding_year or site.style.footer_founded != "off" and site.info.address.city %}<p class="fuss-unterzeile">{% if site.info.founding_year %}{% blocktranslate with jahr=site.info.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}{% endif %}{% if site.info.founding_year and site.info.address.city %} · {% endif %}{{ site.info.address.city }}</p>{% endif %}

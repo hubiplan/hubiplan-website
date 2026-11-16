@@ -185,7 +185,7 @@ def test_fuss_mit_wappen_und_name(client, hubiplan):
     fuss = html[html.index('<footer class="fuss fuss-voll"') :]
     assert '<p class="fuss-name">Schützenverein Musterdorf 1900</p>' in fuss
     assert "gegründet 1900 · Musterdorf" in fuss
-    assert 'class="fuss-bild"' in fuss and "w=256" in fuss
+    assert 'class="fuss-bild"' in fuss and "w=384&amp;h=152" in fuss
     assert "Bürgerverein Musterdorf" in fuss
     for link in ("Impressum", "Datenschutz", "Barrierefreiheit", "Quellcode"):
         assert link in fuss

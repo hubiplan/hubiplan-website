@@ -28,7 +28,11 @@ log = logging.getLogger(__name__)
 # Mittlere Fassung (Webseitenbilder): zwischen „klein“ (800) und „groß“ (2000) aus HUBIplan
 MEDIUM_WIDTH = 1200
 # Erlaubte Breiten für Logos (doppelte Anzeigegröße für scharfe Darstellung auf Handys)
-LOGO_WIDTHS = (64, 112, 120, 200, 256)
+LOGO_WIDTHS = (64, 112, 120, 200, 256, 384, 512)
+# Erlaubte Höhen (hubiplan #557): Im Kopf und im Fuß begrenzt die Höhe die Anzeige. Mit
+# ``h`` passt das Logo in ein Feld aus Breite und Höhe; breite Schriftzüge bekommen so genug
+# Pixel, quadratische Wappen bleiben klein.
+LOGO_HEIGHTS = (104, 152, 208)
 # Größer rechnen wir nicht um (HUBIplan begrenzt Bilder ohnehin auf 4000 px)
 MAX_PIXELS = 20_000_000
 WEBP_QUALITY = 80
@@ -63,19 +67,22 @@ def variant(
     ctype: str,
     *,
     width: int | None = None,
+    height: int | None = None,
     fmt: str | None = None,
     store: bool = True,
 ) -> tuple[bytes, str]:
-    """Fassung von ``body`` (höchstens ``width`` px breit, auf Wunsch AVIF oder WebP).
+    """Fassung von ``body`` (höchstens ``width`` px breit und ``height`` px hoch, auf Wunsch
+    AVIF oder WebP).
 
     Ist die Fassung nicht kleiner als das Ausgangsbild oder lässt es sich nicht lesen,
     kommt das Ausgangsbild zurück. ``store=False`` (Vorschau): nichts ablegen."""
     if fmt not in FORMATS:
         fmt = None
-    if ctype not in CONVERTIBLE or (width is None and fmt is None):
+    if ctype not in CONVERTIBLE or (width is None and height is None and fmt is None):
         return body, ctype
     digest = hashlib.sha256(body).hexdigest()[:40]
-    key = f"v1:{digest}:{width or 0}:{fmt or 'orig'}"
+    box = f"{width or 0}x{height}" if height else f"{width or 0}"
+    key = f"v1:{digest}:{box}:{fmt or 'orig'}"
     cache = caches["varianten"] if store else None
     if cache is not None:
         hit = cache.get(key)
@@ -86,13 +93,29 @@ def variant(
             hit = cache.get(key)
             if hit is not None:
                 return hit
-        result = _convert(body, ctype, width, fmt)
+        result = _convert(body, ctype, width, fmt, height)
         if cache is not None:
             cache.set(key, result)
         return result
 
 
-def _convert(body: bytes, ctype: str, width: int | None, fmt: str | None) -> tuple[bytes, str]:
+def _fit(size: tuple[int, int], width: int | None, height: int | None) -> tuple[int, int] | None:
+    """Neue Größe, damit das Bild in ``width`` × ``height`` passt (Seitenverhältnis bleibt);
+    None, wenn es schon passt."""
+    w, h = size
+    scale = 1.0
+    if width:
+        scale = min(scale, width / w)
+    if height:
+        scale = min(scale, height / h)
+    if scale >= 1:
+        return None
+    return max(1, round(w * scale)), max(1, round(h * scale))
+
+
+def _convert(
+    body: bytes, ctype: str, width: int | None, fmt: str | None, height: int | None = None
+) -> tuple[bytes, str]:
     from PIL import Image
 
     try:
@@ -100,12 +123,12 @@ def _convert(body: bytes, ctype: str, width: int | None, fmt: str | None) -> tup
             if img.width * img.height > MAX_PIXELS:
                 return body, ctype
             img.load()
-            resized = bool(width and img.width > width)
+            target = _fit((img.width, img.height), width, height)
+            resized = target is not None
             if not resized and fmt is None:
                 return body, ctype
-            if resized:
-                height = max(1, round(img.height * width / img.width))
-                img = img.resize((width, height), Image.Resampling.LANCZOS)
+            if target is not None:
+                img = img.resize(target, Image.Resampling.LANCZOS)
             buf = io.BytesIO()
             if fmt is not None:
                 if img.mode not in ("RGB", "RGBA"):
