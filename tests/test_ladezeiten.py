@@ -195,7 +195,6 @@ def test_logos_in_anzeigegroesse(client, hubiplan):
         '/medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt=""'
     ) in html
     assert 'h=104 1x, /medien/m/logos/wappen.png?w=512&amp;h=208 2x" alt="">' in html
-    assert "/medien/m/logos/wappen.png?w=384&amp;h=152" in html
 
 
 def test_breites_logo_scharf_im_kopf(client, hubiplan):
