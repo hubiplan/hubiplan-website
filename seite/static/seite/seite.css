@@ -561,6 +561,18 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .bild-fenster form { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; align-items: center; }
 .bild-blaettern { display: inline-flex; gap: .5rem; align-items: center; margin-right: auto; }
 .bild-blaettern[hidden] { display: none; }
+/* Bildzähler auf dem Handy (Webseite, Ralf 16.11.2026): „Bild 3 von 3“ bricht nie um. Auf schmalen
+   Bildschirmen zeigen die Blätterknöpfe nur Pfeile (der Text bleibt für Vorleseprogramme), so
+   passen Pfeile, Zähler und „Schließen“ nebeneinander. */
+.bild-zaehler { white-space: nowrap; }
+.bild-fenster .knopf .bild-pfeil { font-size: 1.25em; line-height: 1; }
+.bild-zurueck .bild-pfeil { margin-right: .4em; }
+.bild-weiter .bild-pfeil { margin-left: .4em; }
+@media (max-width: 40rem) {
+  .bild-fenster .bild-knopftext { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .bild-fenster .bild-pfeil { margin: 0; }
+  .bild-fenster .bild-zurueck, .bild-fenster .bild-weiter { min-width: 2.75rem; padding-left: .6rem; padding-right: .6rem; }
+}
 @media print { .zeitleiste-sprung, .bild-fenster { display: none; } .galerie-bilder { grid-template-columns: repeat(4, 1fr); } }
 
 /* Abschnitte der Startseite (G3, Ralf 10.11.2026): Breite und Hintergrund aus HUBIplan.

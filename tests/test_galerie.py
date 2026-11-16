@@ -131,3 +131,18 @@ def test_urheber_im_bildfenster(client, galerie):
     html = text(client.get("/galerie/schuetzenfest/"))
     assert 'data-unterschrift="Der Umzug · Foto: Erika Muster"' in html
     assert 'data-unterschrift=""' in html  # ohne Unterschrift und Urheber: leer
+
+
+def test_bildfenster_blaettern_auf_dem_handy(client, galerie):
+    """Bildzähler im Bildfenster (Ralf 16.11.2026): Auf dem Handy brach „Bild 3 von 3“ Wort für
+    Wort um. Die Blätterknöpfe haben einen Pfeil und einen Text, den schmale Bildschirme nur für
+    Vorleseprogramme behalten; der Zähler bricht nie um."""
+    from pathlib import Path
+
+    html = text(client.get("/galerie/schuetzenfest/"))
+    assert '<span class="bild-pfeil" aria-hidden="true">‹</span><span class="bild-knopftext">Vorheriges Bild</span>' in html
+    assert '<span class="bild-knopftext">Nächstes Bild</span><span class="bild-pfeil" aria-hidden="true">›</span>' in html
+    css = (Path(__file__).resolve().parent.parent / "seite/static/seite/seite.css").read_text(encoding="utf-8")
+    assert ".bild-zaehler { white-space: nowrap; }" in css
+    handy = css.split("@media (max-width: 40rem) {\n  .bild-fenster .bild-knopftext", 1)
+    assert len(handy) == 2 and "clip: rect(0 0 0 0)" in handy[1].split("}", 1)[0]
