@@ -42,6 +42,7 @@ AVIF_SPEED = 6
 FORMATS = {"avif": "image/avif", "webp": "image/webp"}
 CONVERTIBLE = ("image/jpeg", "image/png")
 
+_convert_slots = threading.BoundedSemaphore(2)
 _locks: dict[str, threading.Lock] = {}
 _locks_guard = threading.Lock()
 
@@ -93,7 +94,9 @@ def variant(
             hit = cache.get(key)
             if hit is not None:
                 return hit
-        result = _convert(body, ctype, width, fmt, height)
+        # Gesamtaudit 15.11., WEB-03: höchstens zwei Umrechnungen gleichzeitig (Speicher, CPU)
+        with _convert_slots:
+            result = _convert(body, ctype, width, fmt, height)
         if cache is not None:
             cache.set(key, result)
         return result

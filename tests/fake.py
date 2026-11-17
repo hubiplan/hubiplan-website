@@ -412,7 +412,7 @@ class FakeHubiplan:
     # Dateien unter /media/ (Logos), sonst ein 1×1-PNG
     medien: dict = field(default_factory=dict)
 
-    def __call__(self, method, path, *, data=None, preview=None, base=None):
+    def __call__(self, method, path, *, data=None, preview=None, base=None, stream_from=0):
         self.calls.append((method, path, preview))
         if self.ausfall == "weg":
             raise api.Unavailable("Verbindung abgelehnt")
@@ -526,6 +526,18 @@ class FakeHubiplan:
         # Weitere Antworten setzen Tests über ``antworten`` (Pfad mit oder ohne Abfrage)
         extra = self.antworten.get(rest, self.antworten.get(rest.split("?")[0]))
         if extra is not None:
+            if (
+                isinstance(extra, api.Response)
+                and stream_from
+                and extra.status == 200
+                and len(extra.body) > stream_from
+            ):
+                # Wie _request bei großen Dateien: Stücke statt ganzem Inhalt
+                body = extra.body
+                chunks = (
+                    body[i : i + api.STREAM_CHUNK] for i in range(0, len(body), api.STREAM_CHUNK)
+                )
+                return api.Response(200, b"", extra.content_type, stream=chunks, length=len(body))
             return extra if isinstance(extra, api.Response) else self.json(extra)
         if (
             rest.startswith("images/")
