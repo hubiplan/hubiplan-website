@@ -7,6 +7,7 @@ einen vollen Abruf der Grunddaten in HUBIplan).
 
 from __future__ import annotations
 
+import contextvars
 import hashlib
 import json
 import logging
@@ -152,8 +153,14 @@ def get(
             return _result(*hit[1])
         if settings.REFRESH_IN_BACKGROUND:
             try:
+                # Mit dem Kontext der Anfrage (Besucheradresse): Ein neuer Thread erbt ihn nicht,
+                # sonst zählte HUBIplan alle Hintergrundabrufe zusammen als diesen Dienst
+                # (Gesamtaudit 15.11., WEB-02)
+                context = contextvars.copy_context()
                 threading.Thread(
-                    target=_refresh, args=(ck, full, path, hit, ttl, lock), daemon=True
+                    target=context.run,
+                    args=(_refresh, ck, full, path, hit, ttl, lock),
+                    daemon=True,
                 ).start()
             except RuntimeError:  # kein Thread möglich: Sperre freigeben, Stand bleibt
                 lock.release()
