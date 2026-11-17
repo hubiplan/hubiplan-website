@@ -587,10 +587,65 @@ def preview_session(request) -> str | None:
     return preview
 
 
+# Gesamtaudit 15.11., WEB-01: Ein Vorschau-Cookie gilt erst, wenn HUBIplan die Sitzung
+# bestätigt hat. Vorher schaltete schon ein frei erfundenes Cookie Zwischenspeicher und
+# Bildablage ab. Das Ergebnis der Prüfung liegt kurz unter einem Hash der Sitzung (nie der Wert
+# selbst); Prüfungen unbekannter Sitzungen sind je Besucher begrenzt.
+PREVIEW_CONFIRM_SECONDS = 60
+PREVIEW_CHECKS_PER_MINUTE = 20
+
+
+def _preview_key(preview: str) -> str:
+    import hashlib
+
+    return "vorschau-ok:" + hashlib.sha256(preview.encode()).hexdigest()[:40]
+
+
+def _may_check(request) -> bool:
+    from django.core.cache import cache
+
+    from .besucher import adresse
+
+    ck = "vorschau-pruefen:" + (adresse(request) or "unbekannt")
+    if cache.add(ck, 1, 60):
+        return True
+    try:
+        return cache.incr(ck) <= PREVIEW_CHECKS_PER_MINUTE
+    except ValueError:
+        return True
+
+
+def confirmed_preview(request, key: str) -> str | None:
+    """Vorschau-Sitzung, wenn HUBIplan sie bestätigt hat (kurz gemerkt), sonst None."""
+    from django.core.cache import cache
+
+    preview = preview_session(request)
+    if not preview:
+        return None
+    known = cache.get(_preview_key(preview))
+    if known is not None:
+        return preview if known else None
+    if not _may_check(request):
+        return None
+    try:
+        info = api.get(key, "", preview=preview)
+    except (api.NotFound, api.Unavailable, api.Maintenance):
+        return None
+    ok = bool(info.get("preview"))
+    cache.set(_preview_key(preview), ok, PREVIEW_CONFIRM_SECONDS)
+    return preview if ok else None
+
+
 def load(request) -> Site:
     """Webseite zur Anfrage. Wirft api.NotFound, api.Unavailable oder api.Maintenance."""
+    from django.core.cache import cache
+
     key = api.resolve(host_of(request))
     preview = preview_session(request)
+    if preview:
+        known = cache.get(_preview_key(preview))
+        if known is False or (known is None and not _may_check(request)):
+            preview = None  # wie ein Besucher: mit Zwischenspeicher
     design = request.COOKIES.get(DESIGN_COOKIE) if preview else None
     # Standarddesign oder Paket; ob es das Paket gibt, prüft Site.design
     design = design if design and designpaket.KEY.match(design) else None
@@ -600,4 +655,10 @@ def load(request) -> Site:
         return Site(
             key=key, info=exc.data, preview=preview, maintenance=True, design_preview=design
         )
+    if preview:
+        ok = bool(info.get("preview"))
+        cache.set(_preview_key(preview), ok, PREVIEW_CONFIRM_SECONDS)
+        if not ok:
+            # HUBIplan kennt die Sitzung nicht: öffentliche Sicht, ab jetzt gecacht
+            preview, design = None, None
     return Site(key=key, info=info, preview=preview, design_preview=design)

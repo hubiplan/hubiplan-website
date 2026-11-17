@@ -44,11 +44,11 @@ from .site import (
     SITE_COOKIE,
     Site,
     chosen_host,
+    confirmed_preview,
     global_maintenance,
     gradient_css,
     host_of,
     load,
-    preview_session,
 )
 from .templatetags.seite import web_ziel
 from .zeitleiste import gliedern
@@ -1655,10 +1655,12 @@ def media(request, kind: str, path: str):
     wartete jedes Bild erneut auf die Grunddaten."""
     if global_maintenance():
         return HttpResponse(status=503)
-    preview = preview_session(request)
     size, width, height = _media_size(request, kind)
     try:
         key = api.resolve(host_of(request))
+        # Nur eine von HUBIplan bestätigte Vorschau schaltet Ablage und Zwischenspeicher ab
+        # (Gesamtaudit 15.11., WEB-01)
+        preview = confirmed_preview(request, key)
         if kind == "a":
             if not ALLOWED_API_FILES.match(path):
                 raise api.NotFound()
