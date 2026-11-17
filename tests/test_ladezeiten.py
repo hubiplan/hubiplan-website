@@ -303,6 +303,42 @@ def test_auffrischen_im_hintergrund(hubiplan, monkeypatch, settings):
     assert len(gestartet) == 1
 
 
+def test_auffrischen_im_hintergrund_mit_besucheradresse(hubiplan, monkeypatch, settings):
+    """Gesamtaudit 15.11., WEB-02: Der Hintergrundabruf nennt HUBIplan dieselbe
+    Besucheradresse wie die Anfrage, die ihn ausgelöst hat (Kontext des Threads)."""
+    from seite import besucher
+
+    settings.REFRESH_IN_BACKGROUND = True
+    jetzt = [1000.0]
+    monkeypatch.setattr(api.time, "time", lambda: jetzt[0])
+    assert api.get(KEY)["name"] == hubiplan.info["name"]
+    jetzt[0] += settings.CACHE_SECONDS + 1
+    gesehen = []
+    echt = api._fetch_or_stale
+
+    def merken(*a, **kw):
+        gesehen.append(besucher.besucher())
+        return echt(*a, **kw)
+
+    monkeypatch.setattr(api, "_fetch_or_stale", merken)
+    gestartet = []
+    echt_thread = threading.Thread
+
+    def thread(*a, **kw):
+        t = echt_thread(*a, **kw)
+        gestartet.append(t)
+        return t
+
+    monkeypatch.setattr(api.threading, "Thread", thread)
+    token = besucher._besucher.set("198.51.100.23")
+    try:
+        api.get(KEY)
+    finally:
+        besucher._besucher.reset(token)
+    gestartet[0].join(5)
+    assert gesehen == ["198.51.100.23"]
+
+
 def test_brotli_fuer_statische_dateien():
     """collectstatic legt mit dem Paket brotli auch .br-Fassungen an (whitenoise)."""
     from whitenoise.compress import Compressor
