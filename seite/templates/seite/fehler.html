@@ -4,6 +4,12 @@
 <section class="hinweis-seite">
   <h1>{{ title }}</h1>
   {% if text %}<p>{{ text }}</p>{% endif %}
+  {% if mit_suche %}{# UX-Audit 16.11. WS-16: Suche direkt auf der Fehlerseite #}
+  <form class="suche" action="{% url 'suche' %}" method="get" role="search">
+    <label for="fehler-suche-q">{% translate "Suchbegriff" %}</label>
+    <input id="fehler-suche-q" type="search" name="q" maxlength="100" minlength="2">
+    <button class="knopf" type="submit">{% translate "Suchen" %}</button>
+  </form>{% endif %}
   <p><a class="knopf" href="{% url 'start' %}">{% translate "Zur Startseite" %}</a></p>
 </section>
 {% endblock %}

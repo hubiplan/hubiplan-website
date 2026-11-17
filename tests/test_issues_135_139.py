@@ -101,7 +101,8 @@ def test_personenkarten_regeln():
 def test_kontakt_sie_wie_bisher(client, hubiplan):
     html = hole(client, "/kontakt/")
     assert "Ihr Name" in html and 'data-anrede="sie"' in html
-    assert "kontakt-spalten" not in html and "kontakt-kasten" not in html
+    # Ohne eigenen Kasten stehen seit dem UX-Audit 16.11. (WS-13) die Vereinsdaten daneben
+    assert "kontakt-angaben" in html and "kontakt-kasten-titel" not in html
 
 
 def test_kontakt_duzt(client, hubiplan):

@@ -117,6 +117,37 @@ def link_color_dark(primary: str, target: float = 4.5) -> str:
     return "#ffffff"
 
 
+def readable(color: str, backgrounds, target: float = 4.5) -> str:
+    """Schriftfarbe, die auf allen ``backgrounds`` ``target`` erreicht (UX-Audit 16.11. X-03):
+    so wenig wie nötig abgedunkelt oder aufgehellt, je nachdem, was eher reicht. Die Farbe wird
+    korrigiert, nicht nur gewarnt; besteht sie schon, bleibt sie, wie gewählt."""
+    backgrounds = [b for b in backgrounds if isinstance(b, str) and HEX.match(b)]
+    if not backgrounds or min(contrast(color, bg) for bg in backgrounds) >= target:
+        return color
+    for step in range(1, 21):
+        for change in (darken, lighten):
+            candidate = change(color, step * 0.05)
+            if min(contrast(candidate, bg) for bg in backgrounds) >= target:
+                return candidate
+    return max(("#000000", "#ffffff"), key=lambda c: min(contrast(c, bg) for bg in backgrounds))
+
+
+def text_on(color: str, on: str, target: float = 4.5) -> str:
+    """Schrift auf einer Fläche der Vereinsfarbe: die gewählte, wenn sie reicht, sonst Weiß oder
+    Dunkel, je nachdem, was sich besser abhebt (UX-Audit 16.11. WS-18)."""
+    if contrast(on, color) >= target:
+        return on
+    return max(("#ffffff", DARK), key=lambda c: contrast(c, color))
+
+
+def text_on_all(colors, on: str, target: float = 4.5) -> str:
+    """Wie text_on, aber für einen Verlauf: die Schrift muss auf beiden Enden reichen."""
+    colors = [c.lower() for c in colors if isinstance(c, str) and HEX.match(c)]
+    if not colors or min(contrast(on, c) for c in colors) >= target:
+        return on
+    return max(("#ffffff", DARK), key=lambda c: min(contrast(c, x) for x in colors))
+
+
 # Darstellung der festen Bereiche (HUBIplan website/variants.py); erste = Standard
 LAYOUTS = {
     "board": ("cards", "list"),
@@ -233,6 +264,9 @@ class Site:
         # Für Text und Fokusrahmen im Inhalt; die Vereinsfarbe selbst bleibt für Flächen.
         # Gilt auch auf einem per Stilregler getönten oder grauen Seitengrund.
         # Eigene Flächenfarbe (Rolle „surface“) zählt ebenfalls
+        # Schrift auf Haupt- und Akzentfarbe gegen genau diese Farbe prüfen (UX-Audit X-03)
+        theme["on_primary"] = text_on(theme["primary"], theme["on_primary"])
+        theme["on_accent"] = text_on(theme["accent"], theme["on_accent"])
         theme["link"] = link_color(
             theme["primary"],
             self.background_for(theme["primary"]),
@@ -444,6 +478,12 @@ class Site:
             color = item.get("color") if isinstance(item, dict) else None
             if isinstance(color, str) and HEX.match(color):
                 result[role] = color.lower()
+        # Text und Sekundärtext müssen auf Fläche und Seitengrund lesbar sein (UX-Audit 16.11.
+        # WS-04): HUBIplan prüft beim Speichern nicht jedes Paar; hier wird nachgebessert.
+        flaechen = (result.get("surface", "#ffffff"), result.get("background", "#fbfaf7"))
+        for role in ("text", "muted"):
+            if role in result:
+                result[role] = readable(result[role], flaechen)
         return result
 
     @property
@@ -480,6 +520,9 @@ class Site:
                 result[role] = (color.lower(), on.lower())
             else:
                 result[role] = fallback[role]
+            # Schrift auf der Farbe der Rolle gegen genau diese Fläche prüfen (WS-18)
+            color, on = result[role]
+            result[role] = (color, text_on(color, on))
         return result
 
     @property
@@ -517,6 +560,13 @@ class Site:
             parts.append(f"--link:{link_color(primary, grund, surface, target=target)}")
         if self.style.get("dark") == "auto" and HEX.match(primary or ""):
             parts.append(f"--link-dunkel:{link_color_dark(primary, target)}")
+        # Datumsfarbe als Schrift (Countdown, Zeitstrahl; UX-Audit 16.11. WS-04): wie die
+        # Linkfarbe gegen Fläche und Seitengrund gerechnet, im Dunkeln aufgehellt
+        date = self.colors["date"][0]
+        datum_text = link_color(date, grund, common.get("surface"), target=target)
+        parts.append(f"--datum-text:{datum_text}")
+        if self.style.get("dark") == "auto":
+            parts.append(f"--datum-text-dunkel:{link_color_dark(date, target)}")
         return ";".join(parts)
 
     @property

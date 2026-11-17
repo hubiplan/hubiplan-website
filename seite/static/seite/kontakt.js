@@ -7,6 +7,8 @@
   var DU = {
     "Bitte Ihren Namen eingeben.": "Bitte deinen Namen eingeben.",
     "Danke! Ihre Nachricht ist angekommen.": "Danke! Deine Nachricht ist angekommen.",
+    "Danke! Ihre Nachricht ist bei {name} angekommen.": "Danke! Deine Nachricht ist bei {name} angekommen.",
+    "Eine Bestätigung geht an {email}.": "Eine Bestätigung geht an {email}.",
     "Sicherheitsprüfung erneuert. Ihre Nachricht bleibt erhalten. Bitte senden Sie erneut.":
       "Sicherheitsprüfung erneuert. Deine Nachricht bleibt erhalten. Bitte sende sie erneut.",
     "Das Formular ist abgelaufen. Bitte kopieren Sie Ihre Nachricht und laden Sie die Seite neu.":
@@ -110,6 +112,41 @@
     throw new Error("keine Lösung");
   }
 
+  // Nach dem Senden ersetzt eine deutliche Bestätigung das (leere) Formular, mit Empfänger und
+  // Kopie; „Weitere Nachricht“ holt das Formular zurück (UX-Audit 16.11. WS-13)
+  var aufgabeFehlt = false;
+  function erfolg(name, kopie) {
+    var kasten = document.createElement("div");
+    kasten.className = "kontakt-erfolg";
+    kasten.setAttribute("role", "status");
+    kasten.tabIndex = -1;
+    var titel = document.createElement("p");
+    titel.className = "kontakt-erfolg-titel";
+    titel.textContent = name
+      ? t("Danke! Ihre Nachricht ist bei {name} angekommen.").replace("{name}", name)
+      : t("Danke! Ihre Nachricht ist angekommen.");
+    kasten.appendChild(titel);
+    if (kopie) {
+      var p = document.createElement("p");
+      p.textContent = t("Eine Bestätigung geht an {email}.").replace("{email}", kopie);
+      kasten.appendChild(p);
+    }
+    var weiter = document.createElement("button");
+    weiter.type = "button";
+    weiter.className = "knopf hell";
+    weiter.textContent = t("Weitere Nachricht");
+    weiter.addEventListener("click", function () {
+      if (aufgabeFehlt) { location.reload(); return; }
+      kasten.remove();
+      form.hidden = false;
+      document.getElementById("k-name").focus();
+    });
+    kasten.appendChild(weiter);
+    form.hidden = true;
+    form.parentNode.insertBefore(kasten, form);
+    kasten.focus();
+  }
+
   form.addEventListener("submit", async function (ev) {
     ev.preventDefault();
     var erstes = pruefen();
@@ -146,18 +183,15 @@
         mode: "cors"
       });
       if (res.ok) {
+        var an = document.getElementById("k-an");
+        var kopie = daten.copy ? daten.email : "";
         form.reset();
-        zeige(t("Danke! Ihre Nachricht ist angekommen."));
-        // Für eine weitere Nachricht eine neue Aufgabe holen; geht das nicht, neu laden
-        try {
-          await neueAufgabe();
-          knopf.disabled = false;
-        } catch (e) {
-          knopf.type = "button";
-          knopf.textContent = t("Weitere Nachricht");
-          knopf.disabled = false;
-          knopf.addEventListener("click", function () { location.reload(); }, { once: true });
-        }
+        zeige("");
+        knopf.disabled = false;
+        erfolg(an ? an.textContent.trim() : "", kopie);
+        // Für eine weitere Nachricht schon jetzt eine neue Aufgabe holen; geht das nicht, lädt
+        // „Weitere Nachricht“ die Seite neu
+        try { await neueAufgabe(); } catch (e) { aufgabeFehlt = true; }
         return;
       }
       var text = t("Die Nachricht konnte nicht gesendet werden.");

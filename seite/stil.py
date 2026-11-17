@@ -109,6 +109,9 @@ CATALOG: dict[str, tuple[str, ...] | type] = {
     "person_cards": ("normal", "label"),
     # Webseite #137: Anrede auf der Webseite (Kontaktformular): Sie oder du
     "address": ("formal", "informal"),
+    # UX-Audit 16.11. WS-13: Anschrift, Telefon und E-Mail aus den Vereinsdaten neben dem
+    # Kontaktformular (Vorgabe an; „aus“ zeigt nur das Formular)
+    "contact_details": bool,
     # Webseite #138: Epochen der Chronik als Band, Sprungmarken als Links; #141 flaches Band
     "timeline_chapter": ("plain", "band", "slim"),
     # Webseite #139: Plätze 1 bis 3 einer Wertung als Karten über der Rangliste

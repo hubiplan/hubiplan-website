@@ -576,6 +576,7 @@ html[data-st-contrast="on"] :focus-visible { outline-width: 3px; }
     color-scheme: dark;
     --text: #e8ebe9; --text-leise: #b3bab6; --grund: #121514; --flaeche: #1c201e; --linie: #3a403d;
     --link: var(--link-dunkel, #9fd3ae); --zeile: #232826;
+    --datum-text: var(--datum-text-dunkel, var(--link));
     --abschnitt-hell: color-mix(in srgb, var(--primaer) 18%, #1c201e);
   }
   html[data-st-dark="auto"][data-st-contrast="on"] { --text: #ffffff; --text-leise: #d4d9d6; --linie: #7d8580; }
@@ -585,6 +586,9 @@ html[data-st-contrast="on"] :focus-visible { outline-width: 3px; }
   html[data-st-dark="auto"] .formular [aria-invalid="true"] { border-color: #ff9b9b; }
   html[data-st-dark="auto"][data-st-cards="shadow"] :is(.karte, .termin, .dokumente a) { box-shadow: 0 0 0 1px var(--linie); }
   html[data-st-dark="auto"][data-st-cards="accent"] { --st-karte: var(--flaeche); }
+  /* Social-Media-Symbole auf dunkler Fläche in Schriftfarbe: X und TikTok (#111) lägen sonst
+     bei 1,15 : 1 (UX-Audit WS-06). Im Kopf und Fuß gelten deren Farben. */
+  html[data-st-dark="auto"] :is(main, .menue) .sozial-symbole a:not(:hover) { color: var(--text); border-color: #7d8580; }
 }
 
 /* ---------- Titelfoto als Bühne (Webseite #122) ----------
@@ -637,24 +641,23 @@ html[data-st-motion="off"] .buehne-zeile { transition: none; }
    und Zeilen von selbst, muss „Anhalten“ ohne Suchen zu finden sein (WCAG 2.2.2). Die Bühne
    ist eine eigene Ebene: Bild unten, darüber Verlauf und Titelzeilen, ganz oben die Knöpfe. */
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung { z-index: 3; opacity: 1; }
-html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung > * { pointer-events: auto; }
+html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung > * { pointer-events: auto; opacity: 1; }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung :is([data-zurueck], [data-weiter], [data-pause]) { top: .9rem; bottom: auto; transform: none; }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-zurueck] { left: auto; right: calc(var(--buehne-rand) + 5.6rem); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-weiter] { right: calc(var(--buehne-rand) + 2.8rem); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-steuerung [data-pause] { right: var(--buehne-rand); }
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell-zaehler { top: 1.3rem; bottom: auto; right: calc(var(--buehne-rand) + 8.6rem); }
 /* Knöpfe am Karussell einstellbar (Ralf 16.11.2026): „immer sichtbar“ für alle Karussells;
-   „bei Mauszeiger“ auch auf der Bühne nur bei Maus darüber oder Tastaturfokus. Ohne Maus
+   „bei Mauszeiger“ auch auf der Bühne Pfeile und Zähler nur bei Maus darüber oder Tastaturfokus;
+   „Anhalten“ bleibt immer sichtbar (UX-Audit 16.11. WS-02). Ohne Maus
    (Handy, Tablet) bleiben sie dann sichtbar, damit „Anhalten“ ohne Suchen erreichbar ist. */
-html[data-st-carousel-controls="always"] .karussell-steuerung { opacity: 1; }
-html[data-st-carousel-controls="always"] .karussell-steuerung > * { pointer-events: auto; }
+html[data-st-carousel-controls="always"] .karussell-steuerung > * { pointer-events: auto; opacity: 1; }
 @media (hover: hover) {
-  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung { opacity: 0; }
-  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung > * { pointer-events: none; }
+  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung > :not([data-pause]) { opacity: 0; }
+  html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne .karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung > :not([data-pause]) { pointer-events: none; }
 }
 @media (hover: none) {
-  html[data-st-carousel-controls="hover"] .karussell-steuerung { opacity: 1; }
-  html[data-st-carousel-controls="hover"] .karussell-steuerung > * { pointer-events: auto; }
+  html[data-st-carousel-controls="hover"] .karussell-steuerung > * { pointer-events: auto; opacity: 1; }
 }
 /* Der folgende Abschnitt schließt an; ein farbiger in voller Breite ohne Abstand */
 html:is([data-st-hero-width="full"], [data-st-hero-width="stage"]) main.start > .titel-buehne + section { margin-top: 1.5rem; }
@@ -719,7 +722,7 @@ html[data-st-date="card"] .spalte-seite .termine-vorschau { grid-template-column
 .fuss-voll .fuss-marke { display: flex; gap: 1.25rem; align-items: center; min-width: 0; }
 .fuss-voll .fuss-bild { flex: none; width: auto; height: 76px; max-width: 12rem; object-fit: contain; }
 .fuss-voll .fuss-name { margin: 0; font: 700 1.55rem/1.15 var(--schrift-titel); }
-.fuss-voll .fuss-unterzeile { margin: .35rem 0 .5rem; font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; opacity: .85; }
+.fuss-voll .fuss-unterzeile { margin: .35rem 0 .5rem; font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; }
 .fuss-voll .fuss-spalte { display: flex; flex-direction: column; gap: .6rem; align-items: flex-end; }
 .fuss-voll .recht { flex-direction: row; flex-wrap: wrap; gap: .25rem 1.25rem; justify-content: flex-end; }
 .fuss-voll .fuss-suche { flex: none; width: 16rem; max-width: 100%; }
@@ -786,8 +789,8 @@ html[data-st-person-cards="label"] .personenkarte .person > span { min-width: 0;
 html[data-st-person-cards="label"] .personenkarte .person strong { font-family: var(--schrift-titel); font-size: 24px; font-weight: 700; line-height: 1.15; }
 html[data-st-person-cards="label"] .personenkarte .nachricht { margin: .9rem 0 0; }
 html[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) .nachricht a.knopf:not(.hell) {
-  display: inline-block; margin: 0; padding: 0 0 4px; background: none; color: var(--primaer); border: 0;
-  border-bottom: 2px solid var(--primaer); border-radius: 0; box-shadow: none;
+  display: inline-block; margin: 0; padding: 0 0 4px; background: none; color: var(--link); border: 0;
+  border-bottom: 2px solid var(--link); border-radius: 0; box-shadow: none;
   font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
 }
 html[data-st-person-cards="label"] .karte:is(.personenkarte, .homepage) .nachricht a.knopf:not(.hell):hover { filter: none; color: var(--text); border-color: var(--text); }

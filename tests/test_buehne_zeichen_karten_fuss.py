@@ -228,7 +228,7 @@ def test_buehne_knoepfe_immer_sichtbar_und_ueber_bild_und_verlauf():
         "main.start > .titel-buehne"
     )
     assert f"{buehne} .karussell-steuerung {{ z-index: 3; opacity: 1; }}" in css
-    assert f"{buehne} .karussell-steuerung > * {{ pointer-events: auto; }}" in css
+    assert f"{buehne} .karussell-steuerung > * {{ pointer-events: auto; opacity: 1; }}" in css
     regel = css.split(f"{buehne} {{", 1)[1].split("}", 1)[0]
     assert "max-width: none" in regel and "isolation: isolate" in regel
     # Titelzeilen (z-index 1) bleiben unter den Knöpfen
@@ -263,14 +263,18 @@ def test_knoepfe_am_karussell_einstellbar():
     """Ralf 16.11.2026: Knöpfe am Karussell „immer sichtbar“ für alle Karussells oder „bei
     Mauszeiger“, dann auch auf der Bühne nur bei Maus/Fokus; ohne Maus bleiben sie sichtbar."""
     css = (STATIC / "stil.css").read_text()
-    assert 'html[data-st-carousel-controls="always"] .karussell-steuerung { opacity: 1; }' in css
+    assert (
+        'html[data-st-carousel-controls="always"] .karussell-steuerung > * '
+        "{ pointer-events: auto; opacity: 1; }"
+    ) in css
     mit_maus = css.split("@media (hover: hover) {", 1)[1].split("\n}", 1)[0]
     assert (
         'html[data-st-carousel-controls="hover"]:is([data-st-hero-width="full"], '
         '[data-st-hero-width="stage"]) main.start > .titel-buehne '
-        ".karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung { opacity: 0; }"
+        ".karussell:not(:hover, :focus-within, .zeigen) .karussell-steuerung > :not([data-pause]) "
+        "{ opacity: 0; }"
     ) in mit_maus
     ohne_maus = css.split("@media (hover: none) {", 1)[1].split("\n}", 1)[0]
     hover = 'html[data-st-carousel-controls="hover"]'
-    assert f"{hover} .karussell-steuerung {{ opacity: 1; }}" in ohne_maus
+    assert f"{hover} .karussell-steuerung > * {{ pointer-events: auto; opacity: 1; }}" in ohne_maus
     assert stil.CATALOG["carousel_controls"] == ("always", "hover")

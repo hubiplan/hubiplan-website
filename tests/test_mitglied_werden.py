@@ -63,4 +63,4 @@ def test_englisch(client, beitritt):
     beitritt.info["language"] = "en"
     html = text(client.get("/mitglied-werden/"))
     assert "Become a member" in html or "Mitglied werden" in html
-    assert "To the membership application" in html
+    assert "Fill in the application" in html

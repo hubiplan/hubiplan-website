@@ -1,8 +1,8 @@
 // Bilderkarussell: wechselt ruhig von selbst (Zeit je Karussell aus HUBIplan,
 // data-takt in Sekunden, sonst 7), danach wieder von vorn. Hält beim
 // Darüberfahren, beim Fokus und auf Knopfdruck an. Bei „Bewegung reduzieren“
-// startet es angehalten. Die Knöpfe liegen im Bild und erscheinen bei Maus,
-// Tastaturfokus oder nach Antippen. Ohne Skript lässt sich das Band seitlich
+// startet es angehalten. Die Knöpfe liegen im Bild; „Anhalten“ ist immer sichtbar,
+// Pfeile und Zähler erscheinen bei Maus, Tastaturfokus oder nach Antippen. Ohne Skript lässt sich das Band seitlich
 // wischen bzw. scrollen. Auf Wunsch beginnt es mit einem zufälligen Bild (data-zufall).
 // Titelfoto als Bühne (Webseite #122): Mehrere Titelzeilen wechseln mit den Bildern; gibt es
 // mehr Bilder als Zeilen, beginnt die Reihe von vorn. Hält das Karussell, bleibt die Zeile.
@@ -66,8 +66,10 @@ document.querySelectorAll('[data-karussell]').forEach((box) => {
   }
   const setzePause = (an) => {
     angehalten = an
+    // Feste Beschriftung „Bildwechsel anhalten“, Zustand nur über aria-pressed: wechselnde
+    // Beschriftung und aria-pressed zugleich ergaben „Weiter abspielen, gedrückt“ (UX-Audit WS-02)
     pause.setAttribute('aria-pressed', String(an))
-    pause.setAttribute('aria-label', an ? t('Weiter abspielen') : t('Anhalten'))
+    pause.title = an ? t('Bildwechsel fortsetzen') : t('Bildwechsel anhalten')
     pause.textContent = an ? '▶' : '❚❚'
     // Während es läuft, Wechsel nicht ansagen (sonst redet der Screenreader ständig)
     zaehler.setAttribute('aria-live', an ? 'polite' : 'off')

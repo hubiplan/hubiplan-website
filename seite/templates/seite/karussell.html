@@ -1,13 +1,13 @@
-{% load seite i18n %}<div class="karussell" data-karussell data-takt="{{ takt|default:7 }}"{% if zufall %} data-zufall{% endif %} role="region" aria-roledescription="Karussell" aria-label="{% translate "Bilder" %}">
+{% load seite i18n %}<div class="karussell" data-karussell data-takt="{{ takt|default:7 }}"{% if zufall %} data-zufall{% endif %} role="region" aria-roledescription="{% translate "Karussell" %}" aria-label="{% translate "Bilder" %}">
   <div class="karussell-steuerung" hidden>
-    <button type="button" class="knopf-rund knopf-pause" data-pause aria-label="{% translate "Anhalten" %}" aria-pressed="false">❚❚</button>
+    <button type="button" class="knopf-rund knopf-pause" data-pause aria-label="{% translate "Bildwechsel anhalten" %}" title="{% translate "Bildwechsel anhalten" %}" aria-pressed="false">❚❚</button>
     <button type="button" class="knopf-rund" data-zurueck aria-label="{% translate "Vorheriges Bild" %}">‹</button>
     <span class="karussell-zaehler klein" aria-live="polite">1 / {{ bilder|length }}</span>
     <button type="button" class="knopf-rund" data-weiter aria-label="{% translate "Nächstes Bild" %}">›</button>
   </div>
   <ul class="karussell-band" tabindex="0">
   {% for b in bilder %}{% lokal site b.url as bild %}{% lokal site b.small_url as klein %}
-    <li class="karussell-bild" aria-roledescription="Bild" aria-label="{{ forloop.counter }} von {{ bilder|length }}">
+    <li class="karussell-bild" aria-roledescription="{% translate "Bild" %}" aria-label="{% blocktranslate with n=forloop.counter m=bilder|length %}{{ n }} von {{ m }}{% endblocktranslate %}">
       <figure class="titelbild"><img src="{{ bild }}"{% bildsatz site b %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>{% bildunterschrift b.caption b %}</figure>
     </li>
   {% endfor %}
