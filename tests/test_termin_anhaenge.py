@@ -40,3 +40,26 @@ def test_ohne_anhaenge_kein_abschnitt(client, hubiplan):
 def test_fremde_pfade_bleiben_gesperrt(client, hubiplan):
     assert client.get("/medien/a/events/attachments/x7/").status_code == 404
     assert client.get("/medien/a/events/7/").status_code == 404
+
+
+def test_grosser_anhang_wird_gestreamt(client, hubiplan):
+    """Gesamtaudit 15.11., WEB-03: Dateien ab 2 MB gehen Stück für Stück durch, mit denselben
+    Kopfzeilen; ob sie gezeigt werden dürfen, entscheidet weiter HUBIplan."""
+    from seite import views
+
+    gross = PDF + b"0" * (views.STREAM_FROM + 10)
+    hubiplan.antworten["events/attachments/8/"] = api.Response(200, gross, "application/pdf")
+    pdf = client.get("/medien/a/events/attachments/8/")
+    assert pdf.status_code == 200 and pdf.streaming
+    assert b"".join(pdf.streaming_content) == gross
+    assert pdf["Content-Length"] == str(len(gross))
+    assert pdf["Content-Type"] == "application/pdf"
+    assert pdf["Content-Disposition"] == "inline"
+    assert "frame-ancestors 'none'" in pdf["Content-Security-Policy"]
+    assert pdf["Cache-Control"]
+    # Großes Nicht-PDF unter diesem Pfad: nicht ausgeliefert
+    hubiplan.antworten["events/attachments/9/"] = api.Response(200, gross, "text/html")
+    assert client.get("/medien/a/events/attachments/9/").status_code == 404
+    # Nicht freigegeben (HUBIplan sagt 404): nichts
+    hubiplan.antworten["events/attachments/10/"] = api.Response(404, b"", "application/json")
+    assert client.get("/medien/a/events/attachments/10/").status_code == 404

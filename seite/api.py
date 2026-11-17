@@ -49,13 +49,39 @@ class Response:
     status: int
     body: bytes
     content_type: str
+    # Große Datei: Inhalt als Folge von Stücken statt ``body`` (Gesamtaudit 15.11., WEB-03)
+    stream: object = None
+    length: int = 0
 
     def json(self):
         return json.loads(self.body.decode() or "null")
 
 
+STREAM_CHUNK = 64 * 1024
+
+
+def _chunks(res, length: int):
+    """Inhalt einer offenen Antwort in Stücken, höchstens ``length`` Bytes; schließt sie."""
+    try:
+        left = length
+        while left > 0:
+            part = res.read(min(STREAM_CHUNK, left))
+            if not part:
+                break
+            left -= len(part)
+            yield part
+    finally:
+        res.close()
+
+
 def _request(
-    method: str, path: str, *, data=None, preview: str | None = None, base: str | None = None
+    method: str,
+    path: str,
+    *,
+    data=None,
+    preview: str | None = None,
+    base: str | None = None,
+    stream_from: int = 0,
 ) -> Response:
     """Ein Aufruf an HUBIplan; ``path`` beginnt mit „/“ (z. B. /api/public/site/v1/…)."""
     base = base or settings.HUBIPLAN_API_URL
@@ -77,9 +103,18 @@ def _request(
         headers["Content-Type"] = "application/json"
     req = urllib.request.Request(url, data=body, headers=headers, method=method)  # noqa: S310
     try:
-        with urllib.request.urlopen(req, timeout=settings.API_TIMEOUT) as res:  # noqa: S310
+        res = urllib.request.urlopen(req, timeout=settings.API_TIMEOUT)  # noqa: S310
+        ctype = res.headers.get("Content-Type", "")
+        try:
+            length = int(res.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = 0
+        if stream_from and res.status == 200 and stream_from < length <= MAX_FILE_BYTES:
+            # Große Datei: nicht ganz in den Speicher, Stück für Stück weiterreichen
+            return Response(res.status, b"", ctype, stream=_chunks(res, length), length=length)
+        with res:
             content = res.read(MAX_FILE_BYTES + 1)
-            return Response(res.status, content, res.headers.get("Content-Type", ""))
+            return Response(res.status, content, ctype)
     except urllib.error.HTTPError as exc:
         return Response(exc.code, exc.read(64 * 1024), exc.headers.get("Content-Type", ""))
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
@@ -255,7 +290,7 @@ def post(key: str, path: str, data: dict, *, preview: str | None = None) -> Resp
     return _request("POST", f"{PREFIX}{key}/{path}", data=data, preview=preview)
 
 
-def fetch_file(path: str, *, preview: str | None = None) -> Response:
+def fetch_file(path: str, *, preview: str | None = None, stream_from: int = 0) -> Response:
     """Datei (Bild) aus HUBIplan; ``path`` ist der Pfad ab der Wurzel von HUBIplan.
 
     Hochgeladene Dateien (/media/…) liefert auf dem Server Caddy aus, nicht das
@@ -269,7 +304,7 @@ def fetch_file(path: str, *, preview: str | None = None) -> Response:
     store = None if preview else caches["bilder"]
     ck = _key("datei", path)
     try:
-        res = _request("GET", path, preview=preview, base=base)
+        res = _request("GET", path, preview=preview, base=base, stream_from=stream_from)
     except Unavailable:
         stale = store.get(ck) if store is not None else None
         if stale is not None:
@@ -283,6 +318,8 @@ def fetch_file(path: str, *, preview: str | None = None) -> Response:
         stale = store.get(ck)
         if stale is not None:
             return stale
+    if res.stream is not None:
+        return res  # groß: weder ganz im Speicher noch im Zwischenspeicher
     if res.status != 200 or len(res.body) > MAX_FILE_BYTES:
         raise Unavailable(f"{path} {res.status}")
     if store is not None and len(res.body) <= settings.STALE_IMAGE_MAX_BYTES:

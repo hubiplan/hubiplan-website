@@ -25,6 +25,7 @@ from django.http import (
     HttpResponsePermanentRedirect,
     HttpResponseRedirect,
     JsonResponse,
+    StreamingHttpResponse,
 )
 from django.shortcuts import render
 from django.urls import reverse
@@ -1623,6 +1624,30 @@ def _media_size(request, kind: str) -> tuple[str, int | None, int | None]:
     return "", zahl("w", bilder.LOGO_WIDTHS), zahl("h", bilder.LOGO_HEIGHTS)
 
 
+# Gesamtaudit 15.11., WEB-03: große Dokumente nicht ganz in den Speicher
+STREAM_FROM = 2 * 1024 * 1024
+PDF_PATHS = ("files/", "events/attachments/")
+
+
+def _streamed(request, res, ctype, pdf_ok, preview, key, kind, path):
+    """Große Datei Stück für Stück, mit denselben Kopfzeilen wie sonst. Ob sie gezeigt werden
+    darf, hat HUBIplan mit dieser Antwort schon entschieden."""
+    if not (pdf_ok and ctype == "application/pdf"):
+        for _ in res.stream:  # Verbindung sauber schließen
+            break
+        res.stream.close()
+        return HttpResponse(status=404)
+    private = bool(preview) or api.cached_maintenance(key)
+    response = StreamingHttpResponse(res.stream, content_type=ctype)
+    response["Content-Length"] = str(res.length)
+    response["Content-Disposition"] = "inline"
+    response["Cache-Control"] = (
+        PREVIEW_MEDIA_CACHE if preview else _media_cache(private, kind, path)
+    )
+    response["Content-Security-Policy"] = "frame-ancestors 'none'"
+    return response
+
+
 @require_GET
 def media(request, kind: str, path: str):
     """Bild aus HUBIplan über diese Seite. Ohne die Grunddaten der Seite: Ob ein Bild
@@ -1637,7 +1662,12 @@ def media(request, kind: str, path: str):
         if kind == "a":
             if not ALLOWED_API_FILES.match(path):
                 raise api.NotFound()
-            res = api.fetch_file(f"{api.PREFIX}{key}/{path}{size}", preview=preview)
+            # Dokumente und Terminanhänge (PDF, bis 20 MB) ab 2 MB gestreamt (WEB-03)
+            res = api.fetch_file(
+                f"{api.PREFIX}{key}/{path}{size}",
+                preview=preview,
+                stream_from=STREAM_FROM if path.startswith(PDF_PATHS) else 0,
+            )
         else:
             if ".." in path or not ALLOWED_MEDIA.match(path):
                 raise api.NotFound()
@@ -1649,7 +1679,9 @@ def media(request, kind: str, path: str):
     ctype = res.content_type.split(";")[0].strip()
     # PDF nur bei Dokumenten der Webseite (Pressespiegel, Ralf 05.11.) und freigegebenen
     # Anhängen öffentlicher Termine (Ralf 14.11.)
-    pdf_ok = kind == "a" and path.startswith(("files/", "events/attachments/"))
+    pdf_ok = kind == "a" and path.startswith(PDF_PATHS)
+    if res.stream is not None:
+        return _streamed(request, res, ctype, pdf_ok, preview, key, kind, path)
     if ctype not in ("image/png", "image/jpeg", "image/webp") and not (
         pdf_ok and ctype == "application/pdf"
     ):
