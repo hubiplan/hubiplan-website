@@ -6,6 +6,9 @@
 .marke { color: var(--link); font-size: 1.2rem; }
 .kopf .menue summary { color: var(--link); }
 .kopf-sozial a { color: var(--link); }
+/* Symbole im hellen Kopf in der geprüften Linkfarbe auf leicht getönter Plakette; sonst stünden
+   sie weiß auf Weiß (UX-Audit WS-06, live 17.11.) */
+.kopf-sozial .sozial-symbole a { color: var(--link); background: color-mix(in srgb, var(--link) 8%, var(--flaeche)); border-color: transparent; --sm-auf: var(--flaeche); }
 @media (min-width: 64rem) {
   .menue-breit { border-top: 1px solid var(--linie); }
   .menue-breit ul { margin-left: -.9rem; }

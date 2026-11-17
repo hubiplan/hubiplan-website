@@ -32,6 +32,8 @@
   --akzent: #c9a227;
   /* Text in Vereinsfarbe (Links, Aufklapper): abgedunkelt auf 4,5 : 1 (site.link_color) */
   --link: #1f4e2c;
+  /* Datumsfarbe als Schrift (Countdown, Zeitstrahl): wie --link gerechnet (site.css_vars) */
+  --datum-text: var(--link);
   --auf-akzent: #1d2421;
   --text: #1d2421;
   --text-leise: #5a625e;
@@ -215,7 +217,9 @@ html body .kopf .marke:not(.marke-bild) img { width: auto; max-width: min(16rem,
 .menue a:hover { background: var(--grund); }
 .menue a[aria-current="page"] { font-weight: 700; box-shadow: inset 4px 0 0 var(--farbe-menue); }
 .menue-breit { display: none; flex: 1 1 auto; }
-.menue-breit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: nowrap; gap: .25rem; justify-content: flex-end; }
+/* Lange Menüs brechen in eine zweite Zeile um, statt über den Rand zu laufen (UX-Audit 16.11. WS-03:
+   bei 1024 px und 11 Punkten lag „Kontakt“ sonst außerhalb der Seite) */
+.menue-breit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .25rem; justify-content: flex-end; }
 .menue-breit a { display: block; color: var(--auf-kopf); padding: .45rem .55rem; font-size: .95rem; white-space: nowrap; border-radius: 6px; text-decoration: none; }
 .menue-breit a:hover { background: color-mix(in srgb, var(--auf-kopf) 15%, transparent); }
 .menue-breit a[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--farbe-menue); font-weight: 700; }
@@ -269,7 +273,8 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 .fuss { background: var(--farbe-fuss); color: var(--auf-fuss); font-size: .88rem; line-height: 1.45; }
 .fuss a { color: var(--auf-fuss); }
 .fuss-innen { padding-top: .9rem; padding-bottom: .9rem; display: flex; flex-wrap: wrap; gap: .3rem 1.5rem; align-items: baseline; justify-content: space-between; }
-.fuss .klein { color: inherit; opacity: .85; margin: 0; }
+/* Volle Schriftfarbe: mit 85 % Deckkraft fiel kleine Schrift auf heller Vereinsfarbe unter 4,5 : 1 (UX-Audit WS-18) */
+.fuss .klein { color: inherit; margin: 0; }
 .sozial, .recht { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; }
 .fuss .klein { flex-basis: 100%; font-size: .8rem; }
 .fuss .mitglied { margin: 0; display: block; padding: 0; border-bottom: 0; }  /* nicht die Personenzeile .mitglied der Mitgliederlisten (Webseite #132) */
@@ -323,9 +328,10 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .termin-text { min-width: 0; }
 /* Ganze Karte anklickbar, Fenster mit allen Angaben (Ralf 2026-10-31) */
 .termin { cursor: pointer; }
-.termin:hover { border-color: var(--primaer); }
+.termin:hover { border-color: var(--link); }
 .termin-knopf { all: unset; cursor: pointer; font: inherit; color: inherit; }
-.termin-knopf:focus-visible { outline: 2px solid var(--primaer); outline-offset: 2px; border-radius: 4px; }
+/* Fokus wie überall 3 px in der geprüften Linkfarbe (UX-Audit WS-04) */
+.termin-knopf:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; border-radius: 4px; }
 .termin-fenster { max-width: min(36rem, calc(100vw - 2rem)); border: 1px solid var(--linie); border-radius: var(--rund); padding: 1.2rem 1.4rem; background: var(--flaeche); color: inherit; cursor: auto; }
 .termin-fenster::backdrop { background: rgb(0 0 0 / .45); }
 .termin-fenster h2 { margin-top: 0; }
@@ -344,7 +350,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .kacheln li { display: flex; }
 .kacheln li > a { flex: 1; }
 .kacheln a { display: flex; gap: .8rem; align-items: center; background: var(--flaeche); border: 1px solid var(--linie); border-left: 4px solid var(--farbe-zier); border-radius: var(--rund); padding: .8rem 1rem; text-decoration: none; color: var(--text); font-weight: 600; min-height: 3.5rem; }
-.kacheln a:hover { border-color: var(--primaer); }
+.kacheln a:hover { border-color: var(--link); }
 .kacheln img { width: 48px; height: 48px; object-fit: contain; }
 /* Große Kacheln (Züge): Wappen links in festem Platz (auch ohne Wappen), damit alle
    Namen auf einer Linie beginnen; breitere Kacheln, damit lange Namen höchstens zweizeilig sind (Ralf 31.10.) */
@@ -391,6 +397,25 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .formular .haken input { width: auto; }
 .honig { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .meldung { min-height: 1.5em; font-weight: 600; }
+/* Mitglied werden: Hinweis auf den Wechsel in die Mitgliederverwaltung direkt über dem Knopf (WS-09) */
+.beitritt-weg { max-width: 44rem; margin: 1.5rem 0; padding: 1rem 1.2rem; background: var(--abschnitt-hell); border-radius: var(--rund); }
+.beitritt-weg > :first-child { margin-top: 0; }
+.beitritt-weg > :last-child { margin-bottom: 0; }
+/* Kontaktseite mit Kasten daneben (Grundform; stil.css färbt den Kasten wie die Datumsfelder) */
+.kontakt-spalten { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 52rem) { .kontakt-spalten { grid-template-columns: minmax(0, 1fr) 340px; } }
+.kontakt-kasten { padding: 1.2rem 1.4rem; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); }
+.kontakt-kasten h2 { margin-top: 0; }
+.kontakt-angaben address { font-style: normal; margin: 0 0 .8rem; }
+.kontakt-angaben dl { margin: 0; }
+.kontakt-angaben dt { font-weight: 600; }
+.kontakt-angaben dd { margin: 0 0 .5rem; overflow-wrap: anywhere; }
+/* Bestätigung nach dem Senden statt des Formulars (UX-Audit WS-13): eigene Fläche, gut sichtbar */
+.kontakt-erfolg { max-width: 36rem; padding: 1.1rem 1.3rem; border-radius: var(--rund); background: #e7f4ea; color: #14361f; border-left: 6px solid #2e7d4f; }
+.kontakt-erfolg p { margin: 0 0 .6rem; }
+.kontakt-erfolg-titel { font-weight: 700; font-size: 1.1rem; }
+.kontakt-erfolg .knopf.hell { background: #fff; color: #14361f; border-color: #2e7d4f; margin: .2rem 0 0; }
+.kontakt-erfolg:focus-visible { outline: 3px solid #2e7d4f; outline-offset: 2px; }
 .meldung.fehler { color: #a4262c; }
 .feld-fehler { color: #a4262c; font-weight: 600; font-size: .92rem; margin: 0; }
 .formular [aria-invalid="true"] { border-color: #a4262c; border-width: 2px; }
@@ -404,7 +429,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .sm-facebook { --sm: #0866ff; }
 .sm-tiktok { --sm: #111; }
 .sm-x { --sm: #111; }
-.sm-youtube { --sm: #ff0000; }
+/* YouTube-Rot etwas dunkler: weiße Schrift darauf 5,9 statt 4,0 : 1 (UX-Audit WS-06) */
+.sm-youtube { --sm: #cc0000; }
 .sm-linkedin { --sm: #0a66c2; }
 .sozial-symbole { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
 .sozial-symbole a {
@@ -447,7 +473,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 /* Dokumente */
 .dokumente { list-style: none; padding: 0; display: grid; gap: .8rem; max-width: 48rem; grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); }
 .dokumente a { display: flex; align-items: center; gap: .9rem; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .8rem 1rem; color: var(--text); }
-.dokumente a:hover { border-color: var(--primaer); opacity: 1; }
+.dokumente a:hover { border-color: var(--link); opacity: 1; }
 .dokumente a.mit-vorschau { flex-direction: column; align-items: stretch; text-align: center; }
 .dok-vorschau { display: block; width: 100%; height: auto; aspect-ratio: 210 / 297; object-fit: cover; object-position: top; background: #fff; border: 1px solid var(--linie); border-radius: 4px; }
 .dok-symbol { flex: none; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 8px; background: var(--primaer); color: var(--auf-primaer); font-size: .75rem; font-weight: 700; }
@@ -473,7 +499,8 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
    fokussierte) Feld nicht größer wirkt als der Knopf. */
 .suche { display: flex; flex-wrap: wrap; gap: .5rem; align-items: stretch; margin-bottom: 1rem; }
 .suche label { flex-basis: 100%; font-weight: 600; }
-.suche input { flex: 1 1 8rem; min-width: 0; margin: 0; padding: .5rem .6rem; font: inherit; color: var(--text); background: #fff; border: 1px solid var(--linie); border-radius: var(--rund); }
+/* Rand wie bei den Formularfeldern, mind. 3 : 1 gegen Feld und Seite (UX-Audit WS-07) */
+.suche input { flex: 1 1 8rem; min-width: 0; margin: 0; padding: .5rem .6rem; font: inherit; color: var(--text); background: #fff; border: 1px solid #767c78; border-radius: var(--rund); }
 .suche .knopf { flex: 0 0 auto; margin: 0; padding-top: 0; padding-bottom: 0; line-height: 1.2; border-radius: var(--rund); }
 .suche input:focus-visible, .suche .knopf:focus-visible { outline-offset: -3px; }
 .suchtreffer { list-style: none; padding: 0; }
@@ -491,7 +518,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 @media (min-width: 64rem) { .kopf-sozial:has(.kopf-suche) { display: flex; align-items: center; gap: .4rem; } }
 /* kleines Suchfeld im Fuß (Stilregler search=footer) */
 .fuss-suche { display: flex; gap: .3rem; flex: 0 1 18rem; min-width: 0; }
-.fuss-suche input { flex: 1 1 auto; min-width: 0; padding: .3rem .5rem; font: inherit; color: var(--text); background: #fff; border: 1px solid var(--linie); border-radius: 6px; }
+.fuss-suche input { flex: 1 1 auto; min-width: 0; padding: .3rem .5rem; font: inherit; color: var(--text); background: #fff; border: 1px solid #767c78; border-radius: 6px; }
 .fuss-suche button { font: inherit; font-weight: 600; padding: .3rem .7rem; border-radius: 6px; cursor: pointer; color: var(--auf-fuss); background: color-mix(in srgb, var(--auf-fuss) 14%, transparent); border: 1px solid color-mix(in srgb, var(--auf-fuss) 35%, transparent); }
 .fuss-suche button:hover { background: color-mix(in srgb, var(--auf-fuss) 24%, transparent); }
 
@@ -508,18 +535,26 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .karussell-bild .titelbild { margin: 0; }
 .karussell-bild img { display: block; height: var(--karussell-hoehe); max-height: none; }
 /* Steuerung steht im Quelltext vor den Bildern (zuerst erreichbar), liegt sichtbar auf dem Bild */
-.karussell-steuerung { position: absolute; inset: 0 0 auto; height: var(--karussell-hoehe); z-index: 2; pointer-events: none; opacity: 0; transition: opacity .2s; }
+.karussell-steuerung { position: absolute; inset: 0 0 auto; height: var(--karussell-hoehe); z-index: 2; pointer-events: none; }
+.karussell-steuerung > * { transition: opacity .2s; }
 .karussell-steuerung[hidden] { display: none; }
-.karussell:hover .karussell-steuerung, .karussell:focus-within .karussell-steuerung, .karussell.zeigen .karussell-steuerung { opacity: 1; }
 .karussell:hover .karussell-steuerung > *, .karussell:focus-within .karussell-steuerung > *, .karussell.zeigen .karussell-steuerung > * { pointer-events: auto; }
+/* „Anhalten“ ist immer sichtbar und bedienbar, auch ohne Maus und vor dem ersten Antippen
+   (UX-Audit 16.11. WS-02, WCAG 2.2.2); nur die Pfeile und der Zähler blenden sich ein. Auf
+   Geräten ohne Maus (Handy, Tablet) steht die ganze Steuerung immer da. */
+.karussell-steuerung [data-pause] { pointer-events: auto; }
+:where(.karussell:not(:hover, :focus-within, .zeigen)) .karussell-steuerung > :not([data-pause]) { opacity: 0; }
+@media (hover: none) {
+  :where(.karussell) .karussell-steuerung > * { opacity: 1; pointer-events: auto; }
+}
 .karussell-steuerung .knopf-rund { position: absolute; background: rgb(255 255 255 / .88); color: #222; border-color: transparent; box-shadow: 0 1px 6px rgb(0 0 0 / .35); }
 .karussell-steuerung [data-zurueck] { left: .75rem; top: 50%; transform: translateY(-50%); }
 .karussell-steuerung [data-weiter] { right: .75rem; top: 50%; transform: translateY(-50%); }
 .karussell-steuerung [data-pause] { right: .75rem; bottom: .75rem; }
 .karussell-zaehler { position: absolute; right: 3.7rem; bottom: 1.1rem; background: rgb(0 0 0 / .55); color: #fff; padding: .1rem .5rem; border-radius: 99px; font-family: inherit; }
-@media (prefers-reduced-motion: reduce) { .karussell-steuerung { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .karussell-steuerung > * { transition: none; } }
 .knopf-rund { width: 2.4rem; height: 2.4rem; border-radius: 50%; font-family: inherit; border: 1px solid var(--linie); background: var(--flaeche); color: var(--text); font-size: 1.4rem; line-height: 1; cursor: pointer; }
-.knopf-rund:hover:not(:disabled) { border-color: var(--primaer); }
+.knopf-rund:hover:not(:disabled) { border-color: var(--link); }
 .knopf-rund:disabled { opacity: .35; cursor: default; }
 .knopf-pause { font-size: .8rem; letter-spacing: -.1em; }
 .knopf-rund:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
@@ -558,7 +593,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .unsichtbar { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .zeitleiste-sprung ul { list-style: none; padding: 0; margin: 1.2rem 0 1.5rem; display: flex; flex-wrap: wrap; gap: .4rem; }
 .zeitleiste-sprung a { display: inline-block; padding: .3rem .75rem; border: 1px solid var(--linie); border-radius: 99px; background: var(--flaeche); color: var(--link); font-weight: 600; text-decoration: none; }
-.zeitleiste-sprung a:hover { border-color: var(--primaer); }
+.zeitleiste-sprung a:hover { border-color: var(--link); }
 .zeitleiste { --zl-linie: 3px; --zl-einzug: 1.6rem; position: relative; margin: 1.5rem 0 2rem; padding-left: var(--zl-einzug); }
 .zeitleiste::before { content: ""; position: absolute; left: .45rem; top: .3rem; bottom: .3rem; width: var(--zl-linie); background: var(--linie); border-radius: 2px; }
 .zeitleiste-abschnitt { scroll-margin-top: 1rem; }
@@ -572,7 +607,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 /* Marke auf der Linie: Punkt für ein Jahr, Balken über die ganze Karte für einen Zeitraum */
 .zeitleiste-eintrag::before { content: ""; position: absolute; left: calc(-1 * var(--zl-einzug) + .2rem); top: .35rem; width: .7rem; height: .7rem; border-radius: 50%; background: var(--primaer); box-shadow: 0 0 0 3px var(--grund); }
 .zeitleiste-eintrag.ist-zeitraum::before { border-radius: 99px; bottom: .35rem; height: auto; background: var(--primaer); opacity: .75; }
-.zeitleiste-jahr { margin: 0 0 .25rem; font-weight: 700; color: var(--primaer); font-variant-numeric: tabular-nums; }
+.zeitleiste-jahr { margin: 0 0 .25rem; font-weight: 700; color: var(--link); font-variant-numeric: tabular-nums; }
 .zeitleiste-karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .75rem 1rem; display: grid; gap: .4rem; }
 .zeitleiste-karte h3 { margin: 0; font-size: 1.2rem; }
 .zeitleiste-karte p { margin: 0; }
@@ -613,7 +648,7 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 /* Galerie (Ralf 05.11.2026): Alben als Kacheln mit Titelbild, Bilder als Raster */
 .galerie-alben { list-style: none; padding: 0; margin: 1rem 0 1.5rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
 .galerie-alben a { display: flex; flex-direction: column; gap: .2rem; height: 100%; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); overflow: hidden; color: var(--text); padding-bottom: .7rem; }
-.galerie-alben a:hover { border-color: var(--primaer); opacity: 1; }
+.galerie-alben a:hover { border-color: var(--link); opacity: 1; }
 .galerie-alben img, .galerie-ohne-bild { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: .4rem; }
 .galerie-ohne-bild { background: var(--grund); }
 .galerie-album-titel { font-weight: 600; padding: 0 .8rem; }
@@ -671,12 +706,27 @@ main.start > .begruessung-bilder.abschnitt-voll { padding-left: 0; padding-right
 main.start > .begruessung-bilder.abschnitt-voll :is(.karussell-band, .titelbild img, .titel-name) { border-radius: 0; }
 main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(16px, calc(50vw - 31rem)); padding-right: max(16px, calc(50vw - 31rem)); }
 .spalte-haupt .abschnitt-voll, .spalte-seite .abschnitt-voll { margin-left: 0; margin-right: 0; padding-left: 1.2rem; padding-right: 1.2rem; }
-.abschnitt-farbig h2, .abschnitt-farbig h3, .abschnitt-farbig p, .abschnitt-farbig .klein,
-.abschnitt-farbig .text a, .abschnitt-farbig figcaption { color: inherit; }
-.abschnitt-farbig :focus-visible { outline-color: currentColor; }
-.abschnitt-farbig .karte, .abschnitt-farbig .bildkachel { color: var(--text); }
-.abschnitt-farbig .karte h3, .abschnitt-farbig .karte p, .abschnitt-farbig .bildkachel h3,
-.abschnitt-farbig .bildkachel p { color: var(--text); }
+/* Abschnitt auf Farbe (UX-Audit 16.11. WS-01, Strukturvorschlag E): selbst gefärbte Abschnitte
+   und die farbigen Bänder der „Bühne“ folgen einer Regel. Alles, was sonst in Vereins- oder
+   Datumsfarbe bzw. leise auf hellem Grund steht, nimmt die Schriftfarbe des Abschnitts an; sonst
+   läge es mit 1 : 1 auf der eigenen Farbe. Karten, Termine und Kacheln behalten ihre helle Fläche. */
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(h2, h3, p, li, dt, dd, .klein, a:not([class]), summary, figcaption, .bildnachweis, .zahl, .zahl-text,
+      .chronik-jahr, .zeitstrahl-wann, .countdown, .countdown-zahl, .countdown-einheit, .anfahrt-ort,
+      .partner-name) { color: inherit; }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style])) :focus-visible { outline-color: currentColor; }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(.karte, .bildkachel, .termin, .kacheln a, .zeitleiste-karte) { color: var(--text); }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(.karte, .bildkachel, .termin, .kacheln) :is(h2, h3, p, li, dt, dd):not(.termin-datum *) { color: var(--text); }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(.karte, .bildkachel, .termin, .kacheln) :is(.klein, figcaption):not(.termin-datum *) { color: var(--text-leise); }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(.karte, .bildkachel, .termin, .kacheln) a:not([class]) { color: var(--link); }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  :is(.karte, .bildkachel, .termin, .kacheln) :focus-visible { outline-color: var(--link); }
+:is(.abschnitt-farbig, html:not([data-st-sections="none"], [data-st-sections="line"]) body.design-stage main.start > section:nth-of-type(even):not([style]))
+  .knopf.hell { background: transparent; color: inherit; border-color: currentColor; }
 
 /* Text mit Bild */
 .text-bild-raster { display: grid; gap: 1rem 1.5rem; align-items: start; }
@@ -729,7 +779,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .bildkachel h3 a { color: var(--link); font-weight: 700; }
 /* Die ganze Kachel ist klickbar, der Link bleibt der Titel (für Screenreader) */
 .bildkachel h3 a::after { content: ""; position: absolute; inset: 0; }
-.bildkachel:has(a):hover { border-color: var(--primaer); }
+.bildkachel:has(a):hover { border-color: var(--link); }
 .bildkachel:has(a:focus-visible) { outline: 3px solid var(--link); outline-offset: 2px; }
 .bildkachel h3 a:focus-visible { outline: none; }
 /* Knopf unten in der Kachel (Webseite #115): bündig über eine Reihe; in der hellen Kachel
@@ -740,7 +790,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 
 /* Hervorgehobener Termin mit Countdown */
 .termin-gross { text-align: center; }
-.termin-gross .countdown { font-family: var(--schrift-titel); font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; margin: .2rem 0 .4rem; color: var(--farbe-datum); }
+.termin-gross .countdown { font-family: var(--schrift-titel); font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 700; line-height: 1.1; margin: .2rem 0 .4rem; color: var(--datum-text); }
 .abschnitt-farbig.termin-gross .countdown { color: inherit; }
 .termin-gross-titel { font-weight: 600; font-size: 1.15rem; }
 /* Weitere Abschnitte (HUBIplan ab 14.11.2026) */
@@ -765,7 +815,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .zeitstrahl-liste { list-style: none; padding: 0 0 0 1.2rem; margin: 0 0 1rem; border-left: 3px solid var(--farbe-zier); display: grid; gap: .9rem; }
 .zeitstrahl-liste li { position: relative; }
 .zeitstrahl-liste li::before { content: ""; position: absolute; left: calc(-1.2rem - 7.5px); top: .35rem; width: 12px; height: 12px; border-radius: 50%; background: var(--farbe-zier); }
-.zeitstrahl-wann { display: block; font-weight: 700; color: var(--farbe-datum); }
+.zeitstrahl-wann { display: block; font-weight: 700; color: var(--datum-text); }
 .abschnitt-farbig .zeitstrahl-wann { color: inherit; }
 .zeitstrahl-liste p { margin: .2rem 0 0; }
 .hinweis-kasten { border-left: 5px solid var(--hk-farbe); background: color-mix(in srgb, var(--hk-farbe) 10%, var(--flaeche)); color: var(--text); border-radius: var(--rund); padding: .9rem 1.2rem; }
@@ -796,7 +846,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .countdown-zaehler[hidden], .countdown-abschnitt[hidden] { display: none; }
 .countdown-zaehler { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.25rem; margin: .4rem 0 .6rem; }
 .countdown-teil { display: flex; flex-direction: column; align-items: center; min-width: 4.5rem; }
-.countdown-zahl { font-family: var(--schrift-titel); font-size: clamp(2rem, 7vw, 3.4rem); font-weight: 700; line-height: 1.05; color: var(--farbe-datum); font-variant-numeric: tabular-nums; }
+.countdown-zahl { font-family: var(--schrift-titel); font-size: clamp(2rem, 7vw, 3.4rem); font-weight: 700; line-height: 1.05; color: var(--datum-text); font-variant-numeric: tabular-nums; }
 .abschnitt-farbig.countdown-abschnitt .countdown-zahl { color: inherit; }
 .countdown-einheit { font-size: .95rem; color: var(--text-leise); }
 .abschnitt-farbig.countdown-abschnitt .countdown-einheit { color: inherit; opacity: .85; }
@@ -850,7 +900,7 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .monatskalender thead, .monatskalender td:not(.mit-termin) { display: none; }
 .monatskalender td { padding: .5rem 0; border-bottom: 1px solid var(--linie); }
 .monatskalender .tag { display: block; font-weight: 600; }
-.monatskalender td.heute .tag { color: var(--primaer); }
+.monatskalender td.heute .tag { color: var(--link); }
 .termine-tag { list-style: none; padding: 0; margin: .2rem 0 0; }
 .termin.termin-kurz { display: block; margin: 0 0 .2rem; padding: .35rem .5rem; line-height: 1.25; border-left: 3px solid var(--farbe-datum, var(--primaer)); }
 .termin-kurz .termin-knopf { text-align: left; overflow-wrap: break-word; hyphens: auto; }
@@ -891,10 +941,10 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .video-vorschau .video-knopf { display: inline-block; margin: 1rem; padding: .5rem .9rem; border-radius: var(--rund); background: var(--primaer); color: var(--auf-primaer); font-weight: 600; }
 .video-vorschau img + .video-knopf { position: absolute; left: 0; bottom: 0; }
 .chronik-auszug-liste { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: .8rem; }
-.chronik-jahr { font-weight: 700; color: var(--primaer); font-variant-numeric: tabular-nums; margin-right: .3rem; }
+.chronik-jahr { font-weight: 700; color: var(--link); font-variant-numeric: tabular-nums; margin-right: .3rem; }
 .chronik-auszug-liste p { margin: .2rem 0 0; }
 .zahlen-liste { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr)); text-align: center; }
-.zahlen-liste .zahl { display: block; font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; line-height: 1.1; color: var(--primaer); font-variant-numeric: tabular-nums; }
+.zahlen-liste .zahl { display: block; font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 700; line-height: 1.1; color: var(--link); font-variant-numeric: tabular-nums; }
 .zahlen-liste .zahl-text { display: block; color: var(--text-leise); }
 .trenner hr { border: 0; border-top: 1px solid var(--linie); margin: 0; }
 .trenner-small { padding: .5rem 0; }

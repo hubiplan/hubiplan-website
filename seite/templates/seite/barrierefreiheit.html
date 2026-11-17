@@ -2,17 +2,27 @@
 {% block titel %}{% translate "Barrierefreiheit ·" %} {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Barrierefreiheit" %}</h1>
+{# UX-Audit 16.11. WS-08/X-10: nur Aussagen, die für jeden Verein stimmen; Prüfdatum aus views.VORLAGE_GEPRUEFT #}
 <div class="text">
-<p>{% translate "Diese Webseite soll für alle gut nutzbar sein, auch mit Tastatur, Screenreader, Vergrößerung oder großer Schrift. Maßstab sind die Richtlinien WCAG 2.2, Stufe AA. Als Verein sind wir dazu nicht gesetzlich verpflichtet, wir bemühen uns aber darum." %}</p>
-<h2>{% translate "Stand" %}</h2>
-<p>{% translate "Weitgehend erfüllt (Prüfung im Oktober 2026). Die Seite lässt sich vollständig mit der Tastatur bedienen, Links und Fokus sind deutlich sichtbar, das Bilderkarussell lässt sich anhalten und hält bei „Bewegung reduzieren“ von selbst still." %}</p>
+<p>{% translate "Diese Webseite soll für alle gut nutzbar sein, auch mit Tastatur, Screenreader, Vergrößerung oder großer Schrift. Maßstab sind die Richtlinien WCAG 2.2, Stufe AA." %}</p>
+<h2>{% translate "Stand der Prüfung" %}</h2>
+<p>{% blocktranslate with monat=geprueft|date:"F Y" %}Die Vorlage dieser Webseite wurde zuletzt im {{ monat }} nach WCAG 2.2 AA geprüft. Farben, Bilder und Texte pflegt der Verein selbst; dort können Abweichungen bestehen.{% endblocktranslate %}</p>
+<p>{% translate "Die Vorlage sorgt unter anderem dafür:" %}</p>
+<ul>
+  <li>{% translate "Alle Seiten lassen sich mit der Tastatur bedienen; der Fokus ist deutlich sichtbar." %}</li>
+  <li>{% translate "Schrift in den Vereinsfarben wird so weit abgedunkelt oder aufgehellt, dass sie lesbar bleibt." %}</li>
+  <li>{% translate "Wo Bilder von selbst wechseln, lässt sich das jederzeit anhalten; bei „Bewegung reduzieren“ stehen sie still." %}</li>
+</ul>
 <h2>{% translate "Bekannte Einschränkungen" %}</h2>
 <ul>
-  <li>{% translate "Nicht jedes Foto hat schon eine Beschreibung für Screenreader. Wir ergänzen sie nach und nach." %}</li>
-  <li>{% translate "Dokumente wie die Satzung sind PDF-Dateien, die nicht immer für Screenreader aufbereitet sind." %}</li>
-  <li>{% translate "Beiträge aus Instagram und Facebook übernehmen wir so, wie sie dort veröffentlicht wurden." %}</li>
+  <li>{% translate "Nicht jedes Foto hat schon eine Beschreibung für Screenreader." %}</li>
+  {% if mit_dokumenten %}<li>{% translate "Dokumente wie die Satzung sind PDF-Dateien, die nicht immer für Screenreader aufbereitet sind." %}</li>{% endif %}
+  {% if mit_beitraegen %}<li>{% translate "Beiträge aus Instagram und Facebook erscheinen so, wie sie dort veröffentlicht wurden." %}</li>{% endif %}
+  <li>{% translate "Inhalte des Vereins stehen nur in der Sprache, in der sie geschrieben wurden." %}</li>
 </ul>
+{% if ergaenzung %}<h2>{% translate "Hinweise des Vereins" %}</h2>
+{{ ergaenzung }}{% endif %}
 <h2>{% translate "Barriere melden" %}</h2>
-<p>{% translate "Wenn Ihnen etwas den Zugang erschwert, sagen Sie uns bitte Bescheid:" %} {% if contact_enabled %}{% translate "über das" %} <a href="{% url 'kontakt' %}">{% translate "Kontaktformular" %}</a>{% if site.info.email %} {% translate "oder" %} {% endif %}{% endif %}{% if site.info.email %}{% translate "per E-Mail an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>{% endif %}{% if not contact_enabled and not site.info.email %}{% translate "über die Angaben im" %} <a href="{% url 'impressum' %}">{% translate "Impressum" %}</a>{% endif %}.</p>
+<p>{% translate "Wenn etwas den Zugang erschwert, freuen wir uns über einen Hinweis:" %} {% if contact_enabled %}{% translate "über das" %} <a href="{% url 'kontakt' %}">{% translate "Kontaktformular" %}</a>{% if site.info.email %} {% translate "oder" %} {% endif %}{% endif %}{% if site.info.email %}{% translate "per E-Mail an" %} <a href="mailto:{{ site.info.email }}">{{ site.info.email }}</a>{% endif %}{% if not contact_enabled and not site.info.email %}{% translate "über die Angaben im" %} <a href="{% url 'impressum' %}">{% translate "Impressum" %}</a>{% endif %}.</p>
 </div>
 {% endblock %}

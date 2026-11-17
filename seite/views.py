@@ -49,6 +49,8 @@ from .site import (
     gradient_css,
     host_of,
     load,
+    text_on,
+    text_on_all,
 )
 from .templatetags.seite import web_ziel
 from .zeitleiste import gliedern
@@ -84,6 +86,39 @@ def maintenance_page(request, site: Site | None):
 
 def error_page(request, status: int, title: str, text: str, site: Site | None = None):
     return _page(request, "seite/fehler.html", site, {"title": title, "text": text}, status)
+
+
+def not_found(request, exception=None):
+    """Unbekannte Adresse (handler404, UX-Audit 16.11. WS-16): eigene Seite im Design des Vereins,
+    in seiner Sprache, mit Suche und Weg zur Startseite, statt der rohen englischen Serverseite.
+    Auch im Wartungszustand (dann ohne Menü, wie die Wartungsseite)."""
+    title = _("Seite nicht gefunden")
+    if global_maintenance():
+        return maintenance_page(request, None)
+    try:
+        site = load(request)
+    except (api.NotFound, api.Unavailable):
+        return error_page(request, 404, title, _("Diese Adresse gibt es nicht."))
+
+    def seite():
+        return _page(
+            request,
+            "seite/fehler.html",
+            site,
+            {
+                "title": _("Seite nicht gefunden"),
+                "text": _(
+                    "Diese Seite gibt es nicht oder nicht mehr. Vielleicht hilft die Suche "
+                    "oder der Weg über die Startseite."
+                )
+                if site.block("search") and not site.maintenance
+                else _("Diese Seite gibt es nicht oder nicht mehr."),
+                "mit_suche": site.block("search") and not site.maintenance,
+            },
+            404,
+        )
+
+    return in_language(site, seite)
 
 
 def in_language(site: Site, func, *args, **kwargs):
@@ -396,6 +431,7 @@ def _look(site: Site, s: dict) -> dict:
         color = entry.get("color") if isinstance(entry, dict) else None
         on = entry.get("on_color") if isinstance(entry, dict) else None
         if isinstance(color, str) and isinstance(on, str) and HEX.match(color) and HEX.match(on):
+            on = text_on(color.lower(), on.lower())  # UX-Audit 16.11. X-03: gegen die Fläche
             klassen.append("abschnitt-hg")
             klassen.append("abschnitt-farbig")
             stil = f"background:{color};color:{on};--abschnitt-auf:{on};--abschnitt-farbe:{color}"
@@ -413,6 +449,7 @@ def _look(site: Site, s: dict) -> dict:
                 {"from": pair[0], "to": pair[1], "direction": entry.get("direction")}
             )
         if css and isinstance(on, str) and HEX.match(on):
+            on = text_on_all(pair, on.lower())
             klassen.append("abschnitt-hg")
             klassen.append("abschnitt-farbig")
             stil = (
@@ -1299,6 +1336,33 @@ def _contact_box(site: Site) -> dict | None:
     return {"title": title.strip(), "html": markdown.last_link_as_button(body)}
 
 
+def _contact_details(site: Site) -> dict | None:
+    """Zweiter Kontaktweg neben dem Formular (UX-Audit 16.11. WS-13): Anschrift, Telefon und
+    E-Mail aus den Vereinsdaten, sofern vorhanden. Abschaltbar mit dem Regler contact_details."""
+    if site.style.get("contact_details") == "off":
+        return None
+    info = site.info
+    address = info.get("address") if isinstance(info.get("address"), dict) else {}
+    street = str(address.get("street") or "").strip()
+    place = " ".join(
+        str(address.get(k) or "").strip() for k in ("postal_code", "city") if address.get(k)
+    )
+    phone = str(info.get("phone") or "").strip()
+    email = str(info.get("email") or "").strip()
+    tel = re.sub(r"[^0-9+]", "", phone)
+    details = {
+        "name": str(info.get("name") or "").strip(),
+        "street": street,
+        "place": place,
+        "phone": phone,
+        "tel": tel if len(tel) >= 4 else "",
+        "email": email if "@" in email else "",
+    }
+    if not (street or place or phone or details["email"]):
+        return None
+    return details
+
+
 @require_GET
 @site_view()
 def contact(request, site: Site):
@@ -1317,6 +1381,7 @@ def contact(request, site: Site):
             "post_url": f"{settings.HUBIPLAN_PUBLIC_URL}{api.PREFIX}{site.key}/contact/",
             "preview_session": site.preview if site.is_preview else "",
             "kasten": _contact_box(site),
+            "angaben": _contact_details(site),
         },
     )
     response["Cache-Control"] = "private, no-store"
@@ -1430,13 +1495,29 @@ def privacy(request, site: Site, data: dict, stand):
 @require_GET
 @site_view(maintenance_ok=True)
 def accessibility(request, site: Site):
-    """Freiwillige Erklärung zur Barrierefreiheit (Barrierefreiheit X-02)."""
+    """Erklärung zur Barrierefreiheit (Barrierefreiheit X-02). Seit dem UX-Audit 16.11. (WS-08,
+    X-10) nur mit Aussagen, die für jeden Verein stimmen: geprüft ist die Vorlage, mit Datum aus
+    VORLAGE_GEPRUEFT; Farben, Bilder und Texte pflegt der Verein. Ergänzungen des Vereins kommen,
+    sobald HUBIplan sie schickt, als Einleitung „accessibility“."""
+    intro = site.intro("accessibility")
+    extra = markdown.render(intro.get("text") or "", site.units_path) if intro else ""
     return _page(
         request,
         "seite/barrierefreiheit.html",
         site,
-        {"contact_enabled": site.block("contact") and not site.maintenance},
+        {
+            "contact_enabled": site.block("contact") and not site.maintenance,
+            "geprueft": VORLAGE_GEPRUEFT,
+            "ergaenzung": extra,
+            "mit_dokumenten": site.block("documents"),
+            "mit_beitraegen": site.block("posts"),
+        },
     )
+
+
+# Letzte Prüfung der Vorlage nach WCAG 2.2 AA (UX-Audit 16./17.11.2026). Bei der nächsten Prüfung
+# hier nachziehen; die Seite „Barrierefreiheit“ nennt das Datum.
+VORLAGE_GEPRUEFT = datetime.date(2026, 11, 17)
 
 
 # --- Vorschau ---

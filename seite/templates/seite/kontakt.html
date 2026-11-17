@@ -4,7 +4,7 @@
 <h1>{% translate "Kontakt" as std %}{% baustein site "contact" std %}</h1>
 {# Webseite #137: Anrede wählbar (address=informal duzt), Kasten neben dem Formular aus HUBIplan #}
 {% if site.style.address == "informal" %}{% firstof "du" as anrede %}{% else %}{% firstof "sie" as anrede %}{% endif %}
-{% if kasten %}<div class="kontakt-spalten"><div class="kontakt-haupt">{% endif %}
+{% if kasten or angaben %}<div class="kontakt-spalten"><div class="kontakt-haupt">{% endif %}
 {% if recipient %}
 <form id="kontakt" class="formular" method="post" action="{{ post_url }}" novalidate
       data-ziel="{{ post_url }}" data-token="{{ challenge.token }}" data-salz="{{ challenge.salt }}"
@@ -47,6 +47,17 @@
 <aside class="kontakt-kasten"{% if kasten.title %} aria-labelledby="kontakt-kasten-titel"{% endif %}>
   {% if kasten.title %}<h2 id="kontakt-kasten-titel">{{ kasten.title }}</h2>{% endif %}
   {{ kasten.html }}
+</aside>
+</div>
+{% elif angaben %}</div>
+{# UX-Audit 16.11. WS-13: zweiter Kontaktweg aus den Vereinsdaten, wenn kein eigener Kasten gepflegt ist #}
+<aside class="kontakt-kasten kontakt-angaben" aria-labelledby="kontakt-angaben-titel">
+  <h2 id="kontakt-angaben-titel">{% translate "Weitere Wege zu uns" %}</h2>
+  {% if angaben.street or angaben.place %}<address>{% if angaben.name %}{{ angaben.name }}<br>{% endif %}{% if angaben.street %}{{ angaben.street }}<br>{% endif %}{{ angaben.place }}</address>{% endif %}
+  <dl>
+  {% if angaben.phone %}<dt>{% translate "Telefon" %}</dt><dd>{% if angaben.tel %}<a href="tel:{{ angaben.tel }}">{{ angaben.phone }}</a>{% else %}{{ angaben.phone }}{% endif %}</dd>{% endif %}
+  {% if angaben.email %}<dt>{% translate "E-Mail" %}</dt><dd><a href="mailto:{{ angaben.email }}">{{ angaben.email }}</a></dd>{% endif %}
+  </dl>
 </aside>
 </div>
 {% endif %}

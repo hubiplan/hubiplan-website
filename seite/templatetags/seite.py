@@ -687,6 +687,8 @@ JS_TEXTE = (
     gettext_noop("Nachricht wird vorbereitet …"),
     gettext_noop("Nachricht wird gesendet …"),
     gettext_noop("Danke! Ihre Nachricht ist angekommen."),
+    gettext_noop("Danke! Ihre Nachricht ist bei {name} angekommen."),
+    gettext_noop("Eine Bestätigung geht an {email}."),
     gettext_noop("Weitere Nachricht"),
     gettext_noop("Die Nachricht konnte nicht gesendet werden."),
     gettext_noop(
@@ -706,8 +708,8 @@ JS_TEXTE = (
     gettext_noop("Bitte die Angaben prüfen."),
     gettext_noop("Zu viele Nachrichten. Bitte später erneut versuchen."),
     gettext_noop("Die Nachricht konnte nicht gesendet werden. Bitte später erneut versuchen."),
-    gettext_noop("Weiter abspielen"),
-    gettext_noop("Anhalten"),
+    gettext_noop("Bildwechsel anhalten"),
+    gettext_noop("Bildwechsel fortsetzen"),
     gettext_noop("Aktualisiert um {zeit} Uhr."),
     gettext_noop("Die Ergebnisse sind endgültig."),
 )

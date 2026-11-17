@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hubiplan-website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 21:09+0100\n"
+"POT-Creation-Date: 2026-11-17 18:28+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,6 +52,27 @@ msgstr "All"
 msgid "Noch keine Beiträge."
 msgstr "No posts yet."
 
+msgid "Galerie"
+msgstr "Gallery"
+
+msgid "(Bild vergrößern)"
+msgstr "(enlarge picture)"
+
+msgid "In diesem Album sind noch keine Bilder."
+msgstr "There are no images in this album yet."
+
+#, python-format
+msgid "%(n)s Bild"
+msgid_plural "%(n)s Bilder"
+msgstr[0] "%(n)s image"
+msgstr[1] "%(n)s images"
+
+#, python-format
+msgid "%(n)s Album"
+msgid_plural "%(n)s Alben"
+msgstr[0] "%(n)s album"
+msgstr[1] "%(n)s albums"
+
 msgid "Barrierefreiheit ·"
 msgstr "Accessibility ·"
 
@@ -61,36 +82,53 @@ msgstr "Accessibility"
 msgid ""
 "Diese Webseite soll für alle gut nutzbar sein, auch mit Tastatur, "
 "Screenreader, Vergrößerung oder großer Schrift. Maßstab sind die Richtlinien"
-" WCAG 2.2, Stufe AA. Als Verein sind wir dazu nicht gesetzlich verpflichtet,"
-" wir bemühen uns aber darum."
+" WCAG 2.2, Stufe AA."
 msgstr ""
 "This website is meant to be easy to use for everyone, including with a "
-"keyboard, screen reader, magnification or large text. Our benchmark is the "
-"WCAG 2.2 guidelines, level AA. As a club we are not legally required to meet"
-" them, but we aim to."
+"keyboard, screen reader, magnification or large text. The benchmark is the "
+"WCAG 2.2 guidelines, level AA."
 
-msgid "Stand"
-msgstr "Status"
+msgid "Stand der Prüfung"
+msgstr "Status of the check"
+
+#, python-format
+msgid ""
+"Die Vorlage dieser Webseite wurde zuletzt im %(monat)s nach WCAG 2.2 AA "
+"geprüft. Farben, Bilder und Texte pflegt der Verein selbst; dort können "
+"Abweichungen bestehen."
+msgstr ""
+"The template of this website was last checked against WCAG 2.2 AA in "
+"%(monat)s. Colours, images and texts are maintained by the club itself and "
+"may differ."
+
+msgid "Die Vorlage sorgt unter anderem dafür:"
+msgstr "Among other things, the template ensures that:"
 
 msgid ""
-"Weitgehend erfüllt (Prüfung im Oktober 2026). Die Seite lässt sich "
-"vollständig mit der Tastatur bedienen, Links und Fokus sind deutlich "
-"sichtbar, das Bilderkarussell lässt sich anhalten und hält bei „Bewegung "
-"reduzieren“ von selbst still."
+"Alle Seiten lassen sich mit der Tastatur bedienen; der Fokus ist deutlich "
+"sichtbar."
 msgstr ""
-"Largely met (checked in October 2026). The site can be used entirely with "
-"the keyboard, links and focus are clearly visible, and the image carousel "
-"can be paused and stays still on its own when “reduce motion” is set."
+"All pages can be used with the keyboard; the focus is clearly visible."
+
+msgid ""
+"Schrift in den Vereinsfarben wird so weit abgedunkelt oder aufgehellt, dass "
+"sie lesbar bleibt."
+msgstr ""
+"Text in the club colours is darkened or lightened as far as needed to stay "
+"readable."
+
+msgid ""
+"Wo Bilder von selbst wechseln, lässt sich das jederzeit anhalten; bei "
+"„Bewegung reduzieren“ stehen sie still."
+msgstr ""
+"Where images change on their own, this can be paused at any time; with "
+"“reduce motion” they stay still."
 
 msgid "Bekannte Einschränkungen"
 msgstr "Known limitations"
 
-msgid ""
-"Nicht jedes Foto hat schon eine Beschreibung für Screenreader. Wir ergänzen "
-"sie nach und nach."
-msgstr ""
-"Not every photo has a description for screen readers yet. We are adding them"
-" step by step."
+msgid "Nicht jedes Foto hat schon eine Beschreibung für Screenreader."
+msgstr "Not every photo has a description for screen readers yet."
 
 msgid ""
 "Dokumente wie die Satzung sind PDF-Dateien, die nicht immer für Screenreader"
@@ -100,16 +138,26 @@ msgstr ""
 "prepared for screen readers."
 
 msgid ""
-"Beiträge aus Instagram und Facebook übernehmen wir so, wie sie dort "
+"Beiträge aus Instagram und Facebook erscheinen so, wie sie dort "
 "veröffentlicht wurden."
 msgstr ""
-"Posts from Instagram and Facebook are shown as they were published there."
+"Posts from Instagram and Facebook appear as they were published there."
+
+msgid ""
+"Inhalte des Vereins stehen nur in der Sprache, in der sie geschrieben "
+"wurden."
+msgstr ""
+"Content from the club is only available in the language it was written in."
+
+msgid "Hinweise des Vereins"
+msgstr "Notes from the club"
 
 msgid "Barriere melden"
 msgstr "Report a barrier"
 
-msgid "Wenn Ihnen etwas den Zugang erschwert, sagen Sie uns bitte Bescheid:"
-msgstr "If something makes access difficult for you, please let us know:"
+msgid "Wenn etwas den Zugang erschwert, freuen wir uns über einen Hinweis:"
+msgstr ""
+"If something makes access difficult, we would be glad to hear about it:"
 
 msgid "über das"
 msgstr "using the"
@@ -135,9 +183,6 @@ msgstr "Club website"
 msgid "Zum Inhalt springen"
 msgstr "Skip to content"
 
-msgid "zur Startseite"
-msgstr "to the home page"
-
 msgid "Vorschau: Diese Ansicht sehen nur Sie."
 msgstr "Preview: only you can see this view."
 
@@ -161,23 +206,8 @@ msgstr "Show selected design"
 msgid "Vorschau beendet. Sie sehen die Webseite jetzt wie alle Besucher."
 msgstr "Preview ended. You now see the website like every visitor."
 
-msgid "Mitglied im"
-msgstr "Member of"
-
-msgid "Social Media"
-msgstr "Social media"
-
-msgid "Datenschutz"
-msgstr "Privacy"
-
-msgid "Quellcode"
-msgstr "Source code"
-
-msgid "Daten aus"
-msgstr "Data from"
-
-msgid "(öffnet in neuem Fenster)"
-msgstr "(opens in a new window)"
+msgid "Nach oben"
+msgstr "Back to top"
 
 msgid "Video"
 msgstr "Video"
@@ -193,8 +223,60 @@ msgstr "Watch video on %(ort)s"
 msgid "Beitrag auf %(ort)s ansehen"
 msgstr "View post on %(ort)s"
 
+msgid "(öffnet in neuem Fenster)"
+msgstr "(opens in a new window)"
+
+msgid "Belegung"
+msgstr "Bookings"
+
+msgid "Vorige Woche"
+msgstr "Previous week"
+
+msgid "Nächste Woche"
+msgstr "Next week"
+
+msgid "ganztägig"
+msgstr "all day"
+
+msgid "frei"
+msgstr "free"
+
+msgid "Belegung im eigenen Kalender"
+msgstr "Bookings in your own calendar"
+
+msgid "Kalender abonnieren"
+msgstr "Subscribe to calendar"
+
+msgid "Oder diese Adresse im Kalender als Abo hinzufügen:"
+msgstr "Or add this address to your calendar as a subscription:"
+
+msgid "QR-Code für das Kalender-Abo"
+msgstr "QR code for the calendar subscription"
+
+msgid "Bild"
+msgstr "Picture"
+
+msgid "Vorheriges Bild"
+msgstr "Previous image"
+
+#, python-brace-format
+msgid "Bild {n} von {m}"
+msgstr "Image {n} of {m}"
+
+msgid "Nächstes Bild"
+msgstr "Next image"
+
+msgid "Schließen"
+msgstr "Close"
+
+msgid "Bild folgt"
+msgstr "Picture to follow"
+
 msgid "Chronik"
 msgstr "Chronicle"
+
+msgid "Abschnitte der Chronik"
+msgstr "Sections of the chronicle"
 
 msgid "Datenschutz ·"
 msgstr "Privacy ·"
@@ -242,9 +324,6 @@ msgstr "Upcoming events"
 
 msgid "Alle Termine"
 msgstr "All events"
-
-msgid "Kalender abonnieren"
-msgstr "Subscribe to calendar"
 
 #, python-format
 msgid "Folgt %(name)s"
@@ -296,6 +375,12 @@ msgstr "still open"
 msgid "Platz"
 msgstr "Place"
 
+msgid "außer Konkurrenz"
+msgstr "hors concours"
+
+msgid "Noch keine Ergebnisse."
+msgstr "No results yet."
+
 msgid "Einheit"
 msgstr "Unit"
 
@@ -304,12 +389,6 @@ msgstr "Team"
 
 msgid "Ergebnis"
 msgstr "Result"
-
-msgid "außer Konkurrenz"
-msgstr "hors concours"
-
-msgid "Noch keine Ergebnisse."
-msgstr "No results yet."
 
 msgid "Titelträger"
 msgstr "Title holders"
@@ -341,11 +420,56 @@ msgstr "Won by"
 msgid "(endgültig gewonnen)"
 msgstr "(won outright)"
 
+msgid "Suchbegriff"
+msgstr "Search term"
+
+msgid "Suchen"
+msgstr "Search"
+
 msgid "Zur Startseite"
 msgstr "To the home page"
 
-msgid "Startseite"
-msgstr "Home page"
+msgid "Mitglied im"
+msgstr "Member of"
+
+msgid "Suche"
+msgstr "Search"
+
+msgid "Social Media"
+msgstr "Social media"
+
+msgid "Datenschutz"
+msgstr "Privacy"
+
+msgid "Quellcode"
+msgstr "Source code"
+
+msgid "Daten aus"
+msgstr "Data from"
+
+msgid "Hier stehen noch keine Alben."
+msgstr "There are no albums here yet."
+
+msgid "In Gedenken"
+msgstr "In memoriam"
+
+msgid "heute"
+msgstr "today"
+
+msgid "morgen"
+msgstr "tomorrow"
+
+#, python-format
+msgid "noch %(n)s Tag"
+msgid_plural "noch %(n)s Tage"
+msgstr[0] "%(n)s day to go"
+msgstr[1] "%(n)s days to go"
+
+msgid "Mehr erfahren"
+msgstr "Learn more"
+
+msgid "Hinweis schließen"
+msgstr "Close notice"
 
 msgid "Impressum ·"
 msgstr "Legal notice ·"
@@ -386,17 +510,37 @@ msgstr "Data protection officer"
 msgid "Für diese Seite ist noch kein Impressum hinterlegt."
 msgstr "No legal notice has been added for this site yet."
 
+msgid "Bildnachweis"
+msgstr "Image credits"
+
+msgid ""
+"Für einzelne Bilder auf dieser Webseite sind die Urheberinnen und Urheber "
+"genannt:"
+msgstr "Creators are credited for individual images on this website:"
+
+msgid "Die Angabe steht jeweils auch direkt am Bild („Foto: …“)."
+msgstr "The credit is also shown directly on each image (“Photo: …”)."
+
+msgid "Karussell"
+msgstr "carousel"
+
 msgid "Bilder"
 msgstr "Images"
 
-msgid "Anhalten"
-msgstr "Pause"
+msgid "Bildwechsel anhalten"
+msgstr "Pause slideshow"
 
-msgid "Vorheriges Bild"
-msgstr "Previous image"
+#, python-format
+msgid "%(n)s von %(m)s"
+msgstr "%(n)s of %(m)s"
 
-msgid "Nächstes Bild"
-msgstr "Next image"
+#, python-format
+msgid ""
+"Schreib uns. Die Nachricht geht per E-Mail an %(name)s, die Antwort kommt an"
+" deine E-Mail-Adresse."
+msgstr ""
+"Write to us. Your message is emailed to %(name)s; the reply goes to your "
+"email address."
 
 #, python-format
 msgid ""
@@ -406,14 +550,21 @@ msgstr ""
 "Write to us. Your message is emailed to %(name)s; the reply goes to your "
 "email address."
 
-msgid "Alle Felder sind Pflicht, nur „Bestätigung an mich senden“ ist freiwillig."
+msgid ""
+"Alle Felder sind Pflicht, nur „Bestätigung an mich senden“ ist freiwillig."
 msgstr "All fields are required; only “Send me a confirmation” is optional."
 
 msgid "An"
 msgstr "To"
 
+msgid "Dein Name"
+msgstr "Your name"
+
 msgid "Ihr Name"
 msgstr "Your name"
+
+msgid "Deine E-Mail-Adresse"
+msgstr "Your email address"
 
 msgid "Ihre E-Mail-Adresse"
 msgstr "Your email address"
@@ -429,6 +580,9 @@ msgstr "Please leave empty"
 
 msgid "Bestätigung an mich senden"
 msgstr "Send me a confirmation"
+
+msgid "Hinweise zur Verarbeitung deiner Angaben stehen in den"
+msgstr "Information on how your details are processed is in the"
 
 msgid "Hinweise zur Verarbeitung Ihrer Angaben stehen in den"
 msgstr "Information on how your details are processed is in the"
@@ -446,6 +600,12 @@ msgstr ""
 "The form needs JavaScript to send (spam protection); it is not available in "
 "this browser right now."
 
+msgid "Schreib uns stattdessen gern per E-Mail an"
+msgstr "Feel free to email us instead at"
+
+msgid "Bitte versuch es mit einem anderen Browser."
+msgstr "Please try a different browser."
+
 msgid "Schreiben Sie uns stattdessen gern per E-Mail an"
 msgstr "Feel free to email us instead at"
 
@@ -455,8 +615,23 @@ msgstr "Please try a different browser."
 msgid "Das Kontaktformular ist gerade nicht verfügbar."
 msgstr "The contact form is not available right now."
 
+msgid "Schreib uns gern an"
+msgstr "Feel free to write to us at"
+
 msgid "Schreiben Sie uns gern an"
 msgstr "Feel free to write to us at"
+
+msgid "Weitere Wege zu uns"
+msgstr "Other ways to reach us"
+
+msgid "Telefon"
+msgstr "Phone"
+
+msgid "E-Mail"
+msgstr "Email"
+
+msgid "zur Startseite"
+msgstr "to the home page"
 
 msgid "Hauptmenü"
 msgstr "Main menu"
@@ -470,9 +645,50 @@ msgstr "Main menu (mobile)"
 msgid "Majestäten"
 msgstr "Majesties"
 
+msgid "Mitglied werden"
+msgstr "Become a member"
+
+msgid "Mitgliedsarten"
+msgstr "Membership types"
+
+#, python-format
+msgid "%(betrag)s € im Jahr"
+msgstr "€%(betrag)s per year"
+
+msgid ""
+"Der Beitrag lässt sich bequem per Lastschrift zahlen; das Mandat wird gleich"
+" im Antrag erteilt."
+msgstr ""
+"The fee can be paid by direct debit; the mandate is given in the "
+"application."
+
+#, python-format
+msgid ""
+"Der Antrag dauert etwa 5 Minuten. Dazu wechselt die Ansicht in den "
+"Mitgliederbereich von %(verein)s."
+msgstr ""
+"The application takes about 5 minutes. For this you will switch to the "
+"members’ area of %(verein)s."
+
+msgid "Antrag ausfüllen"
+msgstr "Fill in the application"
+
+msgid "Direkt bei einer Untereinheit"
+msgstr "Directly with a sub-unit"
+
+msgid "Hinweise zur Verarbeitung der Angaben im Antrag stehen in den"
+msgstr ""
+"Information on how the details in the application are processed is in the"
+
 #, python-format
 msgid "seit %(jahr)s"
 msgstr "since %(jahr)s"
+
+msgid "Presse"
+msgstr "Press"
+
+msgid "Repertoire"
+msgstr "Repertoire"
 
 msgid "Zurzeit nicht besetzt."
 msgstr "Currently vacant."
@@ -486,11 +702,75 @@ msgstr "Homepage"
 msgid "Zur Homepage"
 msgstr "Visit homepage"
 
+msgid "Zur Galerie"
+msgstr "To the gallery"
+
+#, python-format
+msgid "Album „%(name)s“ ansehen"
+msgstr "View album “%(name)s”"
+
+msgid "Route planen"
+msgstr "Plan route"
+
+msgid "Ansprechpartner"
+msgstr "Contacts"
+
+msgid "Für Mitglieder"
+msgstr "For members"
+
+msgid "Zum Mitgliederbereich"
+msgstr "To the members' area"
+
+msgid "App bei Google Play"
+msgstr "App on Google Play"
+
+msgid "Mit dem Handy scannen und anmelden"
+msgstr "Scan with your phone and sign in"
+
+msgid "Aus der Chronik"
+msgstr "From the chronicle"
+
+msgid "Zur Chronik"
+msgstr "To the chronicle"
+
+msgid "Tag"
+msgstr "day"
+
+msgid "Tage"
+msgstr "days"
+
+msgid "Stunde"
+msgstr "hour"
+
+msgid "Stunden"
+msgstr "hours"
+
+msgid "Minute"
+msgstr "minute"
+
+msgid "Minuten"
+msgstr "minutes"
+
+msgid "Sekunde"
+msgstr "second"
+
+msgid "Sekunden"
+msgstr "seconds"
+
 msgid "Neu auf Facebook"
 msgstr "New on Facebook"
 
 msgid "Alle Beiträge"
 msgstr "All posts"
+
+msgid "Achtung:"
+msgstr "Caution:"
+
+msgid "Gut zu wissen:"
+msgstr "Good to know:"
+
+msgid "Hinweis:"
+msgstr "Note:"
 
 msgid "Unsere Majestäten"
 msgstr "Our majesties"
@@ -505,11 +785,63 @@ msgstr "All majesties"
 msgid "Neu auf Instagram"
 msgstr "New on Instagram"
 
+#, python-format
+msgid "Majestäten: %(name)s"
+msgstr "Majesties: %(name)s"
+
+#, python-format
+msgid "Zur Seite „%(name)s“"
+msgstr "To the page “%(name)s”"
+
+msgid "Jetzt Mitglied werden"
+msgstr "Become a member now"
+
+msgid "Neueste Beiträge"
+msgstr "Latest posts"
+
 msgid "Aktuelle Ergebnisse"
 msgstr "Latest results"
 
+msgid "Spendenstand"
+msgstr "Donations so far"
+
+#, python-format
+msgid "%(a)s von %(b)s gesammelt"
+msgstr "%(a)s of %(b)s raised"
+
+msgid "Kontoinhaber"
+msgstr "Account holder"
+
+msgid "IBAN"
+msgstr "IBAN"
+
+msgid "BIC"
+msgstr "BIC"
+
+msgid "Verwendungszweck"
+msgstr "Payment reference"
+
+msgid "Jetzt spenden"
+msgstr "Donate now"
+
 msgid "fällt aus"
 msgstr "cancelled"
+
+msgid "Video ansehen"
+msgstr "Watch video"
+
+msgid "Alle Ergebnisse dieses Wettbewerbs"
+msgstr "All results of this competition"
+
+#, python-format
+msgid "%(n)s Treffer"
+msgid_plural "%(n)s Treffer"
+msgstr[0] "%(n)s result"
+msgstr[1] "%(n)s results"
+
+#, python-format
+msgid "Zu „%(query)s“ wurde nichts gefunden."
+msgstr "Nothing was found for “%(query)s”."
 
 #, python-format
 msgid "Termin von %(name)s"
@@ -518,8 +850,8 @@ msgstr "Event by %(name)s"
 msgid "Ort:"
 msgstr "Place:"
 
-msgid "Schließen"
-msgstr "Close"
+msgid "Unterlagen:"
+msgstr "Documents:"
 
 msgid "bis"
 msgstr "to"
@@ -556,17 +888,11 @@ msgstr ""
 "With the calendar subscription, all events appear in your calendar "
 "automatically (phone, Outlook, Google, Apple) and stay up to date."
 
-msgid "Oder diese Adresse im Kalender als Abo hinzufügen:"
-msgstr "Or add this address to your calendar as a subscription:"
-
 msgid "Adresse kopiert"
 msgstr "Address copied"
 
 msgid "Adresse kopieren"
 msgstr "Copy address"
-
-msgid "QR-Code für das Kalender-Abo"
-msgstr "QR code for the calendar subscription"
 
 msgid "Vorstand"
 msgstr "Board"
@@ -578,13 +904,20 @@ msgid "Hier entsteht gerade etwas"
 msgstr "Something is being built here"
 
 msgid ""
-"Die Webseite wird gerade vorbereitet oder überarbeitet. Bitte schauen Sie "
-"bald wieder vorbei."
-msgstr "The website is being prepared or revised. Please check back soon."
+"Die Webseite wird gerade vorbereitet oder überarbeitet und ist bald wieder "
+"da."
+msgstr "The website is being prepared or revised and will be back soon."
 
 #, python-format
 msgid "%(n)s. Mal"
 msgstr "time %(n)s"
+
+msgid "Vorgänger"
+msgstr "Predecessors"
+
+#, python-format
+msgid "Alle %(n)s Einträge (%(name)s)"
+msgstr "All %(n)s entries (%(name)s)"
 
 #, python-format
 msgid "Chronik %(name)s (%(n)s Eintrag)"
@@ -594,6 +927,10 @@ msgstr[1] "Chronicle of %(name)s (%(n)s entries)"
 
 msgid "Begleitung"
 msgstr "Companions"
+
+#, python-brace-format
+msgid "Foto: {name}"
+msgstr "Photo: {name}"
 
 msgid "Start"
 msgstr "Home"
@@ -630,6 +967,14 @@ msgstr "Sending message …"
 
 msgid "Danke! Ihre Nachricht ist angekommen."
 msgstr "Thank you! Your message has arrived."
+
+#, python-brace-format
+msgid "Danke! Ihre Nachricht ist bei {name} angekommen."
+msgstr "Thank you! Your message has reached {name}."
+
+#, python-brace-format
+msgid "Eine Bestätigung geht an {email}."
+msgstr "A confirmation is on its way to {email}."
 
 msgid "Weitere Nachricht"
 msgstr "Another message"
@@ -670,8 +1015,8 @@ msgid ""
 "Die Nachricht konnte nicht gesendet werden. Bitte später erneut versuchen."
 msgstr "The message could not be sent. Please try again later."
 
-msgid "Weiter abspielen"
-msgstr "Resume"
+msgid "Bildwechsel fortsetzen"
+msgstr "Resume slideshow"
 
 #, python-brace-format
 msgid "Aktualisiert um {zeit} Uhr."
@@ -682,6 +1027,19 @@ msgstr "The results are final."
 
 msgid "Seite nicht gefunden"
 msgstr "Page not found"
+
+msgid "Diese Adresse gibt es nicht."
+msgstr "This address does not exist."
+
+msgid ""
+"Diese Seite gibt es nicht oder nicht mehr. Vielleicht hilft die Suche oder "
+"der Weg über die Startseite."
+msgstr ""
+"This page does not exist or no longer exists. The search or the home page "
+"may help."
+
+msgid "Diese Seite gibt es nicht oder nicht mehr."
+msgstr "This page does not exist or no longer exists."
 
 msgid "Gerade nicht erreichbar"
 msgstr "Temporarily unavailable"
@@ -706,6 +1064,9 @@ msgstr "Fee regulations"
 msgid "Gründungsurkunde"
 msgstr "Founding charter"
 
+msgid "Startseite"
+msgstr "Home page"
+
 msgid "Vorschau"
 msgstr "Preview"
 
@@ -725,288 +1086,6 @@ msgstr ""
 "The preview link is invalid or has expired. Please open a new one in "
 "HUBIplan."
 
-msgid "Abschnitte der Chronik"
-msgstr "Sections of the chronicle"
-
-msgid "(Bild vergrößern)"
-msgstr "(enlarge picture)"
-
-msgid "Bild"
-msgstr "Picture"
-
 #, python-format
 msgid "%(jahr)ser"
 msgstr "%(jahr)ss"
-
-msgid "Bild {n} von {m}"
-msgstr "Image {n} of {m}"
-
-msgid "Galerie"
-msgstr "Gallery"
-
-msgid "Hier stehen noch keine Alben."
-msgstr "There are no albums here yet."
-
-msgid "In diesem Album sind noch keine Bilder."
-msgstr "There are no images in this album yet."
-
-#, python-format
-msgid "%(n)s Bild"
-msgid_plural "%(n)s Bilder"
-msgstr[0] "%(n)s image"
-msgstr[1] "%(n)s images"
-
-#, python-format
-msgid "%(n)s Album"
-msgid_plural "%(n)s Alben"
-msgstr[0] "%(n)s album"
-msgstr[1] "%(n)s albums"
-
-msgid "In Gedenken"
-msgstr "In memoriam"
-
-msgid "Repertoire"
-msgstr "Repertoire"
-
-msgid "Presse"
-msgstr "Press"
-
-msgid "Suche"
-msgstr "Search"
-
-msgid "Suchbegriff"
-msgstr "Search term"
-
-msgid "Suchen"
-msgstr "Search"
-
-#, python-format
-msgid "%(n)s Treffer"
-msgid_plural "%(n)s Treffer"
-msgstr[0] "%(n)s result"
-msgstr[1] "%(n)s results"
-
-#, python-format
-msgid "Zu „%(query)s“ wurde nichts gefunden."
-msgstr "Nothing was found for “%(query)s”."
-
-msgid "Belegung"
-msgstr "Bookings"
-
-msgid "Vorige Woche"
-msgstr "Previous week"
-
-msgid "Nächste Woche"
-msgstr "Next week"
-
-msgid "ganztägig"
-msgstr "all day"
-
-msgid "frei"
-msgstr "free"
-
-msgid "Belegung im eigenen Kalender"
-msgstr "Bookings in your own calendar"
-
-msgid "noch %(n)s Tag"
-msgid_plural "noch %(n)s Tage"
-msgstr[0] "%(n)s day to go"
-msgstr[1] "%(n)s days to go"
-
-msgid "morgen"
-msgstr "tomorrow"
-
-msgid "heute"
-msgstr "today"
-
-msgid "Album „%(name)s“ ansehen"
-msgstr "View album “%(name)s”"
-
-msgid "Ansprechpartner"
-msgstr "Contacts"
-
-msgid "Route planen"
-msgstr "Plan route"
-
-msgid "Video ansehen"
-msgstr "Watch video"
-
-msgid "Aus der Chronik"
-msgstr "From the chronicle"
-
-msgid "Zur Chronik"
-msgstr "To the chronicle"
-
-msgid "Mitglied werden"
-msgstr "Become a member"
-
-msgid "Mitgliedsarten"
-msgstr "Membership types"
-
-#, python-format
-msgid "%(betrag)s € im Jahr"
-msgstr "€%(betrag)s per year"
-
-msgid ""
-"Den Beitrag können Sie bequem per Lastschrift zahlen; das Mandat erteilen "
-"Sie gleich im Antrag."
-msgstr ""
-"You can conveniently pay the fee by direct debit; you grant the mandate "
-"right in the application."
-
-msgid "Zum Mitgliedsantrag"
-msgstr "To the membership application"
-
-msgid "Direkt bei einer Untereinheit"
-msgstr "Directly with a sub-unit"
-
-msgid ""
-"Der Antrag läuft über die Mitgliederverwaltung des Vereins. Hinweise zur "
-"Verarbeitung Ihrer Angaben stehen in den"
-msgstr ""
-"The application runs through the club's member management. Information on "
-"how your details are processed is in the"
-
-msgid "Nach oben"
-msgstr "Back to top"
-
-msgid "Tag"
-msgstr "day"
-
-msgid "Tage"
-msgstr "days"
-
-msgid "Stunde"
-msgstr "hour"
-
-msgid "Stunden"
-msgstr "hours"
-
-msgid "Minute"
-msgstr "minute"
-
-msgid "Minuten"
-msgstr "minutes"
-
-msgid "Sekunde"
-msgstr "second"
-
-msgid "Sekunden"
-msgstr "seconds"
-
-msgid "Jetzt Mitglied werden"
-msgstr "Become a member now"
-
-msgid "Spendenstand"
-msgstr "Donations so far"
-
-#, python-format
-msgid "%(a)s von %(b)s gesammelt"
-msgstr "%(a)s of %(b)s raised"
-
-msgid "Kontoinhaber"
-msgstr "Account holder"
-
-msgid "IBAN"
-msgstr "IBAN"
-
-msgid "BIC"
-msgstr "BIC"
-
-msgid "Verwendungszweck"
-msgstr "Payment reference"
-
-msgid "Jetzt spenden"
-msgstr "Donate now"
-
-msgid "Achtung:"
-msgstr "Caution:"
-
-msgid "Gut zu wissen:"
-msgstr "Good to know:"
-
-msgid "Hinweis:"
-msgstr "Note:"
-
-#, python-format
-msgid "Majestäten: %(name)s"
-msgstr "Majesties: %(name)s"
-
-#, python-format
-msgid "Zur Seite „%(name)s“"
-msgstr "To the page “%(name)s”"
-
-msgid "Alle Ergebnisse dieses Wettbewerbs"
-msgstr "All results of this competition"
-
-msgid "Zur Galerie"
-msgstr "To the gallery"
-
-msgid "Neueste Beiträge"
-msgstr "Latest posts"
-
-msgid "Für Mitglieder"
-msgstr "For members"
-
-msgid "Zum Mitgliederbereich"
-msgstr "To the members' area"
-
-msgid "App bei Google Play"
-msgstr "App on Google Play"
-
-msgid "Mit dem Handy scannen und anmelden"
-msgstr "Scan with your phone and sign in"
-msgid "Unterlagen:"
-msgstr "Documents:"
-
-msgid "Bild folgt"
-msgstr "Picture to follow"
-
-msgid "Foto: {name}"
-msgstr "Photo: {name}"
-
-msgid "Bildnachweis"
-msgstr "Image credits"
-
-msgid "Für einzelne Bilder auf dieser Webseite sind die Urheberinnen und Urheber genannt:"
-msgstr "Creators are credited for individual images on this website:"
-
-msgid "Die Angabe steht jeweils auch direkt am Bild („Foto: …“)."
-msgstr "The credit is also shown directly on each image (“Photo: …”)."
-
-msgid "Vorgänger"
-msgstr "Predecessors"
-
-msgid "Alle %(n)s Einträge (%(name)s)"
-msgstr "All %(n)s entries (%(name)s)"
-
-msgid ""
-"Schreib uns. Die Nachricht geht per E-Mail an %(name)s, die Antwort kommt an "
-"deine E-Mail-Adresse."
-msgstr ""
-"Write to us. Your message is emailed to %(name)s; the reply goes to your "
-"email address."
-
-msgid "Dein Name"
-msgstr "Your name"
-
-msgid "Deine E-Mail-Adresse"
-msgstr "Your email address"
-
-msgid "Hinweise zur Verarbeitung deiner Angaben stehen in den"
-msgstr "Information on how your details are processed is in the"
-
-msgid "Schreib uns stattdessen gern per E-Mail an"
-msgstr "Feel free to email us instead at"
-
-msgid "Bitte versuch es mit einem anderen Browser."
-msgstr "Please try a different browser."
-
-msgid "Schreib uns gern an"
-msgstr "Feel free to write to us at"
-
-msgid "Mehr erfahren"
-msgstr "Learn more"
-
-msgid "Hinweis schließen"
-msgstr "Close notice"

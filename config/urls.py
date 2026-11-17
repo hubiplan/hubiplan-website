@@ -77,3 +77,6 @@ urlpatterns = [
     path("favicon.ico", views.favicon, name="favicon"),
     path("gesund", views.health, name="gesund"),
 ]
+
+# Unbekannte Adressen: eigene Seite im Vereinsdesign statt der Serverseite (UX-Audit 16.11. WS-16)
+handler404 = "seite.views.not_found"

@@ -158,6 +158,9 @@ def test_jede_stufe_hat_regeln():
         ("honorary_layout", "cards"),
         # Webseite #148: Band der Einheiten in der Vereinsfarbe ist die Grundstellung
         ("unit_title", "primary"),
+        # UX-Audit 16.11. WS-13: Kontaktangaben neben dem Formular wirken über die Vorlage
+        ("contact_details", "on"),
+        ("contact_details", "off"),
     }
     for key, allowed in stil.CATALOG.items():
         if key == "background":
