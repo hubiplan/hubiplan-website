@@ -26,8 +26,8 @@ def test_endzeit_in_karten_und_details(client, hubiplan, monkeypatch, path, hide
     assert "18:00 Uhr" in html
     assert ("bis 23:00 Uhr" in html) is (hide is not True)
     assert "Schützenfest" in html
-    detail = html[html.index('<dialog id="termin-e1-') :]
-    detail = detail[: detail.index("</dialog>")]
+    detail = html[html.index('<template id="termin-e1-') :]
+    detail = detail[: detail.index("</template>")]
     assert "18:00 Uhr" in detail
     assert ("bis 23:00 Uhr" in detail) is (hide is not True)
 

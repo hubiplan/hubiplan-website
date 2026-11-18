@@ -47,6 +47,10 @@
   document.addEventListener("click", function (e) {
     if (menue.open && !menue.contains(e.target)) menue.open = false;
   });
+  // Verlässt der Fokus das Menü per Tab, schließt es (UX-Audit WS-14 a)
+  menue.addEventListener("focusout", function (e) {
+    if (menue.open && e.relatedTarget && !menue.contains(e.relatedTarget)) menue.open = false;
+  });
 })();
 
 // Knopf „Nach oben“ (Stilregler to_top): erst nach gut einer Bildschirmhöhe Blättern sichtbar

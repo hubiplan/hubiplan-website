@@ -1,7 +1,7 @@
 {% extends "seite/basis.html" %}{% load seite i18n %}
-{% block titel %}{% baustein site "units" site.info.unit_label_plural|default:"Einheiten" %} · {% endblock %}
+{% block titel %}{% baustein site "units" site.units_label %} · {% endblock %}
 {% block inhalt %}
-<h1>{% baustein site "units" site.info.unit_label_plural|default:"Einheiten" %}</h1>
+<h1>{% baustein site "units" site.units_label %}</h1>
 {% include "seite/einleitung.html" %}
 {% if darstellung == "list" %}
 <ul class="einheiten-liste">

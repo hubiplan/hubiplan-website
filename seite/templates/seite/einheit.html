@@ -2,7 +2,7 @@
 {% block titel %}{{ unit.name }} · {% endblock %}
 {% block inhalt %}
 {# Brotkrumen nur, wenn kein Menüpunkt die Seite schon markiert (Ralf 15.11.) #}
-{% if not punkte|menue_markiert %}<p class="brotkrumen"><a href="{% einheiten_url site %}">{{ site.info.unit_label_plural|default:"Einheiten" }}</a></p>{% endif %}
+{% if not punkte|menue_markiert %}<p class="brotkrumen"><a href="{% einheiten_url site %}">{{ site.units_label }}</a></p>{% endif %}
 <div class="einheit-kopf">
   {% logo_url site unit.logo_url 200 as logo %}{% if logo %}<img src="{{ logo }}" alt="" width="100" height="100">{% endif %}
   <div><h1>{{ unit.title|default:unit.name }}</h1>{% if unit.founding_year %}<p class="klein">{% blocktranslate with jahr=unit.founding_year %}gegründet {{ jahr }}{% endblocktranslate %}</p>{% endif %}
@@ -16,7 +16,7 @@
 {% lokal site unit.image.url as bild %}
 {% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% bildunterschrift unit.image.caption unit.image %}</figure>{% endif %}
 {% endif %}
-{% if unit.text %}<div class="text">{{ unit.text|md:site }}</div>{% endif %}
+{% if unit.text %}<div class="text"{{ site.content_lang_attr }}>{{ unit.text|md:site }}</div>{% endif %}
 {# Kontakt: Ansprechpartner und daneben die eigene Homepage als Karte (Ralf 31.10.) #}
 {% with ziel=unit.homepage|web_ziel %}{% if unit.roles or ziel %}<h2>{% translate "Kontakt" %}</h2>{% include "seite/rollen.html" with rollen=unit.roles homepage=ziel homepage_bild=unit.homepage_image %}{% endif %}{% endwith %}
 {% for d in unit.honors %}{% include "seite/wuerde.html" with voll=True %}{% endfor %}

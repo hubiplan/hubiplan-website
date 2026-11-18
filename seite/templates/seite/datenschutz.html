@@ -7,7 +7,7 @@
 {% if privacy.mode == "link" and privacy.url|web_ziel %}
 <p>{% translate "Die Datenschutzhinweise stehen hier:" %} <a href="{{ privacy.url|web_ziel }}" rel="noopener noreferrer">{{ privacy.url }}</a></p>
 {% elif privacy.text %}
-<div class="text">{{ privacy.text|md:site }}</div>
+<div class="text"{{ site.content_lang_attr }}>{{ privacy.text|md:site }}</div>
 {% else %}
 <p>{% translate "Für diese Seite sind noch keine Datenschutzhinweise hinterlegt." %}</p>
 {% endif %}

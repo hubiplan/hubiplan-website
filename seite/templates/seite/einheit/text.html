@@ -5,5 +5,5 @@
 {% lokal site unit.image.url as bild %}
 {% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site unit.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ unit.image.alt }}" fetchpriority="high">{% bildunterschrift unit.image.caption unit.image %}</figure>{% endif %}
 {% endif %}
-{% if unit.text %}<div class="text">{{ unit.text|md:site }}</div>{% endif %}
+{% if unit.text %}<div class="text"{{ site.content_lang_attr }}>{{ unit.text|md:site }}</div>{% endif %}
 {% if abschnitt.klassen or abschnitt.stil %}</section>{% endif %}

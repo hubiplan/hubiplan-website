@@ -35,7 +35,7 @@ def test_neue_regler_im_katalog():
 
 
 def test_wuerdentraeger_ohne_regler_wie_bisher(client, hubiplan):
-    html = hole(client, "/majestaeten/")
+    html = hole(client, "/wuerden/")
     assert "majestaet-band" not in html
     assert '<div class="majestaet">' in html
     assert '<details class="chronik">' in html
@@ -43,7 +43,7 @@ def test_wuerdentraeger_ohne_regler_wie_bisher(client, hubiplan):
 
 def test_wuerdentraeger_als_band(client, hubiplan):
     hubiplan.info["style"] = {"honors_layout": "band"}
-    html = hole(client, "/majestaeten/")
+    html = hole(client, "/wuerden/")
     assert 'data-st-honors-layout="band"' in html
     assert '<div class="majestaet-band ohne-bild">' in html
     assert '<p class="majestaet-oberzeile">König</p>' in html

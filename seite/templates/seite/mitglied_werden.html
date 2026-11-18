@@ -3,7 +3,7 @@
 {% block inhalt %}
 <h1>{% translate "Mitglied werden" as std %}{% baustein site "join" std %}</h1>
 {# Formular liegt in HUBIplan; hier nur Einleitung, Arten und Link (keine Eingaben auf der Webseite) #}
-{% if einleitung %}<div class="text">{{ einleitung|linebreaks }}</div>{% endif %}
+{% if einleitung %}<div class="text"{{ site.content_lang_attr }}>{{ einleitung|linebreaks }}</div>{% endif %}
 {% if arten %}<h2>{% translate "Mitgliedsarten" %}</h2>
 <ul class="mitgliedsarten">
 {% for a in arten %}<li><strong>{{ a.label }}</strong>{% if a.fee %} · {% blocktranslate with betrag=a.fee %}{{ betrag }} € im Jahr{% endblocktranslate %}{% endif %}{% if a.text %}<br><span class="klein">{{ a.text }}</span>{% endif %}</li>

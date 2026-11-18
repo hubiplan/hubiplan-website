@@ -31,7 +31,7 @@
   <p><a class="knopf" href="{{ webcal_url }}">{% translate "Kalender abonnieren" %}</a></p>
   <p class="klein">{% translate "Oder diese Adresse im Kalender als Abo hinzufügen:" %}<br><span class="abo-adresse" id="abo-adresse">{{ ics_url }}</span></p>
   <p class="abo-kopieren" hidden><button type="button" class="knopf hell klein-knopf" data-kopieren="abo-adresse" data-kopiert="{% translate "Adresse kopiert" %}">{% translate "Adresse kopieren" %}</button></p>
-  <div class="qr" aria-label="{% translate "QR-Code für das Kalender-Abo" %}">{{ qr }}</div>
+  <div class="qr" role="img" aria-label="{% translate "QR-Code für das Kalender-Abo" %}">{{ qr }}</div>
 </section>
 {% endif %}
 {% endblock %}

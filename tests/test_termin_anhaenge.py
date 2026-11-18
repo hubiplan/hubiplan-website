@@ -20,8 +20,8 @@ def test_anhang_im_fenster_und_ausgeliefert(client, hubiplan, monkeypatch):
     monkeypatch.setattr(fake, "events", events)
     hubiplan.antworten["events/attachments/7/"] = api.Response(200, PDF, "application/pdf")
     html = client.get("/termine/").content.decode()
-    detail = html[html.index('<dialog id="termin-e1-') :]
-    detail = detail[: detail.index("</dialog>")]
+    detail = html[html.index('<template id="termin-e1-') :]
+    detail = detail[: detail.index("</template>")]
     assert "Unterlagen:" in detail
     assert 'href="/medien/a/events/attachments/7/"' in detail and "Ablaufplan" in detail
     pdf = client.get("/medien/a/events/attachments/7/")

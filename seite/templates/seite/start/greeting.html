@@ -1,6 +1,6 @@
 {% load seite %}{% if greeting %}
 <section{% abschnitt "begruessung" %}>
   {% if greeting.title %}<h1>{{ greeting.title }}</h1>{% endif %}
-  <div class="text">{{ greeting.text|md:site }}</div>
+  <div class="text"{{ site.content_lang_attr }}>{{ greeting.text|md:site }}</div>
 </section>
 {% endif %}

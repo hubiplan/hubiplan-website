@@ -246,10 +246,32 @@ class Site:
         return bool(chronik), bool(aemter)
 
     @property
+    def units_label(self) -> str:
+        """Bezeichnung der Untereinheiten (Mehrzahl), sonst „Einheiten“ in der Rahmensprache
+        (UX-Audit WS-11)."""
+        return str(self.info.get("unit_label_plural") or "").strip() or str(_("Einheiten"))
+
+    @property
     def language(self) -> str:
         """Sprache der Rahmentexte (aus HUBIplan ``language``); unbekannt = Deutsch."""
         lang = str(self.info.get("language") or "").strip().lower()[:2]
         return lang if lang in LANGUAGES else "de"
+
+    @property
+    def content_language(self) -> str:
+        """Sprache der Vereinsinhalte (HUBIplan ``content_language`` = Vereinssprache), sonst
+        die der Rahmentexte."""
+        lang = str(self.info.get("content_language") or "").strip().lower()[:2]
+        return lang if lang in LANGUAGES else self.language
+
+    @property
+    def content_lang_attr(self):
+        """`` lang="…"`` für Inhaltsblöcke, wenn die Vereinsinhalte in einer anderen Sprache als die
+        Rahmentexte stehen (UX-Audit WS-11, WCAG 3.1.2), sonst leer."""
+        from django.utils.html import format_html
+
+        lang = self.content_language
+        return format_html(' lang="{}"', lang) if lang != self.language else ""
 
     @property
     def is_preview(self) -> bool:

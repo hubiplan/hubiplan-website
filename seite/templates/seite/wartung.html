@@ -3,7 +3,7 @@
 {% block inhalt %}
 <section class="hinweis-seite">
   <h1>{% translate "Hier entsteht gerade etwas" %}</h1>
-  {% if site.info.maintenance_text %}<div class="text">{{ site.info.maintenance_text|md:site }}</div>
+  {% if site.info.maintenance_text %}<div class="text"{{ site.content_lang_attr }}>{{ site.info.maintenance_text|md:site }}</div>
   {% else %}<p>{% translate "Die Webseite wird gerade vorbereitet oder überarbeitet und ist bald wieder da." %}</p>{% endif %}
 </section>
 {% endblock %}

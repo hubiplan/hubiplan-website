@@ -63,7 +63,7 @@ def test_termine_als_monatskalender(client, hubiplan):
     assert '<table class="monatskalender">' in html
     assert '<span class="zeit">18:30</span> Schützenfest' in html
     # Fenster mit allen Angaben wie in der Liste, vergangene Termine fehlen
-    assert 'class="termin-fenster"' in html and "Mit Musik" in html
+    assert 'class="termin-inhalt"' in html and "Mit Musik" in html
     assert "Alter Termin" not in html
     assert '<td class="mit-termin">' in html and '<td class="fremd">' in html
 
