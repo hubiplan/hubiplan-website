@@ -44,7 +44,8 @@ def test_startseite(client, hubiplan):
     # AGPL § 13: Quellcode der Webseite
     assert (
         '<a href="https://github.com/hubiplan/hubiplan-website" '
-        'rel="noopener noreferrer">Quellcode</a>' in html
+        'target="_blank" rel="noopener noreferrer">Quellcode'
+        '<span class="nur-vorlesen"> (öffnet in neuem Fenster)</span></a>' in html
     )
 
 
