@@ -12,8 +12,20 @@
     var karte = e.target.closest ? e.target.closest("li.termin") : null;
     if (!karte || e.target.closest("a")) return;
     var knopf = karte.querySelector(".termin-knopf");
-    var ziel = knopf && document.getElementById(knopf.dataset.termin);
-    if (ziel && ziel.showModal && !ziel.open) ziel.showModal();
+    var inhalt = knopf && document.getElementById(knopf.dataset.termin);
+    if (!inhalt || !inhalt.content) return;
+    // Ein gemeinsames Fenster für alle Termine (UX-Audit WS-14 f)
+    var dialog = document.getElementById("termin-fenster");
+    if (!dialog) {
+      dialog = document.createElement("dialog");
+      dialog.id = "termin-fenster";
+      dialog.className = "termin-fenster";
+      dialog.setAttribute("aria-labelledby", "termin-fenster-titel");
+      document.body.appendChild(dialog);
+    }
+    if (!dialog.showModal || dialog.open) return;
+    dialog.replaceChildren(inhalt.content.cloneNode(true));
+    dialog.showModal();
   });
 })();
 

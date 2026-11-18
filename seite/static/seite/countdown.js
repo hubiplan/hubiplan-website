@@ -8,6 +8,9 @@
     return { el: el, ziel: Date.parse(el.dataset.ziel), teile: el.querySelectorAll("[data-teil]") };
   }).filter(function (e) { return !isNaN(e.ziel); });
 
+  var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (ruhig) zaehler.forEach(function (el) { el.classList.add("countdown-ruhig"); });
+
   function ablaufen(e) {
     var abschnitt = e.el.closest("[data-countdown]");
     if (!abschnitt) return;
@@ -47,7 +50,10 @@
       });
       return true;
     });
-    if (eintraege.length) window.setTimeout(schritt, 1000 - (Date.now() % 1000) + 5);
+    if (!eintraege.length) return;
+    // Bei „weniger Bewegung“ am Gerät ohne Sekunden, Wechsel nur einmal je Minute (UX-Audit WS-14 g)
+    var takt = ruhig ? 60000 : 1000;
+    window.setTimeout(schritt, takt - (Date.now() % takt) + 5);
   }
   schritt();
 })();

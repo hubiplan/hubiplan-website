@@ -24,9 +24,11 @@ urlpatterns = [
     path("termine/", views.events, name="termine"),
     path("<einheiten:pfad>/", views.units, name="einheiten"),
     path("<einheiten:pfad>/<slug:slug>/", views.unit, name="einheit"),
-    path("majestaeten/", views.honors, name="majestaeten"),
+    # Vereinsneutrale Adresse (UX-Audit WS-12); die frühere /majestaeten/… leitet dauerhaft weiter
+    path("wuerden/", views.honors, name="majestaeten"),
     # Webseite #149: lesbare Adressen (aus HUBIplan); alte Kennungen leiten dauerhaft weiter
-    re_path(r"^majestaeten/(?P<kennung>[a-z0-9-]{1,80})/$", views.dignity, name="wuerde"),
+    re_path(r"^wuerden/(?P<kennung>[a-z0-9-]{1,80})/$", views.dignity, name="wuerde"),
+    re_path(r"^majestaeten/(?P<rest>(?:[a-z0-9-]{1,80}/)?)$", views.old_honors_path),
     path("ehrungen/", views.honorary, name="ehrungen"),
     path("ergebnisse/", views.results, name="ergebnisse"),
     re_path(r"^ergebnisse/reihe/(?P<kennung>[a-z0-9-]{1,80})/$", views.result_series, name="reihe"),

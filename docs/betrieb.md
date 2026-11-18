@@ -9,8 +9,8 @@
 | `/termine/` | Termine nach Monaten, Filter je Untereinheit, Kalender-Abo mit QR-Code |
 | `/vorstand/` | Vorstand, Ansprechpartner, Ehrungen |
 | `/zuege/` bzw. `/einheiten/` | Untereinheiten (Pfad je nach Bezeichnung in HUBIplan); auf der Seite einer Untereinheit auf Wunsch ein Link zu ihrer eigenen Homepage (neuer Tab) |
-| `/majestaeten/` | Würden mit aktuellen Trägern und Chronik |
-| `/majestaeten/<kennung>/` | eine Würde (Unterpunkt des Menüs „Würdenträger“) |
+| `/wuerden/` | Würden mit aktuellen Trägern und Chronik (früher `/majestaeten/`, leitet dauerhaft weiter) |
+| `/wuerden/<kennung>/` | eine Würde (Unterpunkt des Menüs „Würdenträger“) |
 | `/ergebnisse/` | Wettbewerbsergebnisse (Modul Wettbewerbe): laufende Wettbewerbe, Ergebnisse je Jahr, Reihen, Wanderpokale |
 | `/ergebnisse/<kennung>/` | Rangliste eines Wettbewerbs; solange er läuft, fragt der Browser alle 15 s den Stand ab (`…/stand/`) und lädt nur bei einer Änderung die Rangliste neu (`…/tabelle/`) |
 | `/ergebnisse/reihe/<kennung>/` | Archiv einer Wettbewerbsreihe: Titelträger und Sieger je Jahr |

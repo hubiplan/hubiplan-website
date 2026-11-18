@@ -26,26 +26,26 @@ def _wuerde_mit_adresse(hubiplan, monkeypatch):
 
 def test_wuerde_unter_lesbarer_adresse(client, hubiplan, monkeypatch):
     _wuerde_mit_adresse(hubiplan, monkeypatch)
-    r = client.get("/majestaeten/koenige/")
+    r = client.get("/wuerden/koenige/")
     assert r.status_code == 200
     assert "Karl Krone" in text(r)
     # Auf der eigenen Seite trägt der Menüpunkt aria-current
-    assert 'href="/majestaeten/koenige/" aria-current="page">Könige</a>' in text(r)
-    assert f"/majestaeten/{WUERDE}/" not in text(r)
-    assert 'href="/majestaeten/koenige/">Könige</a>' in text(client.get("/"))
+    assert 'href="/wuerden/koenige/" aria-current="page">Könige</a>' in text(r)
+    assert f"/wuerden/{WUERDE}/" not in text(r)
+    assert 'href="/wuerden/koenige/">Könige</a>' in text(client.get("/"))
 
 
 def test_alte_adressen_leiten_dauerhaft_weiter(client, hubiplan, monkeypatch):
     _wuerde_mit_adresse(hubiplan, monkeypatch)
     for alt in (WUERDE, "koenig"):
-        r = client.get(f"/majestaeten/{alt}/")
+        r = client.get(f"/wuerden/{alt}/")
         assert r.status_code == 301
-        assert r["Location"] == "/majestaeten/koenige/"
-    assert client.get("/majestaeten/unbekannt/").status_code == 404
+        assert r["Location"] == "/wuerden/koenige/"
+    assert client.get("/wuerden/unbekannt/").status_code == 404
 
 
 def test_wuerde_ohne_adresse_bleibt_bei_der_kennung(client, hubiplan):
-    r = client.get(f"/majestaeten/{WUERDE}/")
+    r = client.get(f"/wuerden/{WUERDE}/")
     assert r.status_code == 200 and "Karl Krone" in text(r)
 
 
@@ -55,7 +55,7 @@ def test_unbrauchbare_adresse_wird_nicht_verlinkt(client, hubiplan):
         "dignities": [{"id": WUERDE, "label": "Könige", "slug": "Kö nige/"}],
         "honorary": False,
     }
-    assert f'href="/majestaeten/{WUERDE}/">Könige</a>' in text(client.get("/"))
+    assert f'href="/wuerden/{WUERDE}/">Könige</a>' in text(client.get("/"))
 
 
 def _wettbewerb_mit_adresse(hubiplan, monkeypatch):

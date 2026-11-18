@@ -14,12 +14,13 @@ html[data-st-font="elegant"] body { font-family: "Source Sans 3", system-ui, san
 html[data-st-font="readable"] body { font-family: "Atkinson Hyperlegible", system-ui, sans-serif; --schrift-titel: inherit; }
 html[data-st-font] .marke { font-family: var(--schrift-titel); }
 
+/* Grundschrift in rem, damit die im Browser eingestellte Größe gilt (UX-Audit WS-14 c) */
 html[data-st-size="large"] { font-size: 112.5%; }
-html[data-st-size="large"] body { font-size: 19px; }
+html[data-st-size="large"] body { font-size: 1.0625rem; }
 html[data-st-size="normal"] { font-size: 100%; }
-html[data-st-size="normal"] body { font-size: 17px; }
+html[data-st-size="normal"] body { font-size: 1.0625rem; }
 html[data-st-size="xlarge"] { font-size: 125%; }
-html[data-st-size="xlarge"] body { font-size: 21px; }
+html[data-st-size="xlarge"] body { font-size: 1.0625rem; }
 
 html[data-st-leading="tight"] body { line-height: 1.45; }
 html[data-st-leading="normal"] body { line-height: 1.6; }

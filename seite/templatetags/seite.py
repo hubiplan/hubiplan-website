@@ -352,7 +352,7 @@ def _legacy_items(site) -> list:
             items.append((grouped.get("label") or _("Würdenträger"), children))
     elif site.block("honors"):
         # Bei nur einer Würde ihr Name (in der Mehrzahl), sonst „Majestäten“
-        items.append((info.get("honors_label") or _("Majestäten"), reverse("majestaeten")))
+        items.append((info.get("honors_label") or _("Würdenträger"), reverse("majestaeten")))
     pages = info.get("menu") or []
     # Menü „Geschichte“ mit „Chronik“ und „Ämter“ (Ralf 2026-10-31); nur eins: direkt
     chronik, aemter = site.history_parts()

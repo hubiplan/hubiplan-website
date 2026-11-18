@@ -4,7 +4,7 @@
 <h1>{% translate "Chronik" as chronik %}{% baustein site "history" page.title|default:chronik %}</h1>
 {% lokal site page.image.url as bild %}
 {% if bild %}<figure class="titelbild"><img src="{{ bild }}"{% bildsatz site page.image "(max-width: 64rem) 100vw, 64rem" %} alt="{{ page.image.alt }}" fetchpriority="high">{% bildunterschrift page.image.caption page.image %}</figure>{% endif %}
-{% if page.text %}<div class="text">{{ page.text|md:site }}</div>{% endif %}
+{% if page.text %}<div class="text"{{ site.content_lang_attr }}>{{ page.text|md:site }}</div>{% endif %}
 {% if zeitleiste.abschnitte %}
 {% if zeitleiste.sprungmarken %}
 <nav class="zeitleiste-sprung" aria-label="{% translate 'Abschnitte der Chronik' %}">

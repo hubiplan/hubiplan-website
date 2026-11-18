@@ -2,7 +2,7 @@
 {% block titel %}{% translate "In Gedenken" as std %}{% baustein site "memorial" std %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "In Gedenken" as std %}{% baustein site "memorial" std %}</h1>
-{% if intro.text %}<div class="text">{{ intro.text|md:site }}</div>{% endif %}
+{% if intro.text %}<div class="text"{{ site.content_lang_attr }}>{{ intro.text|md:site }}</div>{% endif %}
 {# Verstorbene Mitglieder mit Todesjahr (Ralf 05.11.2026) #}
 <ul class="mitgliederliste gedenken">
 {% for p in personen %}

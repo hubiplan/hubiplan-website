@@ -823,6 +823,15 @@ def honors(request, site: Site):
 
 
 @require_GET
+def old_honors_path(request, rest: str = ""):
+    """Frühere Adresse /majestaeten/… → /wuerden/… (UX-Audit WS-12), dauerhaft, mit Anfrageteil."""
+    ziel = "/wuerden/" + rest
+    if request.META.get("QUERY_STRING"):
+        ziel += "?" + request.META["QUERY_STRING"]
+    return HttpResponsePermanentRedirect(ziel)
+
+
+@require_GET
 @site_view()
 def dignity(request, site: Site, kennung: str):
     """Eine Würde als eigene Seite (Unterpunkt von „Würdenträger“)."""

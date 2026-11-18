@@ -29,6 +29,7 @@ PAGES = {
     "vorstand": "vorstand",
     "termine": "termine",
     "majestaeten": "majestaeten",
+    "wuerden": "majestaeten",
     "geschichte": "chronik",
     "chronik": "chronik",
     "aemter": "aemter",

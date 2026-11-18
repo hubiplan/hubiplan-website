@@ -53,7 +53,8 @@
     else if (e.key === "ArrowRight") zeigen(stelle + 1);
   });
   fenster.addEventListener("close", function () {
-    bild.src = "";
+    // Ohne leeres src, das manche Browser als Abruf der Seite selbst deuten (UX-Audit WS-14 h)
+    bild.removeAttribute("src");
     if (zuletzt) zuletzt.focus();
   });
 })();

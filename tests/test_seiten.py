@@ -50,6 +50,7 @@ def test_startseite(client, hubiplan):
 
 
 def test_menue(client, hubiplan):
+    hubiplan.info["honors_label"] = "Majestäten"
     html = text(client.get("/vorstand/"))
     labels = ("Termine", "Vorstand", "Züge", "Majestäten", "Chronik", "Ämter", "Anfahrt", "Kontakt")
     for label in labels:
@@ -59,7 +60,7 @@ def test_menue(client, hubiplan):
 
 def test_bereich_aus(client, hubiplan):
     hubiplan.info["blocks"]["honors"] = False
-    assert client.get("/majestaeten/").status_code == 404
+    assert client.get("/wuerden/").status_code == 404
     assert ">Majestäten</a>" not in text(client.get("/"))
 
 
@@ -111,13 +112,13 @@ def test_termine_mit_abo(client, hubiplan):
     # Ort und Beschreibung nur im Fenster, das ein Klick auf die Karte öffnet (Ralf 2026-10-31)
     assert "termin-mehr" not in html
     assert 'class="termin-knopf" aria-haspopup="dialog" data-termin="termin-e1-' in html
-    fenster = html[html.index('<dialog id="termin-e1-') :]
-    fenster = fenster[: fenster.index("</dialog>")]
+    fenster = html[html.index('<template id="termin-e1-') :]
+    fenster = fenster[: fenster.index("</template>")]
     assert "Montag, 1. Juni 2099, 18:00 Uhr bis 23:00 Uhr" in fenster
     assert "<strong>Ort:</strong> Festzelt" in fenster
     assert "Mit Musik" in fenster
     assert "Termin von Bürgerverein Musterdorf" in fenster
-    assert html.index("Festzelt") > html.index("<dialog")
+    assert html.index("Festzelt") > html.index('<template id="termin-')
     assert "seite/termin.js" in html
     assert f"webcal://hubiplan.example/api/public/site/v1/{KEY}/events.ics" in html
     assert "<svg" in html
@@ -162,7 +163,7 @@ def test_einheiten_heissen_einheiten(client, hubiplan):
 
 
 def test_majestaeten(client, hubiplan):
-    html = text(client.get("/majestaeten/"))
+    html = text(client.get("/wuerden/"))
     assert "Karl Krone" in html
     assert "(2. Mal)" in html
     assert "Klara Krone" in html
@@ -172,7 +173,7 @@ def test_majestaeten(client, hubiplan):
 def test_majestaeten_nur_eine_wuerde_ohne_ueberschrift(client, hubiplan):
     """Ralf 2026-10-30: bei nur einer Würde reicht ihr Name, ohne „Majestäten“ darüber."""
     hubiplan.info["honors_label"] = "Könige"
-    html = text(client.get("/majestaeten/"))
+    html = text(client.get("/wuerden/"))
     # mehrere Regentschaften: Mehrzahl, auch im Menü
     assert "<h1>Könige</h1>" in html
     assert ">Könige</a>" in html
@@ -185,12 +186,12 @@ def test_majestaeten_eine_regentschaft_einzahl(client, hubiplan, monkeypatch):
     koenig = {**fake.HONORS["dignities"][0]}
     koenig["reigns"] = koenig["reigns"][:1]
     monkeypatch.setitem(fake.HONORS, "dignities", [koenig])
-    assert "<h1>König</h1>" in text(client.get("/majestaeten/"))
+    assert "<h1>König</h1>" in text(client.get("/wuerden/"))
 
 
 def test_chronik_ohne_begleitung_ohne_spalte(client, hubiplan, monkeypatch):
     """Ralf 2026-10-30: ohne Begleitpersonen keine Spalte „Begleitung“."""
-    assert ">Begleitung</th>" not in text(client.get("/majestaeten/"))
+    assert ">Begleitung</th>" not in text(client.get("/wuerden/"))
     koenig = {**fake.HONORS["dignities"][0]}
     koenig["reigns"] = [
         {**koenig["reigns"][0], "companions": [{"label": "Königin", "name": "Klara Krone"}]},
@@ -198,7 +199,7 @@ def test_chronik_ohne_begleitung_ohne_spalte(client, hubiplan, monkeypatch):
     ]
     monkeypatch.setitem(fake.HONORS, "dignities", [koenig])
     cache.clear()  # Antworten der Schnittstelle werden zwischengespeichert
-    html = text(client.get("/majestaeten/"))
+    html = text(client.get("/wuerden/"))
     assert ">Begleitung</th>" in html
     assert "<td>Klara Krone</td>" in html
 
@@ -207,7 +208,7 @@ def test_ohne_traeger_im_laufenden_jahr_alle_offen(client, hubiplan, monkeypatch
     """Ralf 2026-10-31: kein Träger aus dem laufenden Jahr, dann alle zeigen."""
     koenig = {**fake.HONORS["dignities"][0], "current_year": False}
     monkeypatch.setitem(fake.HONORS, "dignities", [koenig])
-    html = text(client.get("/majestaeten/"))
+    html = text(client.get("/wuerden/"))
     assert '<details class="chronik"' not in html
     assert 'class="majestaet"' not in html
     assert '<table class="zeitliste">' in html
@@ -232,8 +233,9 @@ def test_startseite_nur_traeger_im_laufenden_jahr(client, hubiplan, monkeypatch)
 def test_majestaeten_mehrere_wuerden(client, hubiplan, monkeypatch):
     prinz = {**fake.HONORS["dignities"][0], "id": "p" * 20, "name": "Prinz"}
     monkeypatch.setitem(fake.HONORS, "dignities", [*fake.HONORS["dignities"], prinz])
-    html = text(client.get("/majestaeten/"))
-    assert "<h1>Majestäten</h1>" in html
+    html = text(client.get("/wuerden/"))
+    # Ohne eigenen Namen aus HUBIplan vereinsneutral (UX-Audit WS-12)
+    assert "<h1>Würdenträger</h1>" in html
     assert "<h2>König</h2>" in html and "<h2>Prinz</h2>" in html
 
 
@@ -885,11 +887,11 @@ def test_menue_wuerdentraeger(client, hubiplan):
     _gruppiert(hubiplan)
     html = text(client.get("/"))
     assert '<details class="untermenue"><summary>Würdenträger</summary>' in html
-    assert f'href="/majestaeten/{"d" * 20}/">Könige</a>' in html
+    assert f'href="/wuerden/{"d" * 20}/">Könige</a>' in html
     assert 'href="/ehrungen/">Ehrenmitglied</a>' in html
     assert ">Majestäten</a>" not in html
-    # Handymenü: Gruppe mit eingerückten Unterpunkten
-    assert '<span class="menue-gruppe">Würdenträger</span>' in html
+    # Handymenü: Gruppe zum Aufklappen mit eingerückten Unterpunkten (UX-Audit WS-14 a)
+    assert '<details class="menue-gruppe"><summary>Würdenträger</summary>' in html
 
 
 def test_menue_wuerdentraeger_nur_ein_unterpunkt(client, hubiplan):
@@ -900,15 +902,15 @@ def test_menue_wuerdentraeger_nur_ein_unterpunkt(client, hubiplan):
     }
     html = text(client.get("/"))
     assert "Würdenträger</summary>" not in html
-    assert f'href="/majestaeten/{"d" * 20}/">Könige</a>' in html
+    assert f'href="/wuerden/{"d" * 20}/">Könige</a>' in html
 
 
 def test_seite_einer_wuerde(client, hubiplan):
     _gruppiert(hubiplan)
-    html = text(client.get(f"/majestaeten/{'d' * 20}/"))
+    html = text(client.get(f"/wuerden/{'d' * 20}/"))
     assert "Karl Krone" in html
     assert '<summary class="aktiv">Würdenträger</summary>' in html
-    assert client.get(f"/majestaeten/{'e' * 20}/").status_code == 404
+    assert client.get(f"/wuerden/{'e' * 20}/").status_code == 404
 
 
 def test_ehrungen_eigene_seite(client, hubiplan):
@@ -928,7 +930,7 @@ def test_weitergegebene_wuerde_mit_herkunft(client, hubiplan, monkeypatch):
     buerger = {**fake.HONORS["dignities"][0], "id": "b" * 20, "name": "Bundeskönig"}
     buerger["owner"] = "Bürgerverein Musterdorf"
     monkeypatch.setitem(fake.HONORS, "dignities", [*fake.HONORS["dignities"], buerger])
-    html = text(client.get("/majestaeten/"))
+    html = text(client.get("/wuerden/"))
     assert "Bundeskönig" in html
     # Kein Hinweis „Würde von …: unsere Träger“ (Ralf 31.10.)
     assert "unsere Träger" not in html
@@ -1060,8 +1062,8 @@ def test_homepage_der_einheit(client, hubiplan):
 
 def test_aktuelles_foto_gross_nur_auf_eigener_seite(client, hubiplan):
     """Ralf 2026-10-31: nur der aktuelle Träger auf der Seite, also großes Foto."""
-    assert '<section class="wuerde voll">' in text(client.get("/majestaeten/"))
-    assert '<section class="wuerde voll">' in text(client.get(f"/majestaeten/{'d' * 20}/"))
+    assert '<section class="wuerde voll">' in text(client.get("/wuerden/"))
+    assert '<section class="wuerde voll">' in text(client.get(f"/wuerden/{'d' * 20}/"))
     start = text(client.get("/"))
     assert '<section class="wuerde">' in start
     assert "wuerde voll" not in start

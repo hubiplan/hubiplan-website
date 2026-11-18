@@ -61,7 +61,7 @@ html[data-st-heading-font-own][data-st-heading-font-own] :is(h1, h2, h3, .marke)
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--text);
   background: var(--grund);
   display: flex;
@@ -75,7 +75,8 @@ a { color: var(--link); }
 a, a:hover, a:focus { text-decoration: none; }
 /* Ohne Unterstreichung sind Links im Inhalt immer fett (WCAG 1.4.1: Merkmal neben der Farbe) */
 main a, .fuss a { font-weight: 600; }
-a:hover { opacity: .8; }
+/* Hover über die Farbe statt über Deckkraft, damit der Kontrast bleibt (UX-Audit WS-14 d) */
+main a:not(.knopf):hover { color: color-mix(in srgb, var(--link) 75%, var(--text)); }
 /* Fokusrahmen: im Inhalt in abgedunkelter Vereinsfarbe, im farbigen Kopf in dessen
    Schriftfarbe, im dunklen Fuß weiß; jeweils mind. 3 : 1 (WCAG 1.4.11, 2.4.7) */
 a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visible,
@@ -262,7 +263,12 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 }
 .menue-breit .untermenue :focus-visible { outline-color: var(--link); }
 .menue-breit .untermenue summary:focus-visible { outline-color: var(--auf-kopf); }
-.menue .menue-gruppe { display: block; padding: .65rem .9rem .2rem; font-weight: 700; color: var(--text-leise, var(--text)); }
+/* Gruppen im Handymenü auf- und zuklappbar (UX-Audit WS-14 a) */
+.menue .menue-gruppe > summary { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .65rem .9rem; border: 0; border-radius: 6px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none; }
+.menue .menue-gruppe > summary:hover { background: var(--grund); }
+.menue .menue-gruppe > summary::-webkit-details-marker { display: none; }
+.menue .menue-gruppe > summary::after { content: ""; width: .5rem; height: .5rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -.25rem; flex-shrink: 0; }
+.menue .menue-gruppe[open] > summary::after { transform: rotate(-135deg); margin-top: .25rem; }
 .menue ul ul { padding-left: .8rem; }
 @media (min-width: 64rem) {
   .menue { display: none; }
@@ -291,6 +297,8 @@ body:not(.design-sidebar) .menue-breit .untermenue ul a:focus-visible {
 .klein-knopf { padding: .35rem .8rem; font-size: .9rem; }
 /* Der Rahmen des hellen Knopfs geht vom Polster ab, sonst ist er höher als ein gefüllter daneben (Webseite #118) */
 .knopf.hell.klein-knopf { padding: calc(.35rem - 2px) calc(.8rem - 2px); }
+/* Rand klickbarer Karten mind. 3 : 1 gegen Karte und Seitengrund (UX-Audit WS-07, WCAG 1.4.11) */
+.termin, .kacheln a, .dokumente a, .galerie-alben a { --linie: color-mix(in srgb, var(--text) 55%, var(--flaeche)); }
 .karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: 1rem 1.2rem; margin-bottom: 1rem; }
 .karten { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
 .karten .karte { margin: 0; }
@@ -841,6 +849,8 @@ main.start > .begruessung-bilder.abschnitt-voll .titel-name { padding-left: max(
 .app-qr { margin: 0; text-align: center; }
 .app-qr svg { width: 9rem; height: 9rem; background: #fff; border-radius: var(--rund); }
 .wettbewerb-abschnitt h2 + .termin-gross-titel { margin-top: -.4rem; }
+/* „Weniger Bewegung“: Sekunden ausgeblendet (UX-Audit WS-14 g) */
+.countdown-ruhig .countdown-teil-sekunden { display: none; }
 /* Countdown (laufender Zähler, countdown.js) */
 .countdown-abschnitt { text-align: center; }
 .countdown-zaehler[hidden], .countdown-abschnitt[hidden] { display: none; }

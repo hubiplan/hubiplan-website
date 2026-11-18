@@ -65,7 +65,7 @@ def _seite(client, hubiplan, monkeypatch, style, n):
     monkeypatch.setitem(HONORS["dignities"][0], "reigns", _koenige(n))
     hubiplan.info["style"] = style
     cache.clear()
-    return client.get("/majestaeten/").content.decode()
+    return client.get("/wuerden/").content.decode()
 
 
 def test_ohne_regler_wie_bisher(client, hubiplan, monkeypatch):

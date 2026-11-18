@@ -3,7 +3,7 @@
     {% if bild %}<figure class="text-bild-bild"><img src="{{ bild }}"{% bildsatz site abschnitt.image abschnitt.side|bildbreite:abschnitt.size %} alt="{{ abschnitt.image.alt }}" loading="lazy"{% if abschnitt.image.width %} width="{{ abschnitt.image.width }}" height="{{ abschnitt.image.height }}"{% endif %}>{% bildunterschrift abschnitt.image.caption abschnitt.image %}</figure>{% elif abschnitt.placeholder %}<figure class="text-bild-bild">{% include "seite/bildplatz.html" with notiz=abschnitt.placeholder %}</figure>{% endif %}
     <div class="text-bild-text">
       {% if abschnitt.title %}<h2>{{ abschnitt.title }}</h2>{% endif %}
-      {% if abschnitt.text %}<div class="text">{{ abschnitt.text|md:site }}</div>{% endif %}
+      {% if abschnitt.text %}<div class="text"{{ site.content_lang_attr }}>{{ abschnitt.text|md:site }}</div>{% endif %}
     </div>
   </div>
 </section>
