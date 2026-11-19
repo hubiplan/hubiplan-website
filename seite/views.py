@@ -209,7 +209,13 @@ def _event(e, site: Site | None = None) -> dict | None:
         "end": end,
         "anhaenge": files,
         "anmeldung": _anmeldung(e.get("registration")),
+        # Veranstaltungsseite (HUBIplan A4): Adresse, nur wenn sie als Adresse taugt
+        "page": e["page"] if _ist_adresse(e.get("page")) else None,
     }
+
+
+def _ist_adresse(value) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", value) is not None
 
 
 ANMELDE_STAENDE = ("not_yet", "open", "closed", "full", "cancelled")
@@ -1329,7 +1335,39 @@ def search(request, site: Site):
 def page(request, site: Site, slug: str):
     if slug == "geschichte":
         return HttpResponseRedirect(reverse("chronik"))
+    return _text_page(request, site, slug, event_url=False)
+
+
+@require_GET
+@site_view()
+def event_page(request, site: Site, slug: str):
+    """Veranstaltungsseite (HUBIplan A4): Textseite zu einem öffentlichen Termin."""
+    return _text_page(request, site, slug, event_url=True)
+
+
+def _veranstaltung(data, site: Site) -> dict | None:
+    """Eckdaten des Termins einer Veranstaltungsseite (ältere Stände von HUBIplan: None)."""
+    e = data.get("event") if isinstance(data, dict) else None
+    if not isinstance(e, dict):
+        return None
+    event = _event({**e, "id": "v"}, site)
+    if event is None:
+        return None
+    reg = e.get("registration") if isinstance(e.get("registration"), dict) else {}
+    if event["anmeldung"] is not None:
+        event["anmeldung"]["terms"] = str(reg.get("terms") or "")
+        event["anmeldung"]["cancel_text"] = str(reg.get("cancel_text") or "")
+    return event
+
+
+def _text_page(request, site: Site, slug: str, event_url: bool):
     data = site.get(f"pages/{slug}/")
+    veranstaltung = _veranstaltung(data, site)
+    # Eine Adresse je Seite: Veranstaltungsseiten unter /veranstaltung/, die übrigen unter /seite/
+    if event_url and veranstaltung is None and not (isinstance(data, dict) and data.get("event")):
+        raise api.NotFound
+    if not event_url and isinstance(data, dict) and data.get("event"):
+        return HttpResponseRedirect(reverse("veranstaltung", args=[slug]))
     # Abschnitte (G4): ohne eigene Abschnitte sieht die Seite aus wie bisher
     sections = data.get("sections") if isinstance(data, dict) else None
     sections = sections if isinstance(sections, list) else []
@@ -1344,6 +1382,7 @@ def page(request, site: Site, slug: str):
         site,
         {
             "page": data,
+            "veranstaltung": veranstaltung,
             "abschnitte": layout if custom else [],
             "titelbild": cover if cover and isinstance(cover.get("image"), dict) else None,
         },

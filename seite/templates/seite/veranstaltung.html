@@ -1,0 +1,12 @@
+{% load i18n seite %}{# Eckdaten einer Veranstaltungsseite (HUBIplan A4): alles kommt aus dem Termin #}{% with e=veranstaltung %}<section class="veranstaltung-eckdaten" aria-label="{% translate "Auf einen Blick" %}">
+  <p class="veranstaltung-wann"><strong>{% translate "Wann:" %}</strong> {% include "seite/termin_zeit.html" with lang=True %}{% if e.is_cancelled %} <span class="marke-abgesagt">{% translate "fällt aus" %}</span>{% endif %}</p>
+  {% if e.location or e.address %}<p><strong>{% translate "Ort:" %}</strong> {{ e.location }}{% if e.location and e.address %}, {% endif %}{% if e.address %}<a href="https://www.openstreetmap.org/search?query={{ e.address|urlencode }}" rel="noopener">{{ e.address }}</a>{% endif %}</p>{% endif %}
+  {% if e.directions %}<p><strong>{% translate "Anfahrt:" %}</strong> {{ e.directions|linebreaksbr }}</p>{% endif %}
+  {% if e.description %}<p>{{ e.description|linebreaksbr }}</p>{% endif %}
+  {% if e.programme %}<p><strong>{% translate "Programm:" %}</strong><br>{{ e.programme|linebreaksbr }}</p>{% endif %}
+  {% if e.anmeldung %}{% include "seite/termin_anmeldung.html" %}
+  {% if e.anmeldung.cancel_text %}<p class="klein"><strong>{% translate "Abmelden:" %}</strong> {{ e.anmeldung.cancel_text }}</p>{% endif %}
+  {% if e.anmeldung.terms %}<details class="veranstaltung-bedingungen"><summary>{% translate "Teilnahmebedingungen" %}</summary><p>{{ e.anmeldung.terms|linebreaksbr }}</p></details>{% endif %}{% endif %}
+  {% if e.anhaenge %}<p><strong>{% translate "Unterlagen:" %}</strong></p>
+  <ul class="termin-anhaenge">{% for a in e.anhaenge %}<li><a href="{{ a.url }}" rel="noopener" target="_blank">{{ a.name }}</a><span class="nur-vorlesen"> ({% if a.kind == "pdf" %}PDF, {% endif %}{% translate "öffnet in neuem Fenster" %})</span></li>{% endfor %}</ul>{% endif %}
+</section>{% endwith %}

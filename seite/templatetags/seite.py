@@ -233,7 +233,10 @@ def _nav_url(site, node: dict) -> str | None:
     """Adresse eines Menüpunkts aus HUBIplan (None: unbekannt oder unvollständig)."""
     key = node.get("key")
     if key == "page":
-        return reverse("seite", args=[node["slug"]]) if node.get("slug") else None
+        if not node.get("slug"):
+            return None
+        # Veranstaltungsseite (HUBIplan A4) unter /veranstaltung/<slug>/
+        return reverse("veranstaltung" if node.get("event") else "seite", args=[node["slug"]])
     if key == "dignity":
         if not node.get("id"):
             return None

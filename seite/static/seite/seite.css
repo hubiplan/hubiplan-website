@@ -347,6 +347,11 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .termin-anmeldung { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--linie); }
 .termin-preise { margin: .3rem 0 .6rem; padding-left: 1.2rem; }
 .termin-anmeldung-hinweis { color: var(--link); font-weight: 600; }
+.veranstaltung-eckdaten { border: 1px solid var(--linie); border-radius: var(--rund); padding: 1rem 1.2rem; margin: 0 0 1.5rem; background: var(--flaeche); }
+.veranstaltung-eckdaten > p:first-child { margin-top: 0; }
+.veranstaltung-bedingungen summary { cursor: pointer; font-weight: 600; }
+.termin-gross .termin-anmeldung { text-align: center; border-top: 0; }
+.termin-gross .termin-preise { list-style: none; padding-left: 0; }
 .abgesagt h3, .abgesagt .klein { text-decoration: line-through; }
 .marke-abgesagt { text-decoration: none; display: inline-block; background: #a4262c; color: #fff; font-size: .75rem; padding: .1rem .5rem; border-radius: 99px; vertical-align: middle; }
 .filter { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }
