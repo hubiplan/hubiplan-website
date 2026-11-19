@@ -1,0 +1,10 @@
+{% load i18n seite %}{# Öffentliche Anmeldung am Termin (HUBIplan A4): Stand, Preise, freie Plätze, Knopf zum Formular #}{% with a=e.anmeldung %}<section class="termin-anmeldung" aria-label="{% translate "Anmeldung" %}">
+      <p><strong>{% translate "Anmeldung:" %}</strong>
+      {% if a.state == "open" %}{% if a.closes %}{% blocktranslate with wann=a.closes|datum:"zeit" %}möglich bis {{ wann }}{% endblocktranslate %}{% else %}{% translate "möglich" %}{% endif %}{% if a.free is not None %} · {% blocktranslate count n=a.free %}noch {{ n }} Platz frei{% plural %}noch {{ n }} Plätze frei{% endblocktranslate %}{% endif %}
+      {% elif a.state == "full" %}{% if a.can_join and a.waitlist %}{% translate "alle Plätze vergeben, Anmeldung auf die Warteliste möglich" %}{% else %}{% translate "leider sind alle Plätze vergeben" %}{% endif %}
+      {% elif a.state == "not_yet" %}{% if a.opens %}{% blocktranslate with wann=a.opens|datum:"zeit" %}ab {{ wann }} möglich{% endblocktranslate %}{% else %}{% translate "noch nicht möglich" %}{% endif %}
+      {% elif a.state == "cancelled" %}{% translate "der Termin ist abgesagt" %}
+      {% else %}{% translate "geschlossen" %}{% endif %}</p>
+      {% if a.prices %}<ul class="termin-preise">{% for p in a.prices %}<li>{{ p.name }}: {{ p.amount|betrag }}{% if p.until %} <span class="klein">({% blocktranslate with bis=p.until|datum:"kurz" %}bis {{ bis }}{% endblocktranslate %})</span>{% endif %}</li>{% endfor %}</ul>{% endif %}
+      {% if a.can_join %}<p><a class="knopf" href="{{ a.url }}" rel="noopener">{% if a.state == "full" %}{% translate "Auf die Warteliste" %}{% else %}{% translate "Jetzt anmelden" %}{% endif %}</a></p>{% endif %}
+    </section>{% endwith %}

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hubiplan-website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-18 13:39+0100\n"
+"POT-Creation-Date: 2026-11-19 03:12+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -850,8 +850,65 @@ msgstr "Nothing was found for “%(query)s”."
 msgid "Termin von %(name)s"
 msgstr "Event by %(name)s"
 
+msgid "Warteliste offen"
+msgstr "Waiting list open"
+
+msgid "Anmeldung möglich"
+msgstr "Registration open"
+
+msgid "Anmeldung"
+msgstr "Registration"
+
+msgid "Anmeldung:"
+msgstr "Registration:"
+
+#, python-format
+msgid "möglich bis %(wann)s"
+msgstr "open until %(wann)s"
+
+msgid "möglich"
+msgstr "open"
+
+#, python-format
+msgid "noch %(n)s Platz frei"
+msgid_plural "noch %(n)s Plätze frei"
+msgstr[0] "%(n)s place left"
+msgstr[1] "%(n)s places left"
+
+msgid "alle Plätze vergeben, Anmeldung auf die Warteliste möglich"
+msgstr "all places taken, you can join the waiting list"
+
+msgid "leider sind alle Plätze vergeben"
+msgstr "sorry, all places are taken"
+
+#, python-format
+msgid "ab %(wann)s möglich"
+msgstr "opens on %(wann)s"
+
+msgid "noch nicht möglich"
+msgstr "not open yet"
+
+msgid "der Termin ist abgesagt"
+msgstr "the event is cancelled"
+
+msgid "geschlossen"
+msgstr "closed"
+
+#, python-format
+msgid "bis %(bis)s"
+msgstr "until %(bis)s"
+
+msgid "Auf die Warteliste"
+msgstr "Join the waiting list"
+
+msgid "Jetzt anmelden"
+msgstr "Register now"
+
 msgid "Ort:"
 msgstr "Place:"
+
+msgid "Programm:"
+msgstr "Programme:"
 
 msgid "Unterlagen:"
 msgstr "Documents:"
@@ -1020,6 +1077,9 @@ msgstr "Updated at {zeit}."
 
 msgid "Die Ergebnisse sind endgültig."
 msgstr "The results are final."
+
+msgid "kostenlos"
+msgstr "free"
 
 msgid "Seite nicht gefunden"
 msgstr "Page not found"
