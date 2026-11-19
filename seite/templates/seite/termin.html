@@ -7,6 +7,7 @@
     <p class="klein">{% include "seite/termin_zeit.html" %}</p>
     {% if e.owner %}<p class="klein">{% blocktranslate with name=e.owner %}Termin von {{ name }}{% endblocktranslate %}</p>{% endif %}
     {% if e.note %}<p>{{ e.note }}</p>{% endif %}
+    {% if e.anmeldung.can_join %}<p class="klein termin-anmeldung-hinweis">{% if e.anmeldung.state == "full" %}{% translate "Warteliste offen" %}{% else %}{% translate "Anmeldung möglich" %}{% endif %}</p>{% endif %}
   </div>
   {% include "seite/termin_fenster.html" %}
 </li>{% endwith %}{% endwith %}

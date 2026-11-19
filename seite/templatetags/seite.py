@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime
 import functools
 import re
+from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -731,6 +732,19 @@ def euro(value) -> str:
     except (TypeError, ValueError):
         return ""
     text = number_format(amount, force_grouping=True)
+    return f"€{text}" if (get_language() or "de")[:2] == "en" else f"{text} €"
+
+
+@register.filter
+def betrag(value) -> str:
+    """Euro-Betrag mit Cent in der Sprache der Seite (Teilnahmegebühr), 0 als „kostenlos“."""
+    try:
+        amount = Decimal(str(value))
+    except (TypeError, ValueError, ArithmeticError):
+        return ""
+    if amount == 0:
+        return _("kostenlos")
+    text = number_format(amount, decimal_pos=2, force_grouping=True)
     return f"€{text}" if (get_language() or "de")[:2] == "en" else f"{text} €"
 
 

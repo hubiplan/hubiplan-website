@@ -344,6 +344,9 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .termin-fenster::backdrop { background: rgb(0 0 0 / .45); }
 .termin-fenster h2 { margin-top: 0; }
 .termin-fenster form { margin-top: 1rem; }
+.termin-anmeldung { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--linie); }
+.termin-preise { margin: .3rem 0 .6rem; padding-left: 1.2rem; }
+.termin-anmeldung-hinweis { color: var(--link); font-weight: 600; }
 .abgesagt h3, .abgesagt .klein { text-decoration: line-through; }
 .marke-abgesagt { text-decoration: none; display: inline-block; background: #a4262c; color: #fff; font-size: .75rem; padding: .1rem .5rem; border-radius: 99px; vertical-align: middle; }
 .filter { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }

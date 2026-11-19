@@ -30,7 +30,7 @@ from django.http import (
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import formats, timezone, translation
-from django.utils.dateparse import parse_datetime
+from django.utils.dateparse import parse_date, parse_datetime
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
@@ -203,7 +203,50 @@ def _event(e, site: Site | None = None) -> dict | None:
         url = site.local(a.get("url")) if isinstance(a, dict) else None
         if url:
             files.append({"name": a.get("name") or "", "kind": a.get("kind") or "", "url": url})
-    return {**e, "start": start, "end": end, "anhaenge": files}
+    return {
+        **e,
+        "start": start,
+        "end": end,
+        "anhaenge": files,
+        "anmeldung": _anmeldung(e.get("registration")),
+    }
+
+
+ANMELDE_STAENDE = ("not_yet", "open", "closed", "full", "cancelled")
+
+
+def _anmeldung(r) -> dict | None:
+    """Öffentliche Anmeldung am Termin (HUBIplan A4): Stand, Preise, freie Plätze, Link.
+
+    Ältere Stände von HUBIplan liefern nichts; dann bleibt die Karte wie bisher. Texte
+    entstehen hier in der Sprache der Seite, Namen der Tarife kommen aus HUBIplan."""
+    if not isinstance(r, dict):
+        return None
+    url = r.get("url") or ""
+    if not isinstance(url, str) or not url.startswith(("https://", "http://")):
+        return None
+    state = r.get("state") if r.get("state") in ANMELDE_STAENDE else "closed"
+    english = (translation.get_language() or "de")[:2] == "en"
+    prices = []
+    for p in r.get("prices") or []:
+        if not isinstance(p, dict) or p.get("amount") in (None, ""):
+            continue
+        name = (p.get("name_en") if english else "") or p.get("name") or ""
+        until = parse_date(p["until_date"]) if p.get("until_date") else None
+        prices.append({"name": name, "amount": p["amount"], "until": until})
+    opens = parse_datetime(r["opens_at"]) if r.get("opens_at") else None
+    closes = parse_datetime(r["closes_at"]) if r.get("closes_at") else None
+    free = r.get("free")
+    return {
+        "url": url,
+        "state": state,
+        "can_join": bool(r.get("can_join")) and state in ("open", "full"),
+        "waitlist": bool(r.get("waitlist")),
+        "free": free if isinstance(free, int) and free >= 0 else None,
+        "opens": timezone.localtime(opens) if opens else None,
+        "closes": timezone.localtime(closes) if closes else None,
+        "prices": prices,
+    }
 
 
 def _events(site: Site, unit: str | None = None) -> list[dict]:
