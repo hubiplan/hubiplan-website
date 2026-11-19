@@ -490,8 +490,13 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .dokumente { list-style: none; padding: 0; display: grid; gap: .8rem; max-width: 48rem; grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); }
 .dokumente a { display: flex; align-items: center; gap: .9rem; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--rund); padding: .8rem 1rem; color: var(--text); }
 .dokumente a:hover { border-color: var(--link); opacity: 1; }
-.dokumente a.mit-vorschau { flex-direction: column; align-items: stretch; text-align: center; }
+/* Webseite #167: Vorschau auf getönter Fläche statt weißem Rahmen im weißen Rahmen. Dokumente sind
+   meist weiß; die Fläche (Datumsfarbe, sonst Vereinsfarbe, hell) hebt das Blatt ab, der Titel bleibt
+   auf der Karte. Das Blatt trägt einen leichten Schatten statt einer Linie. */
+.dokumente a.mit-vorschau { --dok-grund: color-mix(in srgb, var(--farbe-datum) 16%, var(--flaeche)); flex-direction: column; align-items: stretch; text-align: center; padding: 0 0 .8rem; overflow: hidden; }
+.dokumente a.mit-vorschau strong { padding: 0 1rem; }
 .dok-vorschau { display: block; width: 100%; height: auto; aspect-ratio: 210 / 297; object-fit: cover; object-position: top; background: #fff; border: 1px solid var(--linie); border-radius: 4px; }
+.mit-vorschau .dok-vorschau { box-sizing: content-box; width: calc(100% - 2.4rem); padding: 1.2rem; background: var(--dok-grund); border: 0; border-radius: 0; }
 .dok-symbol { flex: none; display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 8px; background: var(--primaer); color: var(--auf-primaer); font-size: .75rem; font-weight: 700; }
 
 /* Kapelle (Ralf 05.11.2026): Mitgliederlisten, Gedenken, Repertoire, Presse, Suche */
