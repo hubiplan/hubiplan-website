@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hubiplan-website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-19 03:12+0100\n"
+"POT-Creation-Date: 2026-11-19 03:18+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -830,6 +830,9 @@ msgstr "Donate now"
 msgid "fällt aus"
 msgstr "cancelled"
 
+msgid "Alles zur Veranstaltung"
+msgstr "All about the event"
+
 msgid "Video ansehen"
 msgstr "Watch video"
 
@@ -953,6 +956,21 @@ msgstr "Address copied"
 
 msgid "Adresse kopieren"
 msgstr "Copy address"
+
+msgid "Auf einen Blick"
+msgstr "At a glance"
+
+msgid "Wann:"
+msgstr "When:"
+
+msgid "Anfahrt:"
+msgstr "Getting there:"
+
+msgid "Abmelden:"
+msgstr "Cancelling:"
+
+msgid "Teilnahmebedingungen"
+msgstr "Terms of participation"
 
 msgid "Vorstand"
 msgstr "Board"
