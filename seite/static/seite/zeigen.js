@@ -19,6 +19,7 @@
     ['#inhalt', 'grundstil'],
   ]
   var an = false
+  var ziel = null
   var namen = {}
   var rahmen = null
   var schild = null
@@ -58,6 +59,8 @@
     if (e.source !== window.parent) return
     var d = e.data
     if (!d || d.hubiplan !== 'zeigen') return
+    // Antworten gehen nur an die Seite, die den Modus eingeschaltet hat
+    ziel = e.origin
     an = !!d.an
     if (d.namen && typeof d.namen === 'object') namen = d.namen
     document.documentElement.toggleAttribute('data-zeigen', an)
@@ -78,7 +81,7 @@
       // Im Zeigemodus führt kein Link weg; der Klick wählt nur den Bereich
       e.preventDefault()
       e.stopPropagation()
-      window.parent.postMessage({ hubiplan: 'bereich', bereich: teil.bereich }, '*')
+      window.parent.postMessage({ hubiplan: 'bereich', bereich: teil.bereich }, ziel)
     },
     true,
   )
