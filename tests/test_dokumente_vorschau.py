@@ -27,4 +27,5 @@ def test_vorschau_liegt_auf_flaeche():
 
 def test_streifen_bei_karten_mit_akzent():
     css = (STATIC / "stil.css").read_text()
-    assert "border-top: 3px solid var(--primaer)" in _regel(css, 'html[data-st-cards="accent"] ul.dokumente a.mit-vorschau')
+    regel = _regel(css, 'html[data-st-cards="accent"] ul.dokumente a.mit-vorschau')
+    assert "border-top: 3px solid var(--primaer)" in regel
