@@ -709,6 +709,8 @@ def test_zeigen_nur_in_der_vorschau(client, hubiplan):
     js = (STATIC / "zeigen.js").read_text()
     # Nur Nachrichten vom einbettenden HUBIplan; meldet nur den Namen eines Bereichs
     assert "e.source !== window.parent" in js
+    # Der Klick geht nur an die Seite zurück, die den Modus eingeschaltet hat (Gesamtaudit 19.11.)
+    assert "bereich: teil.bereich }, ziel)" in js and "bereich: teil.bereich }, '*')" not in js
     for bereich in ("kopf", "fuss", "startseite", "bereiche", "unterseiten", "grundstil"):
         assert f"'{bereich}'" in js
     css = (STATIC / "seite.css").read_text()
