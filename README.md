@@ -29,27 +29,36 @@ Veröffentlichen.
 
 - **Startseite aus Bausteinen**, die HUBIplan ein- und ausschaltet, ordnet und auf Wunsch
   umbenennt (eigener Name in Menü, Überschrift und Seitentitel): Begrüßung,
-  Bilderkarussell (Wechselzeit und Startbild aus HUBIplan), nächste Termine, Geburtstage,
-  aktuelle Würdenträger, aktuelle Ergebnisse, Untereinheiten
+  Bilderkarussell (Wechselzeit, Startbild oder zufälliges Titelbild, Knöpfe immer oder bei
+  Mauszeiger) oder Titelfoto als Bühne, nächste Termine als Liste oder Karten, Geburtstage,
+  aktuelle Würdenträger (auch als Band oder Podium), aktuelle Ergebnisse, Untereinheiten
 - **Eigene Abschnitte** auf Startseite und Textseiten, mit Hintergrund und Breite: Text, Text
   mit Bild, Banner, Knopfleiste, Kacheln, hervorgehobener Termin mit Countdown, Album-Auszug,
   Zitat, Ansprechpartner, häufige Fragen, Partner und Sponsoren, Anfahrt mit Routenlink,
   Termine einer Art, Dokument, Video als Link (ohne Einbettung), Chronik-Auszug, Zahlen,
-  Trenner und weitere; Bild neben, über oder unter dem Text
-- **Hinweisleiste** mit Zeitraum oben auf allen Seiten, **Titelbild** je Textseite, Seitentitel
-  auf Wunsch als Band über die ganze Breite, eigenes Kopfbild für schmale Bildschirme
+  Trenner und weitere; Bild neben, über oder unter dem Text; Kacheln und Knöpfe führen auch
+  zu einer Untereinheit
+- **Hinweisleiste** mit Zeitraum oben auf allen Seiten, in mehreren Stilen, mit Symbol, Knopf
+  und Countdown; **Titelbild** je Textseite, Seitentitel auf Wunsch als Band über die ganze
+  Breite, mehrere Kopfbilder im Wechsel, eigenes Kopfbild für schmale Bildschirme
 - **Mitglied werden**: Einleitung, Mitgliedsarten mit Beitrag und Link zum
   Online-Mitgliedsantrag in HUBIplan (die Eingaben macht der Besucher dort, nicht auf der
   Webseite)
 - **Aktuelles**: eigene Beiträge des Vereins von Instagram und Facebook
-- **Galerie** mit Albenübersicht, Unteralben und Bildern groß im Fenster
-- **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen, als Karten oder Liste
-- **Untereinheiten** (z. B. Abteilungen oder Züge) mit eigenen Unterseiten; der Pfad folgt
-  der Bezeichnung in HUBIplan
+- **Galerie** mit Albenübersicht, Unteralben und Bildern groß im Fenster mit Bildzähler;
+  „Foto: …“ unter dem Bild und Bildnachweis im Impressum
+- **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen, als Personenkarten oder
+  Liste; Ehrungen auf Wunsch als eine Karte je Person
+- **Untereinheiten** (z. B. Abteilungen oder Züge) mit eigenen Unterseiten aus Abschnitten und
+  auf Wunsch eigenem Designpaket; der Pfad folgt der Bezeichnung in HUBIplan
 - **Terminkalender** als Liste oder Monatskalender, Filter je Untereinheit, Kalender-Abo fürs
   Smartphone mit QR-Code; freigegebene Anhänge im Termin-Fenster
+- **Veranstaltungen mit Anmeldung**: eigene Seite unter `/veranstaltung/<adresse>/` mit
+  Eckdaten, Preisen, freien Plätzen und Knopf zum Anmeldeformular in HUBIplan, auf Wunsch mit
+  Menüpunkt bis zum Ende der Veranstaltung
 - **Würden** mit aktuellen Trägern und Chronik, **Ehrungen**, **Geschichte** mit Chronik als
-  Zeitleiste und Ämtern, Satzung, Dokumente und weitere Textseiten
+  Zeitleiste (Epochen auch als flaches Band) und Ämtern, Satzung, Dokumente mit Vorschau und
+  weitere Textseiten; lange Listen am Bildschirm zweispaltig
 - **Belegung** von Räumen und Anlagen als Wochenansicht mit Kalender-Abo
 - für Musikvereine und Kapellen: **Mitgliederlisten** je Mitgliedsart (nur mit Einwilligung)
   und **Repertoire** aus dem Notenarchiv
@@ -71,12 +80,15 @@ Veröffentlichen.
 - **Designpakete**: mehrere Standardlayouts (z. B. Klassisch, Festlich, Seitenleiste, Bühne,
   Zeitung), eigene Farben mit Verläufen, Kopfbild und CSS aus HUBIplan, exportier- und
   importierbar; **Feinabstimmung** mit festen Stufen statt CSS (Schrift, Breite, Abstände,
-  Ecken, Kopf, Menü, Fuß, dunkle Darstellung, Kontrast …); Farben und Wappen des Vereins,
+  Ecken, Kopf, Menü, Fuß, dunkle Darstellung, Kontrast, Wasserzeichen …), in HUBIplan nach
+  Bereichen der Seite gegliedert; Farben und Wappen des Vereins, breite Logos scharf im Kopf,
   Favicon aus dem Wappen; **Schriften zur Auswahl** (Open Sans, Roboto, Source Sans 3, Crimson
   Pro, Oswald, Atkinson Hyperlegible, eine Fraktur und eine Schreibschrift), die auf der Seite
   selbst liegen (keine fremden Server); passt sich an Monitor, Tablet und Smartphone an
 - **Kurze Ladezeiten**: Bilder in passender Größe als AVIF oder WebP, komprimierte Stile und
-  Skripte (Brotli), Schriften werden vorgeladen
+  Skripte (Brotli), Schriften werden vorgeladen, große Dokumente werden gestreamt
+- **Barrierearm**: Farben gegen die jeweilige Fläche geprüft, Tastaturbedienung, markierter
+  Menüpunkt der aktuellen Seite
 
 Alle Seiten und Adressen: [docs/betrieb.md](docs/betrieb.md#seiten).
 

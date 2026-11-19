@@ -24,9 +24,10 @@
 | `/in-gedenken/` | verstorbene Mitglieder mit Todesjahr, Einleitung aus der Textseite „in-gedenken“ |
 | `/repertoire/` | Stücke aus dem Notenarchiv mit „im Repertoire auf der Webseite“ |
 | `/presse/` | Pressespiegel (PDF oder Bild mit Quelle und Datum) |
-| `/suche/?q=…` | Suche in Textseiten, Alben, Dokumenten und Terminen (Lupe im Menü) |
+| `/suche/?q=…` | Suche in allen öffentlichen Texten (Startseite, Abschnitte, Textseiten, Untereinheiten), Alben, Dokumenten und Terminen (Lupe im Menü) |
 | `/geschichte/` | alte Adresse, leitet zu `/chronik/` bzw. `/aemter/` weiter |
 | `/seite/<name>/` | weitere Textseiten aus HUBIplan |
+| `/veranstaltung/<adresse>/` | Veranstaltung mit Anmeldung: Eckdaten, Preise, freie Plätze, Knopf zum Anmeldeformular in HUBIplan; Menüpunkt auf Wunsch bis zum Tag nach dem Ende |
 | `/kontakt/` | Kontaktformular (der Browser schickt direkt an HUBIplan) |
 | `/mitglied-werden/` | Einleitung, Mitgliedsarten mit Beitrag und Link zum Online-Mitgliedsantrag in HUBIplan (auf Wunsch je Untereinheit); das Formular selbst liegt in HUBIplan |
 | `/impressum/`, `/datenschutz/`, `/barrierefreiheit/` | auch im Wartungsmodus erreichbar |
