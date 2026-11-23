@@ -31,6 +31,7 @@ GEPRUEFT = {
     "p.url",  # Menü: _nav_url (_extern bzw. reverse())
     "datei",  # {% lokal %}: nur Adressen über diese Seite
     "gross",  # {% lokal %}
+    "bild",  # {% lokal %}: Beitragsbilder
     "a.url",  # Presse: site.local
     "d.url",  # Dokumente: site.local bzw. web_ziel in der Ansicht
     "h.url",  # Suche: _search_url (reverse())

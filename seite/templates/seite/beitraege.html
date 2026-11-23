@@ -2,17 +2,21 @@
 <ul class="beitraege">
 {% for p in beitraege %}{% if p.kind == "own" %}{% include "seite/beitrag_karte.html" %}{% else %}
   <li class="beitrag karte">
-    {% if p.images %}{% with b=p.images.0 %}{% lokal site b.url as bild %}{% if bild %}
+    {% if p.images %}<div class="beitrag-bilder">{% with b=p.images.0 %}{% lokal site b.url as bild %}{% if bild %}
     <figure class="beitrag-bild{% if b.is_video %} beitrag-video{% endif %}">
-      <img src="{{ bild }}"{% bildsatz site b "(max-width: 40rem) 100vw, 40rem" %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %} loading="lazy">
-      {% if b.is_video %}<span class="beitrag-marke">{% translate "Video" %}</span>{% elif p.images|length > 1 %}<span class="beitrag-marke">{{ p.images|length }} Bilder</span>{% endif %}
-    </figure>{% endif %}{% endwith %}{% endif %}
-    {% if p.images|length > 1 %}<ul class="beitrag-weitere">{% for b in p.images|slice:"1:5" %}{% lokal site b.url as bild %}{% if bild %}<li><img src="{{ bild }}?size=small" alt="{{ b.alt }}" loading="lazy"></li>{% endif %}{% endfor %}</ul>{% endif %}
+      {% if not b.is_video %}<a class="beitrag-bildlink" href="{{ bild }}">{% endif %}<img src="{{ bild }}"{% bildsatz site b "(max-width: 40rem) 100vw, 40rem" %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %} loading="lazy">{% if not b.is_video %}<span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>{% endif %}
+      {% if b.is_video %}<span class="beitrag-marke">{% translate "Video" %}</span>{% elif p.images|length > 1 %}<span class="beitrag-marke">{% blocktranslate count n=p.images|length %}{{ n }} Bild{% plural %}{{ n }} Bilder{% endblocktranslate %}</span>{% endif %}
+    </figure>{% endif %}{% endwith %}
+    {% if p.images|length > 1 %}<ul class="beitrag-weitere">{% for b in p.images|slice:"1:" %}{% lokal site b.url as bild %}{% if bild %}<li>{% if b.is_video %}<img src="{{ bild }}?size=small" alt="{{ b.alt }}" loading="lazy">{% else %}<a class="beitrag-bildlink" href="{{ bild }}"><img src="{{ bild }}?size=small" alt="{{ b.alt }}" loading="lazy"><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a>{% endif %}</li>{% endif %}{% endfor %}</ul>{% endif %}</div>{% endif %}
     <p class="klein">{% if p.when %}<time datetime="{{ p.when|date:'c' }}">{{ p.when|datum:"tag" }}</time> · {% endif %}{{ p.kind_label }}</p>
     {% if p.text %}{% if p.text|wordcount > 45 %}
     <p class="beitrag-text beitrag-anriss">{{ p.text|truncatewords:40 }}</p>
     <details class="beitrag-mehr"><summary>{% translate "Weiterlesen" %}</summary><p class="beitrag-text">{{ p.text|linebreaksbr }}</p></details>
     {% else %}<p class="beitrag-text">{{ p.text|linebreaksbr }}</p>{% endif %}{% endif %}
+    {% if p.likes is not None or p.comment_count is not None %}<p class="klein beitrag-zahlen">{% if p.likes is not None %}{% if p.kind == "facebook" %}{% blocktranslate count n=p.likes %}{{ n }} Reaktion{% plural %}{{ n }} Reaktionen{% endblocktranslate %}{% else %}{% blocktranslate count n=p.likes %}{{ n }} Like{% plural %}{{ n }} Likes{% endblocktranslate %}{% endif %}{% endif %}{% if p.likes is not None and p.comment_count is not None %} · {% endif %}{% if p.comment_count is not None %}{% blocktranslate count n=p.comment_count %}{{ n }} Kommentar{% plural %}{{ n }} Kommentare{% endblocktranslate %}{% endif %}</p>{% endif %}
+    {% if p.comments %}<details class="beitrag-kommentare"><summary>{% blocktranslate count n=p.comments|length %}{{ n }} Kommentar lesen{% plural %}{{ n }} Kommentare lesen{% endblocktranslate %}</summary>
+      <ul>{% for k in p.comments %}<li><p class="klein">{% if k.author %}<strong>{{ k.author }}</strong>{% endif %}{% if k.author and k.when %} · {% endif %}{% if k.when %}<time datetime="{{ k.when|date:'c' }}">{{ k.when|datum:"tag" }}</time>{% endif %}</p><p class="beitrag-text">{{ k.text|linebreaksbr }}</p></li>{% endfor %}</ul>
+    </details>{% endif %}
     {% with ziel=p.permalink|web_ziel %}{% if ziel %}<p class="klein"><a href="{{ ziel }}" rel="noopener noreferrer nofollow" target="_blank">{% if p.media_type == "video" %}{% blocktranslate with ort=p.kind_label %}Video auf {{ ort }} ansehen{% endblocktranslate %}{% else %}{% blocktranslate with ort=p.kind_label %}Beitrag auf {{ ort }} ansehen{% endblocktranslate %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}{% endwith %}
   </li>
 {% endif %}{% endfor %}

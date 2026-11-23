@@ -323,6 +323,18 @@ def _post(p: dict) -> dict:
         "when": timezone.localtime(when) if when else None,
         "permalink": permalink,
         "images": [i for i in p.get("images") or [] if isinstance(i, dict) and i.get("url")],
+        # Likes und Kommentarzahl nur, wenn HUBIplan sie liefert (Schalter je Kanal)
+        "likes": _anzahl(p.get("likes")),
+        "comment_count": _anzahl(p.get("comment_count")),
+        "comments": [
+            {
+                "author": str(k.get("author") or ""),
+                "text": str(k.get("text") or ""),
+                "when": timezone.localtime(w) if (w := _zeit(k.get("published_at"))) else None,
+            }
+            for k in p.get("comments") or []
+            if isinstance(k, dict) and k.get("text")
+        ],
     }
     if p.get("kind") == "own":
         # Eigener Beitrag (#707): Datum ohne Uhrzeit, Videos als Link mit Vorschaubild
@@ -338,6 +350,17 @@ def _post(p: dict) -> dict:
         slug = p.get("slug") or ""
         entry["url"] = reverse("beitrag", args=[slug]) if re.fullmatch(r"[-a-z0-9]+", slug) else ""
     return entry
+
+
+def _anzahl(value) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _zeit(value):
+    try:
+        return parse_datetime(value) if isinstance(value, str) else None
+    except ValueError:
+        return None
 
 
 def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:
