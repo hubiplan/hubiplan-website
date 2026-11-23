@@ -1164,6 +1164,21 @@ msgstr ""
 msgid "%(jahr)ser"
 msgstr "%(jahr)ss"
 
+msgid "Eigene Beiträge"
+msgstr "Own posts"
+
+msgid "Weitere Beiträge"
+msgstr "More posts"
+
+msgid "Neuere Beiträge"
+msgstr "Newer posts"
+
+msgid "Ältere Beiträge"
+msgstr "Older posts"
+
+msgid "Seite %(seite)s"
+msgstr "Page %(seite)s"
+
 #, python-format
 msgid "%(n)s Reaktion"
 msgid_plural "%(n)s Reaktionen"

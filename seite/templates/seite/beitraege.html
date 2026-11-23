@@ -1,6 +1,6 @@
-{% load seite i18n %}{# Beiträge aus Instagram/Facebook: Text und Bilder kommen von HUBIplan, nichts von Meta #}
+{% load seite i18n %}{# Eigene Beiträge (#707) und Beiträge aus Instagram/Facebook: Text und Bilder kommen von HUBIplan, nichts von Meta #}
 <ul class="beitraege">
-{% for p in beitraege %}
+{% for p in beitraege %}{% if p.kind == "own" %}{% include "seite/beitrag_karte.html" %}{% else %}
   <li class="beitrag karte">
     {% if p.images %}<div class="beitrag-bilder">{% with b=p.images.0 %}{% lokal site b.url as bild %}{% if bild %}
     <figure class="beitrag-bild{% if b.is_video %} beitrag-video{% endif %}">
@@ -19,5 +19,5 @@
     </details>{% endif %}
     {% with ziel=p.permalink|web_ziel %}{% if ziel %}<p class="klein"><a href="{{ ziel }}" rel="noopener noreferrer nofollow" target="_blank">{% if p.media_type == "video" %}{% blocktranslate with ort=p.kind_label %}Video auf {{ ort }} ansehen{% endblocktranslate %}{% else %}{% blocktranslate with ort=p.kind_label %}Beitrag auf {{ ort }} ansehen{% endblocktranslate %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></a></p>{% endif %}{% endwith %}
   </li>
-{% endfor %}
+{% endif %}{% endfor %}
 </ul>

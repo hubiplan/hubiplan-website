@@ -598,6 +598,13 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .beitrag-mehr summary { cursor: pointer; color: var(--link); font-weight: 600; }
 /* Aufgeklappt ersetzt der volle Text den Anriss, statt ihn zu wiederholen */
 .beitrag-anriss:has(+ .beitrag-mehr[open]) { display: none; }
+/* Eigene Beiträge (#707): Titel in der Karte, Videos auf der Seite des Beitrags, Blättern */
+.beitrag-titel { margin: 0; font-size: 1.15rem; line-height: 1.3; }
+.beitrag-titel a { font-weight: 700; }
+.beitrag-videos { list-style: none; padding: 0; margin: 1.5rem 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+.beitrag-seite .galerie-bilder { margin-top: 1.5rem; }
+.blaettern { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; margin-top: 1.5rem; }
+.blaettern [rel="next"] { margin-left: auto; }
 .auswahl a[aria-current="page"] { font-weight: 700; }
 
 /* Wettbewerbsergebnisse */

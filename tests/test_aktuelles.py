@@ -96,6 +96,85 @@ def test_weiterlesen_ersetzt_anriss(client, mit_beitraegen, monkeypatch):
     assert ".beitrag-anriss:has(+ .beitrag-mehr[open]) { display: none; }" in css
 
 
+# --- Eigene Beiträge (#707) ---
+
+
+@pytest.fixture
+def eigene(hubiplan, monkeypatch):
+    hubiplan.info["blocks"]["posts"] = True
+    hubiplan.info["posts"] = {"instagram": True, "facebook": True, "own": True}
+    lang = "Ein schöner Tag mit Musik. " * 10
+    monkeypatch.setattr(
+        fake,
+        "OWN_POSTS",
+        [
+            fake._own(1, "Sommerfest", "2026-10-18", text=lang, images=2),
+            fake._own(2, "Jubiläum", "2015-10-03", text="Rückblick.", video=True),
+        ],
+    )
+    return hubiplan
+
+
+def test_eigene_beitraege_gemischt_nach_datum(client, eigene):
+    html = text(client.get("/aktuelles/"))
+    # 19.10. Instagram, 18.10. eigener Beitrag, 18.10. Instagram (10 Uhr UTC), … 2015 zuletzt
+    assert html.index("Schönes Fest") < html.index("Sommerfest") < html.index("Jubiläum")
+    assert '<a href="/aktuelles/sommerfest/">Sommerfest</a>' in html
+    assert "18. Oktober 2026" in html and "3. Oktober 2015" in html
+    assert "/medien/a/images/foto1x0-v0/" in html
+    assert "2 Bilder" in html
+    # Auswahl „Eigene Beiträge“
+    assert "?kanal=own" in html
+    cache.clear()
+    html = text(client.get("/aktuelles/?kanal=own"))
+    assert "Sommerfest" in html and "Schönes Fest" not in html
+
+
+def test_seite_eines_beitrags(client, eigene):
+    r = client.get("/aktuelles/sommerfest/")
+    assert r.status_code == 200
+    html = text(r)
+    assert "<h1>Sommerfest</h1>" in html
+    assert html.count("Ein schöner Tag mit Musik.") == 10
+    assert "/medien/a/images/foto1x1-v0/" in html
+    assert 'href="/aktuelles/"' in html
+    assert client.get("/aktuelles/gibt-es-nicht/").status_code == 404
+
+
+def test_video_als_link(client, eigene, monkeypatch):
+    monkeypatch.setattr(
+        fake, "OWN_POSTS", [fake._own(3, "Konzert", "2020-05-01", text="Mitschnitt.", video=True)]
+    )
+    html = text(client.get("/aktuelles/konzert/"))
+    assert 'href="https://video.example/sommerfest" target="_blank"' in html
+    assert "Ständchen" in html
+    assert "<iframe" not in html
+
+
+def test_archiv_aeltere_beitraege(client, eigene, monkeypatch):
+    many = [fake._own(10 + i, f"Bericht {i}", f"20{10 + i}-04-01") for i in range(30)]
+    monkeypatch.setattr(fake, "OWN_POSTS", many)
+    html = text(client.get("/aktuelles/"))
+    assert 'rel="next" href="/aktuelles/?seite=2"' in html
+    assert 'rel="prev"' not in html
+    cache.clear()
+    html = text(client.get("/aktuelles/?seite=2"))
+    assert 'rel="prev" href="/aktuelles/"' in html
+    assert 'rel="next"' not in html
+    assert "Bericht 0" in html  # der älteste steht hinten
+    assert client.get("/aktuelles/?seite=50").status_code == 404
+
+
+def test_nur_eigene_beitraege_ohne_social_media(client, hubiplan, monkeypatch):
+    hubiplan.info["blocks"]["posts"] = True
+    hubiplan.info["posts"] = {"instagram": False, "facebook": False, "own": True}
+    monkeypatch.setattr(fake, "POSTS", [])
+    monkeypatch.setattr(fake, "OWN_POSTS", [fake._own(1, "Sommerfest", "2019-06-15")])
+    assert ">Aktuelles</a>" in text(client.get("/"))
+    html = text(client.get("/aktuelles/"))
+    assert "Sommerfest" in html and "?kanal=" not in html
+
+
 def test_alle_bilder_im_bildfenster(client, mit_beitraegen):
     """Alle Bilder eines Albums sind zu sehen und lassen sich im Bildfenster blättern."""
     html = text(client.get("/aktuelles/"))
