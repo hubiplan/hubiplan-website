@@ -4,7 +4,7 @@
     {# Die ganze Karte öffnet ein Fenster mit allen Angaben (Ralf 2026-10-31) #}
     <h3><button type="button" class="termin-knopf" aria-haspopup="dialog" data-termin="{{ tid }}">{{ e.title }}</button>{% if e.is_cancelled %} <span class="marke-abgesagt">{% translate "fällt aus" %}</span>{% endif %}</h3>
     {# Das Datum steht schon im Kästchen; vorgelesen wird es hier. #}
-    <p class="klein">{% include "seite/termin_zeit.html" %}</p>
+    <p class="klein">{% include "seite/termin_zeit.html" %}{% if e.performance_kind %} · {{ e.performance_kind }}{% endif %}</p>
     {% if e.owner %}<p class="klein">{% blocktranslate with name=e.owner %}Termin von {{ name }}{% endblocktranslate %}</p>{% endif %}
     {% if e.note %}<p>{{ e.note }}</p>{% endif %}
     {% if e.anmeldung.can_join %}<p class="klein termin-anmeldung-hinweis">{% if e.anmeldung.state == "full" %}{% translate "Warteliste offen" %}{% else %}{% translate "Anmeldung möglich" %}{% endif %}</p>{% endif %}
