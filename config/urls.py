@@ -20,6 +20,8 @@ register_converter(UnitsPath, "einheiten")
 urlpatterns = [
     path("", views.start, name="start"),
     path("aktuelles/", views.news, name="aktuelles"),
+    # Eigener Beitrag (#707)
+    path("aktuelles/<slug:slug>/", views.news_post, name="beitrag"),
     path("vorstand/", views.board, name="vorstand"),
     path("termine/", views.events, name="termine"),
     path("<einheiten:pfad>/", views.units, name="einheiten"),

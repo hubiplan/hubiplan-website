@@ -44,7 +44,7 @@ Veröffentlichen.
 - **Mitglied werden**: Einleitung, Mitgliedsarten mit Beitrag und Link zum
   Online-Mitgliedsantrag in HUBIplan (die Eingaben macht der Besucher dort, nicht auf der
   Webseite)
-- **Aktuelles**: eigene Beiträge des Vereins von Instagram und Facebook
+- **Aktuelles**: eigene Beiträge des Vereins (mit eigener Seite und Archiv) und Beiträge von Instagram und Facebook, nach Datum gemischt
 - **Galerie** mit Albenübersicht, Unteralben und Bildern groß im Fenster mit Bildzähler;
   „Foto: …“ unter dem Bild und Bildnachweis im Impressum
 - **Vorstand und Ansprechpartner** mit Funktionsadressen und Ehrungen, als Personenkarten oder

@@ -1,0 +1,25 @@
+{% extends "seite/basis.html" %}{% load static seite i18n %}
+{% block titel %}{{ post.title }} · {% endblock %}
+{% block inhalt %}
+<p class="brotkrumen"><a href="{% url 'aktuelles' %}">{% translate "Aktuelles" as std %}{% baustein site "posts" std %}</a></p>
+<article class="textseite beitrag-seite">
+<h1>{{ post.title }}</h1>
+{% if post.day %}<p class="klein"><time datetime="{{ post.day|date:'Y-m-d' }}">{{ post.day|datum:"tag" }}</time></p>{% endif %}
+{% if post.text %}<div class="text"{{ site.content_lang_attr }}>{{ post.text|md:site }}</div>{% endif %}
+{% if post.videos %}<ul class="beitrag-videos">
+  {% for v in post.videos %}{% with link=v.url|web_ziel %}{% if link %}<li>
+    {% lokal site v.image.url as bild %}<a class="video-vorschau" href="{{ link }}" target="_blank" rel="noopener noreferrer">{% if bild %}<img src="{{ bild }}"{% bildsatz site v.image "(max-width: 64rem) 100vw, 64rem" %} alt="" loading="lazy"{% if v.image.width %} width="{{ v.image.width }}" height="{{ v.image.height }}"{% endif %}>{% endif %}<span class="video-knopf"><span aria-hidden="true">▶</span> {% if v.title %}{{ v.title }}{% else %}{% translate "Video ansehen" %}{% endif %}<span class="nur-vorlesen"> {% translate "(öffnet in neuem Fenster)" %}</span></span></a>
+  </li>{% endif %}{% endwith %}{% endfor %}
+</ul>{% endif %}
+{% if post.images %}
+<ul class="galerie-bilder">
+  {% for b in post.images %}{% lokal site b.small_url as klein %}{% lokal site b.url as gross %}
+  <li><a class="galerie-bild" href="{{ gross }}" data-unterschrift="{{ b.caption|mit_nachweis:b }}"><img src="{{ klein }}" alt="{{ b.alt }}" loading="lazy"{% if b.width and b.height %} width="{{ b.width }}" height="{{ b.height }}"{% endif %}><span class="unsichtbar"> {% translate "(Bild vergrößern)" %}</span></a></li>
+  {% endfor %}
+</ul>
+{% include "seite/bildfenster.html" %}
+{% endif %}
+<p><a class="knopf hell" href="{% url 'aktuelles' %}">{% translate "Alle Beiträge" %}</a></p>
+</article>
+{% endblock %}
+{% block skripte %}{% if post.images %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}{% endblock %}

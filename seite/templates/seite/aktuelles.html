@@ -1,10 +1,14 @@
 {% extends "seite/basis.html" %}{% load seite i18n %}
-{% block titel %}{% translate "Aktuelles" as std %}{% baustein site "posts" std %} · {% endblock %}
+{% block titel %}{% translate "Aktuelles" as std %}{% baustein site "posts" std %}{% if seite > 1 %} · {% blocktranslate %}Seite {{ seite }}{% endblocktranslate %}{% endif %} · {% endblock %}
 {% block inhalt %}
 <h1>{% translate "Aktuelles" as std %}{% baustein site "posts" std %}</h1>
 {% if kinds %}<p class="auswahl klein">
   <a href="{% url 'aktuelles' %}"{% if not kind %} aria-current="page"{% endif %}>{% translate "Alle" %}</a>
-  {% for k in kinds %} · <a href="{% url 'aktuelles' %}?kanal={{ k }}"{% if kind == k %} aria-current="page"{% endif %}>{% if k == "instagram" %}Instagram{% else %}Facebook{% endif %}</a>{% endfor %}
+  {% for k in kinds %} · <a href="{% url 'aktuelles' %}?kanal={{ k }}"{% if kind == k %} aria-current="page"{% endif %}>{% if k == "instagram" %}Instagram{% elif k == "facebook" %}Facebook{% else %}{% translate "Eigene Beiträge" %}{% endif %}</a>{% endfor %}
 </p>{% endif %}
 {% if posts %}{% include "seite/beitraege.html" with beitraege=posts %}{% else %}<p>{% translate "Noch keine Beiträge." %}</p>{% endif %}
+{% if aeltere or neuere %}<nav class="blaettern" aria-label="{% translate 'Weitere Beiträge' %}">
+  {% if neuere %}<a class="knopf hell" rel="prev" href="{% url 'aktuelles' %}{% if neuere > 1 or kind %}?{% endif %}{% if kind %}kanal={{ kind }}{% endif %}{% if neuere > 1 %}{% if kind %}&amp;{% endif %}seite={{ neuere }}{% endif %}">{% translate "Neuere Beiträge" %}</a>{% endif %}
+  {% if aeltere %}<a class="knopf hell" rel="next" href="{% url 'aktuelles' %}?{% if kind %}kanal={{ kind }}&amp;{% endif %}seite={{ aeltere }}">{% translate "Ältere Beiträge" %}</a>{% endif %}
+</nav>{% endif %}
 {% endblock %}

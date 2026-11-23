@@ -391,6 +391,47 @@ POSTS = [
 ]
 
 
+def _own(n: int, title: str, date: str, text: str = "", images: int = 0, video: bool = False):
+    """Eigener Beitrag (#707), erfunden."""
+    slug = title.lower().replace(" ", "-").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")
+    return {
+        "id": f"eigen{n}",
+        "kind": "own",
+        "kind_label": "",
+        "account": "",
+        "media_type": "text",
+        "slug": slug,
+        "title": title,
+        "date": date,
+        "published_at": f"{date}T12:00:00+01:00",
+        "excerpt": text[:60],
+        "has_more": len(text) > 60,
+        "text": "",
+        "permalink": None,
+        "images": [
+            {
+                "key": f"foto{n}x{i}",
+                "url": f"{BASE}images/foto{n}x{i}-v0/",
+                "small_url": f"{BASE}images/foto{n}x{i}-v0/?size=small",
+                "width": 1200,
+                "height": 900,
+                "alt": "Erfundenes Foto",
+                "caption": "",
+                "credit": "",
+            }
+            for i in range(images)
+        ],
+        "videos": [{"url": "https://video.example/sommerfest", "title": "Ständchen", "image": None}]
+        if video
+        else [],
+        "unit": None,
+        "volltext": text,
+    }
+
+
+OWN_POSTS: list = []
+
+
 @dataclass
 class FakeHubiplan:
     info: dict = field(default_factory=site_info)
@@ -595,8 +636,21 @@ class FakeHubiplan:
             if not self.info.get("blocks", {}).get("posts"):
                 return self.json({"detail": "nicht gefunden"}, 404)
             query = rest.split("?", 1)[1] if "?" in rest else ""
-            items = [p for p in POSTS if f"art={p['kind']}" in query or "art=" not in query]
-            return self.json({"posts": items})
+            args = dict(a.split("=", 1) for a in query.split("&") if "=" in a)
+            items = [
+                p
+                for p in sorted([*POSTS, *OWN_POSTS], key=lambda p: p["published_at"], reverse=True)
+                if args.get("art") in (None, p["kind"])
+            ]
+            count, page = int(args.get("anzahl", 12)), int(args.get("seite", 1))
+            shown = items[(page - 1) * count : page * count]
+            return self.json({"posts": shown, "page": page, "more": len(items) > page * count})
+        if base.startswith("posts/eigene/"):
+            slug = base.split("/")[2]
+            post = next((p for p in OWN_POSTS if p["slug"] == slug), None)
+            if post is None or not self.info.get("blocks", {}).get("posts"):
+                return self.json({"detail": "nicht gefunden"}, 404)
+            return self.json({"post": {**post, "text": post["volltext"]}})
         if base == "events/":
             return self.json(events())
         if base.startswith("results/"):

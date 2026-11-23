@@ -266,33 +266,51 @@ def _events(site: Site, unit: str | None = None) -> list[dict]:
     return events
 
 
-POST_KINDS = ("instagram", "facebook")
+POST_KINDS = ("instagram", "facebook", "own")
+# Beiträge je Seite unter „Aktuelles“; ältere stehen im Archiv (?seite=2 …, #707)
+POSTS_PER_PAGE = 24
+POST_PAGES_MAX = 200
 
 
 def has_posts(info: dict, kind: str | None = None) -> bool:
-    """Gibt es sichtbare Beiträge (aus HUBIplan-Info oder Info einer Untereinheit)?"""
+    """Gibt es sichtbare Beiträge (aus HUBIplan-Info oder Info einer Untereinheit)?
+    „own“ sind eigene Beiträge des Vereins (HUBIplan ab 23.11.2026)."""
     flags = info.get("posts") or {}
     if not isinstance(flags, dict):
         return False
     return bool(flags.get(kind)) if kind else any(flags.get(k) for k in POST_KINDS)
 
 
-def _posts(
-    site: Site, kind: str | None = None, unit: str | None = None, limit: int = 24
-) -> list[dict]:
-    """Beiträge aus Instagram/Facebook, von HUBIplan lokal gespeichert (nie von Meta)."""
+def _posts_page(
+    site: Site,
+    kind: str | None = None,
+    unit: str | None = None,
+    limit: int = POSTS_PER_PAGE,
+    page: int = 1,
+) -> tuple[list[dict], bool]:
+    """Eigene Beiträge und die aus Instagram/Facebook, von HUBIplan lokal gespeichert (nie
+    von Meta), nach Datum gemischt; dazu, ob es ältere gibt."""
     if not site.block("posts"):
-        return []
+        return [], False
     query = [f"anzahl={limit}"]
     if kind:
         query.append(f"art={kind}")
     if unit:
         query.append(f"einheit={unit}")
+    if page > 1:
+        query.append(f"seite={page}")
     try:
-        items = site.get("posts/?" + "&".join(query)).get("posts", [])
+        data = site.get("posts/?" + "&".join(query))
     except api.NotFound:
-        return []
-    return [_post(p) for p in items if isinstance(p, dict)]
+        return [], False
+    items = [_post(p) for p in data.get("posts", []) if isinstance(p, dict)]
+    return items, bool(data.get("more"))
+
+
+def _posts(
+    site: Site, kind: str | None = None, unit: str | None = None, limit: int = 24
+) -> list[dict]:
+    return _posts_page(site, kind, unit, limit)[0]
 
 
 def _post(p: dict) -> dict:
@@ -300,12 +318,26 @@ def _post(p: dict) -> dict:
     permalink = p.get("permalink") or ""
     if not permalink.startswith("https://"):
         permalink = ""
-    return {
+    entry = {
         **p,
         "when": timezone.localtime(when) if when else None,
         "permalink": permalink,
-        "images": [i for i in p.get("images") or [] if i.get("url")],
+        "images": [i for i in p.get("images") or [] if isinstance(i, dict) and i.get("url")],
     }
+    if p.get("kind") == "own":
+        # Eigener Beitrag (#707): Datum ohne Uhrzeit, Videos als Link mit Vorschaubild
+        try:
+            entry["day"] = datetime.date.fromisoformat(p.get("date") or "")
+        except ValueError:
+            entry["day"] = None
+        entry["videos"] = [
+            v
+            for v in p.get("videos") or []
+            if isinstance(v, dict) and str(v.get("url") or "").startswith("https://")
+        ]
+        slug = p.get("slug") or ""
+        entry["url"] = reverse("beitrag", args=[slug]) if re.fullmatch(r"[-a-z0-9]+", slug) else ""
+    return entry
 
 
 def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:
@@ -730,12 +762,38 @@ def news(request, site: Site):
     if kind not in POST_KINDS or not has_posts(site.info, kind):
         kind = None
     kinds = [k for k in POST_KINDS if has_posts(site.info, k)]
+    try:
+        page = max(1, min(int(request.GET.get("seite") or 1), POST_PAGES_MAX))
+    except ValueError:
+        page = 1
+    posts, more = _posts_page(site, kind, page=page)
+    if page > 1 and not posts:
+        raise api.NotFound()
     return _page(
         request,
         "seite/aktuelles.html",
         site,
-        {"posts": _posts(site, kind), "kind": kind, "kinds": kinds if len(kinds) > 1 else []},
+        {
+            "posts": posts,
+            "kind": kind,
+            "kinds": kinds if len(kinds) > 1 else [],
+            "seite": page,
+            "aeltere": page + 1 if more else None,
+            "neuere": page - 1 if page > 1 else None,
+        },
     )
+
+
+@require_GET
+@site_view()
+def news_post(request, site: Site, slug: str):
+    """Ein eigener Beitrag mit ganzem Text, Bildern und Videos (#707)."""
+    if not site.block("posts"):
+        raise api.NotFound()
+    data = site.get(f"posts/eigene/{slug}/").get("post")
+    if not isinstance(data, dict):
+        raise api.NotFound()
+    return _page(request, "seite/beitrag.html", site, {"post": _post(data)})
 
 
 @require_GET
@@ -1269,6 +1327,8 @@ def _search_url(site: Site, hit: dict) -> str | None:
         return reverse("gedenken")
     if kind == "album" and hit.get("slug"):
         return reverse("album", args=[hit["slug"]])
+    if kind == "news" and re.fullmatch(r"[-a-z0-9]+", str(hit.get("slug") or "")):
+        return reverse("beitrag", args=[hit["slug"]])
     if kind == "press":
         return reverse("presse")
     if kind == "documents":

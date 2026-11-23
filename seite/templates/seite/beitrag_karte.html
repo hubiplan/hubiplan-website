@@ -1,0 +1,17 @@
+{% load seite i18n %}{# Eigener Beitrag in der Liste (#707): Bild, Titel, Datum, Anriss; der ganze Text steht auf der Seite des Beitrags #}
+  <li class="beitrag karte beitrag-eigen">
+    {% if p.images %}{% with b=p.images.0 %}{% lokal site b.url as bild %}{% if bild %}
+    <figure class="beitrag-bild">
+      <a href="{{ p.url }}" tabindex="-1" aria-hidden="true"><img src="{{ bild }}"{% bildsatz site b "(max-width: 40rem) 100vw, 40rem" %} alt="{{ b.alt }}"{% if b.width %} width="{{ b.width }}" height="{{ b.height }}"{% endif %} loading="lazy"></a>
+      {% if p.images|length > 1 %}<span class="beitrag-marke">{% blocktranslate count n=p.images|length %}{{ n }} Bild{% plural %}{{ n }} Bilder{% endblocktranslate %}</span>{% endif %}
+    </figure>{% endif %}{% endwith %}
+    {% elif p.videos %}{% with v=p.videos.0 %}{% lokal site v.image.url as bild %}{% if bild %}
+    <figure class="beitrag-bild beitrag-video">
+      <a href="{{ p.url }}" tabindex="-1" aria-hidden="true"><img src="{{ bild }}"{% bildsatz site v.image "(max-width: 40rem) 100vw, 40rem" %} alt=""{% if v.image.width %} width="{{ v.image.width }}" height="{{ v.image.height }}"{% endif %} loading="lazy"></a>
+      <span class="beitrag-marke">{% translate "Video" %}</span>
+    </figure>{% endif %}{% endwith %}{% endif %}
+    <h3 class="beitrag-titel">{% if p.url %}<a href="{{ p.url }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}</h3>
+    {% if p.day %}<p class="klein"><time datetime="{{ p.day|date:'Y-m-d' }}">{{ p.day|datum:"tag" }}</time></p>{% endif %}
+    {% if p.excerpt %}<p class="beitrag-text">{{ p.excerpt }}</p>{% endif %}
+    {% if p.url and p.has_more or p.url and p.videos %}<p class="klein"><a href="{{ p.url }}">{% translate "Weiterlesen" %}<span class="nur-vorlesen">: {{ p.title }}</span></a></p>{% endif %}
+  </li>
