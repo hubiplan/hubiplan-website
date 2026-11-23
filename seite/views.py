@@ -1725,6 +1725,8 @@ def preview(request):
             ),
         )
     data = res.json()
+    # Weiterleitung im Rahmen: auch über die Vereinsadresse der Einheit (Issue #729)
+    request.vorschau_rahmen = data.get("frame_origins") or []
     response = HttpResponseRedirect(reverse("start"))
     # Anderes Design nur ansehen (Webseite › Gestaltung › „Vorschau ansehen“)
     _set_design_cookie(response, request.GET.get("design", ""))

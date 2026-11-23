@@ -437,6 +437,8 @@ class FakeHubiplan:
     info: dict = field(default_factory=site_info)
     maintenance: bool = False
     preview_session: str = "sitzung-1234567890"
+    # Vereinsadressen, die HUBIplan mit der Vorschau meldet (Issue #729)
+    frame_origins: list = field(default_factory=list)
     calls: list = field(default_factory=list)
     posts: list = field(default_factory=list)
     bases: list = field(default_factory=list)
@@ -477,7 +479,11 @@ class FakeHubiplan:
             if rest == "preview/":
                 if data.get("token") == "gut":
                     return self.json(
-                        {"session": self.preview_session, "until": "2099-01-01T00:00:00Z"}
+                        {
+                            "session": self.preview_session,
+                            "until": "2099-01-01T00:00:00Z",
+                            "frame_origins": self.frame_origins,
+                        }
                     )
                 return self.json({"detail": "ungültig"}, 403)
             return self.json({}, 405)
@@ -512,6 +518,7 @@ class FakeHubiplan:
             return self.json(
                 {
                     **self.info,
+                    **({"frame_origins": self.frame_origins} if ok_preview else {}),
                     "preview": ok_preview,
                     "state": "maintenance" if self.maintenance else "public",
                 }

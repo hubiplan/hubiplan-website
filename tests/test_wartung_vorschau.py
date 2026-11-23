@@ -195,3 +195,35 @@ def test_vorschau_im_rahmen_nur_fuer_hubiplan(client, hubiplan):
     csp = r["Content-Security-Policy"]
     assert "frame-ancestors 'self' https://hubiplan.example;" in csp
     assert "X-Frame-Options" not in r
+
+
+def test_vorschau_im_rahmen_auch_ueber_vereinsadresse(client, hubiplan, settings):
+    """Issue #729: HUBIplan über die Vereinsadresse der Einheit bettet die Vorschau ein."""
+    hubiplan.frame_origins = ["https://verein.musterkapelle.example", "kaputt'; script-src *"]
+    r = client.get("/vorschau/?schluessel=gut")
+    assert "X-Frame-Options" not in r
+    frames = "frame-ancestors 'self' https://hubiplan.example https://verein.musterkapelle.example;"
+    assert frames in r["Content-Security-Policy"]
+    r = client.get("/")
+    csp = r["Content-Security-Policy"]
+    assert frames in csp
+    assert "kaputt" not in csp and "script-src *" not in csp
+    # Besucher ohne Vorschau: unverändert nicht einbettbar
+    client.cookies.clear()
+    r = client.get("/")
+    assert "frame-ancestors 'none'" in r["Content-Security-Policy"]
+    assert r["X-Frame-Options"] == "DENY"
+    assert "musterkapelle" not in r["Content-Security-Policy"]
+
+
+def test_vorschau_weitere_adressen_aus_der_einstellung(client, hubiplan, settings):
+    """Issue #729: feste Liste HUBIPLAN_EXTRA_ORIGINS für ältere HUBIplan-Fassungen."""
+    from seite.middleware import SecurityHeaders
+
+    settings.HUBIPLAN_EXTRA_ORIGINS = ["https://verein.beispiel.example/", "nicht gültig"]
+    mw = SecurityHeaders(lambda request: None)
+    assert "frame-ancestors 'self' https://hubiplan.example https://verein.beispiel.example;" in (
+        mw.csp_preview
+    )
+    assert "nicht" not in mw.csp_preview
+    assert "frame-ancestors 'none'" in mw.csp
