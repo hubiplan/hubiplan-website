@@ -733,4 +733,7 @@ def load(request) -> Site:
         if not ok:
             # HUBIplan kennt die Sitzung nicht: öffentliche Sicht, ab jetzt gecacht
             preview, design = None, None
+        else:
+            # Von diesen Vereinsadressen darf HUBIplan die Vorschau einbetten (Issue #729)
+            request.vorschau_rahmen = info.get("frame_origins") or []
     return Site(key=key, info=info, preview=preview, design_preview=design)

@@ -65,7 +65,10 @@ Antworten getrennt. Die Vorschau darf nicht von Suchmaschinen aufgenommen werden
 In der Vorschau zeigt HUBIplan den Entwurf der Gestaltung (Design, Farben, Stilregler, Kopfbild,
 Startseite); Besucher sehen nur den veröffentlichten Stand. Nur Vorschau-Anfragen darf HUBIplan
 selbst in einem Rahmen zeigen (`frame-ancestors` mit der Adresse aus `HUBIPLAN_PUBLIC_URL`),
-alle anderen Seiten bleiben mit `frame-ancestors 'none'` unrahmbar.
+alle anderen Seiten bleiben mit `frame-ancestors 'none'` unrahmbar. Wird HUBIplan über die
+Vereinsadresse einer Einheit bedient, meldet HUBIplan diese Adressen mit der Vorschau
+(`frame_origins`); sie gelten nur für diese Vorschau. Für ältere HUBIplan-Fassungen lassen sich
+weitere Adressen fest in `HUBIPLAN_EXTRA_ORIGINS` eintragen (kommagetrennt).
 
 ## Darstellung und Anbindung
 

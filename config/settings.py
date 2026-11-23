@@ -41,6 +41,14 @@ HUBIPLAN_PUBLIC_URL = os.environ.get("HUBIPLAN_PUBLIC_URL", HUBIPLAN_API_URL).rs
 # Woher Logos und andere hochgeladene Dateien (/media/…) kommen (Server: über Caddy)
 HUBIPLAN_MEDIA_URL = os.environ.get("HUBIPLAN_MEDIA_URL", HUBIPLAN_API_URL).rstrip("/")
 HUBIPLAN_HOST = os.environ.get("HUBIPLAN_HOST", urlparse(HUBIPLAN_PUBLIC_URL).hostname or "")
+# Weitere Adressen von HUBIplan, die die Vorschau einbetten dürfen (kommagetrennt, z. B.
+# https://verein.example.org). Die Vereinsadressen der Einheit meldet HUBIplan ohnehin mit
+# der Vorschau (Issue #729); die Liste ist nur für ältere HUBIplan-Fassungen nötig.
+HUBIPLAN_EXTRA_ORIGINS = [
+    o.strip().rstrip("/")
+    for o in os.environ.get("HUBIPLAN_EXTRA_ORIGINS", "").split(",")
+    if o.strip()
+]
 API_TIMEOUT = float(os.environ.get("API_TIMEOUT", "10"))
 # Antworten der Schnittstelle so lange zwischenspeichern
 CACHE_SECONDS = int(os.environ.get("CACHE_SECONDS", "120"))
