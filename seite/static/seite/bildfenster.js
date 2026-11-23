@@ -1,6 +1,6 @@
-// Bilder groß im Fenster (Zeitleiste der Chronik, Galerie): Ein Klick auf ein Bild zeigt
+// Bilder groß im Fenster (Zeitleiste der Chronik, Galerie, Beiträge aus Instagram/Facebook): Ein Klick auf ein Bild zeigt
 // es groß in einem Fenster (<dialog>); ohne JavaScript öffnet der Link das Bild selbst.
-// Mehrere Bilder einer Gruppe (Ereignis, Album) blättert man mit „Voriges/Nächstes Bild“
+// Mehrere Bilder einer Gruppe (Ereignis, Album, Beitrag) blättert man mit „Voriges/Nächstes Bild“
 // oder den Pfeiltasten.
 // Esc, „Schließen“ oder ein Klick daneben schließen das Fenster.
 (function () {
@@ -37,12 +37,12 @@
     }
     if (e.target.closest && e.target.closest(".bild-zurueck")) return zeigen(stelle - 1);
     if (e.target.closest && e.target.closest(".bild-weiter")) return zeigen(stelle + 1);
-    var link = e.target.closest ? e.target.closest("a.zeitleiste-bild, a.galerie-bild") : null;
+    var link = e.target.closest ? e.target.closest("a.zeitleiste-bild, a.galerie-bild, a.beitrag-bildlink") : null;
     if (!link || e.ctrlKey || e.metaKey || e.shiftKey) return;
     e.preventDefault();
-    var behaelter = link.closest(".zeitleiste-bilder, .galerie-bilder");
+    var behaelter = link.closest(".zeitleiste-bilder, .galerie-bilder, .beitrag-bilder");
     gruppe = behaelter
-      ? Array.prototype.slice.call(behaelter.querySelectorAll("a.zeitleiste-bild, a.galerie-bild"))
+      ? Array.prototype.slice.call(behaelter.querySelectorAll("a.zeitleiste-bild, a.galerie-bild, a.beitrag-bildlink"))
       : [link];
     zeigen(gruppe.indexOf(link));
     fenster.showModal();

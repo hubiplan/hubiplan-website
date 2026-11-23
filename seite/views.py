@@ -305,7 +305,30 @@ def _post(p: dict) -> dict:
         "when": timezone.localtime(when) if when else None,
         "permalink": permalink,
         "images": [i for i in p.get("images") or [] if i.get("url")],
+        # Likes und Kommentarzahl nur, wenn HUBIplan sie liefert (Schalter je Kanal)
+        "likes": _anzahl(p.get("likes")),
+        "comment_count": _anzahl(p.get("comment_count")),
+        "comments": [
+            {
+                "author": str(k.get("author") or ""),
+                "text": str(k.get("text") or ""),
+                "when": timezone.localtime(w) if (w := _zeit(k.get("published_at"))) else None,
+            }
+            for k in p.get("comments") or []
+            if isinstance(k, dict) and k.get("text")
+        ],
     }
+
+
+def _anzahl(value) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _zeit(value):
+    try:
+        return parse_datetime(value) if isinstance(value, str) else None
+    except ValueError:
+        return None
 
 
 def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:

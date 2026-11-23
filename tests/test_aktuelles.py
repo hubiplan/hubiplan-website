@@ -94,3 +94,41 @@ def test_weiterlesen_ersetzt_anriss(client, mit_beitraegen, monkeypatch):
     assert 'class="beitrag-mehr"' in html
     css = (Path(__file__).parent.parent / "seite/static/seite/seite.css").read_text()
     assert ".beitrag-anriss:has(+ .beitrag-mehr[open]) { display: none; }" in css
+
+
+def test_alle_bilder_im_bildfenster(client, mit_beitraegen):
+    """Alle Bilder eines Albums sind zu sehen und lassen sich im Bildfenster blättern."""
+    html = text(client.get("/aktuelles/"))
+    for i in range(3):
+        assert f'class="beitrag-bildlink" href="/medien/a/posts/images/bild1x{i}/"' in html
+    assert 'id="bild-fenster"' in html and "seite/bildfenster.js" in html
+    js = Path("seite/static/seite/bildfenster.js").read_text(encoding="utf-8")
+    assert "a.beitrag-bildlink" in js and ".beitrag-bilder" in js
+
+
+def test_ohne_schalter_keine_zahlen_und_kommentare(client, mit_beitraegen):
+    html = text(client.get("/aktuelles/"))
+    assert "beitrag-zahlen" not in html and "beitrag-kommentare" not in html
+
+
+def test_likes_und_kommentare(client, mit_beitraegen, monkeypatch):
+    posts = [dict(p) for p in fake.POSTS]
+    posts[0].update(
+        likes=12,
+        comment_count=1,
+        comments=[
+            {
+                "author": "erika_m",
+                "text": "Schön <i>war</i> es!",
+                "published_at": "2026-10-12T13:00:00+00:00",
+            }
+        ],
+    )
+    posts[2].update(likes=1, comment_count=0, comments=[])
+    monkeypatch.setattr(fake, "POSTS", posts)
+    cache.clear()
+    html = text(client.get("/aktuelles/"))
+    assert "12 Likes · 1 Kommentar" in html
+    assert "1 Reaktion · 0 Kommentare" in html
+    assert "1 Kommentar lesen" in html and "<strong>erika_m</strong>" in html
+    assert "Schön &lt;i&gt;war&lt;/i&gt; es!" in html

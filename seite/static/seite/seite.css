@@ -587,7 +587,12 @@ figcaption { font-size: .88rem; color: var(--text-leise); margin-top: .3rem; }
 .beitrag-bild { position: relative; margin: -1rem -1.2rem .2rem; }
 .beitrag-bild img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--rund) var(--rund) 0 0; }
 .beitrag-marke { position: absolute; right: .6rem; bottom: .6rem; background: rgba(0, 0, 0, .65); color: #fff; font-size: .8rem; padding: .15rem .5rem; border-radius: 999px; }
-.beitrag-weitere { list-style: none; padding: 0; margin: 0; display: flex; gap: .3rem; }
+.beitrag-weitere { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
+.beitrag-bilder { display: flex; flex-direction: column; gap: .4rem; }
+.beitrag-bildlink { display: block; }
+.beitrag-kommentare summary { cursor: pointer; color: var(--link); font-weight: 600; }
+.beitrag-kommentare ul { list-style: none; padding: 0; margin: .4rem 0 0; display: flex; flex-direction: column; gap: .5rem; }
+.beitrag-kommentare li { padding-left: .6rem; border-left: 2px solid var(--linie, rgba(0, 0, 0, .15)); }
 .beitrag-weitere img { width: 3.5rem; height: 3.5rem; object-fit: cover; border-radius: 4px; display: block; }
 .beitrag-text { overflow-wrap: anywhere; }
 .beitrag-mehr summary { cursor: pointer; color: var(--link); font-weight: 600; }

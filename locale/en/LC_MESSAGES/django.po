@@ -1163,3 +1163,27 @@ msgstr ""
 #, python-format
 msgid "%(jahr)ser"
 msgstr "%(jahr)ss"
+
+#, python-format
+msgid "%(n)s Reaktion"
+msgid_plural "%(n)s Reaktionen"
+msgstr[0] "%(n)s reaction"
+msgstr[1] "%(n)s reactions"
+
+#, python-format
+msgid "%(n)s Like"
+msgid_plural "%(n)s Likes"
+msgstr[0] "%(n)s like"
+msgstr[1] "%(n)s likes"
+
+#, python-format
+msgid "%(n)s Kommentar"
+msgid_plural "%(n)s Kommentare"
+msgstr[0] "%(n)s comment"
+msgstr[1] "%(n)s comments"
+
+#, python-format
+msgid "%(n)s Kommentar lesen"
+msgid_plural "%(n)s Kommentare lesen"
+msgstr[0] "Read %(n)s comment"
+msgstr[1] "Read %(n)s comments"

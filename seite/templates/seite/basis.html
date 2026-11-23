@@ -40,7 +40,7 @@
 <script src="{% static 'seite/termin.js' %}" defer></script>
 <script src="{% static 'seite/countdown.js' %}" defer></script>
 {% if site.info.notice.place == "float" and not site.maintenance %}<script src="{% static 'seite/hinweis.js' %}" defer></script>{% endif %}
-{% if abschnitte|hat_art:"images" %}{% include "seite/bildfenster.html" %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}
+{% if abschnitte|hat_art:"images" or abschnitte|hat_art:"posts" or posts or instagram_posts or facebook_posts %}{% include "seite/bildfenster.html" %}<script src="{% static 'seite/bildfenster.js' %}" defer></script>{% endif %}
 {% if site.is_preview %}<script src="{% static 'seite/zeigen.js' %}" defer></script>{% endif %}
 {% block skripte %}{% endblock %}
 </body>
