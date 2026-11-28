@@ -76,6 +76,35 @@ echo "Teste $SHA ($(git log -1 --format=%s "$COMMIT")) lokal …"
 git archive --format=tar "$COMMIT" | tar -x -C "$WORK"
 start=$(date +%s)
 
+# Abgleich mit HUBIplan: Der Container sieht den Nachbarordner nicht. Liegt dort ein
+# hubiplan-Klon, gehen Adressen und Form der Schnittstelle aus dessen frisch geholtem main mit in den
+# Lauf; tests/test_schnittstelle.py prüft die Kopie dagegen.
+NACHBAR="$(dirname "$(git rev-parse --show-toplevel)")/hubiplan"
+if git -C "$NACHBAR" rev-parse --git-dir > /dev/null 2>&1; then
+    # Wie scripts/zug.sh in hubiplan: Ist origin des Nachbarklons selbst ein lokaler Klon, zählt
+    # dessen origin. main wird frisch geholt, damit nicht gegen einen alten Stand verglichen wird.
+    QUELLE="$NACHBAR"
+    url=$(git -C "$NACHBAR" remote get-url origin 2> /dev/null || true)
+    if [ -d "$url" ] && git -C "$url" remote get-url origin > /dev/null 2>&1; then
+        QUELLE="$url"
+    fi
+    STAND=refs/webseite/hubiplan-main
+    if ! git -C "$QUELLE" fetch --quiet origin "+refs/heads/main:$STAND" 2> /dev/null; then
+        echo "FEHLER: main von hubiplan ließ sich nicht holen ($QUELLE)." >&2
+        exit 1
+    fi
+    mkdir -p "$WORK/nachbar-config"
+    for datei in api_routen.json webseite_schnittstelle.json; do
+        if ! git -C "$QUELLE" show "$STAND:backend/config/$datei" > "$WORK/nachbar-config/$datei" 2> /dev/null; then
+            echo "FEHLER: backend/config/$datei fehlt im main von hubiplan ($(git -C "$QUELLE" rev-parse --short "$STAND"))." >&2
+            exit 1
+        fi
+    done
+    echo "Abgleich mit hubiplan main $(git -C "$QUELLE" rev-parse --short "$STAND")"
+else
+    echo "Hinweis: kein hubiplan-Klon im Nachbarordner, die Kopie der Schnittstelle bleibt ungeprüft."
+fi
+
 # Eigener Image-Name je Lauf: zwei gleichzeitige Läufe dürfen sich nicht überschreiben
 IMG="hubiplan-website-test:$(date +%s)-$$"
 docker build -q --build-arg DEV=1 -t "$IMG" "$WORK" > /dev/null
