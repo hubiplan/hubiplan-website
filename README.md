@@ -161,11 +161,15 @@ Installation steht im Kopf der Datei). Tests laufen nie auf einem Server.
 
 **Abgleich mit HUBIplan:** Die Nachbildung wird bei jedem Testaufruf mit dem Server verglichen
 (`tests/schnittstelle.py`): Jede Adresse muss es in HUBIplan geben, und die Antworten dürfen
-nur Felder haben, die HUBIplan für den Demoverein liefert. Die Vorlage dafür ist eine Kopie aus
-dem Server (`tests/data/hubiplan_schnittstelle.json`); nach Änderungen an der öffentlichen
-Schnittstelle zieht `scripts/schnittstelle.sh` sie aus einem hubiplan-Klon im Nachbarordner
-neu. Felder, die der Demoverein noch nicht zeigt, stehen im Bestand
-(`tests/data/schnittstelle_bestand.txt`); neue Abweichungen lassen die Tests scheitern.
+nur Felder haben, die HUBIplan liefert. Die Vorlage dafür ist eine Kopie aus dem Server
+(`tests/data/hubiplan_schnittstelle.json`). Der Server legt in seinen Tests einen Prüfverein an,
+der jedes Feld belegt; Ausnahmen gibt es deshalb keine. Tests, die absichtlich falsche Daten
+liefern, tragen den Merker `falsche_daten`. In der Gegenrichtung zeichnet
+`tests/test_echte_antworten.py` jede Seite aus den echten Antworten des Servers
+(`tests/data/hubiplan_antworten.json`: Demoverein, Prüfverein, dessen Vorschau, Demokapelle und
+ein leerer Verein) und folgt dabei jedem Link. Nach Änderungen an der öffentlichen
+Schnittstelle zieht `scripts/schnittstelle.sh` beide Dateien aus einem hubiplan-Klon im
+Nachbarordner neu.
 
 **Aufbau des Programms:** `seite/api.py` ruft HUBIplan auf (mit Zwischenspeicher), `seite/site.py`
 ordnet die Anfrage einer Webseite zu, `seite/views/` bereitet die Daten je Bereich für die

@@ -127,7 +127,7 @@ BOARD = {
     "honorary": [
         {
             "title": "Ehrenmitglied",
-            "holders": [{"name": "Erika Beispiel", "photo_url": None, "since": "2010-05-01"}],
+            "holders": [{"name": "Erika Beispiel", "photo_url": None}],
         }
     ],
     "chronicle": [
@@ -226,7 +226,7 @@ def results_detail(token: str, version: str = "v1") -> dict:
     return {
         **_comp(token, "Pokalschießen" if live else "Vereinsmeisterschaft 2027", live=live),
         "description": "",
-        "details": "",
+        "details": [],
         "depth": "alle",
         "scorings": [
             {
@@ -432,6 +432,33 @@ def _own(n: int, title: str, date: str, text: str = "", images: int = 0, video: 
 OWN_POSTS: list = []
 
 
+# Schlüssel in ``info``, über die Tests die Nachbildung steuern; HUBIplan liefert sie nicht
+NUR_TEST = (
+    "galerie",
+    "imprint_extra",
+    "unit_posts",
+    "zeitleiste",
+    "zeitleiste_neueste_oben",
+)
+# Die Grunddaten nennen je Untereinheit nur diese Felder; alles Weitere (Text, Abschnitte,
+# Ansprechpartner, Bilder) steht unter units/<slug>/
+EINHEIT_KURZ = (
+    "founding_year",
+    "has_events",
+    "image",
+    "logo_url",
+    "name",
+    "parent",
+    "short_name",
+    "slug",
+)
+
+
+def _ohne_volltext(post: dict) -> dict:
+    """Beitrag ohne das Hilfsfeld ``volltext`` (daraus wird der Text der Einzelansicht)."""
+    return {k: v for k, v in post.items() if k != "volltext"}
+
+
 @dataclass
 class FakeHubiplan:
     info: dict = field(default_factory=site_info)
@@ -517,7 +544,13 @@ class FakeHubiplan:
                 )
             return self.json(
                 {
-                    **self.info,
+                    **{k: v for k, v in self.info.items() if k not in NUR_TEST},
+                    "units": [
+                        {k: v for k, v in einheit.items() if k in EINHEIT_KURZ}
+                        for einheit in self.info.get("units", [])
+                    ]
+                    if isinstance(self.info.get("units"), list)
+                    else self.info.get("units"),
                     **({"frame_origins": self.frame_origins} if ok_preview else {}),
                     "preview": ok_preview,
                     "state": "maintenance" if self.maintenance else "public",
@@ -650,14 +683,14 @@ class FakeHubiplan:
                 if args.get("art") in (None, p["kind"])
             ]
             count, page = int(args.get("anzahl", 12)), int(args.get("seite", 1))
-            shown = items[(page - 1) * count : page * count]
+            shown = [_ohne_volltext(p) for p in items[(page - 1) * count : page * count]]
             return self.json({"posts": shown, "page": page, "more": len(items) > page * count})
         if base.startswith("posts/eigene/"):
             slug = base.split("/")[2]
             post = next((p for p in OWN_POSTS if p["slug"] == slug), None)
             if post is None or not self.info.get("blocks", {}).get("posts"):
                 return self.json({"detail": "nicht gefunden"}, 404)
-            return self.json({"post": {**post, "text": post["volltext"]}})
+            return self.json({"post": {**_ohne_volltext(post), "text": post["volltext"]}})
         if base == "events/":
             return self.json(events())
         if base.startswith("results/"):

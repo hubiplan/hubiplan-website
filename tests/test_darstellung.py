@@ -81,9 +81,9 @@ def test_galerie_als_mauerwerk(client, hubiplan):
         "caption": "",
         "alt": "Festzug",
     }
-    album = {"slug": "fest", "title": "Fest", "year": 2099, "images": 1, "albums": 0, "cover": bild}
+    album = {"slug": "fest", "title": "Fest", "year": 2099}
     hubiplan.info["galerie"] = {
-        "galleries/": {"albums": [album]},
+        "galleries/": {"albums": [{**album, "images": 1, "albums": 0, "cover": bild}]},
         "galleries/fest/": {**album, "images": [bild], "albums": [], "parent": None},
     }
     html = text(client.get("/galerie/"))

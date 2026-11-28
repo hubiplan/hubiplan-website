@@ -1,24 +1,13 @@
 #!/usr/bin/env bash
-# Zieht die Beschreibung der öffentlichen HUBIplan-Schnittstelle aus einem hubiplan-Klon nach
-# tests/data/hubiplan_schnittstelle.json (Adressen und Form der Antworten). Die Tests prüfen
-# die nachgebildete Schnittstelle (tests/fake.py) dagegen, siehe tests/schnittstelle.py.
+# Zieht die Beschreibung der öffentlichen HUBIplan-Schnittstelle aus einem hubiplan-Klon:
+# tests/data/hubiplan_schnittstelle.json (Adressen und Form der Antworten) und
+# tests/data/hubiplan_antworten.json (echte Antworten der Beispielvereine). Die Tests prüfen
+# die nachgebildete Schnittstelle (tests/fake.py) gegen die Form (tests/schnittstelle.py) und
+# bauen jede Seite aus den echten Antworten (tests/test_echte_antworten.py).
 #
 #   scripts/schnittstelle.sh [Pfad zum hubiplan-Klon, sonst ../hubiplan]
-#   scripts/schnittstelle.sh --bestand    Bestand der Abweichungen neu schreiben
-#                                         (tests/data/schnittstelle_bestand.txt; braucht pytest)
 set -euo pipefail
 cd "$(dirname "$0")/.."
-if [ "${1:-}" = "--bestand" ]; then
-    LOG=$(mktemp)
-    trap 'rm -f "$LOG"' EXIT
-    BESTAND=tests/data/schnittstelle_bestand.txt
-    KOPF=$(grep '^#' "$BESTAND")
-    printf '%s\n' "$KOPF" > "$BESTAND"
-    SCHNITTSTELLE_LOG="$LOG" python3 -m pytest -q -p no:cacheprovider > /dev/null || true
-    sort -u "$LOG" >> "$BESTAND"
-    echo "$BESTAND: $(grep -vc '^#' "$BESTAND") Abweichungen im Bestand"
-    exit 0
-fi
 QUELLE="${1:-../hubiplan}"
 python3 - "$QUELLE" <<'PY'
 import json
@@ -36,4 +25,8 @@ daten = {
 ziel = Path("tests/data/hubiplan_schnittstelle.json")
 ziel.write_text(json.dumps(daten, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
 print(f"{ziel}: {len(daten['routen'])} Adressen, {len(daten['antworten'])} Antworten")
+echt = Path("tests/data/hubiplan_antworten.json")
+echt.write_text((quelle / "webseite_antworten.json").read_text(encoding="utf-8"), encoding="utf-8")
+aufzeichnung = json.loads(echt.read_text(encoding="utf-8"))
+print(f"{echt}: {len(aufzeichnung['antworten'])} echte Antworten, Stand {aufzeichnung['stand']}")
 PY
