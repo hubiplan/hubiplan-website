@@ -9,6 +9,7 @@ from django.urls import NoReverseMatch, reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext as _
 
+from ..daten import Wettbewerb
 from .register import register
 
 
@@ -105,6 +106,8 @@ def dignity_address(site, kennung: str) -> str:
 @register.filter
 def adresse(item) -> str:
     """Lesbare Adresse eines Wettbewerbs oder einer Reihe, sonst die Kennung (#149)."""
+    if isinstance(item, Wettbewerb):
+        return item.slug if _lesbar(item.slug) else item.id
     if not isinstance(item, dict):
         return ""
     slug = item.get("slug")

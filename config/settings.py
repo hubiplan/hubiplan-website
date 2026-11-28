@@ -13,6 +13,9 @@ def env_bool(name: str, default: bool = False) -> bool:
 
 
 DEBUG = env_bool("DJANGO_DEBUG", False)
+# Feste Datentypen (seite/daten.py): Lesen eines Feldes, das es nicht gibt, ist ein Fehler.
+# In Tests und Entwicklung an; im Betrieb bleibt es beim leeren Wert.
+STRENGE_DATEN = env_bool("STRENGE_DATEN", DEBUG)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "nur-fuer-die-entwicklung" if DEBUG else "")
 if not SECRET_KEY:
     raise RuntimeError("DJANGO_SECRET_KEY fehlt.")

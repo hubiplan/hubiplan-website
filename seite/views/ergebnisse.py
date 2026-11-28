@@ -11,6 +11,7 @@ from django.http import (
 from django.views.decorators.http import require_GET
 
 from .. import api
+from ..daten import Wettbewerb
 from ..site import (
     Site,
 )
@@ -31,22 +32,31 @@ def _results_on(site: Site) -> bool:
     return bool(site.info.get("results_url"))
 
 
-def _home_results(site: Site) -> list[dict]:
+def _home_results(site: Site) -> list[Wettbewerb]:
     try:
         data = site.get("results/?start=1", seconds=OVERVIEW_SECONDS)
     except api.NotFound:
         return []
-    return [_with_date(c) for c in data.get("competitions", [])]
+    return [_wettbewerb(c) for c in data.get("competitions", []) if isinstance(c, dict)]
 
 
-def _with_date(comp: dict) -> dict:
+def _when(comp: dict):
     from datetime import date
 
     try:
-        when = date.fromisoformat(comp.get("date") or "")
+        return date.fromisoformat(comp.get("date") or "")
     except ValueError:
-        when = None
-    return {**comp, "when": when}
+        return None
+
+
+def _with_date(comp: dict) -> dict:
+    """Rangliste eines Wettbewerbs (Wörterbuch aus HUBIplan) mit Datum."""
+    return {**comp, "when": _when(comp)}
+
+
+def _wettbewerb(comp: dict) -> Wettbewerb:
+    """Wettbewerb einer Übersicht."""
+    return Wettbewerb.aus(comp, when=_when(comp))
 
 
 # --- Wettbewerbsergebnisse ---
@@ -59,9 +69,9 @@ def results(request, site: Site):
     if not _results_on(site):
         raise api.NotFound()
     data = site.get("results/", seconds=OVERVIEW_SECONDS)
-    comps = [_with_date(c) for c in data.get("competitions", [])]
+    comps = [_wettbewerb(c) for c in data.get("competitions", []) if isinstance(c, dict)]
     # HUBIplan liefert veröffentlichte Wettbewerbe nach Datum absteigend.
-    latest = _result(site, comps[0]["id"]) if comps else None
+    latest = _result(site, comps[0].id) if comps else None
     older = comps[1:]
     response = _page(
         request,
@@ -69,8 +79,8 @@ def results(request, site: Site):
         site,
         {
             "latest": latest,
-            "live": [c for c in older if not c.get("final")],
-            "years": _by_year([c for c in older if c.get("final")]),
+            "live": [c for c in older if not c.final],
+            "years": _by_year([c for c in older if c.final]),
             "series": data.get("series", []),
             "trophies": data.get("trophies", []),
         },
@@ -80,10 +90,10 @@ def results(request, site: Site):
     return response
 
 
-def _by_year(comps: list[dict]) -> list[tuple[int, list[dict]]]:
-    groups: OrderedDict[int, list[dict]] = OrderedDict()
+def _by_year(comps: list[Wettbewerb]) -> list[tuple[int, list[Wettbewerb]]]:
+    groups: OrderedDict[int, list[Wettbewerb]] = OrderedDict()
     for c in comps:
-        groups.setdefault(c.get("year"), []).append(c)
+        groups.setdefault(c.year, []).append(c)
     return list(groups.items())
 
 

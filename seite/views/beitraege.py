@@ -11,6 +11,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_GET
 
 from .. import api
+from ..daten import Beitrag
 from ..site import (
     Site,
 )
@@ -42,7 +43,7 @@ def _posts_page(
     unit: str | None = None,
     limit: int = POSTS_PER_PAGE,
     page: int = 1,
-) -> tuple[list[dict], bool]:
+) -> tuple[list[Beitrag], bool]:
     """Eigene Beiträge und die aus Instagram/Facebook, von HUBIplan lokal gespeichert (nie
     von Meta), nach Datum gemischt; dazu, ob es ältere gibt."""
     if not site.block("posts"):
@@ -64,17 +65,16 @@ def _posts_page(
 
 def _posts(
     site: Site, kind: str | None = None, unit: str | None = None, limit: int = 24
-) -> list[dict]:
+) -> list[Beitrag]:
     return _posts_page(site, kind, unit, limit)[0]
 
 
-def _post(p: dict) -> dict:
+def _post(p: dict) -> Beitrag:
     when = parse_datetime(p["published_at"]) if p.get("published_at") else None
     permalink = p.get("permalink") or ""
     if not permalink.startswith("https://"):
         permalink = ""
-    entry = {
-        **p,
+    berechnet = {
         "when": timezone.localtime(when) if when else None,
         "permalink": permalink,
         "images": [i for i in p.get("images") or [] if isinstance(i, dict) and i.get("url")],
@@ -94,17 +94,19 @@ def _post(p: dict) -> dict:
     if p.get("kind") == "own":
         # Eigener Beitrag (#707): Datum ohne Uhrzeit, Videos als Link mit Vorschaubild
         try:
-            entry["day"] = datetime.date.fromisoformat(p.get("date") or "")
+            berechnet["day"] = datetime.date.fromisoformat(p.get("date") or "")
         except ValueError:
-            entry["day"] = None
-        entry["videos"] = [
+            berechnet["day"] = None
+        berechnet["videos"] = [
             v
             for v in p.get("videos") or []
             if isinstance(v, dict) and str(v.get("url") or "").startswith("https://")
         ]
         slug = p.get("slug") or ""
-        entry["url"] = reverse("beitrag", args=[slug]) if re.fullmatch(r"[-a-z0-9]+", slug) else ""
-    return entry
+        berechnet["url"] = (
+            reverse("beitrag", args=[slug]) if re.fullmatch(r"[-a-z0-9]+", slug) else ""
+        )
+    return Beitrag.aus(p, **berechnet)
 
 
 @require_GET

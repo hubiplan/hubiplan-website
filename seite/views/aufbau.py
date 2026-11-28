@@ -10,7 +10,7 @@ from django.utils.dateparse import parse_datetime
 from ..farben import gradient_css, text_on, text_on_all
 from ..site import SAFE_URL, Site
 from .beitraege import _post
-from .ergebnisse import TOKEN, _with_date
+from .ergebnisse import TOKEN, _wettbewerb
 from .termine import _event, _qr_svg
 
 # --- Seiten ---
@@ -222,7 +222,7 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
                 continue
             # Countdown in Tagen (Ortszeit); am Tag selbst „heute“
             entry["event"] = event
-            entry["tage"] = (event["start"].date() - timezone.localdate()).days
+            entry["tage"] = (event.start.date() - timezone.localdate()).days
         elif kind == "countdown":
             countdown = _countdown(s)
             if countdown is None:
@@ -237,7 +237,7 @@ def _layout_entries(site: Site, layout: list) -> list[dict]:
             comp = s.get("competition")
             if not isinstance(comp, dict) or not TOKEN.match(str(comp.get("id", ""))):
                 continue
-            entry["competition"] = _with_date(comp)
+            entry["competition"] = _wettbewerb(comp)
         elif kind == "app":
             login = s.get("login_url") if isinstance(s.get("login_url"), str) else ""
             if not login.startswith(("https://", "http://")):

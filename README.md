@@ -170,8 +170,10 @@ neu. Felder, die der Demoverein noch nicht zeigt, stehen im Bestand
 **Aufbau des Programms:** `seite/api.py` ruft HUBIplan auf (mit Zwischenspeicher), `seite/site.py`
 ordnet die Anfrage einer Webseite zu, `seite/views/` bereitet die Daten je Bereich für die
 Vorlagen auf, `seite/hilfen/` enthält die Filter und Bausteine der Vorlagen und
-`seite/farben.py` die Farbrechnung. Programmdateien bleiben unter 800 Zeilen
-(`tests/test_dateigroesse.py`).
+`seite/farben.py` die Farbrechnung. Termine, Beiträge und Wettbewerbe gehen als feste
+Datentypen in die Vorlagen (`seite/daten.py`): In Tests und Entwicklung ist das Lesen eines
+Feldes, das es nicht gibt, ein Fehler (`STRENGE_DATEN`); im Betrieb bleibt es beim leeren Wert.
+Programmdateien bleiben unter 800 Zeilen (`tests/test_dateigroesse.py`).
 
 **Übersetzung:** Feste Texte stehen deutsch in Vorlagen (`{% translate %}`), Python (`_()`)
 und für die Skripte in `JS_TEXTE` (`seite/hilfen/anzeige.py`). `scripts/uebersetzung.sh`

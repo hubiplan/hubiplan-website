@@ -124,9 +124,9 @@ def _veranstaltung(data, site: Site) -> dict | None:
     if event is None:
         return None
     reg = e.get("registration") if isinstance(e.get("registration"), dict) else {}
-    if event["anmeldung"] is not None:
-        event["anmeldung"]["terms"] = str(reg.get("terms") or "")
-        event["anmeldung"]["cancel_text"] = str(reg.get("cancel_text") or "")
+    if event.anmeldung is not None:
+        event.anmeldung["terms"] = str(reg.get("terms") or "")
+        event.anmeldung["cancel_text"] = str(reg.get("cancel_text") or "")
     return event
 
 

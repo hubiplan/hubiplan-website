@@ -17,6 +17,7 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_GET
 
 from .. import api
+from ..daten import Termin
 from ..site import (
     Site,
 )
@@ -25,7 +26,7 @@ from .rahmen import _area, _page, site_view
 # --- Termine ---
 
 
-def _event(e, site: Site | None = None) -> dict | None:
+def _event(e, site: Site | None = None) -> Termin | None:
     """Termin aus HUBIplan mit Beginn und Ende in Ortszeit (None ohne Beginn).
 
     ``anhaenge``: in HUBIplan einzeln für die Webseite freigegebene Anhänge, über diese
@@ -43,15 +44,15 @@ def _event(e, site: Site | None = None) -> dict | None:
         url = site.local(a.get("url")) if isinstance(a, dict) else None
         if url:
             files.append({"name": a.get("name") or "", "kind": a.get("kind") or "", "url": url})
-    return {
-        **e,
-        "start": start,
-        "end": end,
-        "anhaenge": files,
-        "anmeldung": _anmeldung(e.get("registration")),
+    return Termin.aus(
+        e,
+        start=start,
+        end=end,
+        anhaenge=files,
+        anmeldung=_anmeldung(e.get("registration")),
         # Veranstaltungsseite (HUBIplan A4): Adresse, nur wenn sie als Adresse taugt
-        "page": e["page"] if _ist_adresse(e.get("page")) else None,
-    }
+        page=e["page"] if _ist_adresse(e.get("page")) else None,
+    )
 
 
 def _ist_adresse(value) -> bool:
@@ -95,14 +96,14 @@ def _anmeldung(r) -> dict | None:
     }
 
 
-def _events(site: Site, unit: str | None = None) -> list[dict]:
+def _events(site: Site, unit: str | None = None) -> list[Termin]:
     path = "events/" + (f"?einheit={unit}" if unit else "")
     events = []
     for e in site.get(path).get("events", []):
         event = _event(e, site)
         if event is not None:
             events.append(event)
-    events.sort(key=lambda e: e["start"])
+    events.sort(key=lambda e: e.start)
     return events
 
 
@@ -117,30 +118,28 @@ def _zeit(value):
         return None
 
 
-def _upcoming(events: list[dict], limit: int | None = None) -> list[dict]:
+def _upcoming(events: list[Termin], limit: int | None = None) -> list[Termin]:
     now = timezone.now()
     today = timezone.localdate()
     result = [
-        e
-        for e in events
-        if (e["end"] or e["start"]) >= now or (e["all_day"] and e["start"].date() >= today)
+        e for e in events if (e.end or e.start) >= now or (e.all_day and e.start.date() >= today)
     ]
     return result[:limit] if limit else result
 
 
-def _by_month(events: list[dict]) -> list[tuple[str, list[dict]]]:
-    groups: OrderedDict[str, list[dict]] = OrderedDict()
+def _by_month(events: list[Termin]) -> list[tuple[str, list[Termin]]]:
+    groups: OrderedDict[str, list[Termin]] = OrderedDict()
     for e in events:
-        groups.setdefault(formats.date_format(e["start"], "F Y"), []).append(e)
+        groups.setdefault(formats.date_format(e.start, "F Y"), []).append(e)
     return list(groups.items())
 
 
-def _calendar(events: list[dict]) -> list[dict]:
+def _calendar(events: list[Termin]) -> list[dict]:
     """Monatskalender (G5): je Monat mit Terminen ein Blatt, Woche ab Montag. Ein Termin
     steht an seinem ersten Tag."""
     months: OrderedDict[tuple[int, int], dict] = OrderedDict()
     for e in events:
-        day = e["start"].date()
+        day = e.start.date()
         months.setdefault((day.year, day.month), {}).setdefault(day, []).append(e)
     today = timezone.localdate()
     result = []
