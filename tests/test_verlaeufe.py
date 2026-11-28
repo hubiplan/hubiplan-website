@@ -3,7 +3,8 @@ Alle Daten erfunden."""
 
 import pytest
 
-from seite.site import DESIGNS, Site, gradient_css
+from seite.farben import gradient_css
+from seite.site import DESIGNS, Site
 
 BLAU = {"from": "#05487a", "to": "#032e52", "direction": "right"}
 ROLLEN = {
@@ -66,7 +67,7 @@ def test_hintergrund_geht_regler_vor():
 
 
 def test_link_auch_auf_eigener_flaeche_lesbar():
-    from seite.site import contrast
+    from seite.farben import contrast
 
     dunkel = {**ROLLEN, "surface": {"color": "#c8d3de", "on_color": "#1d2421"}}
     site = site_mit(dunkel, theme={"primary": "#4a7fb0"})

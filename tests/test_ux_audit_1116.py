@@ -10,9 +10,9 @@ from pathlib import Path
 import pytest
 from django.core.cache import cache
 
-from seite import site as seite_site
-from seite import stil
-from seite.site import Site, contrast, readable, text_on, text_on_all
+from seite import farben, stil
+from seite.farben import contrast, readable, text_on, text_on_all
+from seite.site import Site
 
 from .fake import site_info
 
@@ -81,7 +81,7 @@ def test_datumsschrift_im_dunkeln():
     info["designs"] = {"classic": {"date": {"color": "#1f4e2c", "on_color": "#ffffff"}}}
     werte = _vars(Site(key="k", info=info).css_vars)
     dunkel = werte["--datum-text-dunkel"]
-    assert min(contrast(dunkel, b) for b in seite_site.DARK_BACKGROUNDS) >= 4.5
+    assert min(contrast(dunkel, b) for b in farben.DARK_BACKGROUNDS) >= 4.5
     css = (STATIC / "stil.css").read_text()
     assert "--datum-text: var(--datum-text-dunkel, var(--link));" in css
 

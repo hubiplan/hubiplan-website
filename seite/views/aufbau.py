@@ -7,13 +7,8 @@ import re
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-from ..site import (
-    SAFE_URL,
-    Site,
-    gradient_css,
-    text_on,
-    text_on_all,
-)
+from ..farben import gradient_css, text_on, text_on_all
+from ..site import SAFE_URL, Site
 from .beitraege import _post
 from .ergebnisse import TOKEN, _with_date
 from .termine import _event, _qr_svg
