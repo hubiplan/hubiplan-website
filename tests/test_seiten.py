@@ -1072,7 +1072,7 @@ def test_aktuelles_foto_gross_nur_auf_eigener_seite(client, hubiplan):
 
 
 def test_quellcode_der_laufenden_fassung(tmp_path, monkeypatch):
-    from seite.templatetags import seite as tags
+    from seite.hilfen import anzeige as tags
 
     sha = "0123456789abcdef0123456789abcdef01234567"
     datei = tmp_path / ".fassung"
@@ -1136,7 +1136,7 @@ def test_bilder_browser_zwischenspeicher(client, hubiplan):
 
 
 def test_linkedin_eigenes_symbol(client, hubiplan):
-    from seite.templatetags.seite import ICONS
+    from seite.hilfen.symbole import ICONS
 
     hubiplan.info["social"] = [
         {
@@ -1167,7 +1167,7 @@ def test_bildnachweis_im_impressum(client, hubiplan):
 
 
 def test_bildunterschrift_mit_urheber():
-    from seite.templatetags.seite import bildunterschrift, mit_nachweis
+    from seite.hilfen.bilder import bildunterschrift, mit_nachweis
 
     bild = {"credit": "Erika  Muster"}
     assert str(bildunterschrift("Fest", bild)) == (

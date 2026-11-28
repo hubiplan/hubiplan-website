@@ -55,7 +55,7 @@ def test_hinweisleiste_aussehen_aus_hubiplan(client, hubiplan):
     # Über dem Kopf
     assert html.index("hinweisleiste") < html.index('class="kopf')
     # Heute, morgen, vorbei (direkt am Baustein, die Seiteninfo ist zwischengespeichert)
-    from seite.templatetags.seite import hinweis_ansicht
+    from seite.hilfen.symbole import hinweis_ansicht
 
     heute = timezone.localdate()
     assert hinweis_ansicht({"date": heute.isoformat()})["tage"] == 0

@@ -4,7 +4,7 @@ Darstellung nach Gerät (Dunkelmodus D2). Alle Daten erfunden."""
 
 import re
 
-from seite.site import DARK_BACKGROUNDS, contrast, link_color_dark
+from seite.farben import DARK_BACKGROUNDS, contrast, link_color_dark
 
 from .test_stilregler import STATIC, html_tag, seite
 

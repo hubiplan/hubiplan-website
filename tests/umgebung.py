@@ -9,3 +9,5 @@ os.environ.setdefault("MAINTENANCE_FILE", "/nicht/vorhanden/wartung")
 os.environ.setdefault("PREVIEW_COOKIE_SECURE", "false")
 # Im Betrieb ohne Angabe kein Rechnername (H-03); die Tests rufen erfundene Domains auf
 os.environ.setdefault("ALLOWED_HOSTS", "*")
+# Vorlagen dürfen nur Felder lesen, die es gibt (seite/daten.py)
+os.environ.setdefault("STRENGE_DATEN", "true")

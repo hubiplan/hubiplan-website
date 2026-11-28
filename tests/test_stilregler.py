@@ -7,7 +7,8 @@ import pytest
 from django.core.cache import cache
 
 from seite import stil
-from seite.site import DESIGNS, contrast
+from seite.farben import contrast
+from seite.site import DESIGNS
 
 from . import fake
 

@@ -5,7 +5,7 @@ import re
 import pytest
 from django.core.cache import cache
 
-from seite.site import LINK_BACKGROUNDS, contrast, link_color
+from seite.farben import LINK_BACKGROUNDS, contrast, link_color
 
 from .fake import KEY
 

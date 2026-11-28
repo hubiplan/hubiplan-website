@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from django.core.cache import cache
 
 from seite import stil
-from seite.templatetags.seite import ZWEISPALTIG_AB, rolle, zweispaltig
+from seite.hilfen.anzeige import ZWEISPALTIG_AB, rolle, zweispaltig
 
 from .fake import HONORS
 
