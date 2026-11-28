@@ -21,3 +21,6 @@ testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-p tests.umgebung"
 filterwarnings = ["ignore:No directory at:UserWarning"]
+markers = [
+    "falsche_daten: Die Nachbildung liefert absichtlich, was HUBIplan nie liefert (kein Abgleich)",
+]

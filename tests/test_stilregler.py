@@ -58,6 +58,7 @@ def test_regler_als_merkmale_am_html(client, hubiplan):
     assert html.index("design-classic.css") < html.index("seite/stil.css")
 
 
+@pytest.mark.falsche_daten
 def test_unbekannte_regler_und_stufen_fallen_weg(client, hubiplan):
     hubiplan.info["style"] = {
         "font": "comic",
@@ -71,6 +72,7 @@ def test_unbekannte_regler_und_stufen_fallen_weg(client, hubiplan):
     assert "<script>alert" not in seite(client)
 
 
+@pytest.mark.falsche_daten
 def test_kein_dict_ist_kein_regler(client, hubiplan):
     hubiplan.info["style"] = ["font", "modern"]
     assert "data-st-" not in seite(client)

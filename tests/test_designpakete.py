@@ -97,19 +97,24 @@ def test_paket_nur_einmal_geholt(client, mit_paket):
     assert abrufe() == 2
 
 
+# HUBIplan liefert weder ein Layout dieser Art noch eigene Vorlagen; die Webseite muss
+# solche Pakete trotzdem abweisen
+FALSCH = pytest.mark.falsche_daten
+
+
 @pytest.mark.parametrize(
     "over",
     [
         {"css": "body { background: url(https://boese.example/x) }"},
         {"css": "@import 'x';"},
-        {"layout": ["stage"]},
-        {"layout": {"stage": True}},
+        pytest.param({"layout": ["stage"]}, marks=FALSCH),
+        pytest.param({"layout": {"stage": True}}, marks=FALSCH),
         {"layout": "../../outside"},
-        {"templates": {"seite/kopf.html": "<script>alert(1)</script>"}},
-        {"templates": {"seite/kopf.html": "{{ site.info.name|safe }}"}},
-        {"templates": {"seite/kopf.html": "{% load log %}"}},
-        {"templates": {"seite/termine.html": "<p>x</p>"}},
-        {"templates": {"seite/kopf.html": "{% if %}"}},
+        pytest.param({"templates": {"seite/kopf.html": "<script>alert(1)</script>"}}, marks=FALSCH),
+        pytest.param({"templates": {"seite/kopf.html": "{{ site.info.name|safe }}"}}, marks=FALSCH),
+        pytest.param({"templates": {"seite/kopf.html": "{% load log %}"}}, marks=FALSCH),
+        pytest.param({"templates": {"seite/termine.html": "<p>x</p>"}}, marks=FALSCH),
+        pytest.param({"templates": {"seite/kopf.html": "{% if %}"}}, marks=FALSCH),
     ],
 )
 def test_boeses_paket_zeigt_klassisch(client, mit_paket, over):
@@ -179,6 +184,7 @@ def test_export_nur_standarddesigns(client, hubiplan):
         "{% if site.info.hidden %}<img src=x onerror=alert(1)>{% endif %}",
     ],
 )
+@FALSCH
 def test_fremde_vorlagen_immer_abgelehnt(client, mit_paket, template):
     mit_paket.packages["hubertus"] = paket(templates={"seite/kopf.html": template})
     response = client.get("/")

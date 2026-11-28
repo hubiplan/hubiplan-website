@@ -128,9 +128,9 @@ def test_band_der_buehne_wie_farbiger_abschnitt():
 
 def test_palettenabschnitt_schrift_wird_geprueft(client, hubiplan):
     hubiplan.info["palette"] = [{"color": "#f2b33d", "on_color": "#ffffff"}]
-    hubiplan.info["home"] = {
-        "sections": [{"kind": "text", "title": "Gelb", "text": "Hallo", "bg": "p0"}]
-    }
+    hubiplan.info["home_layout"] = [
+        {"key": "c:g", "kind": "text", "title": "Gelb", "text": "Hallo", "bg": "p0"}
+    ]
     html = hole(client, "/")
     if "background:#f2b33d" in html:
         assert "background:#f2b33d;color:#ffffff" not in html

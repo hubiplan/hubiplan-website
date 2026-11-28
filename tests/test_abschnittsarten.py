@@ -42,7 +42,7 @@ def _sections():
             "kind": "event_list",
             "title": "Training",
             "events": [
-                {"id": 1, "title": "Training am Stand", "starts_at": "2099-03-01T19:00:00+01:00"},
+                {"id": "1", "title": "Training am Stand", "starts_at": "2099-03-01T19:00:00+01:00"},
             ],
         },
         {

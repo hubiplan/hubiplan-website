@@ -8,8 +8,11 @@ from .fake import FakeHubiplan
 
 
 @pytest.fixture
-def hubiplan(monkeypatch):
+def hubiplan(monkeypatch, request):
     fake = FakeHubiplan()
+    # Tests mit dem Merker ``falsche_daten`` liefern absichtlich, was HUBIplan nie liefert
+    # (kaputte oder böswillige Antworten): dort gilt der Abgleich nicht
+    absichtlich = request.node.get_closest_marker("falsche_daten") is not None
 
     neu: list[str] = []
 
@@ -18,7 +21,7 @@ def hubiplan(monkeypatch):
         daten = None
         if antwort.content_type == "application/json" and antwort.status == 200:
             daten = antwort.json()
-        neu.extend(schnittstelle.neue_abweichungen(method, path, antwort.status, daten))
+        neu.extend(schnittstelle.pruefe(method, path, antwort.status, daten))
         return antwort
 
     monkeypatch.setattr(api, "_request", geprueft)
@@ -29,10 +32,11 @@ def hubiplan(monkeypatch):
     cache.clear()
     caches["bilder"].clear()
     caches["varianten"].clear()
-    assert not neu, (
+    assert absichtlich or not neu, (
         "Die nachgebildete Schnittstelle weicht von HUBIplan ab (tests/schnittstelle.py): "
         + "; ".join(sorted(set(neu)))
     )
+    assert neu or not absichtlich, "Merker falsche_daten ohne Abweichung: bitte streichen"
 
 
 @pytest.fixture(autouse=True)
