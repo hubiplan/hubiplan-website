@@ -79,7 +79,7 @@ start=$(date +%s)
 # Abgleich mit HUBIplan: Der Container sieht den Nachbarordner nicht. Liegt dort ein
 # hubiplan-Klon, gehen Adressen und Form der Schnittstelle aus dessen origin/main mit in den
 # Lauf; tests/test_schnittstelle.py prüft die Kopie dagegen.
-NACHBAR="$(cd .. && pwd)/hubiplan"
+NACHBAR="$(dirname "$(git rev-parse --show-toplevel)")/hubiplan"
 if git -C "$NACHBAR" rev-parse --verify --quiet origin/main > /dev/null 2>&1; then
     mkdir -p "$WORK/nachbar-config"
     for datei in api_routen.json webseite_schnittstelle.json; do
