@@ -169,8 +169,9 @@ liefern, tragen den Merker `falsche_daten`. In der Gegenrichtung zeichnet
 (`tests/data/hubiplan_antworten.json`: Demoverein, Prüfverein, dessen Vorschau, Demokapelle und
 ein leerer Verein) und folgt dabei jedem Link. Nach Änderungen an der öffentlichen
 Schnittstelle zieht `scripts/schnittstelle.sh` beide Dateien aus einem hubiplan-Klon im
-Nachbarordner neu. `scripts/test.sh` vergleicht die Kopie mit dem `origin/main` dieses Klons und
-schlägt fehl, wenn sie veraltet ist.
+Nachbarordner neu. `scripts/test.sh` holt dafür den aktuellen `main` von hubiplan (ist `origin`
+des Nachbarklons selbst ein lokaler Klon, über dessen `origin`), vergleicht die Kopie damit und
+schlägt fehl, wenn sie veraltet ist oder sich `main` nicht holen lässt.
 
 **Aufbau des Programms:** `seite/api.py` ruft HUBIplan auf (mit Zwischenspeicher), `seite/site.py`
 ordnet die Anfrage einer Webseite zu, `seite/views/` bereitet die Daten je Bereich für die
