@@ -76,6 +76,20 @@ echo "Teste $SHA ($(git log -1 --format=%s "$COMMIT")) lokal …"
 git archive --format=tar "$COMMIT" | tar -x -C "$WORK"
 start=$(date +%s)
 
+# Abgleich mit HUBIplan: Der Container sieht den Nachbarordner nicht. Liegt dort ein
+# hubiplan-Klon, gehen Adressen und Form der Schnittstelle aus dessen origin/main mit in den
+# Lauf; tests/test_schnittstelle.py prüft die Kopie dagegen.
+NACHBAR="$(cd .. && pwd)/hubiplan"
+if git -C "$NACHBAR" rev-parse --verify --quiet origin/main > /dev/null 2>&1; then
+    mkdir -p "$WORK/nachbar-config"
+    for datei in api_routen.json webseite_schnittstelle.json; do
+        git -C "$NACHBAR" show "origin/main:backend/config/$datei" > "$WORK/nachbar-config/$datei"
+    done
+    echo "Abgleich mit hubiplan origin/main $(git -C "$NACHBAR" rev-parse --short origin/main)"
+else
+    echo "Hinweis: kein hubiplan-Klon im Nachbarordner, die Kopie der Schnittstelle bleibt ungeprüft."
+fi
+
 # Eigener Image-Name je Lauf: zwei gleichzeitige Läufe dürfen sich nicht überschreiben
 IMG="hubiplan-website-test:$(date +%s)-$$"
 docker build -q --build-arg DEV=1 -t "$IMG" "$WORK" > /dev/null

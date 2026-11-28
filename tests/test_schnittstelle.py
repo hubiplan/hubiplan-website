@@ -10,7 +10,7 @@ import pytest
 from . import schnittstelle
 
 WURZEL = Path(__file__).resolve().parents[1]
-SERVER = WURZEL.parent / "hubiplan" / "backend" / "config"
+SERVER = (WURZEL / "nachbar-config", WURZEL.parent / "hubiplan" / "backend" / "config")
 
 
 def test_unbekannte_adresse_faellt_auf():
@@ -59,22 +59,23 @@ def test_null_und_freie_schluessel():
     assert schnittstelle.pruefe("GET", "/api/public/site/v1/resolve/?host=x", 200, ziel) == []
 
 
-def test_kopie_passt_zum_server_im_nachbarordner():
-    """Liegt ein hubiplan-Klon daneben, muss die Kopie zu ihm passen (scripts/schnittstelle.sh)."""
-    if not (SERVER / "webseite_schnittstelle.json").exists():
+def test_kopie_passt_zum_server():
+    """Die Kopie von Adressen und Form passt zu HUBIplan (sonst: scripts/schnittstelle.sh).
+
+    Verglichen wird mit ``nachbar-config`` (legt ``scripts/test.sh`` aus dem main des
+    hubiplan-Klons im Nachbarordner an), sonst mit dem Nachbarordner selbst. Die echten
+    Antworten müssen nicht dieselben sein, nur dieselbe Form haben (das prüft
+    tests/test_echte_antworten.py)."""
+    quelle = next((q for q in SERVER if (q / "webseite_schnittstelle.json").exists()), None)
+    if quelle is None:
         pytest.skip("kein hubiplan-Klon im Nachbarordner")
-    routen = json.loads((SERVER / "api_routen.json").read_text(encoding="utf-8"))
-    form = json.loads((SERVER / "webseite_schnittstelle.json").read_text(encoding="utf-8"))
+    routen = json.loads((quelle / "api_routen.json").read_text(encoding="utf-8"))
+    form = json.loads((quelle / "webseite_schnittstelle.json").read_text(encoding="utf-8"))
     assert schnittstelle.DATEN == {
         "routen": sorted(r for r in routen if r.startswith("^api/public/site/v1/")),
         "antworten": form["antworten"],
         "ohne_beispiel": form["ohne_beispiel"],
     }, "tests/data/hubiplan_schnittstelle.json ist veraltet: scripts/schnittstelle.sh ausführen"
-    echt = json.loads((SERVER / "webseite_antworten.json").read_text(encoding="utf-8"))
-    kopie = json.loads((WURZEL / "tests/data/hubiplan_antworten.json").read_text(encoding="utf-8"))
-    assert kopie == echt, (
-        "tests/data/hubiplan_antworten.json ist veraltet: scripts/schnittstelle.sh ausführen"
-    )
 
 
 def test_skript_ist_gueltig():

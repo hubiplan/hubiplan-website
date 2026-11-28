@@ -19,3 +19,4 @@ Thumbs.db
 
 # Übersetzungen: .mo entsteht beim Bauen (Dockerfile)
 *.mo
+nachbar-config/
