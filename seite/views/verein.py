@@ -11,10 +11,10 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
 from .. import api
+from ..hilfen.anzeige import web_ziel
 from ..site import (
     Site,
 )
-from ..templatetags.seite import web_ziel
 from ..zeitleiste import gliedern
 from .aufbau import _unit_layout
 from .beitraege import _posts, has_posts

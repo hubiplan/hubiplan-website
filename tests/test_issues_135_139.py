@@ -57,7 +57,7 @@ def test_wuerdentraeger_als_band(client, hubiplan):
 
 
 def test_vorgaenger_hoechstens_acht():
-    from seite.templatetags.seite import vorgaenger
+    from seite.hilfen.anzeige import vorgaenger
 
     d = {
         "current": [{"year": 2026, "period": "2026", "holder": {"name": "Neu"}}],
@@ -175,7 +175,7 @@ def test_podium(client, hubiplan):
 
 
 def test_podest_filter_gleichstand():
-    from seite.templatetags.seite import ohne_podest, podest
+    from seite.hilfen.anzeige import ohne_podest, podest
 
     rows = [{"place": 1}, {"place": 1}, {"place": 3}, {"place": 4}, {"place": None}]
     assert len(podest(rows)) == 3

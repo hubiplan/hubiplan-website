@@ -6,7 +6,7 @@ import pytest
 from django.core.cache import cache
 
 from seite import api
-from seite.templatetags.seite import tel
+from seite.hilfen.anzeige import tel
 
 from . import fake
 

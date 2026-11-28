@@ -159,7 +159,7 @@ sich dafür einen Testplatz mit `testplatz` (aus
 Installation steht im Kopf der Datei). Tests laufen nie auf einem Server.
 
 **Übersetzung:** Feste Texte stehen deutsch in Vorlagen (`{% translate %}`), Python (`_()`)
-und für die Skripte in `JS_TEXTE` (`seite/templatetags/seite.py`). `scripts/uebersetzung.sh`
+und für die Skripte in `JS_TEXTE` (`seite/hilfen/anzeige.py`). `scripts/uebersetzung.sh`
 sammelt sie in `locale/en/LC_MESSAGES/django.po`; dort die englischen Texte eintragen.
 `tests/test_sprache.py` schlägt fehl, solange ein Text fehlt. Die Sprache einer Webseite
 kommt aus HUBIplan (Feld `language` der Grunddaten, unbekannt = Deutsch).
