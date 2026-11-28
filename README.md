@@ -123,7 +123,8 @@ seite/            Abruf der Schnittstelle, Ansichten, Vorlagen, CSS
 locale/           englische Rahmentexte (django.po)
 tests/            pytest mit nachgebildeter Schnittstelle (tests/fake.py)
 deploy/           Ausrollen, Servereinrichtung, HestiaCP-Vorlagen
-scripts/          test.sh (vollständiger Test), uebersetzung.sh (Texte sammeln)
+scripts/          test.sh (vollständiger Test), uebersetzung.sh (Texte sammeln),
+                  schnittstelle.sh (Abgleich mit HUBIplan nachziehen)
 docs/             Konzept, Betrieb und Lizenzen
 ```
 
@@ -157,6 +158,20 @@ brauchen kein laufendes HUBIplan. `scripts/test.sh` prüft nur den eingecheckten
 sich dafür einen Testplatz mit `testplatz` (aus
 [hubiplan/scripts/testplatz.sh](https://github.com/hubiplan/hubiplan/blob/main/scripts/testplatz.sh),
 Installation steht im Kopf der Datei). Tests laufen nie auf einem Server.
+
+**Abgleich mit HUBIplan:** Die Nachbildung wird bei jedem Testaufruf mit dem Server verglichen
+(`tests/schnittstelle.py`): Jede Adresse muss es in HUBIplan geben, und die Antworten dürfen
+nur Felder haben, die HUBIplan für den Demoverein liefert. Die Vorlage dafür ist eine Kopie aus
+dem Server (`tests/data/hubiplan_schnittstelle.json`); nach Änderungen an der öffentlichen
+Schnittstelle zieht `scripts/schnittstelle.sh` sie aus einem hubiplan-Klon im Nachbarordner
+neu. Felder, die der Demoverein noch nicht zeigt, stehen im Bestand
+(`tests/data/schnittstelle_bestand.txt`); neue Abweichungen lassen die Tests scheitern.
+
+**Aufbau des Programms:** `seite/api.py` ruft HUBIplan auf (mit Zwischenspeicher), `seite/site.py`
+ordnet die Anfrage einer Webseite zu, `seite/views/` bereitet die Daten je Bereich für die
+Vorlagen auf, `seite/hilfen/` enthält die Filter und Bausteine der Vorlagen und
+`seite/farben.py` die Farbrechnung. Programmdateien bleiben unter 800 Zeilen
+(`tests/test_dateigroesse.py`).
 
 **Übersetzung:** Feste Texte stehen deutsch in Vorlagen (`{% translate %}`), Python (`_()`)
 und für die Skripte in `JS_TEXTE` (`seite/hilfen/anzeige.py`). `scripts/uebersetzung.sh`
